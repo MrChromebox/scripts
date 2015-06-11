@@ -1564,7 +1564,7 @@ function menu_fwupdate() {
 #############
 function menu_kodi() {
     clear
-	echo -e "${NORMAL}\n ChromeBox E-Z Setup ${script_date} ${NORMAL}"
+	echo -e "${NORMAL}\n ChromeBox Kodi E-Z Setup ${script_date} ${NORMAL}"
     echo -e "${NORMAL} (c) Matt DeVillier <matt.devillier@gmail.com>\n ${NORMAL}"
 	echo -e "${NORMAL} Paypal towards beer/programmer fuel welcomed at above address :)\n ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
