@@ -22,7 +22,7 @@ if [ $(whoami) != "root" ]; then
 fi
 
 #header
-echo -e "\nChromeBox Firmware Updater v1.2"
+echo -e "\nChromeBox Firmware Updater v1.3"
 echo -e "(c) Matt DeVillier <matt.devillier@gmail.com>"
 echo -e "$***************************************************"
 
@@ -61,7 +61,7 @@ latest_fw=`cat latest.version | awk '{print $1}'`
 coreboot_file=`cat latest.version | awk '{print $2}'`
 
 if [ "$curr_fw" -ge "$latest_fw" ]; then
-	echo -e "You already have the latest firmware ($latest_fw)"
+	echo -e "You already have the latest firmware ($latest_fw)\n"
 	read -p "Would you like to install anyway? [y/N] "
 	if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
 		exit
