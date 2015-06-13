@@ -14,6 +14,7 @@ dropbox_url="https://dl.dropboxusercontent.com/u/98309225/"
 flashromcmd="/tmp/flashrom"
 cbfstoolcmd="/tmp/cbfstool"
 preferUSB=false
+useHeadless=false
 
 # Must run as root 
 if [ $(whoami) != "root" ]; then
@@ -28,9 +29,9 @@ echo -e "$***************************************************"
 
 #show warning
 echo -e "\n!! WARNING !!
-This firmware is only valid for a Haswell-based Asus/HP/Acer/Dell
-ChromeBox with Celeron 2955U/2957U, Core i3-4010U, Core i7-4600U CPUs
-which is already running my custom coreboot firmware.
+This firmware is only valid for Haswell-based Asus/HP/Acer/Dell
+ChromeBoxes with Celeron 2955U/2957U, Core i3-4010U/4030U, Core i7-4600U CPUs
+which are already running my custom coreboot firmware.
 Use on any other device will almost certainly brick it.\n"
 
 read -p "Do you wish to continue? [y/N] "
@@ -74,7 +75,7 @@ fi
 echo -e "\nInstall \"headless\" firmware? This is only needed for servers"
 read -p "running without a connected display. [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-	coreboot_file=`cat latest.version | awk '{print $3}'`
+	useHeadless=true
 fi
 
 #USB boot priority
@@ -146,6 +147,7 @@ echo -e "\nDownloading coreboot firmware"
 curl -s -L -O "${dropbox_url}${coreboot_file}"
 curl -s -L -O "${dropbox_url}${coreboot_file}.md5"
 curl -s -L -O "${dropbox_url}bootorder"
+curl -s -L -O "${dropbox_url}hsw_1038_cbox_headless.dat"
 #verify checksum on downloaded file
 md5sum -c ${coreboot_file}.md5 > /dev/null 2>&1
 if [ $? -eq 0 ]; then
@@ -156,6 +158,11 @@ if [ $? -eq 0 ]; then
 	#preferUSB?
 	if [ "$preferUSB" = true  ]; then
 		${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw	
+	fi
+	#useHeadless?
+	if [ "$useHeadless" = true  ]; then
+		${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
+		${cbfstoolcmd} ${coreboot_file} add -f /tmp/hsw_1038_cbox_headless.dat -n pci8086,0406.rom -t optionrom
 	fi
 	#flash coreboot firmware
 	echo -e "\nInstalling firmware: ${coreboot_file}"
