@@ -30,7 +30,3 @@ cbox-firmware-update.sh exists solely to update the custom firmware on Haswell C
 OpenELEC, which cannot run the above scripts due to lack of a full Bash shell.
 
 To download and run this script, from a ssh shell: curl -L -O https://goo.gl/SoCQtG; bash SoCQtG
-
-Note: OpenELEC 6.0 beta 1 (5.95.1) broke a symlink needed for curl to work properly, so this script won't
-work properly ATM.  It's been fixed for the next release, in the meantime just boot a Linux live USB and run
-from it.
