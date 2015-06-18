@@ -12,19 +12,19 @@
 #
 
 #define these here for easy updating
-script_date="[2015-06-15]"
+script_date="[2015-06-18]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
 OE_version_latest="5.95.2"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20150610-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20150610-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20150618-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20150618-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20150610-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20150610-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20150610-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20150618-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20150618-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20150618-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 OE_url="http://releases.openelec.tv/"
@@ -1093,14 +1093,14 @@ ubuntu_version="latest"
 ubuntu_arch="amd64"
 
 #select Ubuntu version
-validVersions=('<lts>' '<latest>' '<dev>' '<14.10>' '<14.04>');
+validVersions=('<lts>' '<latest>' '<dev>' '<15.04>' '<14.10>' '<14.04>');
 echo -e "Enter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
-If no (valid) version is entered, '14.10' will be used."
+If no (valid) version is entered, 'latest' will be used."
 read -p "" ubuntu_version	
 
 versionValid=`echo ${validVersions[*]} | grep "<$ubuntu_version>"`
 if [[ "$ubuntu_version" == "" || "$versionValid" == "" ]]; then
-	ubuntu_version="14.10"
+	ubuntu_version="latest"
 fi
 
 #select Ubuntu metapackage
@@ -1189,6 +1189,12 @@ add-apt-repository \"deb http://dl.google.com/linux/chrome/deb/ stable main\"
 apt-get update
 apt-get -y install google-chrome-stable"
 
+#replace systemd?
+upstart_install=""
+if [ "$ubuntu_version" = "15.04" ]; then
+	upstart_install="apt-get -y install upstart-sysv; update-initramfs -u"
+fi
+
 echo -e "export DEBIAN_FRONTEND=noninteractive
 dpkg --add-architecture i386
 touch /var/run/dbus/system_bus_socket > /dev/null 2>&1
@@ -1213,6 +1219,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 grub-install ${target_disk} --force
 sed -i'' -e 's/\"quiet splash\"/\"quiet splash tpm_tis.force=1 tpm_tis.interrupts=0\"/' /etc/default/grub
 update-grub
+$upstart_install
 useradd -m user -s /bin/bash
 echo user | echo user:user | chpasswd
 adduser user adm
