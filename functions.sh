@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2015-06-18]"
+script_date="[2015-06-19]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
@@ -126,7 +126,7 @@ trap kb_fail INT TERM EXIT
 free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "800" ] || die "Temp directory has insufficient free space to download Kodibuntu ISO."
 
-#echo_yellow "Custom/updated Kodibuntu ISO courtesy of HugeGreenBug @ www.distroshare.com"
+echo_yellow "Custom/updated Kodibuntu ISO courtesy of HugeGreenBug @ www.distroshare.com"
 
 read -p "Connect the USB/SD device (min 1GB) to be used as Kodibuntu installation media and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
@@ -137,16 +137,16 @@ read -p "Enter the number for the device to be used to install Kodibuntu: " usb_
 usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 
 #get Kodibuntu
-echo_yellow "Downloading Kodibuntu installer ISO..."
-echo -e ""
+echo_yellow "\nDownloading Kodibuntu installer ISO..."
 cd /tmp
-wget -O kodibuntu.iso $KB_url
+curl -L -o kodibuntu.iso $KB_url
 if [ $? -ne 0 ]; then
 	die "Failed to download Kodibuntu; check your Internet connection and try again"
 fi
-echo_yellow "Download complete; creating install media..."
+echo_yellow "\nDownload complete; creating install media...
+(this will take a few minutes)"
 
-dd if=kodibuntu.iso of="$usb_device" bs=1M conv=fdatasync >/dev/null; sync
+dd if=kodibuntu.iso of=${usb_device} bs=1M conv=fdatasync >/dev/null 2>&1; sync
 if [ $? -ne 0 ]; then
 	die "Error creating Kodibuntu install media."
 fi
@@ -181,7 +181,8 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 #Install beta version?
 OE_version="${OE_version_base}-${OE_version_stable}"
 if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	read -p "Install latest beta version ($OE_version_latest) ?  If N, latest stable version ($OE_version_stable) will be used. [y/N] "
+	read -p "Do you want to install the latest beta version ($OE_version_latest) ?
+If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 		OE_version="${OE_version_base}-${OE_version_latest}"
 	fi
@@ -198,7 +199,6 @@ usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 
 #get OpenELEC
 echo_yellow "\nDownloading OpenELEC installer image..."
-echo -e ""
 if [ `echo "${OE_version}" | grep "5.0.8"` ]; then
 	img_file="${OE_version}-efi.img"
 else
@@ -207,19 +207,19 @@ fi
 	img_url="${OE_url}${img_file}.gz"
 
 cd /tmp
-wget -O ${img_file}.gz $img_url
+curl -L -o ${img_file}.gz $img_url
 if [ $? -ne 0 ]; then
 	die "Failed to download OpenELEC; check your Internet connection and try again"
 fi
 
-echo_yellow "Download complete; creating install media..."
+echo_yellow "\nDownload complete; creating install media..."
 
-gunzip ${img_file}.gz >/dev/null 2>&1
+gunzip -f ${img_file}.gz # >/dev/null 2>&1
 if [ $? -ne 0 ]; then
 	die "Failed to extract OpenELEC download; check your Internet connection and try again"
 fi
 
-dd if=$img_file of="$usb_device" bs=1M conv=fdatasync >/dev/null; sync
+dd if=$img_file of=${usb_device} bs=1M conv=fdatasync >/dev/null 2>&1; sync
 if [ $? -ne 0 ]; then
 	die "Error creating OpenELEC install media."
 fi
@@ -300,7 +300,7 @@ if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
 	#download SeaBIOS update
 	echo_yellow "\nDownloading Legacy BIOS/SeaBIOS"
 	curl -s -L -O ${dropbox_url}${seabios_file}.md5
-	curl -L -O ${dropbox_url}${seabios_file}
+	curl -s -L -O ${dropbox_url}${seabios_file}
 	#verify checksum on downloaded file
 	md5sum -c ${seabios_file}.md5 --quiet 2> /dev/null
 	if [ $? -eq 0 ]; then
@@ -314,7 +314,7 @@ if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
 			fi		
 		fi
 		#flash updated legacy BIOS
-		echo_yellow "\nInstalling Legacy BIOS: ${seabios_file}"
+		echo_yellow "Installing Legacy BIOS: ${seabios_file}"
 		${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
 		echo_green "Legacy BIOS successfully updated."
 	else
@@ -352,8 +352,8 @@ echo " - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
 "
 echo_red "Use on any other device will almost certainly brick it."
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
-brick your device, requiring relatively inexpensive hardware and some technical 
-knowledge to recover.  You have been warned."
+brick your device, requiring relatively inexpensive hardware and some 
+technical knowledge to recover.  You have been warned."
 
 read -p "Do you wish to continue? [y/N] "
 [ "$REPLY" == "y" ] || return
@@ -398,7 +398,7 @@ if [ "$coreboot_file" == "$coreboot_hsw_box" ]; then
 		read -p "
 Your current firmware does not contain data for the device MAC address.  
 Would you like to load it from a previously backed-up stock firmware file? [y/N] "
-		if [ "$REPLY" == "y" || "$REPLY" == "Y" ]; then
+		if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 			read -p "
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
 			
@@ -511,6 +511,155 @@ fi
 read -p "Press [Enter] to return to the main menu."
 }
 
+##########################
+# Restore Stock Firmware #
+##########################
+function restore_stock_firmware()
+{
+echo_green "\nRestore Stock Firmware"
+echo_red "!! WARNING !!  This function is only valid for the following devices:"
+echo " - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
+ - HP ChromeBox (Haswell Celeron 2955U/i7-4600U) [Zako]
+ - Dell ChromeBox (Haswell Celeron 2955U/i3-4030U) [Tricky]
+ - Acer ChromeBox (Haswell Celeron 2975U/i3-4030U) [McCloud]
+"
+echo_red "Use on any other device will almost certainly brick it."
+echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
+brick your device, requiring relatively inexpensive hardware and some 
+technical knowledge to recover.  You have been warned."
+
+read -p "Do you wish to continue? [y/N] "
+[ "$REPLY" == "y" ] || return
+
+#spacing
+echo -e ""
+
+# ensure hardware write protect disabled if in ChromiumOS
+if [[ "$isChromiumOS" = true ]]; then
+	if [[ "`crossystem | grep wpsw_cur`" != *"0"* ]]; then
+		echo_red "\nHardware write-protect enabled, cannot restore stock firmware."
+		read -p "Press [Enter] to return to the main menu."
+		return
+	fi
+fi
+
+#check device 
+isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
+if [ "$isHswBox" == "" ]; then
+	echo_red "Unknown or unsupported device (${device}); cannot continue."
+	read -p "Press [Enter] to return to the main menu."
+	return
+fi
+
+firmware_file=""
+
+read -p "Do you have a firmware backup file on USB? [y/N] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	read -p "
+Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "		
+	list_usb_devices
+	[ $? -eq 0 ] || die "No USB devices available to read firmware backup."
+	read -p "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
+	[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || die "Error: Invalid option selected."
+	usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
+	mkdir /tmp/usb > /dev/null 2>&1
+	mount "${usb_device}" /tmp/usb > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		mount "${usb_device}1" /tmp/usb
+	fi
+	if [ $? -ne 0 ]; then
+		echo_red "USB device failed to mount; cannot proceed."
+		read -p "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+		return
+	fi
+	#select file from USB device
+	echo_yellow "\nFirmware Files on USB:"
+	ls  /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null
+	if [ $? -ne 0 ]; then
+		echo_red "No firmware files found on USB device."
+		read -p "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+		return
+	fi
+	echo -e ""
+	read -p "Enter the firmware filename:  " firmware_file
+	firmware_file=/tmp/usb/${firmware_file}
+	if [ ! -f ${firmware_file} ]; then
+		echo_red "Invalid filename entered; unable to restore stock firmware."
+		read -p "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+		return
+	fi
+	#text spacing
+	echo -e ""
+	
+else
+	#download firmware extracted from recovery image
+	echo_yellow "\nThat's ok, I'll download one for you. Which ChromeBox do you have?"
+	echo "1) Asus"
+	echo "2) HP"
+	echo "3) Dell"
+	echo "4) Acer"
+	echo ""
+	read -p "? " fw_num
+	if [[ $fw_num -lt 1 ||  $fw_num -gt 4 ]]; then
+		echo_red "Invalid input - cancelling"
+		read -p "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+	fi
+	
+	#download firmware file
+	echo_yellow "\nDownloading recovery image firmware file" 
+	case "$fw_num" in
+		1) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/sLQL9i1p;
+			;;
+		2) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/8NmzlrZ6;
+			;;
+		3) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/IXLtQ097;
+			;;
+		4) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/Nh5EeEti;
+			;;
+	esac
+	if [ $? -ne 0 ]; then
+		echo_red "Error downloading; unable to restore stock firmware."
+		read -p "Press [Enter] to return to the main menu."
+		return
+	fi
+	
+	#read current firmware to extract VPD
+	echo_yellow "Reading current firmware"
+	${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
+	if [ $? -ne 0 ]; then 
+		echo_red "Failure reading current firmware; cannot proceed."
+		read -p "Press [Enter] to return to the main menu."
+		return;
+	fi
+	#extract VPD
+	extract_vpd /tmp/bios.bin
+	#merge with recovery image firmware
+	if [ -f /tmp/vpd.bin ]; then
+		echo_yellow "Merging VPD into recovery image firmware"
+		dd if=/tmp/vpd.bin bs=1 seek=$((0x00600000)) count=$((0x00004000)) of=/tmp/stock-firmware.rom conv=notrunc > /dev/null 2>&1
+	fi
+	firmware_file=/tmp/stock-firmware.rom
+fi
+
+#flash stock firmware
+echo_yellow "Restoring stock firmware"
+${flashromcmd} -w ${firmware_file} > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+	echo_green "Stock firmware successfully restored."
+	echo_green "After rebooting, you will need to restore ChromeOS using the ChromeOS recovery media."
+	read -p "Press [Enter] to reboot."
+	echo -e "\nRebooting...\n";
+	cleanup;
+	reboot;
+else
+	echo_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"
+	read -p "Press [Enter] to return to the main menu."
+fi
+}
 
 ########################
 # Extract firmware VPD #
@@ -851,6 +1000,17 @@ fi
 echo_yellow "Stage 1 / repartitioning completed, moving on."
 echo_green "\nStage 2: Installing OpenELEC"
 
+#Install beta version?
+OE_version="${OE_version_base}-${OE_version_stable}"
+if [ "$OE_version_latest" != "$OE_version_stable" ]; then
+	echo -e ""
+	read -p "Do you want to install the latest beta version ($OE_version_latest) ?
+If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
+	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+		OE_version="${OE_version_base}-${OE_version_latest}"
+	fi
+fi
+
 #target partitions
 target_rootfs="${target_disk}7"
 target_kern="${target_disk}6"
@@ -891,11 +1051,11 @@ fi
 
 echo_yellow "\nPartitions formatted and mounted"
 
-echo_yellow "\nUpdating bootloader"
+echo_yellow "Updating bootloader"
 
 #get/extract syslinux
 tar_file="${dropbox_url}syslinux-5.10-md.tar.bz2"
-wget -O /tmp/Storage/syslinux.tar.bz2 $tar_file 
+curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file 
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to download syslinux; check your Internet connection and try again"
 fi
@@ -907,7 +1067,7 @@ fi
 
 #install extlinux on OpenELEC kernel partition
 cd /tmp/Storage/syslinux-5.10/extlinux/
-./extlinux -i /tmp/System/
+./extlinux -i /tmp/System/ > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to install extlinux; reboot and try again"
 fi
@@ -944,24 +1104,13 @@ if [ $? -ne 0 ]; then
 	OE_install_error "Failed to install syslinux; reboot and try again"
 fi
 
-#Install beta version?
-OE_version="${OE_version_base}-${OE_version_stable}"
-if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	echo -e ""
-	read -p "Install the latest beta version ($OE_version_latest)?
-If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-		OE_version="${OE_version_base}-${OE_version_latest}"
-	fi
-fi
-
-echo_yellow "\nDownloading OpenELEC"
+echo_yellow "Downloading OpenELEC"
 
 #get OpenELEC
 tar_file="${OE_version}.tar"
 tar_url="${OE_url}${tar_file}"
 cd /tmp/Storage
-wget -O $tar_file $tar_url
+curl -L -o $tar_file $tar_url
 if [ $? -ne 0 ]; then
 	echo_yellow "Failed to download OE; trying dropbox mirror"
 	tar_url="${dropbox_url}${tar_file}"
@@ -970,7 +1119,7 @@ if [ $? -ne 0 ]; then
 		OE_install_error "Failed to download OpenELEC; check your Internet connection and try again"
 	fi
 fi
-echo_yellow "OpenELEC download complete; installing..."
+echo_yellow "\nOpenELEC download complete; installing..."
 tar -xpf $tar_file
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to extract OpenELEC download; check your Internet connection and try again"
@@ -1278,7 +1427,8 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 #Install beta version?
 OE_version="${OE_version_base}-${OE_version_stable}"
 if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	read -p "Install latest beta version ($OE_version_latest) ?  If N, latest stable version ($OE_version_stable) will be used. [y/N] "
+		read -p "Do you want to install the latest beta version ($OE_version_latest) ?
+If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 		OE_version="${OE_version_base}-${OE_version_latest}"
 	fi
@@ -1297,7 +1447,7 @@ echo_yellow "\nSetting up and formatting partitions..."
 
 # Do partitioning (if we haven't already)
 echo -e "o\nn\np\n1\n\n+250M\nn\np\n\n\n\na\n1\nw" | fdisk ${target_disk} >/dev/null 2>&1
-partprobe
+partprobe > /dev/null 2>&1
 
 OE_System=${target_disk}1
 OE_Storage=${target_disk}2
@@ -1331,11 +1481,11 @@ if [ $? -ne 0 ]; then
 	OE_install_error "Failed to format OE Storage partition; reboot and try again"
 fi
 
-echo_yellow "\nPartitions formatted and mounted; installing bootloader"
+echo_yellow "Partitions formatted and mounted; installing bootloader"
 
 #get/extract syslinux
 tar_file="${dropbox_url}syslinux-5.10-md.tar.bz2"
-wget -O /tmp/Storage/syslinux.tar.bz2 $tar_file > /dev/null 2>&1
+curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to download syslinux; check your Internet connection and try again"
 fi
@@ -1359,22 +1509,22 @@ fi
 #create extlinux.conf
 echo -e "DEFAULT linux\nPROMPT 0\nLABEL linux\nKERNEL /KERNEL\nAPPEND boot=LABEL=System disk=LABEL=Storage tty quiet ssh" > /tmp/System/extlinux.conf
 
-echo_yellow "\nDownloading OpenELEC"
+echo_yellow "Downloading OpenELEC"
 
 #get OpenELEC
 tar_file="${OE_version}.tar"
 tar_url="${OE_url}${tar_file}"
 cd /tmp/Storage
-wget -O $tar_file $tar_url
+curl -L -o $tar_file $tar_url
 if [ $? -ne 0 ]; then
 	echo_yellow "Failed to download OE; trying dropbox mirror"
 	tar_url="${dropbox_url}${tar_file}"
-	wget -O $tar_file $tar_url
+	curl -L -o $tar_file $tar_url
 	if [ $? -ne 0 ]; then
 		OE_install_error "Failed to download OpenELEC; check your Internet connection and try again"
 	fi
 fi
-echo_yellow "OpenELEC download complete; installing..."
+echo_yellow "\nOpenELEC download complete; installing..."
 tar -xpf $tar_file
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to extract OpenELEC download; check your Internet connection and try again"
@@ -1487,6 +1637,7 @@ umount /tmp/urfs/dev/pts > /dev/null 2>&1
 umount /tmp/urfs/dev > /dev/null 2>&1
 umount /tmp/urfs/sys > /dev/null 2>&1
 umount /tmp/urfs > /dev/null 2>&1
+umount /tmp/usb > /dev/null 2>&1
 }
 
 
@@ -1499,22 +1650,23 @@ function menu_fwupdate() {
     echo -e "${NORMAL} (c) Matt DeVillier <matt.devillier@gmail.com>\n ${NORMAL}"
 	echo -e "${NORMAL} Paypal towards beer/programmer fuel welcomed at above address :)\n ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
+	echo -e "${MENU}**${NORMAL}    Stock Firmware ${NORMAL}"
 	if [ "$isChromeOS" = false ]; then
-		echo -e "${GRAY_TEXT}**${GRAY_TEXT}    Stock Firmware  (only available in ChromeOS)${GRAY_TEXT}"
 		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 1)${GRAY_TEXT} Set Boot Options ${GRAY_TEXT}"
 		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Update Legacy BIOS (SeaBIOS)${GRAY_TEXT}"
+		echo -e "${MENU}**${NUMBER} 3)${MENU} Restore Stock Firmware ${NORMAL}"	
 		echo -e "${GRAY_TEXT}**${GRAY_TEXT}"
 	else
-		echo -e "${MENU}**${NORMAL}    Stock Firmware ${NORMAL}"
 		echo -e "${MENU}**${NUMBER} 1)${MENU} Set Boot Options ${NORMAL}"
 		echo -e "${MENU}**${NUMBER} 2)${MENU} Update Legacy BIOS (SeaBIOS)${NORMAL}"
+		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Restore Stock Firmware ${GRAY_TEXT}"
 		echo -e "${MENU}**${NORMAL}"
 	fi
 	echo -e "${MENU}**${NORMAL}    Custom coreboot Firmware ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Custom coreboot Firmware ${NORMAL}"
+    echo -e "${MENU}**${NUMBER} 4)${MENU} Install/Update Custom coreboot Firmware ${NORMAL}"
 	echo -e "${MENU}**${NORMAL}"
-	echo -e "${MENU}**${NUMBER} 4)${NORMAL} Reboot ${NORMAL}"
-	echo -e "${MENU}**${NUMBER} 5)${NORMAL} Power Off ${NORMAL}"
+	echo -e "${MENU}**${NUMBER} 5)${NORMAL} Reboot ${NORMAL}"
+	echo -e "${MENU}**${NUMBER} 6)${NORMAL} Power Off ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or ${RED_TEXT}q to quit${NORMAL}"
     
@@ -1536,19 +1688,27 @@ function menu_fwupdate() {
 					*)
 						;;
 				esac
+			else 
+				case $opt in
+					3)	restore_stock_firmware;
+						menu_fwupdate;
+						;;
+					*)
+						;;
+				esac
 			fi
 			
 			case $opt in
 			
-			3)	flash_coreboot;
+			4)	flash_coreboot;
 				menu_fwupdate;
-				;;		
-			4)	echo -e "\nRebooting...\n";
+				;;						
+			5)	echo -e "\nRebooting...\n";
 				cleanup;
 				reboot;
 				exit;
 				;;
-			5)	echo -e "\nPowering off...\n";
+			6)	echo -e "\nPowering off...\n";
 				cleanup;
 				poweroff;
 				exit;
@@ -1637,7 +1797,7 @@ function menu_kodi() {
 			fi
 			
 			case $opt in
-			
+				
 			6)	clear;
 				flash_coreboot;
 				menu_kodi;

@@ -22,7 +22,12 @@ More details and support for this script can be found at http://forum.kodi.tv/sh
 
 
 setup-firmware.sh is a slimmed-down version of the above, without the kodi-related parts, and has
-the same requirements/restrictions as well.
+the same requirements/restrictions as well.  
+
+It also includes functionality to restore the stock firmware on a Haswell ChromeBox, either 
+from a backup file or from a generic recovery image firmware file.  If the latter is used, the 
+device-specific VPD (vital product data) is extracted from the running firmware and merged with 
+the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. 
 
 To download and run this script, from a terminal shell: curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3
 
