@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2015-06-19]"
+script_date="[2015-06-20]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
@@ -214,7 +214,7 @@ fi
 
 echo_yellow "\nDownload complete; creating install media..."
 
-gunzip -f ${img_file}.gz # >/dev/null 2>&1
+gunzip -f ${img_file}.gz >/dev/null 2>&1
 if [ $? -ne 0 ]; then
 	die "Failed to extract OpenELEC download; check your Internet connection and try again"
 fi
