@@ -1,12 +1,14 @@
 # scripts
 Collection of scripts to install Kodi and/or update the fimware/legacy boot payload on supported ChromeOS devices
 
+&nbsp;
+
 **setup-kodi.sh** facilitates the installation of Kodi on supported ChromeOS devices via the installation of either an updated legacy boot payload or a full custom firmware.
 
 Supported Devices:
 
 function| Haswell Chromebox | Haswell/Broadwell Chromebook | notes
-----| :----------: | :----: | -----
+----- | :-----: | :-----: | -----
 Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:|automatically updates legacy boot payload (SeaBIOS) as needed
 Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
 Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmware write-protect to be disabled
@@ -29,6 +31,7 @@ To download and run this script, from a terminal shell: `curl -L -O https://goo.
 
 More details and support for this script can be found at http://forum.kodi.tv/showthread.php?tid=194362
 
+&nbsp;
 
 **setup-firmware.sh** is a slimmed-down version of the above script (without the kodi-related parts), and has
 the same requirements/restrictions as well.  
@@ -36,7 +39,7 @@ the same requirements/restrictions as well.
 Supported Devices:
 
 function| Haswell Chromebox | Haswell/Broadwell Chromebook | notes
-:----:| ---------- | ---- | -----
+-----| :-----: | :-----: | -----
 Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
 Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmware write-protect to be disabled
 Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|Samsung Series 3 ChromeBox also supported
@@ -47,6 +50,7 @@ from a backup file (on USB) or from a generic recovery image firmware file (whic
 
 To download and run this script, from a terminal shell: `curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
+&nbsp;
 
 **cbox-firmware-update.sh** exists solely to update the custom firmware on Haswell ChromeBoxes running
 OpenELEC, which cannot run the above scripts due to lack of a full Bash shell.
@@ -54,7 +58,7 @@ OpenELEC, which cannot run the above scripts due to lack of a full Bash shell.
 Supported Devices:
 
 function| Haswell Chromebox | Haswell/Broadwell Chromebook | notes
-:----:| ---------- | ---- | -----
+----- | :-----: | :-----: | -----
 Update Custom coreboot Firmware|:white_check_mark:|:x:|must already be running custom coreboot firmware, not stock
 
 This script will automatically check to see if an updated firmware is available, and if so, prompt the user to update.  Install-time options include ability to boot without a connected display ("headless" option) and ability to set the default device to USB (vs internal ssd). 
