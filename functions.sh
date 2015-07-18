@@ -16,7 +16,7 @@ script_date="[2015-07-02]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
-OE_version_latest="5.95.2"
+OE_version_latest="5.95.3"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20150618-mattdevo.rom"
 coreboot_stumpy="coreboot-seabios-stumpy-20150702-mattdevo.rom"
