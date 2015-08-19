@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2015-07-02]"
+script_date="[2015-08-18]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
@@ -310,6 +310,7 @@ if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
 			if [ $? -ne 0 ]; then
 				echo_red "Unable to download bootorder file; boot order cannot be changed."
 			else
+				${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1	
 				${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw
 			fi		
 		fi
@@ -482,6 +483,7 @@ if [ $? -eq 0 ]; then
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download bootorder file; boot order cannot be changed."
 		else
+			${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
 			${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw
 		fi
 	fi
