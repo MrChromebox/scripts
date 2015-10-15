@@ -15,6 +15,7 @@ flashromcmd="/tmp/flashrom"
 cbfstoolcmd="/tmp/cbfstool"
 preferUSB=false
 useHeadless=false
+addPXE=false
 
 # Must run as root 
 if [ $(whoami) != "root" ]; then
@@ -23,7 +24,7 @@ if [ $(whoami) != "root" ]; then
 fi
 
 #header
-echo -e "\nChromeBox Firmware Updater v1.3"
+echo -e "\nChromeBox Firmware Updater v1.4"
 echo -e "(c) Matt DeVillier <matt.devillier@gmail.com>"
 echo -e "$***************************************************"
 
@@ -83,6 +84,13 @@ echo -e ""
 read -p "Default to booting from any connected USB device? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	preferUSB=true
+fi
+
+#addPXE?
+echo -e ""
+read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	addPXE=true
 fi
 
 #check for/get flashrom
@@ -148,6 +156,7 @@ curl -s -L -O "${dropbox_url}${coreboot_file}"
 curl -s -L -O "${dropbox_url}${coreboot_file}.md5"
 curl -s -L -O "${dropbox_url}bootorder"
 curl -s -L -O "${dropbox_url}hsw_1038_cbox_headless.dat"
+curl -s -L -O "${dropbox_url}10ec8168.rom"
 #verify checksum on downloaded file
 md5sum -c ${coreboot_file}.md5 > /dev/null 2>&1
 if [ $? -eq 0 ]; then
@@ -163,6 +172,10 @@ if [ $? -eq 0 ]; then
 	if [ "$useHeadless" = true  ]; then
 		${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
 		${cbfstoolcmd} ${coreboot_file} add -f /tmp/hsw_1038_cbox_headless.dat -n pci8086,0406.rom -t optionrom
+	fi
+	#addPXE?
+	if [ "$addPXE" = true  ]; then
+		${cbfstoolcmd} ${coreboot_file} add -f /tmp/10ec8168.rom -n pci10ec,8168.rom -t optionrom		
 	fi
 	#flash coreboot firmware
 	echo -e "\nInstalling firmware: ${coreboot_file}"

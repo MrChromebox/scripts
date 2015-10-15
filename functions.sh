@@ -12,19 +12,19 @@
 #
 
 #define these here for easy updating
-script_date="[2015-09-05]"
+script_date="[2015-10-15]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
 OE_version_latest="5.95.5"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20150618-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20150702-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151015-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20151015-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20150618-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20150618-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20150618-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20151015-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20151015-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20151015-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 OE_url="http://releases.openelec.tv/"
@@ -42,6 +42,7 @@ cbfstoolcmd=""
 gbbflagscmd=""
 preferUSB=false
 useHeadless=false
+addPXE=false
 
 #device groups
 device=""
@@ -179,12 +180,12 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "500" ] || die "Temp directory has insufficient free space to create OpenELEC install media."
 
 #Install beta version?
-OE_version="${OE_version_base}-${OE_version_stable}"
+OE_version="${OE_version_base}-${OE_version_latest}"
 if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	read -p "Do you want to install the latest beta version ($OE_version_latest) ?
-If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-		OE_version="${OE_version_base}-${OE_version_latest}"
+	read -p "Do you want to install the latest beta/RC version ($OE_version_latest) ?
+If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
+	if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+		OE_version="${OE_version_base}-${OE_version_stable}"
 	fi
 	echo -e "\n"
 fi
@@ -364,7 +365,7 @@ echo -e ""
 
 # ensure hardware write protect disabled if in ChromeOS/ChromiumOS
 if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
-	if [[ "`crossystem | grep wpsw_cur`" != *"0"* ]]; then
+	if [[ "`crossystem | grep wpsw_cur`" == *"1"* ]]; then
 		echo_red "\nHardware write-protect enabled, cannot flash coreboot firmware."
 		read -p "Press [Enter] to return to the main menu."
 		return;
@@ -463,6 +464,16 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	preferUSB=true
 fi
 
+#add PXE?
+addPXE=false
+if [ "${coreboot_file}" == "${coreboot_hsw_box}" ]; then
+	echo -e ""
+	read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
+	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+		addPXE=true
+	fi
+fi
+
 #download firmware file
 cd /tmp
 echo_yellow "\nDownloading coreboot firmware"
@@ -495,6 +506,15 @@ if [ $? -eq 0 ]; then
 		else
 			${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
 			${cbfstoolcmd} ${coreboot_file} add -f hsw_1038_cbox_headless.dat -n pci8086,0406.rom -t optionrom
+		fi		
+	fi
+	#addPXE?
+	if [ "$addPXE" = true  ]; then
+		curl -s -L -O "${dropbox_url}10ec8168.rom"
+		if [ $? -ne 0 ]; then
+			echo_red "Unable to download PXE option ROM; PXE capability cannot be added."
+		else
+			${cbfstoolcmd} ${coreboot_file} add -f 10ec8168.rom -n pci10ec,8168.rom -t optionrom
 		fi		
 	fi
 	#flash coreboot firmware
@@ -1003,14 +1023,14 @@ echo_yellow "Stage 1 / repartitioning completed, moving on."
 echo_green "\nStage 2: Installing OpenELEC"
 
 #Install beta version?
-OE_version="${OE_version_base}-${OE_version_stable}"
+OE_version="${OE_version_base}-${OE_version_latest}"
 if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	echo -e ""
-	read -p "Do you want to install the latest beta version ($OE_version_latest) ?
-If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-		OE_version="${OE_version_base}-${OE_version_latest}"
+	read -p "Do you want to install the latest beta/RC version ($OE_version_latest) ?
+If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
+	if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+		OE_version="${OE_version_base}-${OE_version_stable}"
 	fi
+	echo -e "\n"
 fi
 
 #target partitions
@@ -1427,14 +1447,14 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "500" ] || die "Temp directory has insufficient free space to create OpenELEC install media."
 
 #Install beta version?
-OE_version="${OE_version_base}-${OE_version_stable}"
+OE_version="${OE_version_base}-${OE_version_latest}"
 if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-		read -p "Do you want to install the latest beta version ($OE_version_latest) ?
-If N, the latest stable version ($OE_version_stable) will be used. [y/N] "
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-		OE_version="${OE_version_base}-${OE_version_latest}"
+	read -p "Do you want to install the latest beta/RC version ($OE_version_latest) ?
+If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
+	if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+		OE_version="${OE_version_base}-${OE_version_stable}"
 	fi
-	echo -e ""
+	echo -e "\n"
 fi
 
 read -p "Connect the USB/SD device (min 4GB) to be used and press [Enter] to continue.
