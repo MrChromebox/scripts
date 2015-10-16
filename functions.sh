@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2015-10-15]"
+script_date="[2015-10-16]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="5.0.8"
@@ -30,6 +30,7 @@ seabios_file=${seabios_hsw_box}
 OE_url="http://releases.openelec.tv/"
 KB_url="https://www.distroshare.com/distros/download/62_64/"
 
+pxe_optionrom="10ec8168.rom"
 
 #other globals
 usb_devs=""
@@ -43,6 +44,7 @@ gbbflagscmd=""
 preferUSB=false
 useHeadless=false
 addPXE=false
+pxeDefault=false
 
 #device groups
 device=""
@@ -471,6 +473,11 @@ if [ "${coreboot_file}" == "${coreboot_hsw_box}" ]; then
 	read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 		addPXE=true
+		echo -e ""
+		read -p "Boot PXE by default? (will fall back to SSD/USB) [y/N] "
+		if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+			pxeDefault=true	
+		fi
 	fi
 fi
 
@@ -510,11 +517,18 @@ if [ $? -eq 0 ]; then
 	fi
 	#addPXE?
 	if [ "$addPXE" = true  ]; then
-		curl -s -L -O "${dropbox_url}10ec8168.rom"
+		curl -s -L -O "${dropbox_url}${pxe_optionrom}"
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download PXE option ROM; PXE capability cannot be added."
 		else
-			${cbfstoolcmd} ${coreboot_file} add -f 10ec8168.rom -n pci10ec,8168.rom -t optionrom
+			${cbfstoolcmd} ${coreboot_file} add -f ${pxe_optionrom} -n pci10ec,8168.rom -t optionrom
+			#PXE default?
+			if [ "$pxeDefault" = true  ]; then
+				${cbfstoolcmd} ${coreboot_file} extract -n bootorder -f /tmp/bootorder > /dev/null 2>&1
+				${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
+				sed -i '1s/^/\/pci@i0cf8\/pci-bridge@1c\/*@0\n/' /tmp/bootorder
+				${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw
+			fi
 		fi		
 	fi
 	#flash coreboot firmware

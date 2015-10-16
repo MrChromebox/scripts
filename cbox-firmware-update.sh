@@ -16,6 +16,7 @@ cbfstoolcmd="/tmp/cbfstool"
 preferUSB=false
 useHeadless=false
 addPXE=false
+pxeDefault=false
 
 # Must run as root 
 if [ $(whoami) != "root" ]; then
@@ -91,6 +92,11 @@ echo -e ""
 read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	addPXE=true
+	echo -e ""
+	read -p "Boot PXE by default? (will fall back to SSD/USB) [y/N] "
+	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+		pxeDefault=true	
+	fi
 fi
 
 #check for/get flashrom
@@ -175,7 +181,14 @@ if [ $? -eq 0 ]; then
 	fi
 	#addPXE?
 	if [ "$addPXE" = true  ]; then
-		${cbfstoolcmd} ${coreboot_file} add -f /tmp/10ec8168.rom -n pci10ec,8168.rom -t optionrom		
+		${cbfstoolcmd} ${coreboot_file} add -f /tmp/10ec8168.rom -n pci10ec,8168.rom -t optionrom
+		#PXE default?
+		if [ "$pxeDefault" = true  ]; then
+			${cbfstoolcmd} ${coreboot_file} extract -n bootorder -f /tmp/bootorder > /dev/null 2>&1
+			${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
+			sed -i '1s/^/\/pci@i0cf8\/pci-bridge@1c\/*@0\n/' /tmp/bootorder
+			${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw
+		fi
 	fi
 	#flash coreboot firmware
 	echo -e "\nInstalling firmware: ${coreboot_file}"
