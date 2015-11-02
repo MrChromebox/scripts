@@ -12,11 +12,11 @@
 #
 
 #define these here for easy updating
-script_date="[2015-11-01]"
+script_date="[2015-11-02]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
-OE_version_latest="6.0.0"
+OE_version_latest="6.0.0-fritsch"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151015-mattdevo.rom"
 coreboot_stumpy="coreboot-seabios-stumpy-20151015-mattdevo.rom"
@@ -27,7 +27,8 @@ seabios_hsw_book="seabios-hsw-book-20151015-mattdevo.bin"
 seabios_bdw_book="seabios-bdw-book-20151015-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
-OE_url="http://releases.openelec.tv/"
+#OE_url="http://releases.openelec.tv/"
+OE_url=${dropbox_url}
 KB_url="https://www.distroshare.com/distros/download/62_64/"
 
 pxe_optionrom="10ec8168.rom"
@@ -169,6 +170,25 @@ die "\nKodibuntu installation media creation failed; retry with different USB/SD
 }
 
 
+#####################
+# Select OE Version #
+#####################
+function select_oe_version()
+{
+	OE_version="${OE_version_base}-${OE_version_latest}"
+	if [ "$OE_version_latest" != "$OE_version_stable" ]; then
+		read -p "Do you want to install the custom Intel-EGL version of OpenELEC (${OE_version_latest}) ?
+It will provide better performance and color reproduction than the standard version, but unlike the standard version, will not automatically update.
+
+If N, the latest standard/stable version ($OE_version_stable) will be used. [Y/n] "
+		if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+			OE_version="${OE_version_base}-${OE_version_stable}"
+		fi
+		echo -e "\n"
+	fi	
+}
+
+
 ###########################
 # Create OE Install Media #
 ###########################
@@ -182,15 +202,15 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "500" ] || die "Temp directory has insufficient free space to create OpenELEC install media."
 
 #Install beta version?
-OE_version="${OE_version_base}-${OE_version_latest}"
-if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	read -p "Do you want to install the latest beta/RC version ($OE_version_latest) ?
-If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
-	if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
-		OE_version="${OE_version_base}-${OE_version_stable}"
-	fi
-	echo -e "\n"
-fi
+
+
+
+
+
+select_oe_version
+
+
+
 
 read -p "Connect the USB/SD device (min 512MB) to be used as OpenELEC installation media and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
@@ -313,7 +333,7 @@ if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
 			if [ $? -ne 0 ]; then
 				echo_red "Unable to download bootorder file; boot order cannot be changed."
 			else
-				${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1	
+				${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1			
 				${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw
 			fi		
 		fi
@@ -1037,15 +1057,15 @@ echo_yellow "Stage 1 / repartitioning completed, moving on."
 echo_green "\nStage 2: Installing OpenELEC"
 
 #Install beta version?
-OE_version="${OE_version_base}-${OE_version_latest}"
-if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	read -p "Do you want to install the latest beta/RC version ($OE_version_latest) ?
-If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
-	if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
-		OE_version="${OE_version_base}-${OE_version_stable}"
-	fi
-	echo -e "\n"
-fi
+
+
+
+
+
+select_oe_version
+
+
+
 
 #target partitions
 target_rootfs="${target_disk}7"
@@ -1461,15 +1481,15 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "500" ] || die "Temp directory has insufficient free space to create OpenELEC install media."
 
 #Install beta version?
-OE_version="${OE_version_base}-${OE_version_latest}"
-if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-	read -p "Do you want to install the latest beta/RC version ($OE_version_latest) ?
-If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
-	if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
-		OE_version="${OE_version_base}-${OE_version_stable}"
-	fi
-	echo -e "\n"
-fi
+
+
+
+
+
+select_oe_version
+
+
+
 
 read -p "Connect the USB/SD device (min 4GB) to be used and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
