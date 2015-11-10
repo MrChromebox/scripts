@@ -12,11 +12,11 @@
 #
 
 #define these here for easy updating
-script_date="[2015-11-03]"
+script_date="[2015-11-10]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
-OE_version_latest="6.0.95-fritsch"
+OE_version_latest="6.0.97-fritsch"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151015-mattdevo.rom"
 coreboot_stumpy="coreboot-seabios-stumpy-20151015-mattdevo.rom"
@@ -27,8 +27,9 @@ seabios_hsw_book="seabios-hsw-book-20151015-mattdevo.bin"
 seabios_bdw_book="seabios-bdw-book-20151015-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
-#OE_url="http://releases.openelec.tv/"
-OE_url=${dropbox_url}
+OE_url_official="http://releases.openelec.tv/"
+OE_url_EGL="http://fritsch.fruehberger.net/openelec/v15_2_EGL/chromebox/"
+OE_url=${OE_url_EGL}
 KB_url="https://www.distroshare.com/distros/download/62_64/"
 
 pxe_optionrom="10ec8168.rom"
@@ -52,6 +53,7 @@ device=""
 hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
 bdw_book="Auron"
+bdw_noupdate=('<Guado>' '<Guardo>' '<Samus>');
 
 
 #text output
@@ -175,6 +177,7 @@ die "\nKodibuntu installation media creation failed; retry with different USB/SD
 #####################
 function select_oe_version()
 {
+	OE_url=${OE_url_EGL}
 	OE_version="${OE_version_base}-${OE_version_latest}"
 	if [ "$OE_version_latest" != "$OE_version_stable" ]; then
 		read -p "Do you want to install the custom Intel-EGL version of OpenELEC (${OE_version_latest}) ?
@@ -183,6 +186,7 @@ It will provide better performance and color reproduction than the standard vers
 If N, the latest standard/stable version ($OE_version_stable) will be used. [Y/n] "
 		if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 			OE_version="${OE_version_base}-${OE_version_stable}"
+			OE_url=${OE_url_official}
 		fi
 		echo -e "\n"
 	fi	
@@ -295,13 +299,14 @@ if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
 	isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
 	isHswBook=`echo ${hsw_books[*]} | grep "<$device>"`
 	isBdwBook=`echo ${device} | grep "$bdw_book"`
+	noUpdate=`echo ${bdw_noupdate[*]} | grep "<$device>"`
 	if [ "$isHswBox" != "" ]; then
 		seabios_file=$seabios_hsw_box
 	elif [ "$isHswBook" != "" ]; then
 		seabios_file=$seabios_hsw_book
 	elif [ "$isBdwBook" != "" ]; then
 		seabios_file=$seabios_bdw_book
-	elif [ "$device" == "Samus" ]; then
+	elif [ "$noUpdate" != "" ]; then
 		echo_green "Legacy BIOS does not need update/repair."
 		return
 	else
