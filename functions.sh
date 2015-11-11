@@ -12,11 +12,11 @@
 #
 
 #define these here for easy updating
-script_date="[2015-11-10]"
+script_date="[2015-11-11]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
-OE_version_latest="6.0.97-fritsch"
+OE_version_latest="6.0.98-fritsch"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151015-mattdevo.rom"
 coreboot_stumpy="coreboot-seabios-stumpy-20151015-mattdevo.rom"
