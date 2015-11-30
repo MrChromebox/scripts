@@ -1,5 +1,24 @@
-# scripts
-Collection of scripts to install Kodi and/or update the fimware/legacy boot payload on supported ChromeOS devices
+# ChromeOS firmware and Kodi install scripts
+Collection of scripts to install custom firmware, update the fimware/legacy boot payload, and install Kodi on supported ChromeOS devices
+
+
+&nbsp;
+
+**setup-firmware.sh** allows for the installation of custom firmware and/or an updated legacy boot payload on supported ChromeOS devices.
+
+It also includes functionality to set the stock firmware boot flags (via set_gbb_flags.sh), and restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. 
+
+
+Supported Devices:
+
+function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | notes
+-----| :-----: | :-----: | -----
+Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
+Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmware write-protect to be disabled
+Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|Samsung Series 3 ChromeBox also supported
+Restore Stock Firmware|:white_check_mark:|:x:|
+
+To download and run this script, from a terminal shell: `curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
 &nbsp;
 
@@ -7,7 +26,7 @@ Collection of scripts to install Kodi and/or update the fimware/legacy boot payl
 
 Supported Devices:
 
-function| Haswell Chromebox | Haswell/Broadwell Chromebook | notes
+function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | notes
 ----- | :-----: | :-----: | -----
 Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:|automatically updates legacy boot payload (SeaBIOS) as needed
 Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
@@ -20,35 +39,13 @@ This script allows the user to install a dual-boot setup with either OpenELEC or
 developer mode splash screen.  It also provides for the installation of an updated
 Legacy BIOS for devices that need it.
 
-It also allows the user to flash custom firmware, turning a ChromeBox into a regular PC,
-and provides for the creation of installation media for OpenELEC and a custom build of
-KodiBuntu (optimized for Haswell-based ChromeOS devices); though with the custom firmware, any off-the-shelf OS can be
-installed (including Windows 8/8.1/10).
+It also allows the user to flash custom firmware, turning a ChromeBox into a regular PC, and provides for the creation of installation media for OpenELEC and a custom build of KodiBuntu (optimized for Haswell-based ChromeOS devices); though with the custom firmware, any off-the-shelf OS can be installed (including Windows 8/8.1/10).
 
 setup-kodi.sh will run on any Linux system with a full bash shell; the dual-boot functionality is restricted to ChromeOS.  
 
 To download and run this script, from a terminal shell: `curl -L -O https://goo.gl/FdvHF6; sudo bash FdvHF6`
 
 More details and support for this script can be found at http://forum.kodi.tv/showthread.php?tid=194362
-
-&nbsp;
-
-**setup-firmware.sh** is a slimmed-down version of the above script (without the kodi-related parts), and has
-the same requirements/restrictions as well.  
-
-Supported Devices:
-
-function| Haswell Chromebox | Haswell/Broadwell Chromebook | notes
------| :-----: | :-----: | -----
-Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
-Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmware write-protect to be disabled
-Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|Samsung Series 3 ChromeBox also supported
-Restore Stock Firmware|:white_check_mark:|:x:|
-
-It also includes functionality to restore the stock firmware on a Haswell ChromeBox, either 
-from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. 
-
-To download and run this script, from a terminal shell: `curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
 &nbsp;
 
