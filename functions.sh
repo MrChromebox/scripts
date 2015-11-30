@@ -12,20 +12,23 @@
 #
 
 #define these here for easy updating
-script_date="[2015-11-11]"
+script_date="[2015-11-30]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
 OE_version_latest="6.0.98-fritsch"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151015-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20151015-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151130-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151130-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20151130-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20151015-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20151015-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20151015-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20151130-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20151130-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20151130-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
+
+hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
 
 OE_url_official="http://releases.openelec.tv/"
 OE_url_EGL="http://fritsch.fruehberger.net/openelec/v15_2_EGL/chromebox/"
@@ -52,8 +55,9 @@ pxeDefault=false
 device=""
 hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
+bdw_boxes=('<Guado>');
 bdw_book="Auron"
-bdw_noupdate=('<Guado>' '<Guardo>' '<Samus>');
+bdw_noupdate=('<Guado>' '<Samus>');
 
 
 #text output
@@ -206,15 +210,7 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "500" ] || die "Temp directory has insufficient free space to create OpenELEC install media."
 
 #Install beta version?
-
-
-
-
-
 select_oe_version
-
-
-
 
 read -p "Connect the USB/SD device (min 512MB) to be used as OpenELEC installation media and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
@@ -373,10 +369,11 @@ function flash_coreboot()
 {
 echo_green "\nInstall/Update Custom coreboot Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
-echo " - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
- - HP ChromeBox (Haswell Celeron 2955U/i7-4600U) [Zako]
- - Dell ChromeBox (Haswell Celeron 2955U/i3-4030U) [Tricky]
- - Acer ChromeBox (Haswell Celeron 2975U/i3-4030U) [McCloud]
+echo " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
+ - Asus ChromeBox CN60 (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
+ - HP ChromeBox CB1 (Haswell Celeron 2955U/i7-4600U) [Zako]
+ - Dell ChromeBox 3010 (Haswell Celeron 2955U/i3-4030U) [Tricky]
+ - Acer ChromeBox CXI (Haswell Celeron 2975U/i3-4030U) [McCloud]
  - Samsung Series 3 ChromeBox (SandyBridge Celeron B840/i5-2450U) [Stumpy]
 "
 echo_red "Use on any other device will almost certainly brick it."
@@ -401,12 +398,16 @@ fi
 
 #check device 
 isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
+isBdwBox=`echo ${bdw_boxes[*]} | grep "<$device>"`
 if [ "$isHswBox" != "" ]; then
 	coreboot_file=$coreboot_hsw_box
+elif [ "$isBdwBox" != "" ]; then
+	coreboot_file=$coreboot_bdw_box
 elif [ "$device" == "Stumpy" ]; then
 	coreboot_file=$coreboot_stumpy
 else
 	echo_red "Unknown or unsupported device (${device}); cannot continue."
+	read -p "Press [Enter] to return to the main menu."
 	return
 fi
 
@@ -419,7 +420,7 @@ if [ $? -ne 0 ]; then
 	return;
 fi
 
-if [ "$coreboot_file" == "$coreboot_hsw_box" ]; then
+if [[ "$coreboot_file" == "$coreboot_hsw_box" || "$coreboot_file" == "$coreboot_bdw_box" ]]; then
 	#check if contains MAC address, extract
 	extract_vpd /tmp/bios.bin
 	if [ $? -ne 0 ]; then
@@ -475,7 +476,7 @@ fi
 
 #headless?
 useHeadless=false
-if [ "${coreboot_file}" == "${coreboot_hsw_box}" ]; then
+if [[ "$coreboot_file" == "$coreboot_hsw_box" || "$coreboot_file" == "$coreboot_bdw_box" ]]; then
 	echo -e ""
 	read -p "Install \"headless\" firmware? This is only needed for servers running without a connected display. [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
@@ -493,7 +494,7 @@ fi
 
 #add PXE?
 addPXE=false
-if [ "${coreboot_file}" == "${coreboot_hsw_box}" ]; then
+if [[ "$coreboot_file" == "$coreboot_hsw_box" || "$coreboot_file" == "$coreboot_bdw_box" ]]; then
 	echo -e ""
 	read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
@@ -532,12 +533,12 @@ if [ $? -eq 0 ]; then
 	fi
 	#useHeadless?
 	if [ "$useHeadless" = true  ]; then
-		curl -s -L -O "${dropbox_url}hsw_1038_cbox_headless.dat"
+		curl -s -L -O "${dropbox_url}${hswbdw_headless_vbios}"
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download headless VGA BIOS; headless firmware cannot be installed."
 		else
 			${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
-			${cbfstoolcmd} ${coreboot_file} add -f hsw_1038_cbox_headless.dat -n pci8086,0406.rom -t optionrom
+			${cbfstoolcmd} ${coreboot_file} add -f ${hswbdw_headless_vbios} -n pci8086,0406.rom -t optionrom
 		fi		
 	fi
 	#addPXE?
@@ -579,7 +580,8 @@ function restore_stock_firmware()
 {
 echo_green "\nRestore Stock Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
-echo " - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
+echo "  - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
+ - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
  - HP ChromeBox (Haswell Celeron 2955U/i7-4600U) [Zako]
  - Dell ChromeBox (Haswell Celeron 2955U/i3-4030U) [Tricky]
  - Acer ChromeBox (Haswell Celeron 2975U/i3-4030U) [McCloud]
@@ -606,7 +608,8 @@ fi
 
 #check device 
 isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
-if [ "$isHswBox" == "" ]; then
+isBdwBox=`echo ${bdw_boxes[*]} | grep "<$device>"`
+if [[ "$isHswBox" == "" && "$isBdwBox" == "" ]]; then
 	echo_red "Unknown or unsupported device (${device}); cannot continue."
 	read -p "Press [Enter] to return to the main menu."
 	return
@@ -658,10 +661,11 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 else
 	#download firmware extracted from recovery image
 	echo_yellow "\nThat's ok, I'll download one for you. Which ChromeBox do you have?"
-	echo "1) Asus"
-	echo "2) HP"
-	echo "3) Dell"
-	echo "4) Acer"
+	echo "1) Asus CN60 (Haswell)"
+	echo "2) HP CB1 (Haswell)"
+	echo "3) Dell 3010 (Haswell)"
+	echo "4) Acer CB1 (Haswell)"
+	echo "5) Asus CN62 (Broadwell)"
 	echo ""
 	read -p "? " fw_num
 	if [[ $fw_num -lt 1 ||  $fw_num -gt 4 ]]; then
@@ -680,6 +684,8 @@ else
 		3) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/IXLtQ097;
 			;;
 		4) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/Nh5EeEti;
+			;;
+		5) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/r0sKwJYe;
 			;;
 	esac
 	if [ $? -ne 0 ]; then
@@ -1062,15 +1068,7 @@ echo_yellow "Stage 1 / repartitioning completed, moving on."
 echo_green "\nStage 2: Installing OpenELEC"
 
 #Install beta version?
-
-
-
-
-
 select_oe_version
-
-
-
 
 #target partitions
 target_rootfs="${target_disk}7"
@@ -1305,12 +1303,12 @@ ubuntu_arch="amd64"
 #select Ubuntu version
 validVersions=('<lts>' '<latest>' '<dev>' '<15.04>' '<14.10>' '<14.04>');
 echo -e "Enter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
-If no (valid) version is entered, 'latest' will be used."
+If no (valid) version is entered, '15.04' will be used."
 read -p "" ubuntu_version	
 
 versionValid=`echo ${validVersions[*]} | grep "<$ubuntu_version>"`
 if [[ "$ubuntu_version" == "" || "$versionValid" == "" ]]; then
-	ubuntu_version="latest"
+	ubuntu_version="15.04"
 fi
 
 #select Ubuntu metapackage
@@ -1486,15 +1484,7 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 [ "$free_spc" > "500" ] || die "Temp directory has insufficient free space to create OpenELEC install media."
 
 #Install beta version?
-
-
-
-
-
 select_oe_version
-
-
-
 
 read -p "Connect the USB/SD device (min 4GB) to be used and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
