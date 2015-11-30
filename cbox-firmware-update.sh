@@ -161,7 +161,7 @@ echo -e "\nDownloading coreboot firmware"
 curl -s -L -O "${dropbox_url}${coreboot_file}"
 curl -s -L -O "${dropbox_url}${coreboot_file}.md5"
 curl -s -L -O "${dropbox_url}bootorder"
-curl -s -L -O "${dropbox_url}hsw_1038_cbox_headless.dat"
+curl -s -L -O "${dropbox_url}hswbdw_vgabios_1039_cbox_headless.dat"
 curl -s -L -O "${dropbox_url}10ec8168.rom"
 #verify checksum on downloaded file
 md5sum -c ${coreboot_file}.md5 > /dev/null 2>&1
@@ -177,7 +177,7 @@ if [ $? -eq 0 ]; then
 	#useHeadless?
 	if [ "$useHeadless" = true  ]; then
 		${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
-		${cbfstoolcmd} ${coreboot_file} add -f /tmp/hsw_1038_cbox_headless.dat -n pci8086,0406.rom -t optionrom
+		${cbfstoolcmd} ${coreboot_file} add -f /tmp/hswbdw_vgabios_1039_cbox_headless.dat -n pci8086,0406.rom -t optionrom
 	fi
 	#addPXE?
 	if [ "$addPXE" = true  ]; then
