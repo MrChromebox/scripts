@@ -12,20 +12,20 @@
 #
 
 #define these here for easy updating
-script_date="[2015-11-30]"
+script_date="[2015-12-14]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
 OE_version_latest="6.0.98-fritsch"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151130-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151130-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20151130-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151214-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151214-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20151214-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20151130-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20151130-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20151130-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20151214-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20151214-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20151214-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -55,9 +55,9 @@ pxeDefault=false
 device=""
 hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
-bdw_boxes=('<Guado>');
-bdw_book="Auron"
-bdw_noupdate=('<Guado>' '<Samus>');
+bdw_boxes=('<Guado>' '<Rikku>');
+bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
+bdw_noupdate=('<Guado>' '<Rikku>' '<Tidus>');
 
 
 #text output
@@ -294,7 +294,7 @@ if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
 	#determine proper file 
 	isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
 	isHswBook=`echo ${hsw_books[*]} | grep "<$device>"`
-	isBdwBook=`echo ${device} | grep "$bdw_book"`
+	isBdwBook=`echo ${bdw_books[*]} | grep "<$device>"`
 	noUpdate=`echo ${bdw_noupdate[*]} | grep "<$device>"`
 	if [ "$isHswBox" != "" ]; then
 		seabios_file=$seabios_hsw_box
@@ -369,11 +369,14 @@ function flash_coreboot()
 {
 echo_green "\nInstall/Update Custom coreboot Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
-echo " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
+echo -e " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
+- Acer ChromeBox CXI2 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Rikku]
+
  - Asus ChromeBox CN60 (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
  - HP ChromeBox CB1 (Haswell Celeron 2955U/i7-4600U) [Zako]
  - Dell ChromeBox 3010 (Haswell Celeron 2955U/i3-4030U) [Tricky]
  - Acer ChromeBox CXI (Haswell Celeron 2975U/i3-4030U) [McCloud]
+ 
  - Samsung Series 3 ChromeBox (SandyBridge Celeron B840/i5-2450U) [Stumpy]
 "
 echo_red "Use on any other device will almost certainly brick it."
@@ -580,7 +583,8 @@ function restore_stock_firmware()
 {
 echo_green "\nRestore Stock Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
-echo "  - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
+echo -e " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
+
  - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
  - HP ChromeBox (Haswell Celeron 2955U/i7-4600U) [Zako]
  - Dell ChromeBox (Haswell Celeron 2955U/i3-4030U) [Tricky]
