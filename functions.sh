@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2015-12-14]"
+script_date="[2015-12-15]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
@@ -280,75 +280,68 @@ function option_picked() {
 ######################
 function flash_legacy()
 {
-#first check device name
-platform=`crossystem platform_family`
-if [ "$platform" == "Haswell" ] || [ "$platform" == "Broadwell" ]; then
-	
-	cd /tmp
+cd /tmp
 
-	# set dev mode boot flags 
-	crossystem dev_boot_legacy=1 dev_boot_signed_only=0 > /dev/null
-	
-	echo_yellow "\nChecking if Legacy BIOS update available..."
-	
-	#determine proper file 
-	isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
-	isHswBook=`echo ${hsw_books[*]} | grep "<$device>"`
-	isBdwBook=`echo ${bdw_books[*]} | grep "<$device>"`
-	noUpdate=`echo ${bdw_noupdate[*]} | grep "<$device>"`
-	if [ "$isHswBox" != "" ]; then
-		seabios_file=$seabios_hsw_box
-	elif [ "$isHswBook" != "" ]; then
-		seabios_file=$seabios_hsw_book
-	elif [ "$isBdwBook" != "" ]; then
-		seabios_file=$seabios_bdw_book
-	elif [ "$noUpdate" != "" ]; then
-		echo_green "Legacy BIOS does not need update/repair."
-		return
-	else
-		echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."
-		return
-	fi
-	
-	#USB boot priority
-	preferUSB=false
-	if [ -z "$1" ]; then
-		echo -e ""
-		read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
-		if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-			preferUSB=true
-		fi	
-		echo -e ""
-	fi
-	
-	#download SeaBIOS update
-	echo_yellow "\nDownloading Legacy BIOS/SeaBIOS"
-	curl -s -L -O ${dropbox_url}${seabios_file}.md5
-	curl -s -L -O ${dropbox_url}${seabios_file}
-	#verify checksum on downloaded file
-	md5sum -c ${seabios_file}.md5 --quiet 2> /dev/null
-	if [ $? -eq 0 ]; then
-		#preferUSB?
-		if [ "$preferUSB" = true  ]; then
-			curl -s -L -O "${dropbox_url}bootorder"
-			if [ $? -ne 0 ]; then
-				echo_red "Unable to download bootorder file; boot order cannot be changed."
-			else
-				${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1			
-				${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw
-			fi		
-		fi
-		#flash updated legacy BIOS
-		echo_yellow "Installing Legacy BIOS: ${seabios_file}"
-		${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
-		echo_green "Legacy BIOS successfully updated."
-	else
-		#download checksum fail
-		echo_red "Legacy BIOS download checksum fail; download corrupted, cannot flash"
-	fi		
+# set dev mode boot flags 
+crossystem dev_boot_legacy=1 dev_boot_signed_only=0 > /dev/null
+
+echo_yellow "\nChecking if Legacy BIOS update available..."
+
+#determine proper file 
+isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
+isHswBook=`echo ${hsw_books[*]} | grep "<$device>"`
+isBdwBook=`echo ${bdw_books[*]} | grep "<$device>"`
+noUpdate=`echo ${bdw_noupdate[*]} | grep "<$device>"`
+if [ "$isHswBox" != "" ]; then
+	seabios_file=$seabios_hsw_box
+elif [ "$isHswBook" != "" ]; then
+	seabios_file=$seabios_hsw_book
+elif [ "$isBdwBook" != "" ]; then
+	seabios_file=$seabios_bdw_book
+elif [ "$noUpdate" != "" ]; then
+	echo_green "Legacy BIOS does not need update/repair."
+	return
 else
-	echo_red "This feature is only valid for Haswell and Broadwell based ChromeOS devices."
+	echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."
+	return
 fi
+
+#USB boot priority
+preferUSB=false
+if [ -z "$1" ]; then
+	echo -e ""
+	read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
+	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+		preferUSB=true
+	fi	
+	echo -e ""
+fi
+
+#download SeaBIOS update
+echo_yellow "\nDownloading Legacy BIOS/SeaBIOS"
+curl -s -L -O ${dropbox_url}${seabios_file}.md5
+curl -s -L -O ${dropbox_url}${seabios_file}
+#verify checksum on downloaded file
+md5sum -c ${seabios_file}.md5 --quiet 2> /dev/null
+if [ $? -eq 0 ]; then
+	#preferUSB?
+	if [ "$preferUSB" = true  ]; then
+		curl -s -L -O "${dropbox_url}bootorder"
+		if [ $? -ne 0 ]; then
+			echo_red "Unable to download bootorder file; boot order cannot be changed."
+		else
+			${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1			
+			${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw
+		fi		
+	fi
+	#flash updated legacy BIOS
+	echo_yellow "Installing Legacy BIOS: ${seabios_file}"
+	${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
+	echo_green "Legacy BIOS successfully updated."
+else
+	#download checksum fail
+	echo_red "Legacy BIOS download checksum fail; download corrupted, cannot flash"
+fi		
 }
 
 
@@ -370,7 +363,7 @@ function flash_coreboot()
 echo_green "\nInstall/Update Custom coreboot Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
 echo -e " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
-- Acer ChromeBox CXI2 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Rikku]
+ - Acer ChromeBox CXI2 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Rikku]
 
  - Asus ChromeBox CN60 (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
  - HP ChromeBox CB1 (Haswell Celeron 2955U/i7-4600U) [Zako]
