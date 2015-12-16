@@ -18,14 +18,14 @@ OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
 OE_version_latest="6.0.98-fritsch"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151214-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151214-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20151214-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151215-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151215-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20151215-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20151214-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20151214-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20151214-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20151215-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20151215-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20151215-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
