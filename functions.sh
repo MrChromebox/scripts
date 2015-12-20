@@ -12,20 +12,20 @@
 #
 
 #define these here for easy updating
-script_date="[2015-12-15]"
+script_date="[2015-12-20]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
 OE_version_latest="6.0.98-fritsch"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151215-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151215-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20151215-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151220-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151220-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20151220-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20151215-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20151215-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20151215-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20151220-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20151220-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20151220-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -331,7 +331,7 @@ if [ $? -eq 0 ]; then
 			echo_red "Unable to download bootorder file; boot order cannot be changed."
 		else
 			${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1			
-			${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw
+			${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 		fi		
 	fi
 	#flash updated legacy BIOS
@@ -515,7 +515,7 @@ md5sum -c ${coreboot_file}.md5 --quiet > /dev/null 2>&1
 if [ $? -eq 0 ]; then
 	#check if we have a VPD to restore
 	if [ -f /tmp/vpd.bin ]; then
-		${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw
+		${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
 	fi
 	#preferUSB?
 	if [ "$preferUSB" = true  ]; then
@@ -523,8 +523,8 @@ if [ $? -eq 0 ]; then
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download bootorder file; boot order cannot be changed."
 		else
-			${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
-			${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw
+			${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1 
+			${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 		fi
 	fi
 	#useHeadless?
@@ -533,8 +533,8 @@ if [ $? -eq 0 ]; then
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download headless VGA BIOS; headless firmware cannot be installed."
 		else
-			${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
-			${cbfstoolcmd} ${coreboot_file} add -f ${hswbdw_headless_vbios} -n pci8086,0406.rom -t optionrom
+			${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom > /dev/null 2>&1
+			${cbfstoolcmd} ${coreboot_file} add -f ${hswbdw_headless_vbios} -n pci8086,0406.rom -t optionrom > /dev/null 2>&1
 		fi		
 	fi
 	#addPXE?
@@ -543,13 +543,13 @@ if [ $? -eq 0 ]; then
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download PXE option ROM; PXE capability cannot be added."
 		else
-			${cbfstoolcmd} ${coreboot_file} add -f ${pxe_optionrom} -n pci10ec,8168.rom -t optionrom
+			${cbfstoolcmd} ${coreboot_file} add -f ${pxe_optionrom} -n pci10ec,8168.rom -t optionrom > /dev/null 2>&1
 			#PXE default?
 			if [ "$pxeDefault" = true  ]; then
 				${cbfstoolcmd} ${coreboot_file} extract -n bootorder -f /tmp/bootorder > /dev/null 2>&1
 				${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
 				sed -i '1s/^/\/pci@i0cf8\/pci-bridge@1c\/*@0\n/' /tmp/bootorder
-				${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw
+				${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 			fi
 		fi		
 	fi
@@ -748,7 +748,7 @@ if [ $? -eq 0 ]; then
 		extract_cmd="dd if=${firmware_file} bs=1 skip=$((0x00600000)) count=$((0x00004000)) of=/tmp/vpd.bin"
 	else
 		#coreboot firmware, extract w/cbfstool
-		extract_cmd="${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin"
+		extract_cmd="${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin > /dev/null 2>&1"
 	fi
 	#run extract command
 	${extract_cmd} >& /dev/null
