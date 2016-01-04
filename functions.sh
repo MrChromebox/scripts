@@ -12,20 +12,20 @@
 #
 
 #define these here for easy updating
-script_date="[2015-12-20]"
+script_date="[2016-01-03]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.0"
 OE_version_latest="6.0.98-fritsch"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20151220-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20151220-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20151220-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160103-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160103-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20160103-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20151220-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20151220-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20151220-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20160103-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20160103-mattdevo.bin"
+seabios_bdw="seabios-bdw-book-20160103-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -34,6 +34,7 @@ OE_url_official="http://releases.openelec.tv/"
 OE_url_EGL="http://fritsch.fruehberger.net/openelec/v15_2_EGL/chromebox/"
 OE_url=${OE_url_EGL}
 KB_url="https://www.distroshare.com/distros/download/62_64/"
+chrx_url="https://chrx.org/go"
 
 pxe_optionrom="10ec8168.rom"
 
@@ -55,9 +56,9 @@ pxeDefault=false
 device=""
 hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
-bdw_boxes=('<Guado>' '<Rikku>');
-bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
-bdw_noupdate=('<Guado>' '<Rikku>' '<Tidus>');
+bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
+bdw_update_legacy=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Guado>' '<Lulu>' '<Rikku>' '<Samus>' '<Tidus>');
+bdw_noupdate=();
 
 
 #text output
@@ -290,17 +291,13 @@ echo_yellow "\nChecking if Legacy BIOS update available..."
 #determine proper file 
 isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
 isHswBook=`echo ${hsw_books[*]} | grep "<$device>"`
-isBdwBook=`echo ${bdw_books[*]} | grep "<$device>"`
-noUpdate=`echo ${bdw_noupdate[*]} | grep "<$device>"`
+isBdw=`echo ${bdw_update_legacy[*]} | grep "<$device>"`
 if [ "$isHswBox" != "" ]; then
 	seabios_file=$seabios_hsw_box
 elif [ "$isHswBook" != "" ]; then
 	seabios_file=$seabios_hsw_book
-elif [ "$isBdwBook" != "" ]; then
-	seabios_file=$seabios_bdw_book
-elif [ "$noUpdate" != "" ]; then
-	echo_green "Legacy BIOS does not need update/repair."
-	return
+elif [ "$isBdw" != "" ]; then
+	seabios_file=$seabios_bdw
 else
 	echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."
 	return
@@ -363,7 +360,8 @@ function flash_coreboot()
 echo_green "\nInstall/Update Custom coreboot Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
 echo -e " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
- - Acer ChromeBox CXI2 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Rikku]
+ - Acer ChromeBox CXI2 (Broadwell Celeron 3205U/i3-5010U) [Rikku]
+ - Lenovo ThinkCentre ChromeBox (Broadwell Celeron 3205U/i3-5010U) [Tidus]
 
  - Asus ChromeBox CN60 (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
  - HP ChromeBox CB1 (Haswell Celeron 2955U/i7-4600U) [Zako]
@@ -755,16 +753,12 @@ if [ $? -eq 0 ]; then
 	if [ $? -ne 0 ]; then 
 		echo_red "Failure extracting MAC address from current firmware."
 		return 1
-	else
-		#VPD extracted successfully
-		#debug
-		#echo_yellow "\nExtracted VPD from ${firmware_file}"
-		return 0
 	fi
 else
 	#file doesn't contain VPD
 	return 1
 fi
+return 0
 }
 
 ################
@@ -878,7 +872,8 @@ cp /tmp/bios.bin /tmp/usb/${backupname}
 [ $? -eq 0 ] || backup_fail "Failure reading stock firmware for backup; cannot proceed."
 umount /tmp/usb > /dev/null 2>&1
 rmdir /tmp/usb
-echo_green "Firmware backup complete"
+echo_green "Firmware backup complete. Remove the USB stick and press [Enter] to continue."
+read -p ""
 }
 
 function backup_fail()
@@ -915,12 +910,13 @@ recommended that you test your dual boot setup before setting these options."
 	while :
 	do
 		read n
+		echo_yellow "\nSetting boot options..."
 		case $n in
-			1) $gbbflagscmd 0x489; break;;
-			2) $gbbflagscmd 0x488; break;;
-			3) $gbbflagscmd 0x9; break;;
-			4) $gbbflagscmd 0x8; break;;
-			5) $gbbflagscmd 0x0; break;;
+			1) $gbbflagscmd 0x489 > /dev/null 2>&1; break;;
+			2) $gbbflagscmd 0x488 > /dev/null 2>&1; break;;
+			3) $gbbflagscmd 0x9 > /dev/null 2>&1; break;;
+			4) $gbbflagscmd 0x8 > /dev/null 2>&1; break;;
+			5) $gbbflagscmd 0x0 > /dev/null 2>&1; break;;
 			6) read -p "Press [Enter] to return to the main menu."; return; break;;
 			*) invalid option;;
 		esac
@@ -960,12 +956,13 @@ You can always override the default using [CTRL-D] or
 	while :
 	do
 		read n
+		echo_yellow "\nSetting boot options..."
 		case $n in
-			1) $gbbflagscmd 0x489; break;;
-			2) $gbbflagscmd 0x488; break;;
-			3) $gbbflagscmd 0x9; break;;
-			4) $gbbflagscmd 0x8; break;;
-			5) $gbbflagscmd 0x0; break;;
+			1) $gbbflagscmd 0x489 > /dev/null 2>&1; break;;
+			2) $gbbflagscmd 0x488 > /dev/null 2>&1; break;;
+			3) $gbbflagscmd 0x9 > /dev/null 2>&1; break;;
+			4) $gbbflagscmd 0x8 > /dev/null 2>&1; break;;
+			5) $gbbflagscmd 0x0 > /dev/null 2>&1; break;;
 			6) read -p "Press [Enter] to return to the main menu."; return; break;;
 			*) invalid option;;
 		esac
@@ -1008,13 +1005,13 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	while :
 	do
 		echo "Enter the size in GB you want to reserve for OpenELEC Storage."
-		read -p "Acceptable range is 1 to $max_openelec_size but $rec_openelec_size is the recommended maximum: " openelec_size
+		read -p "Acceptable range is 2 to $max_openelec_size but $rec_openelec_size is the recommended maximum: " openelec_size
 		if [ ! $openelec_size -ne 0 2>/dev/null ]; then
 			echo_red "\n\nWhole numbers only please...\n\n"
 			continue
 		fi
-		if [ $openelec_size -lt 1 -o $openelec_size -gt $max_openelec_size ]; then
-			echo_red "\n\nThat number is out of range. Enter a number 1 through $max_openelec_size\n\n"
+		if [ $openelec_size -lt 2 -o $openelec_size -gt $max_openelec_size ]; then
+			echo_red "\n\nThat number is out of range. Enter a number 2 through $max_openelec_size\n\n"
 			continue
 		fi
 		break
@@ -1214,7 +1211,7 @@ die "Error: $@"
 function chrUbuntu() 
 {
 echo_green "\nUbuntu / Dual Boot Install"
-echo_green "Based on ChrUbuntu install script (c) Jay Lee\nhttp://chromeos-cr48.blogspot.com/"
+echo_green "Now using reynhout's chrx script - www.chrx.org"
 
 target_disk="`rootdev -d -s`"
 # Do partitioning (if we haven't already)
@@ -1235,13 +1232,13 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	while :
 	do
 		echo "Enter the size in GB you want to reserve for Ubuntu."
-		read -p "Acceptable range is 5 to $max_ubuntu_size  but $rec_ubuntu_size is the recommended maximum: " ubuntu_size
-		if [ ! $ubuntu_size -ne 0 2>/dev/null ]; then
+		read -p "Acceptable range is 6 to $max_ubuntu_size  but $rec_ubuntu_size is the recommended maximum: " ubuntu_size
+		if [ ! $ubuntu_size -ne 0 2> /dev/null]; then
 			echo_red "\n\nWhole numbers only please...\n\n"
 			continue
 		fi
-		if [ $ubuntu_size -lt 5 -o $ubuntu_size -gt $max_ubuntu_size ]; then
-			echo_red "\n\nThat number is out of range. Enter a number 5 through $max_ubuntu_size\n\n"
+		if [ $ubuntu_size -lt 6 -o $ubuntu_size -gt $max_ubuntu_size ]; then
+			echo_red "\n\nThat number is out of range. Enter a number 6 through $max_ubuntu_size\n\n"
 			continue
 		fi
 		break
@@ -1290,182 +1287,59 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	exit
 fi
 echo_yellow "Stage 1 / repartitioning completed, moving on."
-echo_green "Stage 2: Installing Ubuntu"
+echo_green "Stage 2: Installing Ubuntu via chrx"
 
 #init vars
-ubuntu_metapackage="ubuntu-desktop"
+ubuntu_package="galliumos"
 ubuntu_version="latest"
-ubuntu_arch="amd64"
-
-#select Ubuntu version
-validVersions=('<lts>' '<latest>' '<dev>' '<15.04>' '<14.10>' '<14.04>');
-echo -e "Enter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
-If no (valid) version is entered, '15.04' will be used."
-read -p "" ubuntu_version	
-
-versionValid=`echo ${validVersions[*]} | grep "<$ubuntu_version>"`
-if [[ "$ubuntu_version" == "" || "$versionValid" == "" ]]; then
-	ubuntu_version="15.04"
-fi
 
 #select Ubuntu metapackage
-validMetapackages=('<ubuntu-desktop>' '<kubuntu-desktop>' '<lubuntu-desktop>' '<xubuntu-desktop>' '<edubuntu-desktop>' '<ubuntu-standard>');
-echo -e "\nEnter the Ubuntu metapackage to install.  Valid options are `echo ${validMetapackages[*]}`.
-If no (valid) metapackage is entered, 'ubuntu-desktop' will be used."
-read -p "" ubuntu_metapackage	
+validPackages=('<galliumos>' '<ubuntu>' '<kubuntu>' '<lubuntu>' '<xubuntu>' '<edubuntu>');
+echo -e "\nEnter the Ubuntu (or Ubuntu-derivative) to install.  Valid options are `echo ${validPackages[*]}`.
+If no (valid) option is entered, 'galliumos' will be used."
+read -p "" ubuntu_package	
 
-metapackageValid=`echo ${validMetapackages[*]} | grep "<$ubuntu_metapackage>"`
-if [[ "$ubuntu_metapackage" == "" || "$metapackageValid" == "" ]]; then
-	ubuntu_metapackage="ubuntu-desktop"
+packageValid=`echo ${validPackages[*]} | grep "<$ubuntu_package>"`
+if [[ "$ubuntu_package" == "" || "$packageValid" == "" ]]; then
+	ubuntu_package="galliumos"
 fi
+
+#select Ubuntu version
+if [ "$ubuntu_package" != "galliumos" ]; then
+	validVersions=('<lts>' '<latest>' '<dev>' '<15.10>' '<15.04>' '<14.10>' '<14.04>');
+	echo -e "\nEnter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
+If no (valid) version is entered, 'latest' will be used."
+	read -p "" ubuntu_version	
+
+	versionValid=`echo ${validVersions[*]} | grep "<$ubuntu_version>"`
+	if [[ "$ubuntu_version" == "" || "$versionValid" == "" ]]; then
+		ubuntu_version="latest"
+	fi
+fi
+
+
 
 #Install Kodi?
 kodi_install=""
-read -p "Do you wish to install Kodi (formerly XBMC)? [Y/n] "
-if [ "$REPLY" != "n" ]; then
-	kodi_install="apt-get -y install python-software-properties pkg-config
-	apt-get -y install software-properties-common
-	add-apt-repository ppa:team-xbmc/ppa -y
-	apt-get update
-	apt-get -y install kodi"
+read -p "Do you wish to install Kodi ? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	kodi_install="-p kodi"
 fi
 
-
-if [ "$ubuntu_version" = "lts" ]
-then
-  ubuntu_version=`wget --quiet -O - http://changelogs.ubuntu.com/meta-release | grep "^Version:" | grep "LTS" | tail -1 | sed -r 's/^Version: ([^ ]+)( LTS)?$/\1/'`
-  tar_file="http://cdimage.ubuntu.com/ubuntu-core/releases/$ubuntu_version/release/ubuntu-core-$ubuntu_version-core-$ubuntu_arch.tar.gz"
-elif [ "$ubuntu_version" = "latest" ]
-then
-  ubuntu_version=`wget --quiet -O - http://changelogs.ubuntu.com/meta-release | grep "^Version: " | tail -1 | sed -r 's/^Version: ([^ ]+)( LTS)?$/\1/'`
-  tar_file="http://cdimage.ubuntu.com/ubuntu-core/releases/$ubuntu_version/release/ubuntu-core-$ubuntu_version-core-$ubuntu_arch.tar.gz"
-elif [ $ubuntu_version = "dev" ]
-then
-  ubuntu_version=`wget --quiet -O - http://changelogs.ubuntu.com/meta-release-development | grep "^Version: " | tail -1 | sed -r 's/^Version: ([^ ]+)( LTS)?$/\1/'`
-  ubuntu_animal=`wget --quiet -O - http://changelogs.ubuntu.com/meta-release-development | grep "^Dist: " | tail -1 | sed -r 's/^Dist: (.*)$/\1/'`
-  tar_file="http://cdimage.ubuntu.com/ubuntu-core/daily/current/$ubuntu_animal-core-$ubuntu_arch.tar.gz"
-else
-  tar_file="http://cdimage.ubuntu.com/ubuntu-core/releases/$ubuntu_version/release/ubuntu-core-$ubuntu_version-core-$ubuntu_arch.tar.gz"
-fi
-
-echo_green "\nInstalling Ubuntu ${ubuntu_version} with metapackage ${ubuntu_metapackage}\nThis is going to take some time."
+echo_green "\nInstallation is ready to begin.\nThis is going to take some time, so be patient."
 
 read -p "Press [Enter] to continue..."
+echo -e ""
 
-#set target partitions
-target_rootfs="${target_disk}7"
-target_kern="${target_disk}6"
+#Install via chrx
+export CHRX_NO_REBOOT=1
+curl -L -s -o chrx ${chrx_url}
+sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install
 
-if mount|grep ${target_rootfs}
-then
-  echo_red "Refusing to continue since ${target_rootfs} is formatted and mounted. Try rebooting"
-  exit 
-fi
-
-mkfs.ext4 ${target_rootfs} >/dev/null 2>&1
-
-if [ ! -d /tmp/urfs ]
-then
-  mkdir /tmp/urfs
-fi
-mount -t ext4 ${target_rootfs} /tmp/urfs
-
-wget -O - $tar_file | tar xzp -C /tmp/urfs/
-
-mount -o bind /proc /tmp/urfs/proc
-mount -o bind /dev /tmp/urfs/dev
-mount -o bind /dev/pts /tmp/urfs/dev/pts
-mount -o bind /sys /tmp/urfs/sys
-
-if [ -f /usr/bin/old_bins/cgpt ]
-then
-  cp /usr/bin/old_bins/cgpt /tmp/urfs/usr/bin/
-else
-  cp /usr/bin/cgpt /tmp/urfs/usr/bin/
-fi
-
-chmod a+rx /tmp/urfs/usr/bin/cgpt
-cp /etc/resolv.conf /tmp/urfs/etc/
-echo ubuntu > /tmp/urfs/etc/hostname
-echo -e "\n127.0.1.1       ubuntu" >> /tmp/urfs/etc/hosts
-
-cr_install="wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-add-apt-repository \"deb http://dl.google.com/linux/chrome/deb/ stable main\"
-apt-get update
-apt-get -y install google-chrome-stable"
-
-#replace systemd?
-upstart_install=""
-if [ "$ubuntu_version" = "15.04" ]; then
-	upstart_install="apt-get -y install upstart-sysv; update-initramfs -u"
-fi
-
-echo -e "export DEBIAN_FRONTEND=noninteractive
-dpkg --add-architecture i386
-touch /var/run/dbus/system_bus_socket > /dev/null 2>&1
-apt-get -y update
-apt-get -y dist-upgrade
-apt-get -y install ubuntu-minimal
-apt-get -y install wget
-apt-get -y install software-properties-common
-add-apt-repository main
-add-apt-repository universe
-add-apt-repository restricted
-add-apt-repository multiverse 
-apt-get update
-dpkg-reconfigure locales
-apt-get -y install language-pack-en
-locale-gen en_US.UTF-8
-apt-get -y install $ubuntu_metapackage
-$cr_install
-apt-get -y install linux-generic
-apt-get -y install grub-pc
-grub-mkconfig -o /boot/grub/grub.cfg
-grub-install ${target_disk} --force
-sed -i'' -e 's/\"quiet splash\"/\"quiet splash tpm_tis.force=1 tpm_tis.interrupts=0\"/' /etc/default/grub
-update-grub
-$upstart_install
-useradd -m user -s /bin/bash
-echo user | echo user:user | chpasswd
-adduser user adm
-adduser user sudo
-if [ -f /usr/lib/lightdm/lightdm-set-defaults ]
-then
-  /usr/lib/lightdm/lightdm-set-defaults --autologin user
-fi
-
-#install Kodi/XBMC if set
-$kodi_install
-" > /tmp/urfs/install-ubuntu.sh
-
-chmod a+x /tmp/urfs/install-ubuntu.sh
-chroot /tmp/urfs /bin/bash -c /install-ubuntu.sh
-#rm /tmp/urfs/install-ubuntu.sh
-
-echo -e "Section \"InputClass\"
-    Identifier      \"touchpad peppy cyapa\"
-    MatchIsTouchpad \"on\"
-    MatchDevicePath \"/dev/input/event*\"
-    MatchProduct    \"cyapa\"
-    Option          \"FingerLow\" \"10\"
-    Option          \"FingerHigh\" \"10\"
-EndSection" > /tmp/urfs/usr/share/X11/xorg.conf.d/50-cros-touchpad.conf
-
-echo -e "Section \"Device\"
-    Identifier      \"Intel Graphics\"
-    Driver          \"intel\"
-    Option         \"TearFree\"    \"true\"
-EndSection" > /tmp/urfs/usr/share/X11/xorg.conf.d/20-intel.conf
-
-echo_green "
-Ubuntu Installation is complete! On reboot at the dev mode screen, you can press
-[CTRL+L] to boot Ubuntu or [CTRL+D] to boot Chrome OS. The Ubuntu login is:
-
-Username:  user
-Password:  user
-"
-
-read -p "Press [Enter] to return to the main menu."
+#chrx will end with prompt for user to press enter to reboot
+read -p ""
+cleanup;
+reboot;
 }
 
 
