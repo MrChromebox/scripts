@@ -25,7 +25,7 @@ if [ $(whoami) != "root" ]; then
 fi
 
 #header
-echo -e "\nChromeBox Firmware Updater v1.4"
+echo -e "\nChromeBox Firmware Updater v1.5"
 echo -e "(c) Matt DeVillier <matt.devillier@gmail.com>"
 echo -e "$***************************************************"
 
@@ -172,7 +172,8 @@ if [ $? -eq 0 ]; then
 	fi
 	#preferUSB?
 	if [ "$preferUSB" = true  ]; then
-		${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw	
+		${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
+		${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 	fi
 	#useHeadless?
 	if [ "$useHeadless" = true  ]; then
