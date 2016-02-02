@@ -25,7 +25,7 @@ if [ $(whoami) != "root" ]; then
 fi
 
 #header
-echo -e "\nChromeBox Firmware Updater v1.5"
+echo -e "\nChromeBox Firmware Updater v1.6"
 echo -e "(c) Matt DeVillier <matt.devillier@gmail.com>"
 echo -e "$***************************************************"
 
@@ -151,7 +151,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #check if contains MAC address, extract
-${cbfstoolcmd} bios.bin extract -n vpd.bin -f vpd.bin >& /dev/null
+${cbfstoolcmd} bios.bin extract -n vpd.bin -f vpd.bin > /dev/null 2>&1
 if [ $? -ne 0 ]; then 
 	echo -e "Failure extracting MAC address from current firmware; default will be used"
 fi
@@ -168,7 +168,7 @@ md5sum -c ${coreboot_file}.md5 > /dev/null 2>&1
 if [ $? -eq 0 ]; then
 	#check if we have a VPD to restore
 	if [ -f /tmp/vpd.bin ]; then
-		${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw	
+		${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
 	fi
 	#preferUSB?
 	if [ "$preferUSB" = true  ]; then
@@ -188,7 +188,7 @@ if [ $? -eq 0 ]; then
 			${cbfstoolcmd} ${coreboot_file} extract -n bootorder -f /tmp/bootorder > /dev/null 2>&1
 			${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
 			sed -i '1s/^/\/pci@i0cf8\/pci-bridge@1c\/*@0\n/' /tmp/bootorder
-			${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw
+			${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 		fi
 	fi
 	#flash coreboot firmware
