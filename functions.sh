@@ -12,26 +12,26 @@
 #
 
 #define these here for easy updating
-script_date="[2016-01-03]"
+script_date="[2016-02-02]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
-OE_version_stable="6.0.0"
-OE_version_latest="6.0.98-fritsch"
+OE_version_stable="6.0.1"
+OE_version_latest="6.0.198-Intel_EGL"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160103-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160103-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20160103-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160202-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160202-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20160202-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20160103-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20160103-mattdevo.bin"
-seabios_bdw="seabios-bdw-book-20160103-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20160202-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20160202-mattdevo.bin"
+seabios_bdw="seabios-bdw-book-20160202-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
 
 OE_url_official="http://releases.openelec.tv/"
-OE_url_EGL="http://fritsch.fruehberger.net/openelec/v15_2_EGL/chromebox/"
+OE_url_EGL="https://dl.dropboxusercontent.com/u/98309225/"
 OE_url=${OE_url_EGL}
 KB_url="https://www.distroshare.com/distros/download/62_64/"
 chrx_url="https://chrx.org/go"
@@ -58,7 +58,6 @@ hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
 bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
 bdw_update_legacy=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Guado>' '<Lulu>' '<Rikku>' '<Samus>' '<Tidus>');
-bdw_noupdate=();
 
 
 #text output
@@ -223,12 +222,8 @@ usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 
 #get OpenELEC
 echo_yellow "\nDownloading OpenELEC installer image..."
-if [ `echo "${OE_version}" | grep "5.0.8"` ]; then
-	img_file="${OE_version}-efi.img"
-else
-	img_file="${OE_version}.img"
-fi
-	img_url="${OE_url}${img_file}.gz"
+img_file="${OE_version}.img"
+img_url="${OE_url}${img_file}.gz"
 
 cd /tmp
 curl -L -o ${img_file}.gz $img_url
@@ -312,6 +307,15 @@ if [ -z "$1" ]; then
 		preferUSB=true
 	fi	
 	echo -e ""
+	#headless?
+	useHeadless=false
+	if [ "$seabios_file" == "$seabios_hsw_box" ]; then
+		read -p "Install \"headless\" firmware? This is only needed for servers running without a connected display. [y/N] "
+		if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+			useHeadless=true
+		fi
+		echo -e ""
+	fi
 fi
 
 #download SeaBIOS update
@@ -329,6 +333,16 @@ if [ $? -eq 0 ]; then
 		else
 			${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1			
 			${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
+		fi		
+	fi
+	#useHeadless?
+	if [ "$useHeadless" = true  ]; then
+		curl -s -L -O "${dropbox_url}${hswbdw_headless_vbios}"
+		if [ $? -ne 0 ]; then
+			echo_red "Unable to download headless VGA BIOS; headless firmware cannot be installed."
+		else
+			${cbfstoolcmd} ${seabios_file} remove -n pci8086,0406.rom > /dev/null 2>&1
+			${cbfstoolcmd} ${seabios_file} add -f ${hswbdw_headless_vbios} -n pci8086,0406.rom -t optionrom > /dev/null 2>&1
 		fi		
 	fi
 	#flash updated legacy BIOS
@@ -1021,8 +1035,8 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	#calculate sector size for rootc
 	rootc_size=$(($openelec_size*1024*1024*2))
 
-	#kernc is always 250mb
-	kernc_size=512000
+	#kernc is always 512mb
+	kernc_size=102400
 
 	#new stateful size with rootc and kernc subtracted from original
 	stateful_size=$(($state_size - $rootc_size - $kernc_size))
@@ -1368,7 +1382,7 @@ target_disk="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 echo_yellow "\nSetting up and formatting partitions..."
 
 # Do partitioning (if we haven't already)
-echo -e "o\nn\np\n1\n\n+250M\nn\np\n\n\n\na\n1\nw" | fdisk ${target_disk} >/dev/null 2>&1
+echo -e "o\nn\np\n1\n\n+512M\nn\np\n\n\n\na\n1\nw" | fdisk ${target_disk} >/dev/null 2>&1
 partprobe > /dev/null 2>&1
 
 OE_System=${target_disk}1
