@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-02-02]"
+script_date="[2016-02-05]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.1"
@@ -1036,7 +1036,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	rootc_size=$(($openelec_size*1024*1024*2))
 
 	#kernc is always 512mb
-	kernc_size=102400
+	kernc_size=1024000
 
 	#new stateful size with rootc and kernc subtracted from original
 	stateful_size=$(($state_size - $rootc_size - $kernc_size))
