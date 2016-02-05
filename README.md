@@ -18,7 +18,7 @@ Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmwar
 Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|Samsung Series 3 ChromeBox also supported
 Restore Stock Firmware|:white_check_mark:|:x:|
 
-To download and run this script, from a terminal shell: `curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
+To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
 &nbsp;
 
@@ -43,7 +43,7 @@ It also allows the user to flash custom firmware, turning a ChromeBox into a reg
 
 setup-kodi.sh will run on any Linux system with a full bash shell; the dual-boot functionality is restricted to ChromeOS.  
 
-To download and run this script, from a terminal shell: `curl -L -O https://goo.gl/FdvHF6; sudo bash FdvHF6`
+To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/FdvHF6; sudo bash FdvHF6`
 
 More details and support for this script can be found at http://forum.kodi.tv/showthread.php?tid=194362
 
@@ -60,4 +60,4 @@ Update Custom coreboot Firmware|:white_check_mark:|:x:|must already be running c
 
 This script will automatically check to see if an updated firmware is available, and if so, prompt the user to update.  Install-time options include ability to boot without a connected display ("headless" option) and ability to set the default device to USB (vs internal ssd). 
 
-To download and run this script, from a ssh shell: `curl -L -O https://goo.gl/SoCQtG; bash SoCQtG`
+To download and run this script, from a ssh shell: `cd; curl -L -O https://goo.gl/SoCQtG; bash SoCQtG`
