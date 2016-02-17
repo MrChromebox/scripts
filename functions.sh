@@ -12,20 +12,20 @@
 #
 
 #define these here for easy updating
-script_date="[2016-02-05]"
+script_date="[2016-02-17]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
-OE_version_stable="6.0.1"
-OE_version_latest="6.0.198-Intel_EGL"
+OE_version_stable="6.0.198-Intel_EGL"
+OE_version_latest="6.94.1-MattDevo"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160202-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160202-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20160202-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160217-mattdevo.rom"
+coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160217-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20160217-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20160202-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20160202-mattdevo.bin"
-seabios_bdw="seabios-bdw-book-20160202-mattdevo.bin"
+seabios_hsw_box="seabios-hsw-box-20160217-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20160217-mattdevo.bin"
+seabios_bdw="seabios-bdw-book-20160217-mattdevo.bin"
 seabios_file=${seabios_hsw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -184,13 +184,13 @@ function select_oe_version()
 	OE_url=${OE_url_EGL}
 	OE_version="${OE_version_base}-${OE_version_latest}"
 	if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-		read -p "Do you want to install the custom Intel-EGL version of OpenELEC (${OE_version_latest}) ?
-It will provide better performance and color reproduction than the standard version, but unlike the standard version, will not automatically update.
+		read -p "Do you want to install an unofficial beta of  OpenELEC (${OE_version_latest}) ?
+It is based on Kodi 16-RC3 (official/stable version which uses Kodi 15.2) and is reasonably stable, but unofficial/unsupported.
 
-If N, the latest standard/stable version ($OE_version_stable) will be used. [Y/n] "
+If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
 		if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 			OE_version="${OE_version_base}-${OE_version_stable}"
-			OE_url=${OE_url_official}
+			#OE_url=${OE_url_official}
 		fi
 		echo -e "\n"
 	fi	
@@ -331,7 +331,7 @@ if [ $? -eq 0 ]; then
 		if [ $? -ne 0 ]; then
 			echo_red "Unable to download bootorder file; boot order cannot be changed."
 		else
-			${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1			
+			${cbfstoolcmd} ${seabios_file} remove -n bootorder > /dev/null 2>&1
 			${cbfstoolcmd} ${seabios_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 		fi		
 	fi
