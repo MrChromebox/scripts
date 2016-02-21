@@ -12,11 +12,11 @@
 #
 
 #define these here for easy updating
-script_date="[2016-02-17]"
+script_date="[2016-02-21]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
-OE_version_stable="6.0.198-Intel_EGL"
-OE_version_latest="6.94.1-MattDevo"
+OE_version_stable="6.0.199-Intel_EGL"
+OE_version_latest="6.99.1-MattDevo"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160217-mattdevo.rom"
 coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160217-mattdevo.rom"
@@ -184,10 +184,10 @@ function select_oe_version()
 	OE_url=${OE_url_EGL}
 	OE_version="${OE_version_base}-${OE_version_latest}"
 	if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-		read -p "Do you want to install an unofficial beta of  OpenELEC (${OE_version_latest}) ?
-It is based on Kodi 16-RC3 (official/stable version which uses Kodi 15.2) and is reasonably stable, but unofficial/unsupported.
+		read -p "Do you want to install an unofficial beta of OpenELEC 7.0 (${OE_version_latest}) ?
+It is based on Kodi 16.0 and is reasonably stable, but unofficial/unsupported.
 
-If N, the latest stable version ($OE_version_stable) will be used. [Y/n] "
+If N, the latest stable version of OpenELEC 6.0 ($OE_version_stable) based on Kodi 15.2 will be used. [Y/n] "
 		if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 			OE_version="${OE_version_base}-${OE_version_stable}"
 			#OE_url=${OE_url_official}
@@ -397,7 +397,7 @@ echo -e ""
 
 # ensure hardware write protect disabled if in ChromeOS/ChromiumOS
 if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
-	if [[ "`crossystem | grep wpsw_cur`" == *"1"* ]]; then
+	if [[ "`crossystem | grep wpsw_cur`" != *"0"* ]]; then
 		echo_red "\nHardware write-protect enabled, cannot flash coreboot firmware."
 		read -p "Press [Enter] to return to the main menu."
 		return;
@@ -1201,7 +1201,7 @@ cp /tmp/Storage/${OE_version}/target/SYSTEM /tmp/System/
 [ -s /tmp/System/SYSTEM ] || OE_install_error "OE SYSTEM has file size 0"
 
 #update legacy BIOS
-flash_legacy skip_usb
+flash_legacy skip_usb > /dev/null
 
 echo_green "OpenELEC Installation Complete"
 read -p "Press [Enter] to return to the main menu."
@@ -1239,7 +1239,7 @@ rec_ubuntu_size=$(($max_ubuntu_size - 1))
 if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	
 	#update legacy BIOS
-	flash_legacy skip_usb
+	flash_legacy skip_usb > /dev/null
 	
 	echo_green "Stage 1: Repartitioning the internal HDD"
 	
@@ -1479,7 +1479,7 @@ rm -rf /tmp/Storage/*
 
 #update legacy BIOS
 if [ "$isChromeOS" = true ]; then
-	flash_legacy
+	flash_legacy > /dev/null
 fi
 	
 echo_green "OpenELEC USB Installation Complete"
