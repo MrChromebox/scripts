@@ -98,7 +98,7 @@ rootdev="/dev/sda"
 if [ `which rootdev` ]; then
 	rootdev=`rootdev -d -s`
 fi	
-eval usb_devs=(`fdisk -l 2> /dev/null | grep -v 'Disk /dev/sda' | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'`)
+eval usb_devs="(`fdisk -l 2> /dev/null | grep -v 'Disk /dev/sda' | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'`)"
 #ensure at least 1 drive available
 [ "$usb_devs" != "" ] || return 1
 echo -e "\nDevices available:\n"
@@ -1020,11 +1020,10 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	do
 		echo "Enter the size in GB you want to reserve for OpenELEC Storage."
 		read -p "Acceptable range is 2 to $max_openelec_size but $rec_openelec_size is the recommended maximum: " openelec_size
-		if [ ! $openelec_size -ne 0 2>/dev/null ]; then
+		if [ $openelec_size -ne $openelec_size 2>/dev/null ]; then
 			echo_red "\n\nWhole numbers only please...\n\n"
 			continue
-		fi
-		if [ $openelec_size -lt 2 -o $openelec_size -gt $max_openelec_size ]; then
+		elif [ $openelec_size -lt 2 -o $openelec_size -gt $max_openelec_size ]; then
 			echo_red "\n\nThat number is out of range. Enter a number 2 through $max_openelec_size\n\n"
 			continue
 		fi
@@ -1247,11 +1246,10 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	do
 		echo "Enter the size in GB you want to reserve for Ubuntu."
 		read -p "Acceptable range is 6 to $max_ubuntu_size  but $rec_ubuntu_size is the recommended maximum: " ubuntu_size
-		if [ ! $ubuntu_size -ne 0 2> /dev/null]; then
+		if [ $ubuntu_size -ne $ubuntu_size 2> /dev/null]; then
 			echo_red "\n\nWhole numbers only please...\n\n"
 			continue
-		fi
-		if [ $ubuntu_size -lt 6 -o $ubuntu_size -gt $max_ubuntu_size ]; then
+		elif [ $ubuntu_size -lt 6 -o $ubuntu_size -gt $max_ubuntu_size ]; then
 			echo_red "\n\nThat number is out of range. Enter a number 6 through $max_ubuntu_size\n\n"
 			continue
 		fi
