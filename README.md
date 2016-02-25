@@ -1,22 +1,22 @@
 # ChromeOS firmware and Kodi install scripts
-Collection of scripts to install custom firmware, update the fimware/legacy boot payload, and install Kodi on supported ChromeOS devices
-
+Collection of scripts to install custom firmware, update the fimware/legacy boot payload, and install Kodi on supported ChromeOS devices. When run from ChromeOS, these scripts require the Chromebox/book to be in [developer mode](https://www.chromium.org/chromium-os/poking-around-your-chrome-os-device#TOC-Putting-your-Chrome-OS-Device-into-Developer-Mode); some functionality also requires the firmware write-protect screw to be removed, the location of which is [device-specific](https://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices).
 
 &nbsp;
 
 **setup-firmware.sh** allows for the installation of custom firmware and/or an updated legacy boot payload on supported ChromeOS devices.
 
-It also includes functionality to set the stock firmware boot flags (via set_gbb_flags.sh), and restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. 
+It also includes functionality to set the stock firmware boot flags (via set_gbb_flags.sh), and to set the devices hardware ID (via gbb_utility). This script can be used to restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. 
 
 
 Supported Devices:
 
-function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | notes
------| :-----: | :-----: | -----
-Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
-Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmware write-protect to be disabled
-Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|Samsung Series 3 ChromeBox also supported
-Restore Stock Firmware|:white_check_mark:|:x:|
+function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | WP Disable  |  notes
+-----| :-----: | :-----: | :-----: | -----
+Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|
+Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|All x86 ChromeOS devices supported
+Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|All ChromeOS devices supported
+Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
+Restore Stock Firmware|:white_check_mark:|:x:|:white_check_mark:|
 
 To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
@@ -26,13 +26,13 @@ To download and run this script, from a terminal shell: `cd; curl -L -O https://
 
 Supported Devices:
 
-function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | notes
------ | :-----: | :-----: | -----
-Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:|automatically updates legacy boot payload (SeaBIOS) as needed
-Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:| does not require firmware write-protect to be disabled
-Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|requires firmware write-protect to be disabled
-Install/Update Custom coreboot Firmware|:white_check_mark:|:x:|Samsung Series 3 ChromeBox also supported
-Create OpenELEC/Kodibuntu boot media|:white_check_mark:|:white_check_mark:| added solely for convenience
+function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | WP Disable | notes
+----- | :-----: | :-----: | :-----: |-----
+Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:| |automatically updates legacy boot payload (SeaBIOS) as needed
+Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|
+Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:
+Install/Update Custom coreboot Firmware|:white_check_mark:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
+Create OpenELEC/Kodibuntu boot media|:white_check_mark:|:white_check_mark:| |added solely for convenience
 
 This script allows the user to install a dual-boot setup with either OpenELEC or Ubuntu
 (with or without Kodi), to set the default OS, and to set the boot timeout on the 
