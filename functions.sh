@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-02-21]"
+script_date="[2016-02-24]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.199-Intel_EGL"
@@ -993,6 +993,54 @@ read -p "Press [Enter] to return to the main menu."
 }
 
 
+###################
+# Set Hardware ID #
+###################
+function set_hwid() 
+{
+# set hwid using gbb_utility
+# ensure hardware write protect disabled
+if [[ "`crossystem wpsw_cur`" == "0" || "`crossystem wpsw_boot`" == "0" ]]; then
+
+	#get current hwid
+	_hwid="`crossystem hwid`"
+
+	echo_green "
+Set Hardware ID (hwid) using gbb_utility"
+	echo_yellow "
+Current hwid is $_hwid. Enter a new hwid (use all caps):"
+	read hwid
+	echo -e ""
+	read -p "Confirm changing hwid to $hwid [y/N] " confirm
+	if [[ "$confirm" == "Y" || "$confirm" == "y" ]]; then
+		echo_yellow "\nSetting hardware ID..."
+		flashrom -r /tmp/bios.temp > /dev/null 2>&1
+		if [ $? -ne 0 ]; then
+			echo_red "\nError reading firmware; unable to set hwid."
+			read -p "Press [Enter] to return to the main menu."
+			return
+		fi
+		gbb_utility --set --hwid='$hwid' /tmp/bios.temp /tmp/bios.new > /dev/null
+		if [ $? -ne 0 ]; then
+			echo_red "\nError setting hwid."
+			read -p "Press [Enter] to return to the main menu."
+			return
+		fi
+		flashrom -w /tmp/bios.new > /dev/null 2>&1
+		if [ $? -ne 0 ]; then
+			echo_red "\nError writing back firmware; unable to set hwid."
+			read -p "Press [Enter] to return to the main menu."
+			return
+		fi
+		echo_green "Hardware ID successfully set."
+
+	fi
+else
+	echo_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot set hwid."
+fi
+read -p "Press [Enter] to return to the main menu."
+}
+
 
 ##########################
 # Install OE (dual boot) #
@@ -1586,21 +1634,23 @@ function menu_fwupdate() {
     echo -e "${MENU}*********************************************${NORMAL}"
 	echo -e "${MENU}**${NORMAL}    Stock Firmware ${NORMAL}"
 	if [ "$isChromeOS" = false ]; then
-		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 1)${GRAY_TEXT} Set Boot Options ${GRAY_TEXT}"
-		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Update Legacy BIOS (SeaBIOS)${GRAY_TEXT}"
-		echo -e "${MENU}**${NUMBER} 3)${MENU} Restore Stock Firmware ${NORMAL}"	
+		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 1)${GRAY_TEXT} Set Boot Options (gbb flags)${GRAY_TEXT}"
+		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Set Hardware ID (hwid) ${GRAY_TEXT}"
+		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Update Legacy BIOS (RW_LEGACY / SeaBIOS)${GRAY_TEXT}"
+		echo -e "${MENU}**${NUMBER} 4)${MENU} Restore Stock Firmware ${NORMAL}"	
 		echo -e "${GRAY_TEXT}**${GRAY_TEXT}"
 	else
-		echo -e "${MENU}**${NUMBER} 1)${MENU} Set Boot Options ${NORMAL}"
-		echo -e "${MENU}**${NUMBER} 2)${MENU} Update Legacy BIOS (SeaBIOS)${NORMAL}"
-		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Restore Stock Firmware ${GRAY_TEXT}"
+		echo -e "${MENU}**${NUMBER} 1)${MENU} Set Boot Options (gbb flags)${NORMAL}"
+		echo -e "${MENU}**${NUMBER} 2)${MENU} Set Hardare ID (hwid) ${NORMAL}"
+		echo -e "${MENU}**${NUMBER} 3)${MENU} Update Legacy BIOS (RW_LEGACY / SeaBIOS)${NORMAL}"
+		echo -e "${GRAY_TEXT}**${GRAY_TEXT} 4)${GRAY_TEXT} Restore Stock Firmware ${GRAY_TEXT}"
 		echo -e "${MENU}**${NORMAL}"
 	fi
 	echo -e "${MENU}**${NORMAL}    Custom coreboot Firmware ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 4)${MENU} Install/Update Custom coreboot Firmware ${NORMAL}"
+    echo -e "${MENU}**${NUMBER} 5)${MENU} Install/Update Custom coreboot Firmware ${NORMAL}"
 	echo -e "${MENU}**${NORMAL}"
-	echo -e "${MENU}**${NUMBER} 5)${NORMAL} Reboot ${NORMAL}"
-	echo -e "${MENU}**${NUMBER} 6)${NORMAL} Power Off ${NORMAL}"
+	echo -e "${MENU}**${NUMBER} 6)${NORMAL} Reboot ${NORMAL}"
+	echo -e "${MENU}**${NUMBER} 7)${NORMAL} Power Off ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or ${RED_TEXT}q to quit${NORMAL}"
     
@@ -1616,7 +1666,10 @@ function menu_fwupdate() {
 					1)	set_boot_options;
 						menu_fwupdate;
 						;;
-					2)	update_legacy;	
+					2)	set_hwid;	
+						menu_fwupdate;
+						;;
+					3)	update_legacy;	
 						menu_fwupdate;
 						;;
 					*)
@@ -1624,7 +1677,7 @@ function menu_fwupdate() {
 				esac
 			else 
 				case $opt in
-					3)	restore_stock_firmware;
+					4)	restore_stock_firmware;
 						menu_fwupdate;
 						;;
 					*)
@@ -1634,15 +1687,15 @@ function menu_fwupdate() {
 			
 			case $opt in
 			
-			4)	flash_coreboot;
+			5)	flash_coreboot;
 				menu_fwupdate;
 				;;						
-			5)	echo -e "\nRebooting...\n";
+			6)	echo -e "\nRebooting...\n";
 				cleanup;
 				reboot;
 				exit;
 				;;
-			6)	echo -e "\nPowering off...\n";
+			7)	echo -e "\nPowering off...\n";
 				cleanup;
 				poweroff;
 				exit;
