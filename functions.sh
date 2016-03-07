@@ -12,28 +12,29 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-01]"
+script_date="[2016-03-07]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
 OE_version_latest="6.94.2"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160217-mattdevo.rom"
-coreboot_bdw_box="coreboot-seabios-bdw_chromebox-20160217-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20160217-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160307-mattdevo.rom"
+coreboot_guado="coreboot-seabios-guado-20160307-mattdevo.rom"
+coreboot_rikku="coreboot-seabios-rikku-20160307-mattdevo.rom"
+coreboot_tidus="coreboot-seabios-tidus-20160307-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20160307-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hsw_box="seabios-hsw-box-20160217-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20160217-mattdevo.bin"
-seabios_bdw="seabios-bdw-book-20160217-mattdevo.bin"
-seabios_file=${seabios_hsw_box}
+seabios_hswbdw_box="seabios-hswbdw-box-20160307-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20160307-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20160307-mattdevo.bin"
+seabios_file=${seabios_hswbdw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
 
 OE_url_official="http://releases.openelec.tv/"
 OE_url_EGL="https://dl.dropboxusercontent.com/u/98309225/"
 OE_url=${OE_url_EGL}
-KB_url="https://www.distroshare.com/distros/download/62_64/"
 chrx_url="https://chrx.org/go"
 
 pxe_optionrom="10ec8168.rom"
@@ -57,7 +58,7 @@ device=""
 hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
 bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
-bdw_update_legacy=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Guado>' '<Lulu>' '<Rikku>' '<Samus>' '<Tidus>');
+bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
 
 
 #text output
@@ -120,59 +121,6 @@ echo -e " (${sz} GB)"
 done
 echo -e ""
 return 0
-}
-
-
-
-##################################
-# Create Kodibuntu Install Media #
-##################################
-function create_kb_install_media()
-{
-echo_green "\nCreate Kodibuntu Installation Media"
-trap kb_fail INT TERM EXIT
-
-#check free space on /tmp
-free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
-[ "$free_spc" > "800" ] || die "Temp directory has insufficient free space to download Kodibuntu ISO."
-
-echo_yellow "Custom/updated Kodibuntu ISO courtesy of HugeGreenBug @ www.distroshare.com"
-
-read -p "Connect the USB/SD device (min 1GB) to be used as Kodibuntu installation media and press [Enter] to continue.
-This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
-list_usb_devices
-[ $? -eq 0 ] || die "No USB devices available to create Kodibuntu install media."
-read -p "Enter the number for the device to be used to install Kodibuntu: " usb_dev_index
-[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || die "Error: Invalid option selected."
-usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
-
-#get Kodibuntu
-echo_yellow "\nDownloading Kodibuntu installer ISO..."
-cd /tmp
-curl -L -o kodibuntu.iso $KB_url
-if [ $? -ne 0 ]; then
-	die "Failed to download Kodibuntu; check your Internet connection and try again"
-fi
-echo_yellow "\nDownload complete; creating install media...
-(this will take a few minutes)"
-
-dd if=kodibuntu.iso of=${usb_device} bs=1M conv=fdatasync >/dev/null 2>&1; sync
-if [ $? -ne 0 ]; then
-	die "Error creating Kodibuntu install media."
-fi
-trap - INT TERM EXIT
-echo_green "
-Creation of Kodibuntu install media is complete.
-Upon reboot, press [ESC] at the boot menu prompt, then select your USB/SD device from the list."
-
-echo_yellow "If you have not already done so, run the 'Install/update custom coreboot firmware' option before reboot."
-
-read -p "Press [Enter] to return to the main menu."
-}
-
-function kb_fail() {
-trap - INT TERM EXIT
-die "\nKodibuntu installation media creation failed; retry with different USB/SD media"
 }
 
 
@@ -281,20 +229,22 @@ cd /tmp
 # set dev mode boot flags 
 crossystem dev_boot_legacy=1 dev_boot_signed_only=0 > /dev/null
 
-echo_yellow "\nChecking if Legacy BIOS update available..."
+echo_green "\nInstall/Update Legacy BIOS (RW_LEGACY)"
 
 #determine proper file 
-isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
-isHswBook=`echo ${hsw_books[*]} | grep "<$device>"`
-isBdw=`echo ${bdw_update_legacy[*]} | grep "<$device>"`
-if [ "$isHswBox" != "" ]; then
-	seabios_file=$seabios_hsw_box
+isHswBdwBox=`[[ "${hsw_boxes[@]}" =~ "$device" ]] && echo "$device"`
+isHswBdwBox+=`[[ "${bdw_boxes[@]}" =~ "$device" ]] && echo "$device"`
+isHswBook=`[[ "${hsw_books[@]}" =~ "$device" ]] && echo "$device"`
+isBdwBook=`[[ "${bdw_books[@]}" =~ "$device" ]] && echo "$device"`
+if [ "$isHswBdwBox" != "" ]; then
+	seabios_file=$seabios_hswbdw_box
 elif [ "$isHswBook" != "" ]; then
 	seabios_file=$seabios_hsw_book
-elif [ "$isBdw" != "" ]; then
-	seabios_file=$seabios_bdw
+elif [ "$isBdwBook" != "" ]; then
+	seabios_file=$seabios_bdw_book
 else
 	echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."
+	read -p "Press [Enter] to return to the main menu.";
 	return
 fi
 
@@ -309,7 +259,7 @@ if [ -z "$1" ]; then
 	echo -e ""
 	#headless?
 	useHeadless=false
-	if [ "$seabios_file" == "$seabios_hsw_box" ]; then
+	if [ "$seabios_file" == "$seabios_hswbdw_box" ]; then
 		read -p "Install \"headless\" firmware? This is only needed for servers running without a connected display. [y/N] "
 		if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 			useHeadless=true
@@ -319,7 +269,7 @@ if [ -z "$1" ]; then
 fi
 
 #download SeaBIOS update
-echo_yellow "\nDownloading Legacy BIOS/SeaBIOS"
+echo_yellow "\nDownloading Legacy BIOS update"
 curl -s -L -O ${dropbox_url}${seabios_file}.md5
 curl -s -L -O ${dropbox_url}${seabios_file}
 #verify checksum on downloaded file
@@ -379,7 +329,7 @@ echo -e " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Gua
 
  - Asus ChromeBox CN60 (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
  - HP ChromeBox CB1 (Haswell Celeron 2955U/i7-4600U) [Zako]
- - Dell ChromeBox 3010 (Haswell Celeron 2955U/i3-4030U) [Tricky]
+ - Dell ChromeBox 3010 (Haswell Celeron 2955U/i3-4030U/i7-4600U) [Tricky]
  - Acer ChromeBox CXI (Haswell Celeron 2975U/i3-4030U) [McCloud]
  
  - Samsung Series 3 ChromeBox (SandyBridge Celeron B840/i5-2450U) [Stumpy]
@@ -396,7 +346,7 @@ read -p "Do you wish to continue? [y/N] "
 echo -e ""
 
 # ensure hardware write protect disabled if in ChromeOS/ChromiumOS
-if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
+if [ "$isChromeOS" = true ]; then
 	if [[ "`crossystem | grep wpsw_cur`" != *"0"* ]]; then
 		echo_red "\nHardware write-protect enabled, cannot flash coreboot firmware."
 		read -p "Press [Enter] to return to the main menu."
@@ -405,12 +355,16 @@ if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
 fi
 
 #check device 
-isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
-isBdwBox=`echo ${bdw_boxes[*]} | grep "<$device>"`
+isHswBox=`[[ "${hsw_boxes[@]}" =~ "$device" ]] && echo "$device"`
+isBdwBox=`[[ "${bdw_boxes[@]}" =~ "$device" ]] && echo "$device"`
 if [ "$isHswBox" != "" ]; then
 	coreboot_file=$coreboot_hsw_box
-elif [ "$isBdwBox" != "" ]; then
-	coreboot_file=$coreboot_bdw_box
+elif [ "$device" == "Guado" ]; then
+	coreboot_file=$coreboot_guado
+elif [ "$device" == "Rikku" ]; then
+	coreboot_file=$coreboot_rikku
+elif [ "$device" == "Tidus" ]; then
+	coreboot_file=$coreboot_tidus
 elif [ "$device" == "Stumpy" ]; then
 	coreboot_file=$coreboot_stumpy
 else
@@ -428,7 +382,7 @@ if [ $? -ne 0 ]; then
 	return;
 fi
 
-if [[ "$coreboot_file" == "$coreboot_hsw_box" || "$coreboot_file" == "$coreboot_bdw_box" ]]; then
+if [[ "$isHswBox" != "" || "$isBdwBox" != "" ]]; then
 	#check if contains MAC address, extract
 	extract_vpd /tmp/bios.bin
 	if [ $? -ne 0 ]; then
@@ -484,7 +438,7 @@ fi
 
 #headless?
 useHeadless=false
-if [[ "$coreboot_file" == "$coreboot_hsw_box" || "$coreboot_file" == "$coreboot_bdw_box" ]]; then
+if [[ "$isHswBox" != "" || "$isBdwBox" != "" ]]; then
 	echo -e ""
 	read -p "Install \"headless\" firmware? This is only needed for servers running without a connected display. [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
@@ -502,7 +456,7 @@ fi
 
 #add PXE?
 addPXE=false
-if [[ "$coreboot_file" == "$coreboot_hsw_box" || "$coreboot_file" == "$coreboot_bdw_box" ]]; then
+if [[ "$isHswBox" != "" || "$isBdwBox" != "" ]]; then
 	echo -e ""
 	read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
@@ -589,11 +543,13 @@ function restore_stock_firmware()
 echo_green "\nRestore Stock Firmware"
 echo_red "!! WARNING !!  This function is only valid for the following devices:"
 echo -e " - Asus ChromeBox CN62 (Broadwell Celeron 3205U/i3-5010U/i7-5500U) [Guado]
-
- - Asus ChromeBox (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
- - HP ChromeBox (Haswell Celeron 2955U/i7-4600U) [Zako]
- - Dell ChromeBox (Haswell Celeron 2955U/i3-4030U) [Tricky]
- - Acer ChromeBox (Haswell Celeron 2975U/i3-4030U) [McCloud]
+ - Acer ChromeBox CXI2 (Broadwell Celeron 3205U/i3-5010U) [Rikku]
+ - Lenovo ThinkCentre ChromeBox (Broadwell Celeron 3205U/i3-5010U) [Tidus]
+ 
+ - Asus ChromeBox CN60 (Haswell Celeron 2955U/i3-4010U/i7-4600U) [Panther]
+ - HP ChromeBox CB-1 (Haswell Celeron 2955U/i7-4600U) [Zako]
+ - Dell ChromeBox 3010 (Haswell Celeron 2955U/i3-4030U/i7-4600U) [Tricky]
+ - Acer ChromeBox CXI (Haswell Celeron 2975U/i3-4030U) [McCloud]
 "
 echo_red "Use on any other device will almost certainly brick it."
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
@@ -606,18 +562,9 @@ read -p "Do you wish to continue? [y/N] "
 #spacing
 echo -e ""
 
-# ensure hardware write protect disabled if in ChromiumOS
-if [[ "$isChromiumOS" = true ]]; then
-	if [[ "`crossystem | grep wpsw_cur`" != *"0"* ]]; then
-		echo_red "\nHardware write-protect enabled, cannot restore stock firmware."
-		read -p "Press [Enter] to return to the main menu."
-		return
-	fi
-fi
-
 #check device 
-isHswBox=`echo ${hsw_boxes[*]} | grep "<$device>"`
-isBdwBox=`echo ${bdw_boxes[*]} | grep "<$device>"`
+isHswBox=`[[ "${hsw_boxes[@]}" =~ "$device" ]] && echo "$device"`
+isBdwBox=`[[ "${bdw_boxes[@]}" =~ "$device" ]] && echo "$device"`
 if [[ "$isHswBox" == "" && "$isBdwBox" == "" ]]; then
 	echo_red "Unknown or unsupported device (${device}); cannot continue."
 	read -p "Press [Enter] to return to the main menu."
@@ -670,17 +617,24 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 else
 	#download firmware extracted from recovery image
 	echo_yellow "\nThat's ok, I'll download one for you. Which ChromeBox do you have?"
-	echo "1) Asus CN60 (Haswell)"
-	echo "2) HP CB1 (Haswell)"
-	echo "3) Dell 3010 (Haswell)"
-	echo "4) Acer CB1 (Haswell)"
-	echo "5) Asus CN62 (Broadwell)"
+	if [ "$device" != "Panther" ]; then
+		echo_yellow "I'm pretty sure it's \"$device\""
+	fi
+	
+	echo "1) Asus CN60 (Haswell) [Panther]"
+	echo "2) HP CB1 (Haswell) [Zako]"
+	echo "3) Dell 3010 (Haswell) [Tricky]"
+	echo "4) Acer CXI (Haswell) [McCloud]"
+	echo "5) Asus CN62 (Broadwell) [Guado]"
+	echo "6) Acer CXI2 (Broadwell) [Rikku]"
+	echo "7) Lenovo ThinkCentre (Broadwell) [Tidus]"
 	echo ""
 	read -p "? " fw_num
-	if [[ $fw_num -lt 1 ||  $fw_num -gt 4 ]]; then
+	if [[ $fw_num -lt 1 ||  $fw_num -gt 7 ]]; then
 		echo_red "Invalid input - cancelling"
 		read -p "Press [Enter] to return to the main menu."
 		umount /tmp/usb > /dev/null 2>&1
+		return
 	fi
 	
 	#download firmware file
@@ -695,6 +649,10 @@ else
 		4) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/Nh5EeEti;
 			;;
 		5) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/r0sKwJYe;
+			;;
+		6) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/qd59yozS;
+			;;
+		7) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/X080k5CU;
 			;;
 	esac
 	if [ $? -ne 0 ]; then
@@ -879,11 +837,11 @@ if [ $? != 0 ]; then
 	mount "${usb_device}1" /tmp/usb
 fi
 [ $? -eq 0 ] || backup_fail "USB backup device failed to mount; cannot proceed."
-model=`dmidecode | grep -m1 "Product Name:" | awk '{print $3}'`
-backupname="stock-firmware-${model}-$(date +%Y%m%d).rom"
+backupname="stock-firmware-${device}-$(date +%Y%m%d).rom"
 echo_yellow "\nSaving firmware backup as ${backupname}"
 cp /tmp/bios.bin /tmp/usb/${backupname}
 [ $? -eq 0 ] || backup_fail "Failure reading stock firmware for backup; cannot proceed."
+sync
 umount /tmp/usb > /dev/null 2>&1
 rmdir /tmp/usb
 echo_green "Firmware backup complete. Remove the USB stick and press [Enter] to continue."
@@ -1700,9 +1658,11 @@ function menu_fwupdate() {
 				poweroff;
 				exit;
 				;;
-			q)	exit;
+			q)	cleanup;
+				exit;
 				;;
-			\n)	exit;
+			\n)	cleanup;
+				exit;
 				;;
 			*)	clear;
 				menu_fwupdate;
@@ -1742,10 +1702,9 @@ function menu_kodi() {
 	echo -e "${MENU}**${NORMAL}     Standalone ${NORMAL}"
     echo -e "${MENU}**${NUMBER}  6)${MENU} Install/Update: Custom coreboot Firmware ${NORMAL}"
     echo -e "${MENU}**${NUMBER}  7)${MENU} Create OpenELEC Install Media ${NORMAL}"
-	echo -e "${MENU}**${NUMBER}  8)${MENU} Create Kodibuntu Install Media ${NORMAL}"
 	echo -e "${MENU}**${NORMAL}"
-	echo -e "${MENU}**${NUMBER}  9)${NORMAL} Reboot ${NORMAL}"
-	echo -e "${MENU}**${NUMBER} 10)${NORMAL} Power Off ${NORMAL}"
+	echo -e "${MENU}**${NUMBER}  8)${NORMAL} Reboot ${NORMAL}"
+	echo -e "${MENU}**${NUMBER}  9)${NORMAL} Power Off ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or ${RED_TEXT}q to quit${NORMAL}"
     
@@ -1793,16 +1752,12 @@ function menu_kodi() {
 				create_oe_install_media;
 				menu_kodi;
 				;;				
-			8) 	clear;
-				create_kb_install_media;
-				menu_kodi;
-				;;
-			9)	echo -e "\nRebooting...\n";
+			8)	echo -e "\nRebooting...\n";
 				cleanup;
 				reboot;
 				exit;
 				;;
-			10)	echo -e "\nPowering off...\n";
+			9)	echo -e "\nPowering off...\n";
 				cleanup;
 				poweroff;
 				exit;
