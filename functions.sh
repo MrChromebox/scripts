@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-09]"
+script_date="[2016-03-10]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
@@ -60,7 +60,7 @@ hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
 bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
 bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
-baytrail=('<Ninja>' '<Gnawty>' '<Banjo>' '<Squawks>' '<Quawks>' '<Enguarde>' '<Candy>' '<Kip>' '<Clapper>' '<Glimmer>' '<Winky>' '<Swanky>' );
+baytrail=('<Ninja>' '<Gnawty>' '<Banjo>' '<Squawks>' '<Quawks>' '<Enguarde>' '<Candy>' '<Kip>' '<Clapper>' '<Glimmer>' '<Winky>' '<Swanky>' '<Heli>');
 
 
 #text output
