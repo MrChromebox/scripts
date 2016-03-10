@@ -10,13 +10,13 @@ It also includes functionality to set the stock firmware boot flags (via set_gbb
 
 Supported Devices:
 
-function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | WP Disable  |  notes
------| :-----: | :-----: | :-----: | -----
-Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|
-Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|All x86 ChromeOS devices supported
-Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|All ChromeOS devices supported
-Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
-Restore Stock Firmware|:white_check_mark:|:x:|:white_check_mark:|
+function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | BayTrail | WP Disable  |  notes
+-----| :-----: | :-----: | :-----: | :-----: | -----
+Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|All x86 ChromeOS devices supported
+Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|All ChromeOS devices supported
+Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|:x:|:x:|Samsung Series 3 ChromeBox also supported
+Restore Stock Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|
 
 To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
@@ -26,13 +26,13 @@ To download and run this script, from a terminal shell: `cd; curl -L -O https://
 
 Supported Devices:
 
-function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | WP Disable | notes
------ | :-----: | :-----: | :-----: |-----
-Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:| |automatically updates legacy boot payload (SeaBIOS) as needed
-Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|
-Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:
-Install/Update Custom coreboot Firmware|:white_check_mark:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
-Create OpenELEC/Kodibuntu boot media|:white_check_mark:|:white_check_mark:| |added solely for convenience
+function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | BayTrail | WP Disable | notes
+----- | :-----: | :-----: | :-----: | :-----: |-----
+Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:|:white_check_mark:| |automatically updates legacy boot payload (SeaBIOS) as needed
+Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+Install/Update Custom coreboot Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
+Create OpenELEC/Kodibuntu boot media|:white_check_mark:|:white_check_mark:| | |added solely for convenience
 
 This script allows the user to install a dual-boot setup with either OpenELEC or Ubuntu
 (with or without Kodi), to set the default OS, and to set the boot timeout on the 
@@ -54,9 +54,9 @@ OpenELEC, which cannot run the above scripts due to lack of a full Bash shell.
 
 Supported Devices:
 
-function| Haswell Chromebox | Haswell/Broadwell Chromebook | notes
------ | :-----: | :-----: | -----
-Update Custom coreboot Firmware|:white_check_mark:|:x:|must already be running custom coreboot firmware, not stock
+function| Haswell Chromebox | Haswell/Broadwell Chromebook | BayTrail | notes
+----- | :-----: | :-----: | :-----: | -----
+Update Custom coreboot Firmware|:white_check_mark:|:x:|:x:|must already be running custom coreboot firmware, not stock
 
 This script will automatically check to see if an updated firmware is available, and if so, prompt the user to update.  Install-time options include ability to boot without a connected display ("headless" option) and ability to set the default device to USB (vs internal ssd). 
 
