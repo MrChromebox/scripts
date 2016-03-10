@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-07]"
+script_date="[2016-03-09]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
@@ -28,6 +28,7 @@ coreboot_file=${coreboot_hsw_box}
 seabios_hswbdw_box="seabios-hswbdw-box-20160307-mattdevo.bin"
 seabios_hsw_book="seabios-hsw-book-20160307-mattdevo.bin"
 seabios_bdw_book="seabios-bdw-book-20160307-mattdevo.bin"
+seabios_baytrail="seabios-baytrail-20160309-mattdevo.bin"
 seabios_file=${seabios_hswbdw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -59,6 +60,7 @@ hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
 bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
 bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
+baytrail=('<Ninja>' '<Gnawty>' '<Banjo>' '<Squawks>' '<Quawks>' '<Enguarde>' '<Candy>' '<Kip>' '<Clapper>' '<Glimmer>' '<Winky>' '<Swanky>' );
 
 
 #text output
@@ -236,12 +238,15 @@ isHswBdwBox=`[[ "${hsw_boxes[@]}" =~ "$device" ]] && echo "$device"`
 isHswBdwBox+=`[[ "${bdw_boxes[@]}" =~ "$device" ]] && echo "$device"`
 isHswBook=`[[ "${hsw_books[@]}" =~ "$device" ]] && echo "$device"`
 isBdwBook=`[[ "${bdw_books[@]}" =~ "$device" ]] && echo "$device"`
+isBaytrail=`[[ "${baytrail[@]}" =~ "$device" ]] && echo "$device"`
 if [ "$isHswBdwBox" != "" ]; then
 	seabios_file=$seabios_hswbdw_box
 elif [ "$isHswBook" != "" ]; then
 	seabios_file=$seabios_hsw_book
 elif [ "$isBdwBook" != "" ]; then
 	seabios_file=$seabios_bdw_book
+elif [ "$isBaytrail" != "" ]; then
+	seabios_file=$seabios_baytrail
 else
 	echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."
 	read -p "Press [Enter] to return to the main menu.";
@@ -1084,8 +1089,13 @@ echo_green "\nStage 2: Installing OpenELEC"
 select_oe_version
 
 #target partitions
-target_rootfs="${target_disk}7"
-target_kern="${target_disk}6"
+if [[ "${target_disk}" =~ "mmcblk" ]]; then
+  target_rootfs="${target_disk}p7"
+  target_kern="${target_disk}p6"
+else
+  target_rootfs="${target_disk}7"
+  target_kern="${target_disk}6"
+fi
 
 if mount|grep ${target_rootfs}
 then
@@ -1148,12 +1158,20 @@ fi
 echo -e "DEFAULT linux\nPROMPT 0\nLABEL linux\nKERNEL /KERNEL\nAPPEND boot=LABEL=KERN-C disk=LABEL=ROOT-C tty quiet" > /tmp/System/extlinux.conf
 
 #Upgrade/modify existing syslinux install
+boot_partition=""
+if [[ "${target_disk}" =~ "mmcblk" ]]; then
+  boot_partition="${target_disk}p12"
+else
+  boot_partition="${target_disk}12"
+fi
+
+
 if [ ! -d /tmp/boot ]
 then
   mkdir /tmp/boot
 fi
 if  ! mount | grep /tmp/boot > /dev/null ; then
-	mount /dev/sda12 /tmp/boot > /dev/null
+	mount $boot_partition /tmp/boot > /dev/null
 fi
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to mount boot partition; reboot and try again"
@@ -1171,7 +1189,7 @@ cp /tmp/Storage/syslinux-5.10/com32/libutil/libutil.c32 /tmp/boot/syslinux/libut
 #install/update syslinux
 cd /tmp/Storage/syslinux-5.10/linux/
 rm -f /tmp/boot/ldlinux.* 1>/dev/null 2>&1
-./syslinux -i -f /dev/sda12 -d syslinux
+./syslinux -i -f $boot_partition -d syslinux
 if [ $? -ne 0 ]; then
 	OE_install_error "Failed to install syslinux; reboot and try again"
 fi
@@ -1509,6 +1527,24 @@ function prelim_setup() {
 # Must run as root 
 [ $(whoami) == "root" ] || die "You need to run this script as root; use 'sudo bash <script name>'"
 
+#check for required tools
+which dmidecode > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo_red "Required package 'dmidecode' not found; cannot continue.  Please install and try again."
+	return -1
+fi
+which tar > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo_red "Required package 'tar' not found; cannot continue.  Please install and try again."
+	return -1
+fi
+which md5sum > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo_red "Required package 'md5sum' not found; cannot continue.  Please install and try again."
+	return -1
+fi
+
+
 #get device name
 device=`dmidecode | grep -m1 "Product Name:" | awk '{print $3}'`
 if [ $? -ne 0 ]; then
@@ -1516,18 +1552,21 @@ if [ $? -ne 0 ]; then
 	return -1
 fi
 
-#check if running under ChromeOS
-cat /etc/lsb-release | grep "Chrome OS" > /dev/null 2>&1
-if [ $? -ne 0 ]; then
+#check if running under ChromeOS / ChromiumOS
+if [ -f /etc/lsb-release ]; then
+	cat /etc/lsb-release | grep "Chrome OS" > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		isChromeOS=false
+	fi
+	cat /etc/lsb-release | grep "Chromium OS" > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		isChromiumOS=true
+	fi
+else
 	isChromeOS=false
+	isChromiumOS=false
 fi
-
-#check if running under ChromiumOS
-cat /etc/lsb-release | grep "Chromium OS" > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-	isChromiumOS=true
-fi
-
+	
 if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
 	#disable power mgmt
 	initctl stop powerd > /dev/null 2>&1
