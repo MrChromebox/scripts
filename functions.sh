@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-14]"
+script_date="[2016-03-16]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
@@ -28,7 +28,7 @@ coreboot_file=${coreboot_hsw_box}
 seabios_hswbdw_box="seabios-hswbdw-box-20160307-mattdevo.bin"
 seabios_hsw_book="seabios-hsw-book-20160307-mattdevo.bin"
 seabios_bdw_book="seabios-bdw-book-20160307-mattdevo.bin"
-seabios_baytrail="seabios-baytrail-20160309-mattdevo.bin"
+seabios_baytrail="seabios-baytrail-20160316-mattdevo.bin"
 seabios_file=${seabios_hswbdw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -249,7 +249,7 @@ elif [ "$isBaytrail" != "" ]; then
 	seabios_file=$seabios_baytrail
 else
 	echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."
-	read -p "Press [Enter] to return to the main menu.";
+	read -p "Press [Enter] to return to the main menu."
 	return
 fi
 
@@ -317,7 +317,7 @@ fi
 function update_legacy()
 {
 flash_legacy
-read -p "Press [Enter] to return to the main menu.";
+read -p "Press [Enter] to return to the main menu."
 }
 
 
@@ -891,8 +891,8 @@ recommended that you test your dual boot setup before setting these options."
 		case $n in
 			1) $gbbflagscmd 0x489 > /dev/null 2>&1; break;;
 			2) $gbbflagscmd 0x488 > /dev/null 2>&1; break;;
-			3) $gbbflagscmd 0x9 > /dev/null 2>&1; break;;
-			4) $gbbflagscmd 0x8 > /dev/null 2>&1; break;;
+			3) $gbbflagscmd 0x89 > /dev/null 2>&1; break;;
+			4) $gbbflagscmd 0x88 > /dev/null 2>&1; break;;
 			5) $gbbflagscmd 0x0 > /dev/null 2>&1; break;;
 			6) read -p "Press [Enter] to return to the main menu."; return; break;;
 			*) invalid option;;
@@ -937,8 +937,8 @@ You can always override the default using [CTRL-D] or
 		case $n in
 			1) $gbbflagscmd 0x489 > /dev/null 2>&1; break;;
 			2) $gbbflagscmd 0x488 > /dev/null 2>&1; break;;
-			3) $gbbflagscmd 0x9 > /dev/null 2>&1; break;;
-			4) $gbbflagscmd 0x8 > /dev/null 2>&1; break;;
+			3) $gbbflagscmd 0x89 > /dev/null 2>&1; break;;
+			4) $gbbflagscmd 0x88 > /dev/null 2>&1; break;;
 			5) $gbbflagscmd 0x0 > /dev/null 2>&1; break;;
 			6) read -p "Press [Enter] to return to the main menu."; return; break;;
 			*) invalid option;;
@@ -983,13 +983,13 @@ Current hwid is $_hwid. Enter a new hwid (use all caps):"
 			read -p "Press [Enter] to return to the main menu."
 			return
 		fi
-		gbb_utility --set --hwid='$hwid' /tmp/bios.temp /tmp/bios.new > /dev/null
+		gbb_utility --set --hwid="${hwid}" /tmp/bios.temp > /dev/null
 		if [ $? -ne 0 ]; then
 			echo_red "\nError setting hwid."
 			read -p "Press [Enter] to return to the main menu."
 			return
 		fi
-		flashrom -w /tmp/bios.new > /dev/null 2>&1
+		flashrom -w /tmp/bios.temp > /dev/null 2>&1
 		if [ $? -ne 0 ]; then
 			echo_red "\nError writing back firmware; unable to set hwid."
 			read -p "Press [Enter] to return to the main menu."
