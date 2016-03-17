@@ -60,7 +60,7 @@ hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
 hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
 bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
 bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
-baytrail=('<Ninja>' '<Gnawty>' '<Banjo>' '<Squawks>' '<Quawks>' '<Enguarde>' '<Candy>' '<Kip>' '<Clapper>' '<Glimmer>' '<Winky>' '<Swanky>' '<Heli>' '<Orco>');
+baytrail=('<Ninja>' '<Gnawty>' '<Banjo>' '<Squawks>' '<Quawks>' '<Enguarde>' '<Candy>' '<Kip>' '<Clapper>' '<Glimmer>' '<Winky>' '<Swanky>' '<Heli>' '<Orco>' '<Sumo>');
 
 
 #text output
