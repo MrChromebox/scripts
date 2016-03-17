@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-16]"
+script_date="[2016-03-17]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
@@ -657,7 +657,7 @@ else
 			;;
 		6) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/qd59yozS;
 			;;
-		7) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/X080k5CU;
+		7) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/uidxAG1E;
 			;;
 	esac
 	if [ $? -ne 0 ]; then
