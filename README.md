@@ -15,7 +15,7 @@ function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | BayTrail 
 Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|All x86 ChromeOS devices supported
 Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|All ChromeOS devices supported
-Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|:x:|:x:|Samsung Series 3 ChromeBox also supported
+Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
 Restore Stock Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|
 
 To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
