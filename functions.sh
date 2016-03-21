@@ -12,11 +12,11 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-20]"
+script_date="[2016-03-21]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
-OE_version_latest="6.94.3"
+OE_version_latest="6.95.1"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160307-mattdevo.rom"
 coreboot_guado="coreboot-seabios-guado-20160307-mattdevo.rom"
@@ -134,8 +134,8 @@ function select_oe_version()
 	OE_url=${OE_url_EGL}
 	OE_version="${OE_version_base}-${OE_version_latest}"
 	if [ "$OE_version_latest" != "$OE_version_stable" ]; then
-		read -p "Do you want to install an unofficial beta of OpenELEC 7.0 (${OE_version_latest}) ?
-It is based on Kodi 16.1-rc2 and is reasonably stable, but unofficial/unsupported.
+		read -p "Do you want to install an OpenELEC 7.0 beta version (${OE_version_latest}) ?
+It is based on Kodi 16.1-rc2, is reasonably stable, and is the recommended version.
 
 If N, the latest stable version of OpenELEC 6.0 ($OE_version_stable) based on Kodi 15.2 (final) will be used. [Y/n] "
 		if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
