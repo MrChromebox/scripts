@@ -12,23 +12,23 @@
 #
 
 #define these here for easy updating
-script_date="[2016-03-21]"
+script_date="[2016-04-03]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
 OE_version_latest="6.95.1"
 
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160307-mattdevo.rom"
-coreboot_guado="coreboot-seabios-guado-20160307-mattdevo.rom"
-coreboot_rikku="coreboot-seabios-rikku-20160307-mattdevo.rom"
-coreboot_tidus="coreboot-seabios-tidus-20160307-mattdevo.rom"
-coreboot_stumpy="coreboot-seabios-stumpy-20160307-mattdevo.rom"
+coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160403-mattdevo.rom"
+coreboot_guado="coreboot-seabios-guado-20160403-mattdevo.rom"
+coreboot_rikku="coreboot-seabios-rikku-20160403-mattdevo.rom"
+coreboot_tidus="coreboot-seabios-tidus-20160403-mattdevo.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-20160403-mattdevo.rom"
 coreboot_file=${coreboot_hsw_box}
 
-seabios_hswbdw_box="seabios-hswbdw-box-20160307-mattdevo.bin"
-seabios_hsw_book="seabios-hsw-book-20160307-mattdevo.bin"
-seabios_bdw_book="seabios-bdw-book-20160307-mattdevo.bin"
-seabios_baytrail="seabios-baytrail-20160316-mattdevo.bin"
+seabios_hswbdw_box="seabios-hswbdw-box-20160403-mattdevo.bin"
+seabios_hsw_book="seabios-hsw-book-20160403-mattdevo.bin"
+seabios_bdw_book="seabios-bdw-book-20160403-mattdevo.bin"
+seabios_baytrail="seabios-baytrail-20160403-mattdevo.bin"
 seabios_file=${seabios_hswbdw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
@@ -750,11 +750,15 @@ if [ ! -f ${cbfstoolcmd} ]; then
 	else
 		#have to use /dev/sdx12 due to noexec restrictions
 		rootdev=`rootdev -d -s`
-		boot_mounted=`mount | grep ${rootdev}12`
+		part_num="12"
+		if [[ "${rootdev}" =~ "mmcblk" ]]; then
+			part_num="p12"
+		fi	
+		boot_mounted=`mount | grep ${rootdev}${part_num}`
 		if [ "${boot_mounted}" == "" ]; then
 			#mount boot
 			mkdir /tmp/boot >/dev/null 2>&1
-			mount `rootdev -d -s`12 /tmp/boot
+			mount `rootdev -d -s`${part_num} /tmp/boot
 			if [ $? -ne 0 ]; then 
 				echo_red "Error mounting boot partition; cannot proceed."
 				return 1
