@@ -12,11 +12,11 @@
 #
 
 #define these here for easy updating
-script_date="[2016-04-03]"
+script_date="[2016-04-10]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
-OE_version_latest="6.95.1"
+OE_version_latest="6.95.2"
 
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-20160403-mattdevo.rom"
 coreboot_guado="coreboot-seabios-guado-20160403-mattdevo.rom"
@@ -28,7 +28,7 @@ coreboot_file=${coreboot_hsw_box}
 seabios_hswbdw_box="seabios-hswbdw-box-20160403-mattdevo.bin"
 seabios_hsw_book="seabios-hsw-book-20160403-mattdevo.bin"
 seabios_bdw_book="seabios-bdw-book-20160403-mattdevo.bin"
-seabios_baytrail="seabios-baytrail-20160403-mattdevo.bin"
+seabios_baytrail="seabios-baytrail-20160410-mattdevo.bin"
 seabios_file=${seabios_hswbdw_box}
 
 hswbdw_headless_vbios="hswbdw_vgabios_1039_cbox_headless.dat"
