@@ -12,7 +12,7 @@
 #
 
 #define these here for easy updating
-script_date="[2016-04-10]"
+script_date="[2016-04-14]"
 
 OE_version_base="OpenELEC-Generic.x86_64"
 OE_version_stable="6.0.398-Intel_EGL"
@@ -56,11 +56,11 @@ pxeDefault=false
 
 #device groups
 device=""
-hsw_boxes=('<Panther>' '<Zako>' '<Tricky>' '<Mccloud>');
-hsw_books=('<Falco>' '<Leon>' '<Monroe>' '<Peppy>' '<Wolf>');
-bdw_boxes=('<Guado>' '<Rikku>' '<Tidus>');
-bdw_books=('<Auron_Paine>' '<Auron_Yuna>' '<Gandof>' '<Lulu>' '<Samus>');
-baytrail=('<Ninja>' '<Gnawty>' '<Banjo>' '<Squawks>' '<Quawks>' '<Enguarde>' '<Candy>' '<Kip>' '<Clapper>' '<Glimmer>' '<Winky>' '<Swanky>' '<Heli>' '<Orco>' '<Sumo>');
+hsw_boxes=('<panther>' '<zako>' '<tricky>' '<mccloud>');
+hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
+bdw_boxes=('<guado>' '<rikku>' '<tidus>');
+bdw_books=('<auron_paine>' '<auron_yuna>' '<gandof>' '<lulu>' '<samus>');
+baytrail=('<ninja>' '<gnawty>' '<banjo>' '<squawks>' '<quawks>' '<enguarde>' '<candy>' '<kip>' '<clapper>' '<glimmer>' '<winky>' '<swanky>' '<heli>' '<orco>' '<sumo>');
 
 
 #text output
@@ -1550,7 +1550,7 @@ fi
 
 
 #get device name
-device=`dmidecode | grep -m1 "Product Name:" | awk '{print $3}'`
+device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]')
 if [ $? -ne 0 ]; then
 	echo_red "Unable to determine ChromeBox/Book model; cannot continue."
 	return -1
