@@ -1550,7 +1550,7 @@ fi
 
 
 #get device name
-device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]')
+device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | awk '{print $1}')
 if [ $? -ne 0 ]; then
 	echo_red "Unable to determine ChromeBox/Book model; cannot continue."
 	return -1
