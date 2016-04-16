@@ -25,7 +25,7 @@ curl -s -L -O ${script_url}/functions.sh
 #do setup stuff
 prelim_setup
 if [ $? -ne 0 ]; then
-	return -1
+	exit 1
 fi
 
 #show menu
