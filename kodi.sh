@@ -303,7 +303,7 @@ cp /tmp/Storage/${OE_version}/target/SYSTEM /tmp/System/
 [ -s /tmp/System/SYSTEM ] || OE_install_error "OE SYSTEM has file size 0"
 
 #update legacy BIOS
-flash_legacy skip_usb > /dev/null
+flash_rwlegacy skip_usb > /dev/null
 
 echo_green "OpenELEC Installation Complete"
 read -p "Press [Enter] to return to the main menu."
@@ -330,7 +330,7 @@ rec_ubuntu_size=$(($max_ubuntu_size - 1))
 if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	
 	#update legacy BIOS
-	flash_legacy skip_usb > /dev/null
+	flash_rwlegacy skip_usb > /dev/null
 	
 	echo_green "Stage 1: Repartitioning the internal HDD"
 	
@@ -569,7 +569,7 @@ rm -rf /tmp/Storage/*
 
 #update legacy BIOS
 if [ "$isChromeOS" = true ]; then
-	flash_legacy skip_usb > /dev/null
+	flash_rwlegacy skip_usb > /dev/null
 fi
 	
 echo_green "OpenELEC USB Installation Complete"
