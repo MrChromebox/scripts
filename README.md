@@ -3,20 +3,22 @@ Collection of scripts to install custom firmware (full ROM), update the fimware/
 
 &nbsp;
 
-**setup-firmware.sh** allows for the installation of custom firmware (full ROM) and/or an updated legacy boot payload (RW_LEGACY) on supported ChromeOS devices.
+**setup-firmware.sh** allows for the installation of custom firmware (full ROM) and/or an updated legacy boot payload (via either the RW_LEGACY or BOOT_STUB firmware region) on supported ChromeOS devices.
 
-It also includes functionality to set the stock firmware boot flags (via set_gbb_flags.sh), and to set the devices hardware ID (via gbb_utility). This script can be used to restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. 
+It also includes functionality to set the stock firmware boot flags (via gbb_utility), and to set the device's hardware ID (also via gbb_utility). This script can be used to restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. On Baytrail devices, when flashing the BOOT_STUB, a backup is automatically saved in the (unused) RW_LEGACY region, from which it can later be restored.
 
 
 Supported Devices:
 
-function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | BayTrail | WP Disable  |  notes
+function| Haswell/Broadwell | BayTrail | WP Disable req. |  notes
 -----| :-----: | :-----: | :-----: | :-----: | -----
-Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|All x86 ChromeOS devices supported
-Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|All ChromeOS devices supported
-Update/Install Custom coreboot Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
-Restore Stock Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|
+Install/Update RW_LEGACY Payload|:white_check_mark:|:white_check_mark:|
+Install/Update BOOT_STUB Payload|:x:|:white_check_mark:|:white_check_mark:|
+Install/Update coreboot Firmware (Full ROM)|:white_check_mark:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported; Chromebook support via coolstar's ROMs
+Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|All x86 ChromeOS devices supported
+Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|All ChromeOS devices supported
+Restore Stock BOOT_STUB|:x:|:white_check_mark:|:white_check_mark:|
+Restore Stock Firmware|:white_check_mark:|:x:|:white_check_mark:|
 
 To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
 
