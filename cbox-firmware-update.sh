@@ -3,7 +3,7 @@
 # This script will install/update the custom coreboot 
 # firmware on a Haswell-based Asus/HP/Acer/Dell ChromeBox
 #
-# Created by Matt DeVillier	<matt.devillier@gmail.com>
+# Created by Matt Devo	<mr.chromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.
@@ -25,8 +25,8 @@ if [ $(whoami) != "root" ]; then
 fi
 
 #header
-echo -e "\nChromeBox Firmware Updater v1.6"
-echo -e "(c) Matt DeVillier <matt.devillier@gmail.com>"
+echo -e "\nChromeBox Firmware Updater v1.7"
+echo -e "(c) Matt Devo <mr.chromebox@gmail.com>"
 echo -e "$***************************************************"
 
 #show warning
