@@ -591,11 +591,11 @@ fi
 cd /tmp
 
 #download SeaBIOS payload
-curl -s -L -O ${dropbox_url}/${seabios_payload}
-curl -s -L -O ${dropbox_url}/${seabios_payload}.md5 
+curl -s -L -O ${dropbox_url}/${bootstub_payload_baytrail}
+curl -s -L -O ${dropbox_url}/${bootstub_payload_baytrail}.md5 
 
 #verify checksum on downloaded file
-md5sum -c ${seabios_payload}.md5 --quiet > /dev/null 2>&1
+md5sum -c ${bootstub_payload_baytrail}.md5 --quiet > /dev/null 2>&1
 [[ $? -ne 0 ]] && { exit_red "SeaBIOS payload download checksum fail; download corrupted, cannot flash."; return 1; }
 
 #read BOOT_STUB and RW_LEGACY slots
@@ -634,28 +634,30 @@ echo_yellow "\nModifying BOOT_STUB for legacy boot"
 ${cbfstoolcmd} boot_stub.bin remove -n fallback/payload > /dev/null 2>&1
 ${cbfstoolcmd} boot_stub.bin remove -n fallback/vboot > /dev/null 2>&1
 ${cbfstoolcmd} boot_stub.bin remove -n bootorder > /dev/null 2>&1
-${cbfstoolcmd} boot_stub.bin add-payload -n fallback/payload -f ${seabios_payload} -c lzma > /dev/null 2>&1
-${cbfstoolcmd} boot_stub.bin add -n bootorder -f bootorder -t raw > /dev/null 2>&1
-${cbfstoolcmd} boot_stub.bin add-int -i 3000 -n etc/boot-menu-wait > /dev/null 2>&1
-if [ "$isBaytrail" != "" ]; then
+${cbfstoolcmd} boot_stub.bin add-payload -n fallback/payload -f ${bootstub_payload_baytrail} -c lzma > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    exit_red "There was an error modifying the BOOT_STUB payload, nothing has been flashed."; return 1
+else
+    ${cbfstoolcmd} boot_stub.bin add -n bootorder -f bootorder -t raw > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 3000 -n etc/boot-menu-wait > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071c000 -n etc/sdcard0 > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071f000 -n etc/sdcard1 > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081f000 -n etc/sdcard2 > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091c000 -n etc/sdcard3 > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091f000 -n etc/sdcard4 > /dev/null 2>&1
-fi
 
-#flash modified BOOT_STUB back
-echo_yellow "Flashing modified BOOT_STUB"
-${flashromcmd} -w -i BOOT_STUB:boot_stub.bin > /dev/null 2>&1
-
-if [ $? -ne 0 ]; then
-    #flash back stock BOOT_STUB
-    dd if=rw_legacy.bin of=boot_stub.bin bs=1M count=1 > /dev/null 2>&1
+    #flash modified BOOT_STUB back
+    echo_yellow "Flashing modified BOOT_STUB"
     ${flashromcmd} -w -i BOOT_STUB:boot_stub.bin > /dev/null 2>&1
-    echo_red "There was an error flashing the modified BOOT_STUB, but the stock one has been restored."
-else
-    echo_green "Legacy boot capable BOOT_STUB successfully flashed"
+
+    if [ $? -ne 0 ]; then
+        #flash back stock BOOT_STUB
+        dd if=rw_legacy.bin of=boot_stub.bin bs=1M count=1 > /dev/null 2>&1
+        ${flashromcmd} -w -i BOOT_STUB:boot_stub.bin > /dev/null 2>&1
+        echo_red "There was an error flashing the modified BOOT_STUB, but the stock one has been restored."
+    else
+        echo_green "Legacy boot capable BOOT_STUB successfully flashed"
+    fi
 fi
 read -p "Press [Enter] to return to the main menu."
 }
