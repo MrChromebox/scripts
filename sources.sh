@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-04-18]"
+script_date="[2016-04-19]"
 
 #where the stuff is
 firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
@@ -46,10 +46,10 @@ coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
 seabios_hswbdw_box="seabios-hswbdw-box-20160418-mattdevo.bin"
 seabios_hsw_book="seabios-hsw-book-20160418-mattdevo.bin"
 seabios_bdw_book="seabios-bdw-book-20160418-mattdevo.bin"
-seabios_baytrail="seabios-baytrail-20160410-mattdevo.bin"
+seabios_baytrail="seabios-baytrail-20160419-mattdevo.bin"
 
 #BOOT_STUB payload
-bootstub_payload_baytrail="seabios-payload-20160418-mattdevo.bin"
+bootstub_payload_baytrail="seabios-payload-20160419-mattdevo.bin"
 
 #hsw/bdw headless VBIOS
 hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"
