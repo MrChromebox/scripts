@@ -84,7 +84,7 @@ if [ "$useHeadless" = true  ]; then
     fi      
 fi
 #flash updated legacy BIOS
-echo_yellow "Installing Legacy BIOS / RW_LEGACY"
+echo_yellow "Installing Legacy BIOS / RW_LEGACY (${seabios_file})"
 ${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
 echo_green "Legacy BIOS successfully updated."  
 }
@@ -252,7 +252,7 @@ if [ "$addPXE" = true  ]; then
     fi      
 fi
 #flash coreboot firmware
-echo_yellow "Installing custom coreboot firmware: ${coreboot_file}"
+echo_yellow "Installing custom coreboot firmware (${coreboot_file})"
 ${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo_green "Custom coreboot firmware successfully installed/updated."
@@ -570,7 +570,7 @@ function modify_boot_stub()
 #check baytrail
 [[ "$isBaytrail" = false ]] && { exit_red "\nThis functionality is only available for Baytrail ChromeOS devices currently"; return 1; }
 
-echo_green "\nInstall/Update Legacy BIOS/SeaBIOS in BOOT_STUB firmware slot"
+echo_green "\nInstall/Update Legacy BIOS (BOOT_STUB)"
 
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
