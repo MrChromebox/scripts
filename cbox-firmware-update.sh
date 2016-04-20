@@ -25,7 +25,7 @@ if [ $(whoami) != "root" ]; then
 fi
 
 #header
-echo -e "\nChromeBox Firmware Updater v1.7"
+echo -e "\nChromeBox Firmware Updater v1.8"
 echo -e "(c) Matt Devo <mr.chromebox@gmail.com>"
 echo -e "$***************************************************"
 
@@ -51,9 +51,9 @@ if [[ $? -ne 0 || ! -f latest.version ]]; then
 	cd ${working_dir}
 	exit
 fi
-curr_fw=$(echo `dmesg | grep -m1 "DMI: Google Panther" | awk '{print $NF}'` | awk -F'/' '{print $3$1$2}')
+curr_fw=$(echo `dmesg | grep -i -m1 "DMI: Google Panther" | awk '{print $NF}'` | awk -F'/' '{print $3$1$2}')
 if [ "$curr_fw" == "" ]; then
-	curr_fw=$(echo `dmesg | grep -m1 "Panther, BIOS" | awk '{print $NF}'` | awk -F'/' '{print $3$1$2}')
+	curr_fw=$(echo `dmesg | grep -i -m1 "Panther, BIOS" | awk '{print $NF}'` | awk -F'/' '{print $3$1$2}')
 	if [ "$curr_fw" == "" ]; then
 		echo -e "Error: unable to determine current firmware version; aborting."
 		exit
@@ -156,12 +156,12 @@ if [ $? -ne 0 ]; then
 	echo -e "Failure extracting MAC address from current firmware; default will be used"
 fi
 
-#download firmware file
+#download firmware files
 echo -e "\nDownloading coreboot firmware"
 curl -s -L -O "${dropbox_url}${coreboot_file}"
 curl -s -L -O "${dropbox_url}${coreboot_file}.md5"
-curl -s -L -O "${dropbox_url}bootorder"
-curl -s -L -O "${dropbox_url}hswbdw_vgabios_1039_cbox_headless.dat"
+curl -s -L -o bootorder "${dropbox_url}bootorder.usb"
+curl -s -L -O "${dropbox_url}hswbdw_vgabios_1040_cbox_headless.dat"
 curl -s -L -O "${dropbox_url}10ec8168.rom"
 #verify checksum on downloaded file
 md5sum -c ${coreboot_file}.md5 > /dev/null 2>&1
@@ -178,7 +178,7 @@ if [ $? -eq 0 ]; then
 	#useHeadless?
 	if [ "$useHeadless" = true  ]; then
 		${cbfstoolcmd} ${coreboot_file} remove -n pci8086,0406.rom
-		${cbfstoolcmd} ${coreboot_file} add -f /tmp/hswbdw_vgabios_1039_cbox_headless.dat -n pci8086,0406.rom -t optionrom
+		${cbfstoolcmd} ${coreboot_file} add -f /tmp/hswbdw_vgabios_1040_cbox_headless.dat -n pci8086,0406.rom -t optionrom
 	fi
 	#addPXE?
 	if [ "$addPXE" = true  ]; then
