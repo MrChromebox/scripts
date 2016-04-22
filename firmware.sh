@@ -116,8 +116,8 @@ read -p "Do you wish to continue? [y/N] "
 #spacing
 echo -e ""
 
-# ensure hardware write protect disabled if in ChromeOS/ChromiumOS
-if [[ "$isChromeOS" = true && "`crossystem | grep wpsw_cur`" != *"0"* ]]; then
+# ensure hardware write protect disabled if in ChromeOS
+if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != "0" && "$(crossystem wpsw_boot)" != "0" ]]; then
     exit_red "\nHardware write-protect enabled, cannot flash coreboot firmware."; return 1
 fi
 
@@ -583,7 +583,7 @@ read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y"|| "$REPLY" = "y" ]] || return
 
 #check WP status
-if [[ "$isChromeOS" = true && "`crossystem wpsw_cur`" != "0" && "`crossystem wpsw_boot`" != "0" ]]; then
+if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != "0" && "$(crossystem wpsw_boot)" != "0" ]]; then
     exit_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot modify BOOT_STUB."; return 1
 fi
 
