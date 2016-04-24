@@ -84,7 +84,7 @@ echo -e "\nDevices available:\n"
 num_usb_devs=0
 for dev in "${usb_devs[@]}" 
 do
-num_usb_devs=$num_usb_devs+1
+let "num_usb_devs+=1"
 vendor=$(udevadm info --query=all --name=sd${dev} | grep -E "ID_VENDOR=" | awk -F"=" '{print $2}')
 model=$(udevadm info --query=all --name=sd${dev} | grep -E "ID_MODEL=" | awk -F"=" '{print $2}')
 sz=$(fdisk -l 2> /dev/null | grep "Disk /dev/sd${dev}" | awk '{print $3}')
