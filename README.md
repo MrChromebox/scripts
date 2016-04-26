@@ -30,18 +30,18 @@ Supported Devices:
 
 function| Haswell/Broadwell Chromebox | Haswell/Broadwell Chromebook | BayTrail | WP Disable | notes
 ----- | :-----: | :-----: | :-----: | :-----: |-----
-Dual Boot (OpenELEC/Ubuntu)|:white_check_mark:|:white_check_mark:|:white_check_mark:| |automatically updates legacy boot payload (RW_LEGACY) as needed
+Dual Boot (LibreELEC/GalliumOS)|:white_check_mark:|:white_check_mark:|:white_check_mark:| |automatically updates legacy boot payload (RW_LEGACY) as needed
 Update Legacy Boot Payload|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 Set Firmware Boot Options|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 Install/Update Custom coreboot Firmware|:white_check_mark:|:x:|:x:|:white_check_mark:|Samsung Series 3 ChromeBox also supported
-Create OpenELEC boot media|:white_check_mark:|:white_check_mark:| | |added solely for convenience
+Create LibreELEC boot media|:white_check_mark:|:white_check_mark:| | |added solely for convenience
 
-This script allows the user to install a dual-boot setup with either OpenELEC or Ubuntu
+This script allows the user to install a dual-boot setup with either LibreELEC or GalliumOS
 (with or without Kodi), to set the default OS, and to set the boot timeout on the 
 developer mode splash screen.  It also provides for the installation of an updated
-legacy boot payload (RW_LEGACY) for devices that need it.
+legacy boot payload (in the RW_LEGACY firmware slot) for devices that need it.
 
-It also allows the user to flash custom firmware (full ROM), turning a ChromeBox into a regular PC, and provides for the creation of installation media for OpenELEC; though with the custom firmware, any off-the-shelf OS can be installed (including Windows 8.1/10).
+It also allows the user to flash custom firmware (full ROM), turning a ChromeBox into a regular PC, and provides for the creation of installation media for LibreELEC; though with the custom firmware, any off-the-shelf OS can be installed (including Windows 8.1/10).
 
 setup-kodi.sh will run on any Linux system with a full bash shell; the dual-boot functionality is restricted to ChromeOS.  
 
@@ -52,7 +52,7 @@ More details and support for this script can be found at http://forum.kodi.tv/sh
 &nbsp;
 
 **cbox-firmware-update.sh** exists solely to update the custom firmware (full ROM) on Haswell ChromeBoxes running
-OpenELEC, which cannot run the above scripts due to lack of a full Bash shell.
+Open/LibreELEC, which cannot run the above scripts due to lack of a full Bash shell.
 
 Supported Devices:
 
