@@ -12,7 +12,7 @@ function flash_rwlegacy()
 cd /tmp
 
 # set dev mode boot flags 
-if [ "${isChromeos}" = true ]; then
+if [ "${isChromeOS}" = true ]; then
     crossystem dev_boot_legacy=1 dev_boot_signed_only=0 > /dev/null 2>&1
 fi
 
