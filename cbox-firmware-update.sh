@@ -3,7 +3,7 @@
 # This script will install/update the custom coreboot 
 # firmware on a Haswell-based Asus/HP/Acer/Dell ChromeBox
 #
-# Created by Matt Devo	<mr.chromebox@gmail.com>
+# Created by Matt Devo	<mrchromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.

@@ -4,7 +4,7 @@
 # ChromeOS devices for Kodi installation via
 # OpenELEC or Ubuntu/Kodibuntu
 #
-# Created by Matt DeVillier	<matt.devillier@gmail.com>
+# Created by Matt Devo	<mrchromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.

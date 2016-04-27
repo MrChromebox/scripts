@@ -5,7 +5,7 @@
 # a custom coreboot firmware for supported
 # ChromeOS devices 
 #
-# Created by Matt DeVillier	<matt.devillier@gmail.com>
+# Created by Matt Devo	<mrchromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.
