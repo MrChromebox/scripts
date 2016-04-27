@@ -5,7 +5,7 @@ Collection of scripts to install custom firmware (full ROM), update the fimware/
 
 **setup-firmware.sh** allows for the installation of custom firmware (full ROM) and/or an updated legacy boot payload (via either the RW_LEGACY or BOOT_STUB firmware region) on supported ChromeOS devices.
 
-It also includes functionality to set the stock firmware boot flags (via gbb_utility), and to set the device's hardware ID (also via gbb_utility). This script can be used to restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. On Baytrail devices, when flashing the BOOT_STUB, a backup is automatically saved in the (unused) RW_LEGACY region, from which it can later be restored.
+It also includes functionality to set the stock firmware boot flags (via gbb_utility), and to set the device's hardware ID (also via gbb_utility). This script can be used to restore the stock firmware on a Haswell or Broadwell ChromeBox, either from a backup file (on USB) or from a generic recovery image firmware file (which it will download).  If the latter is used, the device-specific VPD (vital product data) is extracted from the running firmware and merged with the generic firmware file, to ensure the device's unique MAC address, serial #, etc are maintained. On Baytrail devices, when flashing the BOOT_STUB, a backup is automatically saved in the (unused) RW_LEGACY region, from which it can later be restored (via this same script).
 
 
 Supported Devices:
@@ -20,7 +20,7 @@ Set Hardware ID|:white_check_mark:|:white_check_mark:|:white_check_mark:|All Chr
 Restore Stock BOOT_STUB|:x:|:white_check_mark:|:white_check_mark:|
 Restore Stock Firmware|:white_check_mark:|:x:|:white_check_mark:|
 
-To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/1hFfO3; sudo bash 1hFfO3`
+To download and run this script, from a terminal shell: `cd ~; curl -L -O http://mrchromebox.tech/firmware-util.sh; sudo bash firmware-util.sh`
 
 &nbsp;
 
@@ -43,9 +43,9 @@ legacy boot payload (in the RW_LEGACY firmware slot) for devices that need it.
 
 It also allows the user to flash custom firmware (full ROM), turning a ChromeBox into a regular PC, and provides for the creation of installation media for LibreELEC; though with the custom firmware, any off-the-shelf OS can be installed (including Windows 8.1/10).
 
-setup-kodi.sh will run on any Linux system with a full bash shell; the dual-boot functionality is restricted to ChromeOS.  
+setup-kodi.sh will run on any Linux system with a full bash shell; the dual-boot functionality is restricted to ChromeOS.
 
-To download and run this script, from a terminal shell: `cd; curl -L -O https://goo.gl/FdvHF6; sudo bash FdvHF6`
+To download and run this script, from a terminal shell: `cd ~; curl -L -O http://mrchromebox.tech/setup-kodi.sh; sudo bash setup-kodi.sh`
 
 More details and support for this script can be found at http://forum.kodi.tv/showthread.php?tid=194362
 
@@ -62,4 +62,4 @@ Update Custom coreboot Firmware|:white_check_mark:|:x:|:x:|must already be runni
 
 This script will automatically check to see if an updated firmware is available, and if so, prompt the user to update.  Install-time options include ability to boot without a connected display ("headless" option) and ability to set the default device to USB (vs internal ssd). 
 
-To download and run this script, from a ssh shell: `cd; curl -L -O https://goo.gl/SoCQtG; bash SoCQtG`
+To download and run this script, from a ssh shell: `cd ~; curl -L -O http://mrchromebox.tech/cbox-firmware-update.sh; bash cbox-firmware-update.sh`
