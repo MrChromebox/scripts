@@ -641,10 +641,11 @@ else
     ${cbfstoolcmd} boot_stub.bin add -n bootorder -f bootorder -t raw > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 3000 -n etc/boot-menu-wait > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071c000 -n etc/sdcard0 > /dev/null 2>&1
-    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071f000 -n etc/sdcard1 > /dev/null 2>&1
-    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081f000 -n etc/sdcard2 > /dev/null 2>&1
-    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091c000 -n etc/sdcard3 > /dev/null 2>&1
-    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091f000 -n etc/sdcard4 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071d000 -n etc/sdcard1 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071f000 -n etc/sdcard2 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081f000 -n etc/sdcard3 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091c000 -n etc/sdcard4 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091f000 -n etc/sdcard5 > /dev/null 2>&1
 
     #flash modified BOOT_STUB back
     echo_yellow "Flashing modified BOOT_STUB"
