@@ -134,9 +134,13 @@ fi
 
 #peppy special case
 if [ "$device" = "peppy" ]; then
-	read -p "Some Peppy models use an Elan trackpad instead of the more common
-Cypress trackpad. Does your Peppy have an Elan pad? [y/N]"
-	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && coreboot_file=${coreboot_peppy_elan}
+    hasElan=$(cat /proc/bus/input/devices | grep "Elan")
+    hasCypress=$(cat /proc/bus/input/devices | grep "Cypress")
+    if [[ $hasElan = "" && $hasCypress = "" ]]; then
+        exit_red "Error: cannot determine touchpad type; cannot continue."; return 1
+    elif [[ $hasElan != "" ]]; then 
+        coreboot_file=${coreboot_peppy_elan}
+    fi
 fi
 
 #read existing firmware and try to extract MAC address info
