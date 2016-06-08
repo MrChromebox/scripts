@@ -137,7 +137,8 @@ if [ "$device" = "peppy" ]; then
     hasElan=$(cat /proc/bus/input/devices | grep "Elan")
     hasCypress=$(cat /proc/bus/input/devices | grep "Cypress")
     if [[ $hasElan = "" && $hasCypress = "" ]]; then
-        exit_red "Error: cannot determine touchpad type; cannot continue."; return 1
+        read -p "Unable to automatically determine trackpad type. Does your Peppy have an Elan pad? [y/N]"
+        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && coreboot_file=${coreboot_peppy_elan}
     elif [[ $hasElan != "" ]]; then 
         coreboot_file=${coreboot_peppy_elan}
     fi
