@@ -408,6 +408,7 @@ if [[ "$ubuntu_package" = "" || "$packageValid" = "" ]]; then
 fi
 
 #select Ubuntu version
+useBeta=""
 if [ "$ubuntu_package" != "galliumos" ]; then
 	validVersions=('<lts>' '<latest>' '<dev>' '<15.10>' '<15.04>' '<14.10>' '<14.04>');
 	echo -e "\nEnter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
@@ -418,6 +419,9 @@ If no (valid) version is entered, 'latest' will be used."
 	if [[ "$ubuntu_version" = "" || "$versionValid" = "" ]]; then
 		ubuntu_version="latest"
 	fi
+else
+    read -p "Do you wish use the latest beta version? [Y/n] "
+    [[ "$REPLY" != "n" && "$REPLY" != "N" ]] && useBeta="-r nightly"
 fi
 
 
@@ -437,7 +441,7 @@ echo -e ""
 #Install via chrx
 export CHRX_NO_REBOOT=1
 curl -L -s -o chrx ${chrx_url}
-sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install
+sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $useBeta
 
 #chrx will end with prompt for user to press enter to reboot
 read -p ""
