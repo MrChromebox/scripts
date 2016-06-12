@@ -256,6 +256,13 @@ if [ "$addPXE" = true  ]; then
         fi
     fi      
 fi
+
+#disable software write-protect
+${flashromcmd} --wp-disable > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    exit_red "Error disabling software write-protect; unable to flash firmware."; return 1
+fi
+
 #flash coreboot firmware
 echo_yellow "Installing custom coreboot firmware (${coreboot_file})"
 ${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
