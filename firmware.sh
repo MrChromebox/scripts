@@ -646,6 +646,13 @@ echo_yellow "\nModifying BOOT_STUB for legacy boot"
 ${cbfstoolcmd} boot_stub.bin remove -n fallback/payload > /dev/null 2>&1
 ${cbfstoolcmd} boot_stub.bin remove -n fallback/vboot > /dev/null 2>&1
 ${cbfstoolcmd} boot_stub.bin remove -n bootorder > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/boot-menu-wait > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/sdcard0 > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/sdcard1 > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/sdcard2 > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/sdcard3 > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/sdcard4 > /dev/null 2>&1
+${cbfstoolcmd} boot_stub.bin remove -n etc/sdcard5 > /dev/null 2>&1
 ${cbfstoolcmd} boot_stub.bin add-payload -n fallback/payload -f ${bootstub_payload_baytrail} -c lzma > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     exit_red "There was an error modifying the BOOT_STUB payload, nothing has been flashed."; return 1
