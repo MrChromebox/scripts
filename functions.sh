@@ -20,12 +20,15 @@ isBdwBox=false
 isHswBook=false
 isBdwBook=false
 isBaytrail=false
+bayTrailHasFullROM=false
 
 hsw_boxes=('<panther>' '<zako>' '<tricky>' '<mccloud>');
 hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
 bdw_books=('<auron_paine>' '<auron_yuna>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<ninja>' '<gnawty>' '<banjo>' '<squawks>' '<quawks>' '<enguarde>' '<candy>' '<kip>' '<clapper>' '<glimmer>' '<winky>' '<swanky>' '<heli>' '<orco>' '<sumo>');
+baytrail_full_rom=('<ninja>');
+
 
 #menu text output
 NORMAL=$(echo "\033[m")
@@ -260,6 +263,7 @@ fi
 [[ "${hsw_books[@]}" =~ "$device" ]] && isHswBook=true
 [[ "${bdw_books[@]}" =~ "$device" ]] && isBdwBook=true
 [[ "${baytrail[@]}" =~ "$device" ]] && isBaytrail=true
+[[ "${baytrail_full_rom[@]}" =~ "$device" ]] && bayTrailHasFullROM=true
 
 #check if running under ChromeOS / ChromiumOS
 if [ -f /etc/lsb-release ]; then

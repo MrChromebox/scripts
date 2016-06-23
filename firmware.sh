@@ -126,7 +126,7 @@ firmware_source=${firmware_source_main}
 [[ "$isHswBook" = true || "$isBdwBook" = true ]] && firmware_source=${firmware_source_coolstar}
 if [ "$isHswBox" = true ]; then
     coreboot_file=$coreboot_hsw_box
-elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$device" = "stumpy" ]]; then
+elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$device" = "stumpy" || "$bayTrailHasFullROM" = "true" ]]; then
     eval coreboot_file=$`echo "coreboot_${device}"`
 else
     exit_red "Unknown or unsupported device (${device}); cannot continue."; return 1
@@ -153,7 +153,7 @@ if [ $? -ne 0 ]; then
     return;
 fi
 
-if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
+if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
     #check if contains MAC address, extract
     extract_vpd /tmp/bios.bin
     if [ $? -ne 0 ]; then
@@ -193,7 +193,7 @@ fi
 
 #add PXE?
 addPXE=false
-if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
+if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
     echo -e ""
     read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
     if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
@@ -780,10 +780,10 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update Legacy BIOS in BOOT_STUB slot ${NORMAL}"
     fi
-    if [[ "$isBaytrail" = false ]]; then
-        echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Custom coreboot Firmware ${NORMAL}"
+    if [[ "$isBaytrail" = false || "$bayTrailHasFullROM" = "true" ]]; then
+        echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Custom coreboot Firmware (Full ROM) ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Custom coreboot Firmware ${NORMAL}"
+        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Custom coreboot Firmware (Full ROM) ${NORMAL}"
     fi
     echo -e "${MENU}**${NUMBER} 4)${MENU} Set Boot Options (GBB flags)${NORMAL}"
     echo -e "${MENU}**${NUMBER} 5)${MENU} Set Hardware ID (hwid) ${NORMAL}"
@@ -792,7 +792,7 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 6)${GRAY_TEXT} Restore Stock BOOT_STUB slot ${NORMAL}"
     fi
-    if [[ "$isBaytrail" = false && "$isChromeOS" = false ]]; then
+    if [[ "$isBaytrail" = false || "$bayTrailHasFullROM" = "true" && "$isChromeOS" = false ]]; then
         echo -e "${MENU}**${NUMBER} 7)${MENU} Restore Stock Firmware ${NORMAL}" 
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 7)${GRAY_TEXT} Restore Stock Firmware ${NORMAL}" 
@@ -822,6 +822,20 @@ function menu_fwupdate() {
                             menu_fwupdate;
                             ;;
                     esac
+                fi
+                if [[ "$bayTrailHasFullROM" = "true" ]]; then
+                    case $opt in
+                        3)  flash_coreboot;
+                            menu_fwupdate;
+                            ;;
+                    esac
+                    if [ "$isChromeOS" = false ]; then
+                        case $opt in
+                            7)  restore_stock_firmware;
+							    menu_fwupdate;
+                                ;;
+                        esac
+                    fi
                 fi
             else 
                 case $opt in
