@@ -336,7 +336,7 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
     echo -e ""
     
 else
-    if [[ "$isHswBox" = false && "$isBdwBox" = false ]]; then
+    if [[ "$isHswBox" = false && "$isBdwBox" = false && "$device" != "ninja" ]]; then
         exit_red "\nUnfortunately I don't have a stock firmware available to download for \"$device\" at this time."; return 1
     fi
 
@@ -353,9 +353,10 @@ else
     echo "5) Asus CN62 (Broadwell) [Guado]"
     echo "6) Acer CXI2 (Broadwell) [Rikku]"
     echo "7) Lenovo ThinkCentre (Broadwell) [Tidus]"
+    echo "8) AOpen Chromebox Commercial (Baytrail) [Ninja]"
     echo ""
     read -p "? " fw_num
-    if [[ $fw_num -lt 1 ||  $fw_num -gt 7 ]]; then
+    if [[ $fw_num -lt 1 ||  $fw_num -gt 8 ]]; then
 		exit_red "Invalid input - cancelling"; return
 	fi
     
@@ -375,6 +376,8 @@ else
         6) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/qd59yozS;
             ;;
         7) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/uidxAG1E;
+            ;;
+        8) curl -s -L -o /tmp/stock-firmware.rom https://db.tt/3xsP2Qtj
             ;;
     esac
     [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
