@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-06-23]"
+script_date="[2016-06-26]"
 
 #where the stuff is
 firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
@@ -17,8 +17,8 @@ chrx_url="https://chrx.org/go"
 
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
-LE_version_stable="7.0.1"
-LE_version_latest="7.0.1"
+LE_version_stable="7.0.2"
+LE_version_latest="7.90.002"
 
 #SBIB full ROMs
 coreboot_stumpy="coreboot-seabios-stumpy-20160623-mattdevo.rom"
