@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-06-26]"
+script_date="[2016-07-04]"
 
 #where the stuff is
 firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
@@ -46,10 +46,10 @@ coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
 coreboot_ninja="coreboot-seabios-ninja-mattdevo-20160623.rom"
 
 #RW_LEGACY payloads
-seabios_hswbdw_box="seabios-hswbdw-box-mattdevo-20160623.bin"
-seabios_hsw_book="seabios-hsw-book-mattdevo-20160623.bin"
-seabios_bdw_book="seabios-bdw-book-mattdevo-20160623.bin"
-seabios_baytrail="seabios-byt-mattdevo-20160623.bin"
+seabios_hswbdw_box="seabios-hswbdw-box-mattdevo-20160704.bin"
+seabios_hsw_book="seabios-hsw-book-mattdevo-20160704.bin"
+seabios_bdw_book="seabios-bdw-book-mattdevo-20160704.bin"
+seabios_baytrail="seabios-byt-mattdevo-20160704.bin"
 
 #BOOT_STUB payload
 bootstub_payload_baytrail="seabios-byt-bootstub-mattdevo-20160623.bin"
