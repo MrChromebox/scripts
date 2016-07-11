@@ -117,7 +117,7 @@ read -p "Do you wish to continue? [y/N] "
 echo -e ""
 
 # ensure hardware write protect disabled if in ChromeOS
-if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != "0" && "$(crossystem wpsw_boot)" != "0" ]]; then
+if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
     exit_red "\nHardware write-protect enabled, cannot flash coreboot firmware."; return 1
 fi
 
@@ -403,10 +403,7 @@ ${flashromcmd} -w ${firmware_file} > /dev/null 2>&1
 #all good
 echo_green "Stock firmware successfully restored."
 echo_green "After rebooting, you will need to restore ChromeOS using the ChromeOS recovery media."
-read -p "Press [Enter] to reboot."
-echo -e "\nRebooting...\n";
-cleanup;
-reboot;
+read -p "Press [Enter] to return to the main menu."
 }
 
 
@@ -773,7 +770,7 @@ read -p "Press [Enter] to return to the main menu."
 function menu_fwupdate() {
     clear
     echo -e "${NORMAL}\n ChromeOS device Firmware Utility ${script_date} ${NORMAL}"
-    echo -e "${NORMAL} (c) Matt Devo <mr.chromebox@gmail.com>\n ${NORMAL}"
+    echo -e "${NORMAL} (c) Mr. Chromebox <mr.chromebox@gmail.com>\n ${NORMAL}"
     echo -e "${NORMAL} Paypal towards beer/programmer fuel welcomed at above address :)\n ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
     echo -e "${MENU}**${NORMAL}"
@@ -795,7 +792,7 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 6)${GRAY_TEXT} Restore Stock BOOT_STUB slot ${NORMAL}"
     fi
-    if [[ "$isBaytrail" = false || "$bayTrailHasFullROM" = "true" && "$isChromeOS" = false ]]; then
+    if [[ "$isChromeOS" = false  && ( "$isBaytrail" = false || "$bayTrailHasFullROM" = "true" ) ]]; then
         echo -e "${MENU}**${NUMBER} 7)${MENU} Restore Stock Firmware ${NORMAL}" 
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 7)${GRAY_TEXT} Restore Stock Firmware ${NORMAL}" 
