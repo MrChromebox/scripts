@@ -52,7 +52,7 @@ seabios_bdw_book="seabios-bdw-book-mattdevo-20160704.bin"
 seabios_baytrail="seabios-byt-mattdevo-20160704.bin"
 
 #BOOT_STUB payload
-bootstub_payload_baytrail="seabios-byt-bootstub-mattdevo-20160623.bin"
+bootstub_payload_baytrail="seabios-byt-bootstub-mattdevo-20160704.bin"
 
 #hsw/bdw headless VBIOS
 hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"
