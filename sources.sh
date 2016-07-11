@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-04]"
+script_date="[2016-07-10]"
 
 #where the stuff is
 firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
@@ -43,7 +43,7 @@ coreboot_lulu="coreboot-seabios-lulu-20160311-coolstar.rom"
 coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
 
 #BayTrail full ROMs
-coreboot_ninja="coreboot-seabios-ninja-mattdevo-20160623.rom"
+coreboot_ninja="coreboot-seabios-ninja-mattdevo-20160710.rom"
 
 #RW_LEGACY payloads
 seabios_hswbdw_box="seabios-hswbdw-box-mattdevo-20160704.bin"
