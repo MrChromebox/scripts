@@ -172,6 +172,8 @@ configuration/run ChromeOS, or in the (unlikely) event that things go south
 and you need to recover using an external EEPROM programmer. "
     [ "$REPLY" = "n" ] || backup_firmware
 fi
+#check that backup succeeded
+[ $? -ne 0 ] && return 1
 
 #headless?
 useHeadless=false
@@ -452,20 +454,34 @@ read -p "Connect the USB/SD device to store the firmware backup and press [Enter
 to continue.  This is non-destructive, but it is best to ensure no other 
 USB/SD devices are connected. "
 list_usb_devices
-[ $? -eq 0 ] || { exit_red "No USB devices available to store firmware backup."; return 1; }
+if [ $? -ne 0 ]; then
+    backup_fail "No USB devices available to store firmware backup."
+    return 1
+fi
+
 read -p "Enter the number for the device to be used for firmware backup: " usb_dev_index
-[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
+if [ $usb_dev_index -le 0 ] || [ $usb_dev_index  -gt $num_usb_devs ]; then
+    backup_fail "Error: Invalid option selected."
+    return 1
+fi
+
 usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 mkdir /tmp/usb > /dev/null 2>&1
 mount "${usb_device}" /tmp/usb > /dev/null 2>&1
 if [ $? != 0 ]; then
     mount "${usb_device}1" /tmp/usb
 fi
-[ $? -eq 0 ] || backup_fail "USB backup device failed to mount; cannot proceed."
+if [ $? -ne 0 ]; then
+    backup_fail "USB backup device failed to mount; cannot proceed."
+    return 1
+fi
 backupname="stock-firmware-${device}-$(date +%Y%m%d).rom"
 echo_yellow "\nSaving firmware backup as ${backupname}"
 cp /tmp/bios.bin /tmp/usb/${backupname}
-[ $? -eq 0 ] || backup_fail "Failure reading stock firmware for backup; cannot proceed."
+if [ $? -ne 0 ]; then
+    backup_fail "Failure reading stock firmware for backup; cannot proceed."
+    return 1
+fi
 sync
 umount /tmp/usb > /dev/null 2>&1
 rmdir /tmp/usb
@@ -476,9 +492,8 @@ read -p ""
 function backup_fail()
 {
 umount /tmp/usb > /dev/null 2>&1
-rmdir /tmp/usb
-exit_red "$@"
-return 1
+rmdir /tmp/usb > /dev/null 2>&1
+exit_red "\n$@"
 }
 
 
