@@ -11,9 +11,9 @@ function flash_rwlegacy()
 #set working dir
 cd /tmp
 
-# set dev mode boot flags 
+# set dev mode legacy boot flag 
 if [ "${isChromeOS}" = true ]; then
-    crossystem dev_boot_legacy=1 dev_boot_signed_only=0 > /dev/null 2>&1
+    crossystem dev_boot_legacy=1 > /dev/null 2>&1
 fi
 
 echo_green "\nInstall/Update Legacy BIOS (RW_LEGACY)"
@@ -539,6 +539,11 @@ do
 done
 [[ $n -eq 6 ]] && return
 echo_yellow "\nSetting boot options..."
+#disable software write-protect
+${flashromcmd} --wp-disable > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    exit_red "Error disabling software write-protect; unable to set GBB flags."; return 1
+fi
 ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1
 [[ $? -ne 0 ]] && { exit_red "\nError reading firmware (non-stock?); unable to set boot options."; return 1; }
 ${gbbutilitycmd} --set --flags="${_flags}" /tmp/gbb.temp > /dev/null
@@ -558,7 +563,7 @@ function set_hwid()
 # set hwid using gbb_utility
 # ensure hardware write protect disabled
 if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != *"0"* ]]; then
-    exit_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot set hwid."; return 1
+    exit_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot set HWID."; return 1
 fi
 
 echo_green "Set Hardware ID (hwid) using gbb_utility"
@@ -573,8 +578,13 @@ echo -e ""
 read -p "Confirm changing hwid to $hwid [y/N] " confirm
 if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
     echo_yellow "\nSetting hardware ID..."
+    #disable software write-protect
+    ${flashromcmd} --wp-disable > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        exit_red "Error disabling software write-protect; unable to set HWID."; return 1
+    fi
     ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1
-    [[ $? -ne 0 ]] && { exit_red "\nError reading firmware (non-stock?); unable to set hwid."; return 1; }
+    [[ $? -ne 0 ]] && { exit_red "\nError reading firmware (non-stock?); unable to set HWID."; return 1; }
     ${gbbutilitycmd} --set --hwid="${hwid}" /tmp/gbb.temp > /dev/null
     [[ $? -ne 0 ]] && { exit_red "\nError setting hwid."; return 1; }
     ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1
@@ -610,8 +620,8 @@ read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y"|| "$REPLY" = "y" ]] || return
 
 #check WP status
-if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != "0" && "$(crossystem wpsw_boot)" != "0" ]]; then
-    exit_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot modify BOOT_STUB."; return 1
+if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
+    exit_red "\nHardware write-protect enabled, cannot flash/modify BOOT_STUB firmware."; return 1
 fi
 
 # cd to working dir
