@@ -351,8 +351,8 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	#calculate sector size for rootc
 	rootc_size=$(($ubuntu_size*1024*1024*2))
 
-	#kernc is always 16mb
-	kernc_size=32768
+	#kernc is always 512mb
+	kernc_size=1024000
 
 	#new stateful size with rootc and kernc subtracted from original
 	stateful_size=$(($state_size - $rootc_size - $kernc_size))
