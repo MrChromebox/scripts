@@ -192,12 +192,14 @@ if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
     fi
 fi
 
-#USB boot priority
-preferUSB=false
-echo -e ""
-read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
-if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
-    preferUSB=true
+if [[ firmware_source != ${firmware_source_coolstar} ]]; then
+    #USB boot priority
+    preferUSB=false
+    echo -e ""
+    read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
+    if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+        preferUSB=true
+    fi
 fi
 
 #add PXE?
