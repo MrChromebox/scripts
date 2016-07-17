@@ -144,6 +144,13 @@ if [ "$device" = "peppy" ]; then
     fi
 fi
 
+#auron special case (upgrade from coolstar legacy rom)
+if [ "$device" = "auron" ]; then
+    coreboot_file=${coreboot_auron_paine}
+    read -p "Are you on an Acer Chromebook 15 CB5-571 or C910? [y/N]"
+        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && coreboot_file=${coreboot_auron_yuna}
+fi
+
 #read existing firmware and try to extract MAC address info
 echo_yellow "Reading current firmware"
 ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
