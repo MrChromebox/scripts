@@ -192,7 +192,7 @@ if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
     fi
 fi
 
-if [[ firmware_source != ${firmware_source_coolstar} ]]; then
+if [[ "$firmware_source" != ${firmware_source_coolstar} ]]; then
     #USB boot priority
     preferUSB=false
     echo -e ""
