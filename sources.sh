@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-14]"
+script_date="[2016-07-16]"
 
 #where the stuff is
 firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
