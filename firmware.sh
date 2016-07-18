@@ -105,6 +105,12 @@ read -p "Press [Enter] to return to the main menu."
 #############################
 function flash_coreboot()
 {
+#temp
+if [[ "$isHswBook" = true || "$isBdwBook" = true ]]; then
+    exit_red "\nFirmware files for Haswell/Broadwell Chromebooks are temporarily unavailable."
+    return 1
+fi
+
 echo_green "\nInstall/Update Custom coreboot Firmware"
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
