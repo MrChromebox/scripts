@@ -150,6 +150,13 @@ if [ "$device" = "peppy" ]; then
     fi
 fi
 
+#auron special case (upgrade from coolstar legacy rom)
+if [ "$device" = "auron" ]; then
+    coreboot_file=${coreboot_auron_paine}
+    read -p "Are you on an Acer Chromebook 15 CB5-571 or C910? [y/N]"
+        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && coreboot_file=${coreboot_auron_yuna}
+fi
+
 #read existing firmware and try to extract MAC address info
 echo_yellow "Reading current firmware"
 ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
@@ -191,12 +198,14 @@ if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
     fi
 fi
 
-#USB boot priority
-preferUSB=false
-echo -e ""
-read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
-if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
-    preferUSB=true
+if [[ "$firmware_source" != ${firmware_source_coolstar} ]]; then
+    #USB boot priority
+    preferUSB=false
+    echo -e ""
+    read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
+    if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+        preferUSB=true
+    fi
 fi
 
 #add PXE?

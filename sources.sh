@@ -3,11 +3,11 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-14]"
+script_date="[2016-07-16]"
 
 #where the stuff is
 firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
-firmware_source_coolstar="https://dl.dropboxusercontent.com/u/59964215/chromebook/ROM/"
+firmware_source_coolstar="https://dl.dropboxusercontent.com/u/59964215/chromebook/ROM-uefi/"
 
 #LE sources
 LE_url_official="http://releases.libreelec.tv/"
@@ -25,22 +25,22 @@ coreboot_stumpy="coreboot-seabios-stumpy-mattdevo-20160623.rom"
 
 #Haswell full ROMs
 coreboot_hsw_box="coreboot-seabios-hsw_chromebox-mattdevo-20160623.rom"
-coreboot_peppy="coreboot-seabios-peppy-20160108-coolstar.rom"
-coreboot_peppy_elan="coreboot-seabios-peppy-20160108-coolstar-elan.rom"
-coreboot_falco="coreboot-seabios-falco-20160108-coolstar.rom"
-coreboot_wolf="coreboot-seabios-wolf-20160108-coolstar.rom"
-coreboot_leon="coreboot-seabios-leon-20160108-coolstar.rom"
-coreboot_monroe="coreboot-seabios-monroe-20160108-coolstar.rom"
+coreboot_peppy="coreboot-seabios-tianocore-peppy-20160714-coolstar.rom"
+coreboot_peppy_elan="coreboot-seabios-tianocore-peppy-20160714-coolstar-elan.rom"
+coreboot_falco="coreboot-seabios-tianocore-falco-20160714-coolstar.rom"
+coreboot_wolf="coreboot-seabios-tianocore-wolf-20160714-coolstar.rom"
+coreboot_leon="coreboot-seabios-tianocore-leon-20160714-coolstar.rom"
+coreboot_monroe=""
 
 #Broadwell full ROMs
 coreboot_guado="coreboot-seabios-guado-mattdevo-20160623.rom"
 coreboot_rikku="coreboot-seabios-rikku-mattdevo-20160623.rom"
 coreboot_tidus="coreboot-seabios-tidus-mattdevo-20160623.rom"
-coreboot_auron_paine="coreboot-seabios-auron-20160109-coolstar.rom"
-coreboot_auron_yuna=${coreboot_auron_paine}
-coreboot_gandof="coreboot-seabios-gandof-20160309-coolstar.rom"
-coreboot_lulu="coreboot-seabios-lulu-20160311-coolstar.rom"
-coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
+coreboot_auron_paine="coreboot-seabios-tianocore-auron_paine-20160715-coolstar.rom"
+coreboot_auron_yuna="coreboot-seabios-tianocore-auron_yuna-20160715-coolstar.rom"
+coreboot_gandof="coreboot-seabios-tianocore-gandof-20160715-coolstar.rom"
+coreboot_lulu="coreboot-seabios-tianocore-lulu-20160715-coolstar.rom"
+coreboot_samus="coreboot-seabios-tianocore-samus-20160715-coolstar.rom"
 
 #BayTrail full ROMs
 coreboot_ninja="coreboot-seabios-ninja-mattdevo-20160710.rom"
