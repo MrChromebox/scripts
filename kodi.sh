@@ -214,7 +214,7 @@ echo_yellow "\nPartitions formatted and mounted"
 echo_yellow "Updating bootloader"
 
 #get/extract syslinux
-tar_file="${dropbox_url}syslinux-5.10-md.tar.bz2"
+tar_file="${util_source}syslinux-5.10-md.tar.bz2"
 curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file 
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
@@ -280,12 +280,7 @@ tar_url="${LE_url}${tar_file}"
 cd /tmp/Storage
 curl -L -o $tar_file $tar_url
 if [ $? -ne 0 ]; then
-	echo_yellow "Failed to download LibreELEC; trying dropbox mirror"
-	tar_url="${dropbox_url}${tar_file}"
-	wget -O $tar_file $tar_url
-	if [ $? -ne 0 ]; then
-		LE_install_error "Failed to download LibreELEC; check your Internet connection and try again"
-	fi
+	LE_install_error "Failed to download LibreELEC; check your Internet connection and try again"
 fi
 echo_yellow "\nLibreELEC download complete; installing..."
 tar -xpf $tar_file
@@ -513,7 +508,7 @@ fi
 echo_yellow "Partitions formatted and mounted; installing bootloader"
 
 #get/extract syslinux
-tar_file="${dropbox_url}syslinux-5.10-md.tar.bz2"
+tar_file="${util_source}syslinux-5.10-md.tar.bz2"
 curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
@@ -546,12 +541,7 @@ tar_url="${LE_url}${tar_file}"
 cd /tmp/Storage
 curl -L -o $tar_file $tar_url
 if [ $? -ne 0 ]; then
-	echo_yellow "Failed to download LibreELEC; trying dropbox mirror"
-	tar_url="${dropbox_url}${tar_file}"
-	curl -L -o $tar_file $tar_url
-	if [ $? -ne 0 ]; then
-		LE_install_error "Failed to download LibreELEC; check your Internet connection and try again"
-	fi
+	LE_install_error "Failed to download LibreELEC; check your Internet connection and try again"
 fi
 echo_yellow "\nLibreELEC download complete; installing..."
 tar -xpf $tar_file

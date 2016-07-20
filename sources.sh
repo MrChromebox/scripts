@@ -3,11 +3,16 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-14]"
+script_date="[2016-07-19]"
 
 #where the stuff is
-firmware_source_main="https://dl.dropboxusercontent.com/u/98309225/"
-firmware_source_coolstar="https://dl.dropboxusercontent.com/u/59964215/chromebook/ROM/"
+util_source="https://www.mrchromebox.tech/files/util/"
+rwlegacy_source="https://www.mrchromebox.tech/files/firmware/rw_legacy/"
+bootstub_source="https://www.mrchromebox.tech/files/firmware/boot_stub/"
+fullrom_source="https://www.mrchromebox.tech/files/firmware/full_rom/"
+fullrom_source_coolstar="https://dl.dropboxusercontent.com/u/59964215/chromebook/ROM/"
+shellball_source="https://www.mrchromebox.tech/files/firmware/shellball/"
+cbfs_source="https://www.mrchromebox.tech/files/firmware/cbfs/"
 
 #LE sources
 LE_url_official="http://releases.libreelec.tv/"
@@ -21,21 +26,20 @@ LE_version_stable="7.0.2"
 LE_version_latest="7.90.003"
 
 #SBIB full ROMs
-coreboot_stumpy="coreboot-seabios-stumpy-mattdevo-20160623.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-mrchromebox-20160719.rom"
 
 #Haswell full ROMs
-coreboot_hsw_box="coreboot-seabios-hsw_chromebox-mattdevo-20160623.rom"
+coreboot_hsw_box="coreboot-seabios-panther-mrchromebox-20160719.rom"
 coreboot_peppy="coreboot-seabios-peppy-20160108-coolstar.rom"
 coreboot_peppy_elan="coreboot-seabios-peppy-20160108-coolstar-elan.rom"
 coreboot_falco="coreboot-seabios-falco-20160108-coolstar.rom"
 coreboot_wolf="coreboot-seabios-wolf-20160108-coolstar.rom"
 coreboot_leon="coreboot-seabios-leon-20160108-coolstar.rom"
-coreboot_monroe="coreboot-seabios-monroe-20160108-coolstar.rom"
 
 #Broadwell full ROMs
-coreboot_guado="coreboot-seabios-guado-mattdevo-20160623.rom"
-coreboot_rikku="coreboot-seabios-rikku-mattdevo-20160623.rom"
-coreboot_tidus="coreboot-seabios-tidus-mattdevo-20160623.rom"
+coreboot_guado="coreboot-seabios-guado-mrchromebox-20160719.rom"
+coreboot_rikku="coreboot-seabios-rikku-mrchromebox-20160719.rom"
+coreboot_tidus="coreboot-seabios-tidus-mrchromebox-20160719.rom"
 coreboot_auron_paine="coreboot-seabios-auron-20160109-coolstar.rom"
 coreboot_auron_yuna=${coreboot_auron_paine}
 coreboot_gandof="coreboot-seabios-gandof-20160309-coolstar.rom"
@@ -43,16 +47,22 @@ coreboot_lulu="coreboot-seabios-lulu-20160311-coolstar.rom"
 coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
 
 #BayTrail full ROMs
-coreboot_ninja="coreboot-seabios-ninja-mattdevo-20160710.rom"
+coreboot_enguarde="coreboot-seabios-enguarde-mrchromebox-20160719.rom"
+coreboot_glimmer="coreboot-seabios-glimmer-mrchromebox-20160719.rom"
+coreboot_gnawty="coreboot-seabios-gnawty-mrchromebox-20160719.rom"
+coreboot_ninja="coreboot-seabios-ninja-mrchromebox-20160719.rom"
+coreboot_quawks="coreboot-seabios-quawks-mrchromebox-20160719.rom"
+coreboot_swanky="coreboot-seabios-swanky-mrchromebox-20160719.rom"
+
 
 #RW_LEGACY payloads
-seabios_hswbdw_box="seabios-hswbdw-box-mattdevo-20160704.bin"
-seabios_hsw_book="seabios-hsw-book-mattdevo-20160704.bin"
-seabios_bdw_book="seabios-bdw-book-mattdevo-20160704.bin"
-seabios_baytrail="seabios-byt-mattdevo-20160704.bin"
+seabios_hswbdw_box="seabios-hswbdw-box-mrchromebox-20160719.bin"
+seabios_hsw_book="seabios-hsw-book-mrchromebox-20160719.bin"
+seabios_bdw_book="seabios-bdw-book-mrchromebox-20160719.bin"
+seabios_baytrail="seabios-byt-mrchromebox-20160719.bin"
 
 #BOOT_STUB payload
-bootstub_payload_baytrail="seabios-byt-bootstub-mattdevo-20160704.bin"
+bootstub_payload_baytrail="seabios-byt-bootstub-mrchromebox-20160719.bin"
 
 #hsw/bdw headless VBIOS
 hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"

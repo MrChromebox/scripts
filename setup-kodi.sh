@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# This script will prep Haswell/Broadwell-based
+# This script will prep supported
 # ChromeOS devices for Kodi installation via
-# OpenELEC or Ubuntu/Kodibuntu
+# LibreELEC or GalliumOS/Ubuntu
 #
-# Created by Matt Devo	<mrchromebox@gmail.com>
+# Created by Mr.Chromebox <mr.chromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.
@@ -12,7 +12,6 @@
 
 #where the stuff is
 script_url="https://raw.githubusercontent.com/MattDevo/scripts/master/"
-dropbox_url="https://dl.dropboxusercontent.com/u/98309225/"
 
 #set working dir
 cd /tmp

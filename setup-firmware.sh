@@ -5,7 +5,7 @@
 # a custom coreboot firmware for supported
 # ChromeOS devices 
 #
-# Created by Matt Devo	<mrchromebox@gmail.com>
+# Created by Mr.Chromebox <mr.chromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.
@@ -13,7 +13,6 @@
 
 #where the stuff is
 script_url="https://raw.githubusercontent.com/MattDevo/scripts/master/"
-dropbox_url="https://dl.dropboxusercontent.com/u/98309225/"
 
 #set working dir
 cd /tmp
