@@ -8,6 +8,7 @@ num_usb_devs=0
 usb_device=""
 isChromeOS=true
 isChromiumOS=false
+isCloudready=false
 flashromcmd=""
 cbfstoolcmd=""
 gbbutilitycmd=""
@@ -128,12 +129,10 @@ if [ ! -f ${cbfstoolcmd} ]; then
     if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
         cd /tmp
     else
-        #have to use /dev/sdx12 due to noexec restrictions
+        #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
-        part_num="12"
-        if [[ "${rootdev}" =~ "mmcblk" ]]; then
-            part_num="p12"
-        fi  
+        [[ "$isCloudready" = true ]] && part_num="27" || part_num="12"
+        [[ "${rootdev}" =~ "mmcblk" ]] && part_num="p${part_num}"  
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
@@ -288,6 +287,10 @@ if [ -f /etc/lsb-release ]; then
     cat /etc/lsb-release | grep "Chrome OS" > /dev/null 2>&1
     if [ $? -ne 0 ]; then
         isChromeOS=false
+    fi
+    cat /etc/lsb-release | grep "neverware" > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        isCloudready=true
     fi
     cat /etc/lsb-release | grep "Chromium OS" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
