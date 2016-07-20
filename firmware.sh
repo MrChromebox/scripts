@@ -372,7 +372,7 @@ else
         #confirm menu selection
         echo -e ""
         read -p "Confirm selection number ${fw_num} [y/N] "
-        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return }
+        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
         
         #download firmware file
         echo -e ""
