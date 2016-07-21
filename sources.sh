@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-19]"
+script_date="[2016-07-21]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -49,7 +49,7 @@ coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
 #BayTrail full ROMs
 coreboot_enguarde="coreboot-seabios-enguarde-mrchromebox-20160719.rom"
 coreboot_glimmer="coreboot-seabios-glimmer-mrchromebox-20160719.rom"
-coreboot_gnawty="coreboot-seabios-gnawty-mrchromebox-20160719.rom"
+coreboot_gnawty="coreboot-seabios-gnawty-mrchromebox-20160721.rom"
 coreboot_ninja="coreboot-seabios-ninja-mrchromebox-20160719.rom"
 coreboot_quawks="coreboot-seabios-quawks-mrchromebox-20160719.rom"
 coreboot_swanky="coreboot-seabios-swanky-mrchromebox-20160719.rom"
