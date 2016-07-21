@@ -411,10 +411,10 @@ case "${_hwid}" in
     FALCO*)         _x='HSW|HP Chromebook 14||' ;;
     GANDOF*)        _x='BDW|Toshiba Chromebook 2 CB30/CB35||' ;;
     GLIMMER*)       _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook||' ;;
-    GNAWTY_???-???-??B*) _x='BYT|Acer Chromebook 11/Olay (C735)|0xd091f000|0xd091c000' ;;
-    GNAWTY_???-???-??A*) _x='BYT|Acer Chromebook 11 (CB3-111,C730,C730E)|0xd091f000|0xd091c000' ;;
-    GNAWTY_???-???-???)  _x='BYT|Acer Chromebook 11 (CB3-111,C730,C730E)|0xd091f000|0xd091c000' ;;
-    GNAWTY*)  _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)|0xd091f000|0xd091c000' ;;
+    GNAWTY_???-???-??B*) _x='BYT|Acer Chromebook 11/Olay (C735)|0xd071f000|0xd071c000' ;;
+    GNAWTY_???-???-??A*) _x='BYT|Acer Chromebook 11 (CB3-111,C730,C730E)|0xd071f000|0xd071c000' ;;
+    GNAWTY_???-???-???)  _x='BYT|Acer Chromebook 11 (CB3-111,C730,C730E)|0xd071f000|0xd071c000' ;;
+    GNAWTY*)  _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)|0xd071f000|0xd071c000' ;;
     GUADO*)         _x='BDW|ASUS Chromebox CN62||' ;;
     HELI*)          _x='BYT|Haier Chromebook G2||' ;;
     IEC_MARIO)     _x='PNV|Google Cr-48||' ;;
