@@ -89,12 +89,13 @@ function die()
 ####################
 function list_usb_devices()
 {
-#list available drives, excluding internal HDD and root device
-rootdev="/dev/sda"
+#list available drives, excluding internal storage and root/boot device
+[[ -f /dev/mmcblk0 ]] && intStor="/dev/mmcblk0" || intStor="/dev/sda"
+rootdev=${intStor}
 if [ "$(which rootdev)" ]; then
     rootdev=$(rootdev -d -s)
 fi  
-eval usb_devs="($(fdisk -l 2> /dev/null | grep -v 'Disk /dev/sda' | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
+eval usb_devs="($(fdisk -l 2> /dev/null | grep -v 'Disk ${intStor}' | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
 #ensure at least 1 drive available
 [ "$usb_devs" != "" ] || return 1
 echo -e "\nDevices available:\n"

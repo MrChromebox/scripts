@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-21]"
+script_date="[2016-07-24]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -26,10 +26,10 @@ LE_version_stable="7.0.2"
 LE_version_latest="7.90.003"
 
 #SBIB full ROMs
-coreboot_stumpy="coreboot-seabios-stumpy-mrchromebox-20160719.rom"
+coreboot_stumpy="coreboot-seabios-stumpy-mrchromebox-20160724.rom"
 
 #Haswell full ROMs
-coreboot_hsw_box="coreboot-seabios-panther-mrchromebox-20160719.rom"
+coreboot_hsw_box="coreboot-seabios-panther-mrchromebox-20160724.rom"
 coreboot_peppy="coreboot-seabios-peppy-20160108-coolstar.rom"
 coreboot_peppy_elan="coreboot-seabios-peppy-20160108-coolstar-elan.rom"
 coreboot_falco="coreboot-seabios-falco-20160108-coolstar.rom"
@@ -37,9 +37,9 @@ coreboot_wolf="coreboot-seabios-wolf-20160108-coolstar.rom"
 coreboot_leon="coreboot-seabios-leon-20160108-coolstar.rom"
 
 #Broadwell full ROMs
-coreboot_guado="coreboot-seabios-guado-mrchromebox-20160719.rom"
-coreboot_rikku="coreboot-seabios-rikku-mrchromebox-20160719.rom"
-coreboot_tidus="coreboot-seabios-tidus-mrchromebox-20160719.rom"
+coreboot_guado="coreboot-seabios-guado-mrchromebox-20160724.rom"
+coreboot_rikku="coreboot-seabios-rikku-mrchromebox-20160724.rom"
+coreboot_tidus="coreboot-seabios-tidus-mrchromebox-20160724.rom"
 coreboot_auron_paine="coreboot-seabios-auron-20160109-coolstar.rom"
 coreboot_auron_yuna=${coreboot_auron_paine}
 coreboot_gandof="coreboot-seabios-gandof-20160309-coolstar.rom"
@@ -47,12 +47,12 @@ coreboot_lulu="coreboot-seabios-lulu-20160311-coolstar.rom"
 coreboot_samus="coreboot-seabios-samus-20160324-coolstar.rom"
 
 #BayTrail full ROMs
-coreboot_enguarde="coreboot-seabios-enguarde-mrchromebox-20160719.rom"
-coreboot_glimmer="coreboot-seabios-glimmer-mrchromebox-20160719.rom"
-coreboot_gnawty="coreboot-seabios-gnawty-mrchromebox-20160721.rom"
-coreboot_ninja="coreboot-seabios-ninja-mrchromebox-20160719.rom"
-coreboot_quawks="coreboot-seabios-quawks-mrchromebox-20160719.rom"
-coreboot_swanky="coreboot-seabios-swanky-mrchromebox-20160719.rom"
+coreboot_enguarde="coreboot-seabios-enguarde-mrchromebox-20160724.rom"
+coreboot_glimmer="coreboot-seabios-glimmer-mrchromebox-20160724.rom"
+coreboot_gnawty="coreboot-seabios-gnawty-mrchromebox-20160724.rom"
+coreboot_ninja="coreboot-seabios-ninja-mrchromebox-20160724.rom"
+coreboot_quawks="coreboot-seabios-quawks-mrchromebox-20160724.rom"
+coreboot_swanky="coreboot-seabios-swanky-mrchromebox-20160724.rom"
 
 
 #RW_LEGACY payloads
