@@ -531,9 +531,10 @@ exit_red "\n$@"
 function set_boot_options() 
 {
 # set boot options via firmware boot flags
-# ensure hardware write protect disabled
-if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != *"0"* ]]; then
-    exit_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot set boot options."; return 1
+
+# ensure hardware write protect disabled if in ChromeOS
+if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
+    exit_red "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."; return 1
 fi
 
 [[ -z "$1" ]] && legacy_text="Legacy Boot" || legacy_text="$1"
