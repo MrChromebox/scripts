@@ -27,6 +27,8 @@ elif [ "$isBdwBook" = true ]; then
     seabios_file=$seabios_bdw_book
 elif [ "$isBaytrail" = true ]; then
     seabios_file=$seabios_baytrail
+elif [ "$isBraswell" = true ]; then
+    seabios_file=$seabios_braswell
 else
     echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."; return 1
 fi
@@ -83,8 +85,8 @@ if [ "$useHeadless" = true  ]; then
         fi
     fi      
 fi
-#add emmc/sdcard controller addresses for Baytrail if known
-if [[ "$isBaytrail" = true && "$emmcAddr" != "" ]]; then
+#add emmc/sdcard controller addresses for Baytrail/Braswell if known
+if [[ "$isBaytrail" = true || "$isBraswell" = true && "$emmcAddr" != "" ]]; then
     ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard0 > /dev/null 2>&1
     ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard1 > /dev/null 2>&1
     ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard2 > /dev/null 2>&1
@@ -590,9 +592,10 @@ read -p "Press [Enter] to return to the main menu."
 function set_hwid() 
 {
 # set HWID using gbb_utility
-# ensure hardware write protect disabled
-if [[ "$isChromeOS" = true && "$(crossystem wpsw_cur)" != *"0"* ]]; then
-    exit_red "\nWrite-protect enabled, non-stock firmware installed, or not running ChromeOS; cannot set HWID."; return 1
+
+# ensure hardware write protect disabled if in ChromeOS
+if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
+    exit_red "\nHardware write-protect enabled, cannot set HWID."; return 1
 fi
 
 echo_green "Set Hardware ID (HWID) using gbb_utility"

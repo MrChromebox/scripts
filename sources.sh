@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-07-24]"
+script_date="[2016-07-30]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -16,7 +16,6 @@ cbfs_source="https://www.mrchromebox.tech/files/firmware/cbfs/"
 
 #LE sources
 LE_url_official="http://releases.libreelec.tv/"
-#OE_url_EGL="https://dl.dropboxusercontent.com/u/98309225/"
 LE_url=${LE_url_official}
 chrx_url="https://chrx.org/go"
 
@@ -24,6 +23,9 @@ chrx_url="https://chrx.org/go"
 LE_version_base="LibreELEC-Generic.x86_64"
 LE_version_stable="7.0.2"
 LE_version_latest="7.90.003"
+
+#syslinux version
+syslinux_version="syslinux-6.04-pre1"
 
 #SBIB full ROMs
 coreboot_stumpy="coreboot-seabios-stumpy-mrchromebox-20160724.rom"
@@ -56,13 +58,14 @@ coreboot_swanky="coreboot-seabios-swanky-mrchromebox-20160724.rom"
 
 
 #RW_LEGACY payloads
-seabios_hswbdw_box="seabios-hswbdw-box-mrchromebox-20160719.bin"
-seabios_hsw_book="seabios-hsw-book-mrchromebox-20160719.bin"
-seabios_bdw_book="seabios-bdw-book-mrchromebox-20160719.bin"
-seabios_baytrail="seabios-byt-mrchromebox-20160719.bin"
+seabios_hswbdw_box="seabios-hswbdw-box-mrchromebox-20160730.bin"
+seabios_hsw_book="seabios-hsw-book-mrchromebox-20160730.bin"
+seabios_bdw_book="seabios-bdw-book-mrchromebox-20160730.bin"
+seabios_baytrail="seabios-byt-mrchromebox-20160730.bin"
+seabios_braswell="seabios-bsw-mrchromebox-20160730.bin"
 
 #BOOT_STUB payload
-bootstub_payload_baytrail="seabios-byt-bootstub-mrchromebox-20160719.bin"
+bootstub_payload_baytrail="seabios-byt-bootstub-mrchromebox-20160730.bin"
 
 #hsw/bdw headless VBIOS
 hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"

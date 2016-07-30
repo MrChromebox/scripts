@@ -391,8 +391,8 @@ case "${_hwid}" in
     CELES*)         _x='BSW|Samsung Chromebook 3||' ;;
     CHELL*)         _x='SKL|HP Chromebook 13 G1||' ;;
     CLAPPER*)       _x='BYT|Lenovo N20/N20P Chromebook||' ;;
-    CYAN*)          _x='BSW|OriginsT / Acer Chromebook R11 (C738T)||' ;;
-    EDGAR*)         _x='BSW|Acer Chromebook 14 (CB3-431)||' ;;
+    CYAN*)          _x='BSW|Acer Chromebook R11 (C738T)|0xd131d000|0xd131f000' ;;
+    EDGAR*)         _x='BSW|Acer Chromebook 14 (CB3-431)|0xd131d000|0xd131f000' ;;
     ENGUARDE_???-???-??A*)  _x='BYT|CTL N6 Education Chromebook||' ;;
     ENGUARDE_???-???-??B*)  _x='BYT|M&A Chromebook||' ;;
     ENGUARDE_???-???-??C*)  _x='BYT|Senkatel C1101 Chromebook||' ;;

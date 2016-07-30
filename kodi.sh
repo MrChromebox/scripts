@@ -214,7 +214,7 @@ echo_yellow "\nPartitions formatted and mounted"
 echo_yellow "Updating bootloader"
 
 #get/extract syslinux
-tar_file="${util_source}syslinux-5.10-md.tar.bz2"
+tar_file="${util_source}${syslinux_version}.tar.bz2"
 curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file 
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
@@ -226,7 +226,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #install extlinux on LibreELEC kernel partition
-cd /tmp/Storage/syslinux-5.10/extlinux/
+cd /tmp/Storage/${syslinux_version}/extlinux/
 ./extlinux -i /tmp/System/ > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to install extlinux; reboot and try again"
@@ -260,12 +260,12 @@ rm -f /tmp/boot/syslinux/* 2>/dev/null
 echo -e "DEFAULT LibreELEC\nPROMPT 0\nLABEL LibreELEC\nCOM32 chain.c32\nAPPEND label=KERN-C" > /tmp/boot/syslinux/syslinux.cfg
 
 #copy chain loader files
-cp /tmp/Storage/syslinux-5.10/com32/chain/chain.c32 /tmp/boot/syslinux/chain.c32
-cp /tmp/Storage/syslinux-5.10/com32/lib/libcom32.c32 /tmp/boot/syslinux/libcom32.c32
-cp /tmp/Storage/syslinux-5.10/com32/libutil/libutil.c32 /tmp/boot/syslinux/libutil.c32
+cp /tmp/Storage/${syslinux_version}/com32/chain/chain.c32 /tmp/boot/syslinux/chain.c32
+cp /tmp/Storage/${syslinux_version}/com32/lib/libcom32.c32 /tmp/boot/syslinux/libcom32.c32
+cp /tmp/Storage/${syslinux_version}/com32/libutil/libutil.c32 /tmp/boot/syslinux/libutil.c32
 
 #install/update syslinux
-cd /tmp/Storage/syslinux-5.10/linux/
+cd /tmp/Storage/${syslinux_version}/linux/
 rm -f /tmp/boot/ldlinux.* 1>/dev/null 2>&1
 ./syslinux -i -f $boot_partition -d syslinux
 if [ $? -ne 0 ]; then
@@ -508,7 +508,7 @@ fi
 echo_yellow "Partitions formatted and mounted; installing bootloader"
 
 #get/extract syslinux
-tar_file="${util_source}syslinux-5.10-md.tar.bz2"
+tar_file="${util_source}${syslinux_version}.tar.bz2"
 curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
@@ -520,11 +520,11 @@ if [ $? -ne 0 ]; then
 fi
 
 #write MBR
-cd /tmp/Storage/syslinux-5.10/mbr/
+cd /tmp/Storage/${syslinux_version}/mbr/
 dd if=./mbr.bin of=${target_disk} bs=440 count=1 > /dev/null 2>&1
 
 #install extlinux on LibreELEC System partition
-cd /tmp/Storage/syslinux-5.10/extlinux/
+cd /tmp/Storage/${syslinux_version}/extlinux/
 ./extlinux -i /tmp/System/ > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to install extlinux; reboot and try again"
