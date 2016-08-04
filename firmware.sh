@@ -86,7 +86,7 @@ if [ "$useHeadless" = true  ]; then
     fi      
 fi
 #add emmc/sdcard controller addresses for Baytrail/Braswell if known
-if [[ "$isBaytrail" = true || "$isBraswell" = true && "$emmcAddr" != "" ]]; then
+if [[ ( "$isBaytrail" = true || "$isBraswell" = true ) && "$emmcAddr" != "" ]]; then
     ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard0 > /dev/null 2>&1
     ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard1 > /dev/null 2>&1
     ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard2 > /dev/null 2>&1
