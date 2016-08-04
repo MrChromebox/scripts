@@ -95,7 +95,7 @@ rootdev=${intStor}
 if [ "$(which rootdev)" ]; then
     rootdev=$(rootdev -d -s)
 fi  
-eval usb_devs="($(fdisk -l 2> /dev/null | grep -v 'Disk ${intStor}' | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
+eval usb_devs="($(fdisk -l 2> /dev/null | grep -v "Disk ${intStor}" | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
 #ensure at least 1 drive available
 [ "$usb_devs" != "" ] || return 1
 echo -e "\nDevices available:\n"
@@ -387,7 +387,7 @@ case "${_hwid}" in
     BLAZE*)         _x='ARM|HP Chromebook 14 G3||' ;;
     BUDDY*)         _x='BDW|Acer Chromebase 24||' ;;
     BUTTERFLY*)     _x='SDB|HP Pavilion Chromebook 14||' ;;
-    CANDY*)         _x='BYT|Dell Chromebook 11||' ;;
+    CANDY*)         _x='BYT|Dell Chromebook 11|0xd091f000|0xd091c000' ;;
     CELES*)         _x='BSW|Samsung Chromebook 3||' ;;
     CHELL*)         _x='SKL|HP Chromebook 13 G1||' ;;
     CLAPPER*)       _x='BYT|Lenovo N20/N20P Chromebook||' ;;
@@ -477,7 +477,7 @@ case "${_hwid}" in
     TRICKY*)        _x='HSW|Dell Chromebox||' ;;
     ULTIMA*)        _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)||' ;;
     WHIRLWIND*)     _x='ARM|TP-Link OnHub TGR1900 Router||' ;;
-    WINKY*)         _x='BYT|Samsung Chromebook 2 (XE500C12)||' ;;
+    WINKY*)         _x='BYT|Samsung Chromebook 2 (XE500C12)|0xd091f000|0xd091c000' ;;
     WOLF*)          _x='HSW|Dell Chromebook 11||' ;;
     YUNA*)          _x='BDW|Acer Chromebook 15 (CB5-571, C910)||' ;;
     ZAKO*)          _x='HSW|HP Chromebox CB1/G1/for Meetings||' ;;
