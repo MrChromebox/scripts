@@ -29,6 +29,8 @@ elif [ "$isBaytrail" = true ]; then
     seabios_file=$seabios_baytrail
 elif [ "$isBraswell" = true ]; then
     seabios_file=$seabios_braswell
+elif [ "$isSkylake" = true ]; then
+    seabios_file=$seabios_skylake
 else
     echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."; return 1
 fi
@@ -85,18 +87,6 @@ if [ "$useHeadless" = true  ]; then
         fi
     fi      
 fi
-#add emmc/sdcard controller addresses for Baytrail/Braswell if known
-if [[ ( "$isBaytrail" = true || "$isBraswell" = true ) && "$emmcAddr" != "" ]]; then
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard0 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard1 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard2 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard3 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard4 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard5 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} remove -n etc/sdcard6 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} add-int -i ${emmcAddr} -n etc/sdcard0 > /dev/null 2>&1
-    ${cbfstoolcmd} ${seabios_file} add-int -i ${sdcardAddr} -n etc/sdcard1 > /dev/null 2>&1
-fi
 
 #flash updated legacy BIOS
 echo_yellow "Installing RW_LEGACY firmware (${seabios_file})"
@@ -150,7 +140,7 @@ if [ "$isHswBox" = true ]; then
 elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$device" = "stumpy" || "$bayTrailHasFullROM" = "true" ]]; then
     eval coreboot_file=$`echo "coreboot_${device}"`
 else
-    exit_red "Unknown or unsupported device (${device}); cannot continue."; return 1
+    exit_red "Unknown or unsupported device (${device^^}); cannot continue."; return 1
 fi
 
 #peppy special case
@@ -352,7 +342,7 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
     
 else
     if [[ "$hasShellball" = false ]]; then
-        exit_red "\nUnfortunately I don't have a stock firmware available to download for \"$device\" at this time."
+        exit_red "\nUnfortunately I don't have a stock firmware available to download for '${device^^}' at this time."
         return 1
     fi
 
@@ -717,18 +707,13 @@ if [ $? -ne 0 ]; then
 else
     ${cbfstoolcmd} boot_stub.bin add -n bootorder -f bootorder -t raw > /dev/null 2>&1
     ${cbfstoolcmd} boot_stub.bin add-int -i 3000 -n etc/boot-menu-wait > /dev/null 2>&1
-    if [ "$emmcAddr" != "" ]; then
-        ${cbfstoolcmd} boot_stub.bin add-int -i ${emmcAddr} -n etc/sdcard0 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i ${sdcardAddr} -n etc/sdcard1 > /dev/null 2>&1
-    else
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071f000 -n etc/sdcard0 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071d000 -n etc/sdcard1 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071c000 -n etc/sdcard2 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081f000 -n etc/sdcard3 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081c000 -n etc/sdcard4 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091f000 -n etc/sdcard5 > /dev/null 2>&1
-        ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091c000 -n etc/sdcard6 > /dev/null 2>&1
-    fi
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071f000 -n etc/sdcard0 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071d000 -n etc/sdcard1 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd071c000 -n etc/sdcard2 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081f000 -n etc/sdcard3 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd081c000 -n etc/sdcard4 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091f000 -n etc/sdcard5 > /dev/null 2>&1
+    ${cbfstoolcmd} boot_stub.bin add-int -i 0xd091c000 -n etc/sdcard6 > /dev/null 2>&1
 
     #flash modified BOOT_STUB back
     echo_yellow "Flashing modified BOOT_STUB firmware"
@@ -869,7 +854,8 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isBaytrail" = false || "$bayTrailHasFullROM" = "true" ) ]]; then
+    if [[ "$unlockMenu" = true || ( ( "$isBaytrail" = false && "$isBraswell" = false && "$isSkylake" = false ) \
+            || "$bayTrailHasFullROM" = "true" ) ]]; then
         echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Custom coreboot Firmware (Full ROM) ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Custom coreboot Firmware (Full ROM) ${NORMAL}"
@@ -921,7 +907,8 @@ function menu_fwupdate() {
                     menu_fwupdate        
                     ;;
                     
-                3)  if [[ "$unlockMenu" = true || ( "$isUnsupported" = false && "$isBaytrail" = false ) \
+                3)  if [[ "$unlockMenu" = true || ( "$isUnsupported" = false && "$isBaytrail" = false \
+                            && "$isBraswell" = false && "$isSkylake" = false ) \
                             || ( "$isBaytrail" = true && "$bayTrailHasFullROM" = true ) ]]; then
                         flash_coreboot
                     fi        
