@@ -39,7 +39,7 @@ coreboot_tidus="coreboot-seabios-tidus-mattdevo-20160623.rom"
 coreboot_auron_paine="coreboot-seabios-tianocore-auron_paine-20160811-coolstar.rom"
 coreboot_auron_yuna="coreboot-seabios-tianocore-auron_yuna-20160811-coolstar.rom"
 coreboot_gandof="coreboot-seabios-tianocore-gandof-20160811-coolstar.rom"
-coreboot_lulu="coreboot-seabios-tianocore-lulu-20160815-coolstar.rom"
+coreboot_lulu="coreboot-seabios-tianocore-lulu-20160817-coolstar.rom"
 coreboot_samus="coreboot-seabios-tianocore-samus-20160811-coolstar.rom"
 
 #BayTrail full ROMs
