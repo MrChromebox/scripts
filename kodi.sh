@@ -584,6 +584,7 @@ die "Error: $@"
 #############
 function menu_kodi() {
     clear
+    hasUEFIoption=false
 	echo -e "${NORMAL}\n ChromeBox Kodi E-Z Setup Script ${script_date} ${NORMAL}"
     echo -e "${NORMAL} (c) Mr. Chromebox <mr.chromebox@gmail.com>\n ${NORMAL}"
 	echo -e "${NORMAL} Paypal towards beer/programmer fuel welcomed at above address :)\n ${NORMAL}"

@@ -41,12 +41,14 @@ useHeadless=false
 if [ -z "$1" ]; then
     echo -e ""
     #USB boot priority
-    read -p "Default to booting from USB? If N, always boot from internal storage unless selected from boot menu. [y/N] "
+    echo_yellow "Default to booting from USB?"
+    read -p "If N, always boot from internal storage unless selected from boot menu. [y/N] "
     [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && preferUSB=true    
     echo -e ""
     #headless?
     if [ "$seabios_file" = "$seabios_hswbdw_box" ]; then
-        read -p "Install \"headless\" firmware? This is only needed for servers running without a connected display. [y/N] "
+        echo_yellow "Install \"headless\" firmware?"
+        read -p "This is only needed for servers running without a connected display. [y/N] "
         [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && useHeadless=true
         echo -e ""
     fi
@@ -110,12 +112,6 @@ read -p "Press [Enter] to return to the main menu."
 #############################
 function flash_coreboot()
 {
-#temp
-if [[ "$isHswBook" = true || "$isBdwBook" = true ]]; then
-    exit_red "\nFull ROM firmware files for Haswell/Broadwell Chromebooks are temporarily unavailable."
-    return 1
-fi
-
 echo_green "\nInstall/Update Custom coreboot Firmware (Full ROM)"
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
@@ -132,13 +128,43 @@ if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem
     exit_red "\nHardware write-protect enabled, cannot flash coreboot firmware."; return 1
 fi
 
+#UEFI or legacy firmware
+useUEFI=false
+if [[ "$hasUEFIoption" = true ]]; then
+    echo -e ""
+    echo_yellow "Install UEFI-compatible firmware?"
+    echo -e "UEFI firmware is preferred for Windows and OSX;
+Linux requires the use of a boot manager like rEFInd.
+Some Linux distros (like GalliumOS) are not UEFI-compatible
+and work better with Legacy Boot (SeaBIOS) firmware.  If you
+have an existing Linux install using RW_LEGACY or BOOT_STUB
+firmware, then choose the Legacy option.
+"
+    REPLY=""
+    while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
+    do
+        read -p "Enter 'U' for UEFI, 'L' for Legacy: "
+        if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+            useUEFI=true
+        fi
+    done 
+fi
+
 #determine correct file / URL
 firmware_source=${fullrom_source}
-[[ "$isHswBook" = true || "$isBdwBook" = true ]] && firmware_source=${fullrom_source_coolstar}
 if [ "$isHswBox" = true ]; then
-    coreboot_file=$coreboot_hsw_box
-elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$device" = "stumpy" || "$bayTrailHasFullROM" = "true" ]]; then
-    eval coreboot_file=$`echo "coreboot_${device}"`
+    if [ "$useUEFI" = true ]; then
+        coreboot_file=$coreboot_uefi_hsw_box
+    else
+        coreboot_file=$coreboot_hsw_box
+    fi
+elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
+            || "$device" = "stumpy" || "$bayTrailHasFullROM" = "true" ]]; then
+    if [ "$useUEFI" = true ]; then
+        eval coreboot_file=$`echo "coreboot_uefi_${device}"`
+    else
+        eval coreboot_file=$`echo "coreboot_${device}"`
+    fi
 else
     exit_red "Unknown or unsupported device (${device^^}); cannot continue."; return 1
 fi
@@ -148,10 +174,21 @@ if [ "$device" = "peppy" ]; then
     hasElan=$(cat /proc/bus/input/devices | grep "Elan")
     hasCypress=$(cat /proc/bus/input/devices | grep "Cypress")
     if [[ $hasElan = "" && $hasCypress = "" ]]; then
-        read -p "Unable to automatically determine trackpad type. Does your Peppy have an Elan pad? [y/N]"
-        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && coreboot_file=${coreboot_peppy_elan}
+        echo -e ""
+        read -p "Unable to automatically determine trackpad type. Does your Peppy have an Elan pad? [y/N] "
+        if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
+            if [ "$useUEFI" = true ]; then
+                coreboot_file=${coreboot_uefi_peppy_elan}
+            else 
+                coreboot_file=${coreboot_peppy_elan}
+            fi
+        fi
     elif [[ $hasElan != "" ]]; then 
-        coreboot_file=${coreboot_peppy_elan}
+        if [ "$useUEFI" = true ]; then
+            coreboot_file=${coreboot_uefi_peppy_elan}
+        else 
+            coreboot_file=${coreboot_peppy_elan}
+        fi
     fi
 fi
 
@@ -168,11 +205,10 @@ fi
 #check if existing firmware is stock
 grep -obUa "vboot" /tmp/bios.bin >/dev/null
 if [ $? -eq 0 ]; then
-    read -p "Create a backup copy of your stock firmware? [Y/n]
-
-This is highly recommended in case you wish to return your device to stock 
+    echo_yellow "Create a backup copy of your stock firmware?"
+    read -p "This is highly recommended in case you wish to return your device to stock 
 configuration/run ChromeOS, or in the (unlikely) event that things go south
-and you need to recover using an external EEPROM programmer. "
+and you need to recover using an external EEPROM programmer. [Y/n] "
     [ "$REPLY" = "n" ] || backup_firmware
 fi
 #check that backup succeeded
@@ -180,9 +216,10 @@ fi
 
 #headless?
 useHeadless=false
-if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
+if [[ $useUEFI = false && ( "$isHswBox" = true || "$isBdwBox" = true ) ]]; then
     echo -e ""
-    read -p "Install \"headless\" firmware? This is only needed for servers running without a connected display. [y/N] "
+    echo_yellow "Install \"headless\" firmware?"
+    read -p "This is only needed for servers running without a connected display. [y/N] "
     if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
         useHeadless=true
     fi
@@ -190,21 +227,26 @@ fi
 
 #USB boot priority
 preferUSB=false
-echo -e ""
-read -p "Default to booting from USB? If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
-if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
-    preferUSB=true
-fi
+if [[  $useUEFI = false ]]; then 
+    echo -e ""
+    echo_yellow "Default to booting from USB?"
+    read -p "If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
+    if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+        preferUSB=true
+    fi
+ fi
 
 #add PXE?
 addPXE=false
-if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
+if [[  $useUEFI = false && ( "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ) ]]; then
     echo -e ""
-    read -p "Add PXE network booting capability? (This is not needed for by most users) [y/N] "
+    echo_yellow "Add PXE network booting capability?"
+    read -p "(This is not needed for by most users) [y/N] "
     if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
         addPXE=true
         echo -e ""
-        read -p "Boot PXE by default? (will fall back to SSD/USB) [y/N] "
+        echo_yellow "Boot PXE by default?"
+        read -p "(will fall back to SSD/USB) [y/N] "
         if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
             pxeDefault=true 
         fi
