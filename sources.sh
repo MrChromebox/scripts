@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-09-06]"
+script_date="[2016-09-15]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"

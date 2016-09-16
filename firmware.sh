@@ -205,7 +205,7 @@ fi
 #check if existing firmware is stock
 grep -obUa "vboot" /tmp/bios.bin >/dev/null
 if [ $? -eq 0 ]; then
-    echo_yellow "Create a backup copy of your stock firmware?"
+    echo_yellow "\nCreate a backup copy of your stock firmware?"
     read -p "This is highly recommended in case you wish to return your device to stock 
 configuration/run ChromeOS, or in the (unlikely) event that things go south
 and you need to recover using an external EEPROM programmer. [Y/n] "
@@ -659,6 +659,81 @@ read -p "Press [Enter] to return to the main menu."
 }
 
 
+##################
+# Remove Bitmaps #
+##################
+function remove_bitmaps() 
+{
+# remove bitmaps from GBB using gbb_utility
+
+# ensure hardware write protect disabled if in ChromeOS
+if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
+    exit_red "\nHardware write-protect enabled, cannot remove bitmaps."; return 1
+fi
+
+echo_green "\nRemove ChromeOS Boot Screen Bitmaps"
+
+read -p "Confirm removing ChromeOS bitmaps? [y/N] " confirm
+if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
+    echo_yellow "\nRemoving bitmaps..."
+    #disable software write-protect
+    ${flashromcmd} --wp-disable > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        exit_red "Error disabling software write-protect; unable to remove bitmaps."; return 1
+    fi
+    ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1
+    [[ $? -ne 0 ]] && { exit_red "\nError reading firmware (non-stock?); unable to remove bitmaps."; return 1; }
+    touch /tmp/null-images > /dev/null 2>&1
+    ${gbbutilitycmd} --set --bmpfv=/tmp/null-images /tmp/gbb.temp > /dev/null
+    [[ $? -ne 0 ]] && { exit_red "\nError removing bitmaps."; return 1; }
+    ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1
+    [[ $? -ne 0 ]] && { exit_red "\nError writing back firmware; unable to remove bitmaps."; return 1; }
+    echo_green "ChromeOS bitmaps successfully removed."
+fi
+read -p "Press [Enter] to return to the main menu."
+}
+
+
+##################
+# Restore Bitmaps #
+##################
+function restore_bitmaps() 
+{
+# restore bitmaps from GBB using gbb_utility
+
+# ensure hardware write protect disabled if in ChromeOS
+if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
+    exit_red "\nHardware write-protect enabled, cannot restore bitmaps."; return 1
+fi
+
+echo_green "\nRestore ChromeOS Boot Screen Bitmaps"
+
+read -p "Confirm restoring ChromeOS bitmaps? [y/N] " confirm
+if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
+    echo_yellow "\nRestoring bitmaps..."
+    #disable software write-protect
+    ${flashromcmd} --wp-disable > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        exit_red "Error disabling software write-protect; unable to restore bitmaps."; return 1
+    fi
+    #download shellball
+    curl -s -L -o /tmp/shellball.rom ${shellball_source}shellball.${device}.bin;
+    [[ $? -ne 0 ]] && { exit_red "Error downloading shellball; unable to restore bitmaps."; return 1; }
+    #extract GBB region, bitmaps
+    ${cbfstoolcmd} /tmp/shellball.rom read -r GBB -f gbb.new >/dev/null 2>&1
+    [[ $? -ne 0 ]] && { exit_red "Error extracting GBB region from shellball; unable to restore bitmaps."; return 1; }
+    ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1
+    [[ $? -ne 0 ]] && { exit_red "\nError reading firmware (non-stock?); unable to restore bitmaps."; return 1; }
+    ${gbbutilitycmd} --get --bmpfv=/tmp/bmpfv /tmp/gbb.new > /dev/null
+    ${gbbutilitycmd} --set --bmpfv=/tmp/bmpfv /tmp/gbb.temp > /dev/null
+    [[ $? -ne 0 ]] && { exit_red "\nError restoring bitmaps."; return 1; }
+    ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1
+    [[ $? -ne 0 ]] && { exit_red "\nError writing back firmware; unable to restore bitmaps."; return 1; }
+    echo_green "ChromeOS bitmaps successfully restored."
+fi
+read -p "Press [Enter] to return to the main menu."
+}
+
 ####################
 # Modify BOOT_STUB #
 ####################
@@ -909,19 +984,26 @@ function menu_fwupdate() {
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 4)${GRAY_TEXT} Set Boot Options (GBB flags)${NORMAL}"
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 5)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isBootStub" = true && "$isChromeOS" = false ) ]]; then
-        echo -e "${MENU}**${NUMBER} 6)${MENU} Restore Stock BOOT_STUB ${NORMAL}"
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false) ]]; then
+        echo -e "${MENU}**${NUMBER} 6)${MENU} Remove ChromeOS Bitmaps ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 7)${MENU} Restore ChromeOS Bitmaps ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 6)${GRAY_TEXT} Restore Stock BOOT_STUB ${NORMAL}"
+        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 6)${GRAY_TEXT} Remove ChromeOS Bitmaps ${NORMAL}"
+        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 7)${GRAY_TEXT} Restore ChromeOS Bitmaps ${NORMAL}"
+    fi
+    if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isBootStub" = true && "$isChromeOS" = false ) ]]; then
+        echo -e "${MENU}**${NUMBER} 8)${MENU} Restore Stock BOOT_STUB ${NORMAL}"
+    else
+        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 8)${GRAY_TEXT} Restore Stock BOOT_STUB ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isChromeOS" = false  && "$isFullRom" = true ) ]]; then
-        echo -e "${MENU}**${NUMBER} 7)${MENU} Restore Stock Firmware (full) ${NORMAL}" 
+        echo -e "${MENU}**${NUMBER} 9)${MENU} Restore Stock Firmware (full) ${NORMAL}" 
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 7)${GRAY_TEXT} Restore Stock Firmware (full) ${NORMAL}" 
+        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 9)${GRAY_TEXT} Restore Stock Firmware (full) ${NORMAL}" 
     fi
     echo -e "${MENU}**${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 8)${NORMAL} Reboot ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 9)${NORMAL} Power Off ${NORMAL}"
+    echo -e "${MENU}**${NUMBER} R)${NORMAL} Reboot ${NORMAL}"
+    echo -e "${MENU}**${NUMBER} P)${NORMAL} Power Off ${NORMAL}"
     echo -e "${MENU}**${NORMAL}"
     echo -e "${MENU}**${NUMBER} U)${NORMAL} Unlock Disabled Functions ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
@@ -970,37 +1052,51 @@ function menu_fwupdate() {
                     fi
                     menu_fwupdate
                     ;;
-                
-                6)  if [[ "$unlockMenu" = true || "$isBootStub" = true ]]; then
+                                                            
+                6)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
+                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false ]]; then
+                        remove_bitmaps   
+                    fi
+                    menu_fwupdate
+                    ;;
+                    
+                7)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
+                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false ]]; then
+                        restore_bitmaps   
+                    fi
+                    menu_fwupdate
+                    ;;
+                    
+                8)  if [[ "$unlockMenu" = true || "$isBootStub" = true ]]; then
                         restore_boot_stub
                     fi
                     menu_fwupdate
                     ;;   
                 
-                7)  if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
+                9)  if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
                             && "$isFullRom" = true ]]; then
                         restore_stock_firmware   
                     fi
                     menu_fwupdate
                     ;;
-                
-                8)  echo -e "\nRebooting...\n";
+                    
+                [rR])  echo -e "\nRebooting...\n";
                     cleanup;
                     reboot;
                     exit;
                     ;;
                     
-                9)  echo -e "\nPowering off...\n";
+                [pP])  echo -e "\nPowering off...\n";
                     cleanup;
                     poweroff;
                     exit;
                     ;;
                 
-                q)  cleanup;
+                [qQ])  cleanup;
                     exit;
                     ;;
                 
-                u)  if [ "$unlockMenu" = false ]; then
+                [uU])  if [ "$unlockMenu" = false ]; then
                         echo_yellow "\nAre you sure you wish to unlock all menu functions?"
                         read -p "Only do this if you really know what you are doing... [y/N]? "
                         [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && unlockMenu=true
