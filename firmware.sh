@@ -1025,7 +1025,7 @@ function menu_fwupdate() {
                     menu_fwupdate
                     ;;
                     
-                2)  if [[ "$unlockMenu" = true || "$isBaytrail" = true && "$bayTrailHasFullROM" = false ]]; then
+                2)  if [[ "$unlockMenu" = true || "$isBaytrail" = true ]]; then
                         modify_boot_stub  
                     fi
                     menu_fwupdate        
