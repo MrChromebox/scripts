@@ -198,7 +198,9 @@ if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
     extract_vpd /tmp/bios.bin
     if [ $? -ne 0 ]; then
         #TODO - user enter MAC manually?
-        echo_red "\nWarning: firmware doesn't contain VPD info - skipping persistence of MAC address."
+        echo_red "\nWarning: firmware doesn't contain VPD info - unable to persist MAC address."
+        read -p "Do you wish to continue? [y/N] "
+        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
     fi
 fi
 
@@ -490,10 +492,10 @@ if [ $? -eq 0 ]; then
         extract_cmd="dd if=${firmware_file} bs=1 skip=$((0x00600000)) count=$((0x00004000)) of=/tmp/vpd.bin"
     else
         #coreboot firmware, extract w/cbfstool
-        extract_cmd="${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin > /dev/null 2>&1"
+        extract_cmd="${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin"
     fi
     #run extract command
-    ${extract_cmd} >& /dev/null
+    ${extract_cmd}  > /dev/null 2>&1
     if [ $? -ne 0 ]; then 
         echo_red "Failure extracting MAC address from current firmware."
         return 1
