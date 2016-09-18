@@ -5,7 +5,7 @@
 # a custom coreboot firmware for supported
 # ChromeOS devices 
 #
-# Created by Mr.Chromebox <mr.chromebox@gmail.com>
+# Created by Mr.Chromebox <mrchromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.

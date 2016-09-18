@@ -4,7 +4,7 @@
 # ChromeOS devices for Kodi installation via
 # LibreELEC or GalliumOS/Ubuntu
 #
-# Created by Mr.Chromebox <mr.chromebox@gmail.com>
+# Created by Mr.Chromebox <mrchromebox@gmail.com>
 #
 # May be freely distributed and modified as needed, 
 # as long as proper attribution is given.
