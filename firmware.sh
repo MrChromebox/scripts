@@ -968,7 +968,7 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBaytrail" = true && "$bayTrailHasFullROM" = false ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBaytrail" = true ) ]]; then
         echo -e "${MENU}**${NUMBER} 2)${MENU} Install/Update BOOT_STUB Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
@@ -1027,7 +1027,7 @@ function menu_fwupdate() {
                     menu_fwupdate
                     ;;
                     
-                2)  if [[ "$unlockMenu" = true || "$isBaytrail" = true ]]; then
+                2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false ) ]]; then
                         modify_boot_stub  
                     fi
                     menu_fwupdate        
