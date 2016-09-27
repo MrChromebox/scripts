@@ -192,6 +192,34 @@ if [ "$device" = "peppy" ]; then
     fi
 fi
 
+#auron special case (upgrade from coolstar legacy rom)
+if [ "$device" = "auron" ]; then
+    echo -e ""
+    echo_yellow "Unable to determine Chromebook model"
+    echo -e "Because of your current firmware, I'm unable to 
+determine the exact mode of your Chromebook.  Are you using 
+an Acer C740 (Auron_Paine) or Acer C910/CB5-571 (Auron_Yuna)?
+"
+    REPLY=""
+    while [[ "$REPLY" != "P" && "$REPLY" != "p" && "$REPLY" != "Y" && "$REPLY" != "y"  ]]
+    do
+        read -p "Enter 'P' for Auron_Paine, 'Y' for Auron_Yuna: "
+        if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+            if [ "$useUEFI" = true ]; then
+                coreboot_file=${coreboot_uefi_auron_yuna}
+            else 
+                coreboot_file=${coreboot_auron_yuna}
+            fi
+        else
+            if [ "$useUEFI" = true ]; then
+                coreboot_file=${coreboot_uefi_auron_paine}
+            else 
+                coreboot_file=${coreboot_auron_paine}
+            fi
+        fi
+    done 
+fi
+
 #extract MAC address if needed
 if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
     #check if contains MAC address, extract

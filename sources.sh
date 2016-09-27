@@ -48,7 +48,6 @@ coreboot_uefi_wolf="coreboot_seabios_duet-wolf-mrchromebox_20160922.rom"
 #Broadwell full ROMs - Legacy
 coreboot_auron_paine="coreboot_seabios-auron_paine-mrchromebox_20160922.rom"
 coreboot_auron_yuna="coreboot_seabios-auron_yuna-mrchromebox_20160923.rom"
-coreboot_auron=${coreboot_auron_paine}
 coreboot_gandof="coreboot_seabios-gandof-mrchromebox_20160922.rom"
 coreboot_guado="coreboot_seabios-guado-mrchromebox_20160922.rom"
 coreboot_lulu="coreboot_seabios-lulu-mrchromebox_20160922.rom"
