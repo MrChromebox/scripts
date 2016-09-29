@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-09-22]"
+script_date="[2016-09-29]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -46,8 +46,8 @@ coreboot_uefi_peppy_elan="coreboot_seabios_duet-peppy_elan-mrchromebox_20160922.
 coreboot_uefi_wolf="coreboot_seabios_duet-wolf-mrchromebox_20160922.rom"
 
 #Broadwell full ROMs - Legacy
-coreboot_auron_paine="coreboot_seabios-auron_paine-mrchromebox_20160922.rom"
-coreboot_auron_yuna="coreboot_seabios-auron_yuna-mrchromebox_20160923.rom"
+coreboot_auron_paine="coreboot_seabios-auron_paine-mrchromebox_20160929.rom"
+coreboot_auron_yuna="coreboot_seabios-auron_yuna-mrchromebox_20160929.rom"
 coreboot_gandof="coreboot_seabios-gandof-mrchromebox_20160922.rom"
 coreboot_guado="coreboot_seabios-guado-mrchromebox_20160922.rom"
 coreboot_lulu="coreboot_seabios-lulu-mrchromebox_20160922.rom"
@@ -55,8 +55,8 @@ coreboot_rikku="coreboot_seabios-rikku-mrchromebox_20160922.rom"
 coreboot_samus="coreboot_seabios-samus-mrchromebox_20160922.rom"
 coreboot_tidus="coreboot_seabios-tidus-mrchromebox_20160922.rom"
 #Broadwell full ROMs - UEFI
-coreboot_uefi_auron_paine="coreboot_seabios_duet-auron_paine-mrchromebox_20160922.rom"
-coreboot_uefi_auron_yuna="coreboot_seabios_duet-auron_yuna-mrchromebox_20160923.rom"
+coreboot_uefi_auron_paine="coreboot_seabios_duet-auron_paine-mrchromebox_20160929.rom"
+coreboot_uefi_auron_yuna="coreboot_seabios_duet-auron_yuna-mrchromebox_20160929.rom"
 coreboot_uefi_auron=${coreboot_uefi_auron_paine}
 coreboot_uefi_gandof="coreboot_seabios_duet-gandof-mrchromebox_20160922.rom"
 coreboot_uefi_guado="coreboot_seabios_duet-guado-mrchromebox_20160922.rom"
