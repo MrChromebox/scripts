@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-09-29]"
+script_date="[2016-10-12]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -22,12 +22,12 @@ chrx_url="https://chrx.org/go"
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
 LE_version_stable="7.0.2"
-LE_version_latest="7.90.005"
+LE_version_latest="7.90.007"
 
 #syslinux version
 syslinux_version="syslinux-6.04-pre1"
 
-#SBIB full ROMs
+#SBIB full ROMs - Legacy
 coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20160922.rom"
 
 #Haswell full ROMs - Legacy
@@ -65,7 +65,6 @@ coreboot_uefi_rikku="coreboot_seabios_duet-rikku-mrchromebox_20160922.rom"
 coreboot_uefi_samus="coreboot_seabios_duet-samus-mrchromebox_20160922.rom"
 coreboot_uefi_tidus="coreboot_seabios_duet-tidus-mrchromebox_20160922.rom"
 
-
 #BayTrail full ROMs - Legacy
 coreboot_candy="coreboot_seabios-candy-mrchromebox_20160922.rom"
 coreboot_enguarde="coreboot_seabios-enguarde-mrchromebox_20160922.rom"
@@ -74,7 +73,6 @@ coreboot_gnawty="coreboot_seabios-gnawty-mrchromebox_20160922.rom"
 coreboot_ninja="coreboot_seabios-ninja-mrchromebox_20160922.rom"
 coreboot_quawks="coreboot_seabios-quawks-mrchromebox_20160922.rom"
 coreboot_swanky="coreboot_seabios-swanky-mrchromebox_20160922.rom"
-
 
 #RW_LEGACY payloads
 seabios_hswbdw_box="seabios-hswbdw_box-mrchromebox_20160922.bin"
@@ -92,4 +90,3 @@ hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"
 
 #PXE ROM for Chromeboxes w/RTL81xx ethernet
 pxe_optionrom="10ec8168.rom"
-
