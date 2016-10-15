@@ -43,7 +43,7 @@ baytrail_full_rom=('<candy>' '<enguarde>' '<glimmer>' '<gnawty>' '<ninja>' '<qua
 braswell=('<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '<ultima>');
 skylake=('<chell>' '<lars>' '<sentry>');
 
-UEFI_ROMS=($(printf "%s %s %s %s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
+UEFI_ROMS=($(printf "%s %s %s %s parrot" "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
 shellballs=($(printf "%s %s %s %s %s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}"));
 
 #menu text output
@@ -284,7 +284,7 @@ fi
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
-    || "$isBraswell" = true || "$isSkylake" = true || "$device" = "stumpy" ]] || isUnsupported=true
+    || "$isBraswell" = true || "$isSkylake" = true || "$device" = "stumpy" || "$device" = "parrot" ]] || isUnsupported=true
 
 #check if running under ChromeOS / ChromiumOS
 if [ -f /etc/lsb-release ]; then

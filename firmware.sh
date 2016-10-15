@@ -159,7 +159,7 @@ if [ "$isHswBox" = true ]; then
         coreboot_file=$coreboot_hsw_box
     fi
 elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
-            || "$device" = "stumpy" || "$bayTrailHasFullROM" = "true" ]]; then
+            || "$device" = "stumpy" || "$device" = "parrot"|| "$bayTrailHasFullROM" = "true" ]]; then
     if [ "$useUEFI" = true ]; then
         eval coreboot_file=$`echo "coreboot_uefi_${device}"`
     else
@@ -188,6 +188,29 @@ if [ "$device" = "peppy" ]; then
             coreboot_file=${coreboot_uefi_peppy_elan}
         else 
             coreboot_file=${coreboot_peppy_elan}
+        fi
+    fi
+fi
+
+#parrot special case
+if [ "$device" = "parrot" ]; then
+    isSnb=$(cat /proc/cpuinfo | grep "847")
+    isIvb=$(cat /proc/cpuinfo | grep "1007")
+    if [[ $isSnb = "" && $isIvb = "" ]]; then
+        echo -e ""
+        read -p "Unable to automatically determine CPU type. Does your Parrot have a Celeron 1007U CPU? [y/N] "
+        if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
+            if [ "$useUEFI" = true ]; then
+                coreboot_file=${coreboot_uefi_parrot_ivb}
+            else 
+                coreboot_file=${coreboot_parrot_ivb}
+            fi
+        fi
+    elif [[ $isIvb != "" ]]; then 
+        if [ "$useUEFI" = true ]; then
+            coreboot_file=${coreboot_uefi_parrot_ivb}
+        else 
+            coreboot_file=${coreboot_parrot_ivb}
         fi
     fi
 fi
