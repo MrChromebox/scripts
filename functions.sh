@@ -39,8 +39,8 @@ hsw_books=('<falco>' '<leon>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
 bdw_books=('<auron_paine>' '<auron_yuna>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');
-baytrail_full_rom=('<candy>' '<enguarde>' '<glimmer>' '<gnawty>' '<ninja>' '<quawks>' '<swanky>');
-braswell=('<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '<ultima>');
+baytrail_full_rom=('<candy>' '<enguarde>' '<glimmer>' '<gnawty>' '<kip>' '<ninja>' '<quawks>' '<swanky>');
+braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '<ultima>');
 skylake=('<chell>' '<lars>' '<sentry>');
 
 UEFI_ROMS=($(printf "%s %s %s %s parrot" "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
@@ -396,6 +396,7 @@ case "${_hwid}" in
     AURON_PAINE*)   _x='BDW|Acer Chromebook 11 (C740)' ;;
     AURON_YUNA*)    _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     BANJO*)         _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
+    BANON*)         _x='BSW|Acer Chromebook 15 (CBx-xxx)' ;;
     BIG*)           _x='ARM|Acer Chromebook 13 (CB5-311)' ;;
     BLAZE*)         _x='ARM|HP Chromebook 14 G3' ;;
     BUDDY*)         _x='BDW|Acer Chromebase 24' ;;
