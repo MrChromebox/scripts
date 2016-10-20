@@ -1002,18 +1002,14 @@ read -p "Press [Enter] to return to the main menu."
 # Firmware Update Menu #
 ########################
 function menu_fwupdate() {
-    clear
+    printf "\ec"
     echo -e "${NORMAL}\n ChromeOS Firmware Utility Script ${script_date} ${NORMAL}"
-    echo -e "${NORMAL} (c) Mr. Chromebox <mr.chromebox@gmail.com>\n ${NORMAL}"
-    echo -e "${NORMAL} Paypal towards beer/programmer fuel welcomed at above address :)\n ${NORMAL}"
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${MENU}**${NUMBER} System Info ${NORMAL}"
-    echo -e "${MENU}**${NORMAL} Device: ${deviceDesc}"
-    echo -e "${MENU}**${NORMAL} Board Name: ${device^^}"
-    echo -e "${MENU}**${NORMAL} CPU Type: $deviceCpuType"
-    echo -e "${MENU}**${NORMAL} Fw Type: $firmwareType"
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${MENU}**${NORMAL}"
+    echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
+    echo -e "${MENU}************************************************${NORMAL}"
+    echo -e "${MENU}**${NUMBER} Device:${NORMAL}   ${deviceDesc} (${device^^})"
+    echo -e "${MENU}**${NUMBER} CPU Type:${NORMAL} $deviceCpuType"
+    echo -e "${MENU}**${NUMBER} Fw Type:${NORMAL}  $firmwareType"
+    echo -e "${MENU}************************************************${NORMAL}"
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
         echo -e "${MENU}**${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
@@ -1055,13 +1051,10 @@ function menu_fwupdate() {
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 9)${GRAY_TEXT} Restore Stock Firmware (full) ${NORMAL}" 
     fi
     echo -e "${MENU}**${NORMAL}"
-    echo -e "${MENU}**${NUMBER} R)${NORMAL} Reboot ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} P)${NORMAL} Power Off ${NORMAL}"
-    echo -e "${MENU}**${NORMAL}"
     echo -e "${MENU}**${NUMBER} U)${NORMAL} Unlock Disabled Functions ${NORMAL}"
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${ENTER_LINE}Select a menu option or ${RED_TEXT}q to quit ${NORMAL}"
-    
+    echo -e "${MENU}************************************************${NORMAL}"
+    echo -e "${ENTER_LINE}Select a menu option or${NORMAL}"
+    echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
     read opt
             
     while [ opt != '' ]
