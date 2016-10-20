@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-10-15]"
+script_date="[2016-10-20]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -29,10 +29,10 @@ syslinux_version="syslinux-6.04-pre1"
 
 #SBIB full ROMs - Legacy
 coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20161015.rom"
-coreboot_parrot="coreboot_seabios-parrot_snb-mrchromebox_20161015.rom"
+coreboot_parrot="coreboot_seabios-parrot_snb-mrchromebox_20161020.rom"
 coreboot_parrot_ivb="coreboot_seabios-parrot_ivb-mrchromebox_20161015.rom"
 #SBIB full ROMs - UEFI
-coreboot_uefi_parrot="coreboot_seabios_duet-parrot_snb-mrchromebox_20161015.rom"
+coreboot_uefi_parrot="coreboot_seabios_duet-parrot_snb-mrchromebox_20161020.rom"
 coreboot_uefi_parrot_ivb="coreboot_seabios_duet-parrot_ivb-mrchromebox_20161015.rom"
 
 #Haswell full ROMs - Legacy
