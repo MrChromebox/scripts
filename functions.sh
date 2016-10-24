@@ -37,7 +37,7 @@ hasShellball=false
 hsw_boxes=('<mccloud>' '<monroe>' '<panther>' '<tricky>' '<zako>');
 hsw_books=('<falco>' '<leon>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
-bdw_books=('<auron_paine>' '<auron_yuna>' '<gandof>' '<lulu>' '<samus>');
+bdw_books=('<auron_paine>' '<auron_yuna>' '<buddy>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');
 baytrail_full_rom=('<candy>' '<enguarde>' '<glimmer>' '<gnawty>' '<kip>' '<ninja>' '<quawks>' '<swanky>');
 braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '<ultima>');
@@ -271,6 +271,7 @@ fi
 device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | awk 'NR==1{print $1}')
 if [[ $? -ne 0 || "${device}" = "" ]]; then
     echo_red "Unable to determine Chromebox/book model; cannot continue."
+    echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,\nonly Intel-based devices are supported at this time."
     return 1
 fi
 [[ "${hsw_boxes[@]}" =~ "$device" ]] && isHswBox=true
