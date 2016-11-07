@@ -34,8 +34,8 @@ unlockMenu=false
 hasUEFIoption=false
 hasShellball=false
 
-hsw_boxes=('<mccloud>' '<monroe>' '<panther>' '<tricky>' '<zako>');
-hsw_books=('<falco>' '<leon>' '<peppy>' '<wolf>');
+hsw_boxes=('<mccloud>' '<panther>' '<tricky>' '<zako>');
+hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
 bdw_books=('<auron_paine>' '<auron_yuna>' '<buddy>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');

@@ -19,7 +19,7 @@ fi
 echo_green "\nInstall/Update Legacy BIOS (RW_LEGACY)"
 
 #determine proper file 
-if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
+if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "monroe" ]]; then
     seabios_file=$seabios_hswbdw_box
 elif [ "$isHswBook" = true ]; then
     seabios_file=$seabios_hsw_book
@@ -46,7 +46,7 @@ if [ -z "$1" ]; then
     [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && preferUSB=true    
     echo -e ""
     #headless?
-    if [ "$seabios_file" = "$seabios_hswbdw_box" ]; then
+    if [[ "$seabios_file" = "$seabios_hswbdw_box" && "$device" != "monroe" ]]; then
         echo_yellow "Install \"headless\" firmware?"
         read -p "This is only needed for servers running without a connected display. [y/N] "
         [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && useHeadless=true
@@ -55,7 +55,7 @@ if [ -z "$1" ]; then
 fi
 
 #download SeaBIOS update
-echo_yellow "\nDownloading RW_LEGACY firmware update"
+echo_yellow "\nDownloading RW_LEGACY firmware update\n(${seabios_file})"
 curl -s -L -O ${rwlegacy_source}${seabios_file}.md5
 curl -s -L -O ${rwlegacy_source}${seabios_file}
 #verify checksum on downloaded file
@@ -91,7 +91,7 @@ if [ "$useHeadless" = true  ]; then
 fi
 
 #flash updated legacy BIOS
-echo_yellow "Installing RW_LEGACY firmware (${seabios_file})"
+echo_yellow "Installing RW_LEGACY firmware"
 ${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
 echo_green "Legacy BIOS / RW_LEGACY firmware successfully installed/updated."  
 }
@@ -308,7 +308,7 @@ fi
 
 #download firmware file
 cd /tmp
-echo_yellow "\nDownloading coreboot firmware"
+echo_yellow "\nDownloading coreboot firmware\n(${coreboot_file})"
 curl -s -L -O "${firmware_source}${coreboot_file}"
 curl -s -L -O "${firmware_source}${coreboot_file}.md5"
 
@@ -364,7 +364,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #flash coreboot firmware
-echo_yellow "Installing custom coreboot firmware (${coreboot_file})"
+echo_yellow "Installing custom coreboot firmware"
 ${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo_green "Custom coreboot firmware (Full ROM) successfully installed/updated."
@@ -445,14 +445,15 @@ else
     echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
     
     if [ "${device^^}" = "PANTHER" ]; then
-        echo -e "Which ChromeBox do you have?\n"
+        echo -e "Which device do you have?\n"
         echo "1) Asus CN60 [PANTHER]"
         echo "2) HP CB1 [ZAKO]"
         echo "3) Dell 3010 [TRICKY]"
         echo "4) Acer CXI [MCCLOUD]"
+        echo "5) LG Chromebase [MONROE]"
         echo ""
         read -p "? " fw_num
-        if [[ $fw_num -lt 1 ||  $fw_num -gt 8 ]]; then
+        if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
             exit_red "Invalid input - cancelling"
             return 1
         fi
@@ -472,6 +473,8 @@ else
             3) _device="tricky";
                 ;;
             4) _device="mccloud";
+                ;;
+            5) _device="monroe";
                 ;;
         esac
         
@@ -496,7 +499,7 @@ else
     [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
     
     #extract VPD if present
-    if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
+    if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" || "$device" = "monroe" ]]; then
         #read current firmware to extract VPD
         echo_yellow "Reading current firmware"
         ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
