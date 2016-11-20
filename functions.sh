@@ -92,7 +92,7 @@ function die()
 function list_usb_devices()
 {
 #list available drives, excluding internal storage and root/boot device
-[[ -f /dev/mmcblk0 ]] && intStor="/dev/mmcblk0" || intStor="/dev/sda"
+[[ -b /dev/mmcblk0 ]] && intStor="/dev/mmcblk0" || intStor="/dev/sda"
 rootdev=${intStor}
 if [ "$(which rootdev)" ]; then
     rootdev=$(rootdev -d -s)
