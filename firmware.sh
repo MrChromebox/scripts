@@ -152,18 +152,16 @@ fi
 
 #determine correct file / URL
 firmware_source=${fullrom_source}
-if [ "$isHswBox" = true ]; then
-    if [ "$useUEFI" = true ]; then
-        coreboot_file=$coreboot_uefi_hsw_box
-    else
-        coreboot_file=$coreboot_hsw_box
-    fi
-elif [[ "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
+if [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
             || "$device" = "stumpy" || "$device" = "parrot"|| "$bayTrailHasFullROM" = "true" ]]; then
     if [ "$useUEFI" = true ]; then
         eval coreboot_file=$`echo "coreboot_uefi_${device}"`
     else
-        eval coreboot_file=$`echo "coreboot_${device}"`
+        if [ "$isHswBox" = true ]; then
+            coreboot_file=$coreboot_hsw_box
+        else
+            eval coreboot_file=$`echo "coreboot_${device}"`
+        fi
     fi
 else
     exit_red "Unknown or unsupported device (${device^^}); cannot continue."; return 1
@@ -280,14 +278,22 @@ fi
 
 #USB boot priority
 preferUSB=false
-if [[  $useUEFI = false ]]; then 
-    echo -e ""
-    echo_yellow "Default to booting from USB?"
-    read -p "If N, always boot from the internal SSD unless selected from boot menu. [y/N] "
-    if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+echo -e ""
+echo_yellow "Default to booting from USB?"
+echo -e "
+If you default to USB, then any bootable USB device 
+will have boot priority over the internal SSD.
+If you default to SSD, you will need to manually select
+the USB Device from Boot Manager in order to boot it.
+"
+REPLY=""
+while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
+do
+    read -p "Enter 'U' for USB, 'S' for SSD: "
+    if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
         preferUSB=true
     fi
- fi
+done 
 
 #add PXE?
 addPXE=false
@@ -322,12 +328,34 @@ if [ -f /tmp/vpd.bin ]; then
 fi
 #preferUSB?
 if [ "$preferUSB" = true  ]; then
-    curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
-    if [ $? -ne 0 ]; then
-        echo_red "Unable to download bootorder file; boot order cannot be changed."
+    if [ $useUEFI = false ]; then
+        curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
+        if [ $? -ne 0 ]; then
+            echo_red "Unable to download bootorder file; boot order cannot be changed."
+        else
+            ${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1 
+            ${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
+        fi
     else
-        ${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1 
-        ${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
+        duet_img="${cbfs_source}duet-hswbdw-box-usb.img"
+        if [[ "$isHswBox" == true || "$isBdwBox" == true ]]; then
+            duet_img="${cbfs_source}duet-hswbdw-box-usb.img"
+        elif [[ "$isHswBook" == true || "$isBdwBook" == true ]]; then
+            duet_img="${cbfs_source}duet-hswbdw-book-usb.img"
+        elif [[ ${coreboot_file} == ${coreboot_uefi_parrot} ]]; then
+            duet_img="${cbfs_source}duet-snb-book-usb.img"
+        elif [[ ${coreboot_file} == ${coreboot_uefi_parrot_ivb} ]]; then
+            duet_img="${cbfs_source}duet-ivb-book-usb.img"
+        else 
+             exit_red "Unknown device/device type; cannot modify boot order."; return 1
+        fi
+        curl -s -L -o duet.img "${duet_img}"
+        if [ $? -ne 0 ]; then
+            echo_red "Unable to download bootorder file; boot order cannot be changed."
+        else
+            ${cbfstoolcmd} ${coreboot_file} remove -n floppyimg/tianocore.img.lzma > /dev/null 2>&1 
+            ${cbfstoolcmd} ${coreboot_file} add -f ./duet.img -n floppyimg/tianocore.img.lzma -t raw -c lzma > /dev/null 2>&1
+        fi
     fi
 fi
 #useHeadless?
@@ -368,6 +396,11 @@ echo_yellow "Installing custom coreboot firmware"
 ${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo_green "Custom coreboot firmware (Full ROM) successfully installed/updated."
+    
+    #Prevent from trying to boot stock ChromeOS install in UEFI mode
+    if [[ "$isStock" = true && "$isChromeOS" = true &&  "$useUEFI" = true ]]; then
+        mv /tmp/boot/EFI /tmp/boot/EFI_ > /dev/null 2>&1
+    fi
 else
     echo_red "An error occurred flashing the coreboot firmware. DO NOT REBOOT!"
 fi
