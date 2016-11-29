@@ -304,12 +304,12 @@ read -p "Press [Enter] to return to the main menu."
 }
 
 
-###################################
-# Install GaOS/Ubuntu (dual boot) #
-###################################
+########################################
+# Install GalliumOS/Ubuntu (dual boot) #
+########################################
 function chrx() 
 {
-echo_green "\nUbuntu / Dual Boot Install"
+echo_green "\nGalliumOS/Ubuntu / Dual Boot Install"
 echo_green "Now using reynhout's chrx script - www.chrx.org"
 
 target_disk="`rootdev -d -s`"
@@ -363,7 +363,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 
 	#Do the real work
 
-	echo_green "\n\nModifying partition table to make room for Ubuntu." 
+	echo_green "\n\nModifying partition table to make room for GalliumOS/Ubuntu." 
 
 	umount -f /mnt/stateful_partition > /dev/null 2>&1
 
@@ -385,7 +385,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	exit
 fi
 echo_yellow "Stage 1 / repartitioning completed, moving on."
-echo_green "Stage 2: Installing Ubuntu via chrx"
+echo_green "Stage 2: Installing GalliumOS/Ubuntu via chrx"
 
 #init vars
 ubuntu_package="galliumos"
@@ -393,7 +393,8 @@ ubuntu_version="latest"
 
 #select Ubuntu metapackage
 validPackages=('<galliumos>' '<ubuntu>' '<kubuntu>' '<lubuntu>' '<xubuntu>' '<edubuntu>');
-echo -e "\nEnter the Ubuntu (or Ubuntu-derivative) to install.  Valid options are `echo ${validPackages[*]}`.
+echo -e "\nEnter the Ubuntu (or Ubuntu-derivative) to install.
+Valid options are `echo ${validPackages[*]}`.
 If no (valid) option is entered, 'galliumos' will be used."
 read -p "" ubuntu_package	
 
@@ -419,13 +420,18 @@ else
     [[ "$REPLY" != "n" && "$REPLY" != "N" ]] && useBeta="-r nightly"
 fi
 
-
-
 #Install Kodi?
 kodi_install=""
 read -p "Do you wish to install Kodi ? [Y/n] "
 if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 	kodi_install="-p kodi"
+fi
+
+#Install Steam?
+steam_install=""
+read -p "Do you wish to install Steam ? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	steam_install="-p steam"
 fi
 
 echo_green "\nInstallation is ready to begin.\nThis is going to take some time, so be patient."
@@ -436,7 +442,7 @@ echo -e ""
 #Install via chrx
 export CHRX_NO_REBOOT=1
 curl -L -s -o chrx ${chrx_url}
-sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $useBeta
+sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $steam_install $useBeta
 
 #chrx will end with prompt for user to press enter to reboot
 read -p ""
