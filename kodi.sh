@@ -434,6 +434,13 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 	steam_install="-p steam"
 fi
 
+#Install Minecraft?
+minecraft_install=""
+read -p "Do you wish to install Minecraft ? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	minecraft_install="-p minecraft"
+fi
+
 echo_green "\nInstallation is ready to begin.\nThis is going to take some time, so be patient."
 
 read -p "Press [Enter] to continue..."
@@ -442,7 +449,7 @@ echo -e ""
 #Install via chrx
 export CHRX_NO_REBOOT=1
 curl -L -s -o chrx ${chrx_url}
-sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $steam_install $useBeta
+sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $steam_install $minecraft_install $useBeta
 
 #chrx will end with prompt for user to press enter to reboot
 read -p ""
