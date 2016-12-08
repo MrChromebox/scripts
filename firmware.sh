@@ -129,25 +129,29 @@ if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem
 fi
 
 #UEFI or legacy firmware
-useUEFI=false
-if [[ "$hasUEFIoption" = true ]]; then
-    echo -e ""
-    echo_yellow "Install UEFI-compatible firmware?"
-    echo -e "UEFI firmware is preferred for Windows and OSX;
-Linux requires the use of a boot manager like rEFInd.
-Some Linux distros (like GalliumOS) are not UEFI-compatible
-and work better with Legacy Boot (SeaBIOS) firmware.  If you
-have an existing Linux install using RW_LEGACY or BOOT_STUB
-firmware, then choose the Legacy option.
-"
-    REPLY=""
-    while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
-    do
-        read -p "Enter 'U' for UEFI, 'L' for Legacy: "
-        if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
-            useUEFI=true
-        fi
-    done 
+if [[ -d /sys/firmware/efi && "$unlockMenu" = false ]]; then
+    useUEFI=true
+else
+    useUEFI=false
+    if [[ "$hasUEFIoption" = true ]]; then
+        echo -e ""
+        echo_yellow "Install UEFI-compatible firmware?"
+        echo -e "UEFI firmware is preferred for Windows and OSX;
+    Linux requires the use of a boot manager like rEFInd.
+    Some Linux distros (like GalliumOS) are not UEFI-compatible
+    and work better with Legacy Boot (SeaBIOS) firmware.  If you
+    have an existing Linux install using RW_LEGACY or BOOT_STUB
+    firmware, then choose the Legacy option.
+    "
+        REPLY=""
+        while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
+        do
+            read -p "Enter 'U' for UEFI, 'L' for Legacy: "
+            if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+                useUEFI=true
+            fi
+        done 
+    fi
 fi
 
 #determine correct file / URL
