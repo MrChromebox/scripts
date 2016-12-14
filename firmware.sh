@@ -282,22 +282,24 @@ fi
 
 #USB boot priority
 preferUSB=false
-echo -e ""
-echo_yellow "Default to booting from USB?"
-echo -e "
-If you default to USB, then any bootable USB device 
-will have boot priority over the internal SSD.
-If you default to SSD, you will need to manually select
-the USB Device from Boot Manager in order to boot it.
-"
-REPLY=""
-while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
-do
-    read -p "Enter 'U' for USB, 'S' for SSD: "
-    if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
-        preferUSB=true
-    fi
-done 
+if [ $useUEFI = false ]; then
+    echo -e ""
+    echo_yellow "Default to booting from USB?"
+    echo -e "
+    If you default to USB, then any bootable USB device 
+    will have boot priority over the internal SSD.
+    If you default to SSD, you will need to manually select
+    the USB Device from Boot Manager in order to boot it.
+    "
+    REPLY=""
+    while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
+    do
+        read -p "Enter 'U' for USB, 'S' for SSD: "
+        if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+            preferUSB=true
+        fi
+    done
+fi
 
 #add PXE?
 addPXE=false
@@ -331,36 +333,14 @@ if [ -f /tmp/vpd.bin ]; then
     ${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
 fi
 #preferUSB?
-if [ "$preferUSB" = true  ]; then
-    if [ $useUEFI = false ]; then
-        curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
-        if [ $? -ne 0 ]; then
-            echo_red "Unable to download bootorder file; boot order cannot be changed."
-        else
-            ${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1 
-            ${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
-        fi
-    else
-        duet_img="${cbfs_source}duet-hswbdw-box-usb.img"
-        if [[ "$isHswBox" == true || "$isBdwBox" == true ]]; then
-            duet_img="${cbfs_source}duet-hswbdw-box-usb.img"
-        elif [[ "$isHswBook" == true || "$isBdwBook" == true ]]; then
-            duet_img="${cbfs_source}duet-hswbdw-book-usb.img"
-        elif [[ ${coreboot_file} == ${coreboot_uefi_parrot} ]]; then
-            duet_img="${cbfs_source}duet-snb-book-usb.img"
-        elif [[ ${coreboot_file} == ${coreboot_uefi_parrot_ivb} ]]; then
-            duet_img="${cbfs_source}duet-ivb-book-usb.img"
-        else 
-             exit_red "Unknown device/device type; cannot modify boot order."; return 1
-        fi
-        curl -s -L -o duet.img "${duet_img}"
-        if [ $? -ne 0 ]; then
-            echo_red "Unable to download bootorder file; boot order cannot be changed."
-        else
-            ${cbfstoolcmd} ${coreboot_file} remove -n floppyimg/tianocore.img.lzma > /dev/null 2>&1 
-            ${cbfstoolcmd} ${coreboot_file} add -f ./duet.img -n floppyimg/tianocore.img.lzma -t raw -c lzma > /dev/null 2>&1
-        fi
-    fi
+if [[ "$preferUSB" = true  && $useUEFI = false ]]; then
+	curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
+	if [ $? -ne 0 ]; then
+	    echo_red "Unable to download bootorder file; boot order cannot be changed."
+	else
+	    ${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1 
+	    ${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
+	fi
 fi
 #useHeadless?
 if [ "$useHeadless" = true  ]; then
