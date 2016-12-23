@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-12-14]"
+script_date="[2016-12-22]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -21,7 +21,7 @@ chrx_url="https://chrx.org/go"
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
 LE_version_stable="7.0.2"
-LE_version_latest="7.90.009"
+LE_version_latest="7.90.010"
 
 #syslinux version
 syslinux_version="syslinux-6.04-pre1"
@@ -92,6 +92,7 @@ seabios_bdw_book="seabios-bdw_book-mrchromebox_20161107.bin"
 seabios_baytrail="seabios-byt-mrchromebox_20161107.bin"
 seabios_braswell="seabios-bsw-mrchromebox_20161107.bin"
 seabios_skylake="seabios-skl-mrchromebox_20161107.bin"
+seabios_link="seabios-link.bin"
 
 #BOOT_STUB payloads
 bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20161107.bin"

@@ -31,6 +31,8 @@ elif [ "$isBraswell" = true ]; then
     seabios_file=$seabios_braswell
 elif [ "$isSkylake" = true ]; then
     seabios_file=$seabios_skylake
+elif [ "$device" = "link" ]; then
+    seabios_file=$seabios_link
 else
     echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."; return 1
 fi
