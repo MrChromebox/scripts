@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2016-12-22]"
+script_date="[2017-01-01]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -30,6 +30,7 @@ syslinux_version="syslinux-6.04-pre1"
 #SNB/IVB
 coreboot_uefi_parrot="coreboot_tiano-parrot_snb-mrchromebox_20161214.rom"
 coreboot_uefi_parrot_ivb="coreboot_tiano-parrot_ivb-mrchromebox_20161214.rom"
+coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20170101.rom"
 #Haswell
 coreboot_uefi_falco="coreboot_tiano-falco-mrchromebox_20161214.rom"
 coreboot_uefi_leon="coreboot_tiano-leon-mrchromebox_20161214.rom"
@@ -54,9 +55,9 @@ coreboot_uefi_tidus="coreboot_tiano-tidus-mrchromebox_20161214.rom"
 
 #Legacy Full ROMs (deprecated)
 #SNB/IVB
-coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20161208.rom"
 coreboot_parrot="coreboot_seabios-parrot_snb-mrchromebox_20161127.rom"
 coreboot_parrot_ivb="coreboot_seabios-parrot_ivb-mrchromebox_20161127.rom"
+coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20170101.rom"
 #Haswell
 coreboot_falco="coreboot_seabios-falco-mrchromebox_20161107.rom"
 coreboot_leon="coreboot_seabios-leon-mrchromebox_20161107.rom"

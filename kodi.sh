@@ -584,11 +584,18 @@ die "Error: $@"
 #############
 function menu_kodi() {
     clear
-    hasUEFIoption=false
-	echo -e "${NORMAL}\n ChromeBox Kodi E-Z Setup Script ${script_date} ${NORMAL}"
-    echo -e "${NORMAL} (c) Mr. Chromebox <mr.chromebox@gmail.com>\n ${NORMAL}"
-	echo -e "${NORMAL} Paypal towards beer/programmer fuel welcomed at above address :)\n ${NORMAL}"
-    echo -e "${MENU}*********************************************${NORMAL}"
+    echo -e "${NORMAL}\n ChromeBox Kodi E-Z Setup Script ${script_date} ${NORMAL}"
+    echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
+    echo -e "${MENU}******************************************************${NORMAL}"
+    echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${device^^})"
+    echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
+    echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
+    if [ "$wpEnabled" = true ]; then
+        echo -e "${MENU}**${NUMBER}    Fw WP: ${RED_TEXT}Enabled${NORMAL}"
+    else
+        echo -e "${MENU}**${NUMBER}    Fw WP: ${NORMAL}Disabled"
+    fi
+    echo -e "${MENU}******************************************************${NORMAL}"
 	if [ "$isChromeOS" = false ]; then
 		echo -e "${GRAY_TEXT}**${GRAY_TEXT}     Dual Boot  (only available in ChromeOS)${NORMAL}"
 		echo -e "${GRAY_TEXT}**${GRAY_TEXT}  1)${GRAY_TEXT} Install: ChromeOS + GalliumOS/Ubuntu ${NORMAL}"
@@ -607,13 +614,10 @@ function menu_kodi() {
 		echo -e "${MENU}**${NORMAL}"
 	fi
 	echo -e "${MENU}**${NORMAL}     Standalone ${NORMAL}"
-    echo -e "${MENU}**${NUMBER}  6)${MENU} Install/Update: Custom coreboot Firmware ${NORMAL}"
+    echo -e "${MENU}**${NUMBER}  6)${MENU} Install/Update: Custom UEFI Firmware ${NORMAL}"
     echo -e "${MENU}**${NUMBER}  7)${MENU} Create LibreELEC Install Media ${NORMAL}"
-	echo -e "${MENU}**${NORMAL}"
-	echo -e "${MENU}**${NUMBER}  8)${NORMAL} Reboot ${NORMAL}"
-	echo -e "${MENU}**${NUMBER}  9)${NORMAL} Power Off ${NORMAL}"
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${ENTER_LINE}Select a menu option or ${RED_TEXT}q to quit${NORMAL}"
+    echo -e "${MENU}******************************************************${NORMAL}"
+    echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
     
 	read opt
 	
@@ -652,24 +656,26 @@ function menu_kodi() {
 			case $opt in
 				
 			6)	clear;
-				flash_coreboot;
+				flash_coreboot useUEFI;
 				menu_kodi;
 				;;		
 			7) 	clear;
 				create_le_install_media;
 				menu_kodi;
 				;;				
-			8)	echo -e "\nRebooting...\n";
+			[rR])  echo -e "\nRebooting...\n";
 				cleanup;
 				reboot;
 				exit;
 				;;
-			9)	echo -e "\nPowering off...\n";
+				
+			[pP])  echo -e "\nPowering off...\n";
 				cleanup;
 				poweroff;
 				exit;
 				;;
-			q)	cleanup;
+				
+			[qQ])  cleanup;
 				exit;
 				;;
 			\n)	cleanup;

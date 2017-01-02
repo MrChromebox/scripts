@@ -16,7 +16,7 @@ if [ "${isChromeOS}" = true ]; then
     crossystem dev_boot_legacy=1 > /dev/null 2>&1
 fi
 
-echo_green "\nInstall/Update Legacy BIOS (RW_LEGACY)"
+echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
 
 #determine proper file 
 if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "monroe" ]]; then
@@ -34,7 +34,7 @@ elif [ "$isSkylake" = true ]; then
 elif [ "$device" = "link" ]; then
     seabios_file=$seabios_link
 else
-    echo_red "Unknown or unsupported device (${device}); cannot update Legacy BIOS."; return 1
+    echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."; return 1
 fi
 
 
@@ -95,7 +95,7 @@ fi
 #flash updated legacy BIOS
 echo_yellow "Installing RW_LEGACY firmware"
 ${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
-echo_green "Legacy BIOS / RW_LEGACY firmware successfully installed/updated."  
+echo_green "RW_LEGACY firmware successfully installed/updated."  
 }
 
 
@@ -114,7 +114,7 @@ read -p "Press [Enter] to return to the main menu."
 #############################
 function flash_coreboot()
 {
-echo_green "\nInstall/Update Custom coreboot Firmware (Full ROM)"
+echo_green "\nInstall/Update Full ROM Firmware"
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
 technical knowledge to recover.  You have been warned."
@@ -125,13 +125,11 @@ read -p "Do you wish to continue? [y/N] "
 #spacing
 echo -e ""
 
-# ensure hardware write protect disabled if in ChromeOS
-if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
-    exit_red "\nHardware write-protect enabled, cannot flash coreboot firmware."; return 1
-fi
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
 #UEFI or legacy firmware
-if [[ -d /sys/firmware/efi && "$unlockMenu" = false ]]; then
+if [[ ! -z "$1" || ( -d /sys/firmware/efi && "$unlockMenu" = false ) ]]; then
     useUEFI=true
 else
     useUEFI=false
@@ -140,10 +138,9 @@ else
         echo_yellow "Install UEFI-compatible firmware?"
         echo -e "UEFI firmware is preferred for Windows and OSX;
     Linux requires the use of a boot manager like rEFInd.
-    Some Linux distros (like GalliumOS) are not UEFI-compatible
-    and work better with Legacy Boot (SeaBIOS) firmware.  If you
-    have an existing Linux install using RW_LEGACY or BOOT_STUB
-    firmware, then choose the Legacy option.
+    Some Linux distros are not UEFI-compatible and work better 
+    with Legacy Boot (SeaBIOS) firmware.  If you have an existing
+    Linux install you want to keep using, then choose the Legacy option.
     "
         REPLY=""
         while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
@@ -322,13 +319,13 @@ fi
 
 #download firmware file
 cd /tmp
-echo_yellow "\nDownloading coreboot firmware\n(${coreboot_file})"
+echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
 curl -s -L -O "${firmware_source}${coreboot_file}"
 curl -s -L -O "${firmware_source}${coreboot_file}.md5"
 
 #verify checksum on downloaded file
 md5sum -c ${coreboot_file}.md5 --quiet > /dev/null 2>&1
-[[ $? -ne 0 ]] && { exit_red "coreboot firmware download checksum fail; download corrupted, cannot flash."; return 1; }
+[[ $? -ne 0 ]] && { exit_red "Firmware download checksum fail; download corrupted, cannot flash."; return 1; }
 
 #check if we have a VPD to restore
 if [ -f /tmp/vpd.bin ]; then
@@ -378,17 +375,17 @@ if [ $? -ne 0 ]; then
 fi
 
 #flash coreboot firmware
-echo_yellow "Installing custom coreboot firmware"
+echo_yellow "Installing Full ROM firmware"
 ${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    echo_green "Custom coreboot firmware (Full ROM) successfully installed/updated."
+    echo_green "Full ROM firmware successfully installed/updated."
     
     #Prevent from trying to boot stock ChromeOS install in UEFI mode
     if [[ "$isStock" = true && "$isChromeOS" = true &&  "$useUEFI" = true ]]; then
         mv /tmp/boot/EFI /tmp/boot/EFI_ > /dev/null 2>&1
     fi
 else
-    echo_red "An error occurred flashing the coreboot firmware. DO NOT REBOOT!"
+    echo_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"
 fi
 
 read -p "Press [Enter] to return to the main menu."
@@ -410,6 +407,9 @@ read -p "Do you wish to continue? [y/N] "
 
 #spacing
 echo -e ""
+
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot restore stock firmware."; return 1; }
 
 firmware_file=""
 
@@ -641,10 +641,9 @@ function set_boot_options()
 {
 # set boot options via firmware boot flags
 
-# ensure hardware write protect disabled if in ChromeOS
-if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
-    exit_red "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."; return 1
-fi
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."; return 1; }
+
 
 [[ -z "$1" ]] && legacy_text="Legacy Boot" || legacy_text="$1"
 
@@ -666,10 +665,10 @@ while :
 do
     read -p "? " n  
     case $n in
-        1) _flags=0x489; break;;
-        2) _flags=0x488; break;;
-        3) _flags=0x89; break;;
-        4) _flags=0x88; break;;
+        1) _flags=0x4A9; break;;
+        2) _flags=0x4A8; break;;
+        3) _flags=0xA9; break;;
+        4) _flags=0xA8; break;;
         5) _flags=0x0; break;;
         6) read -p "Press [Enter] to return to the main menu."; break;;
         *) echo -e "invalid option";;
@@ -700,10 +699,8 @@ function set_hwid()
 {
 # set HWID using gbb_utility
 
-# ensure hardware write protect disabled if in ChromeOS
-if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
-    exit_red "\nHardware write-protect enabled, cannot set HWID."; return 1
-fi
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot set HWID."; return 1; }
 
 echo_green "Set Hardware ID (HWID) using gbb_utility"
 
@@ -741,10 +738,8 @@ function remove_bitmaps()
 {
 # remove bitmaps from GBB using gbb_utility
 
-# ensure hardware write protect disabled if in ChromeOS
-if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
-    exit_red "\nHardware write-protect enabled, cannot remove bitmaps."; return 1
-fi
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot remove bitmaps."; return 1; }
 
 echo_green "\nRemove ChromeOS Boot Screen Bitmaps"
 
@@ -776,10 +771,8 @@ function restore_bitmaps()
 {
 # restore bitmaps from GBB using gbb_utility
 
-# ensure hardware write protect disabled if in ChromeOS
-if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
-    exit_red "\nHardware write-protect enabled, cannot restore bitmaps."; return 1
-fi
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot restore bitmaps."; return 1; }
 
 echo_green "\nRestore ChromeOS Boot Screen Bitmaps"
 
@@ -821,7 +814,7 @@ function modify_boot_stub()
 #check baytrail
 [[ "$isBaytrail" = false ]] && { exit_red "\nThis functionality is only available for Baytrail ChromeOS devices currently"; return 1; }
 
-echo_green "\nInstall/Update Legacy BIOS (BOOT_STUB)"
+echo_green "\nInstall/Update BOOT_STUB Firmware (Legacy BIOS)"
 
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
@@ -833,10 +826,8 @@ so only proceed if you're going to run Linux exclusively."
 read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y"|| "$REPLY" = "y" ]] || return
 
-#check WP status
-if [[ "$isChromeOS" = true && ( "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ) ]]; then
-    exit_red "\nHardware write-protect enabled, cannot flash/modify BOOT_STUB firmware."; return 1
-fi
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot flash/modify BOOT_STUB firmware."; return 1; }
 
 # cd to working dir
 cd /tmp
@@ -917,7 +908,7 @@ else
         ${flashromcmd} -w -i BOOT_STUB:boot_stub.bin > /dev/null 2>&1
         echo_red "There was an error flashing the modified BOOT_STUB, but the stock one has been restored."
     else
-        echo_green "Legacy boot capable BOOT_STUB firmware successfully flashed"
+        echo_green "BOOT_STUB firmware successfully flashed"
     fi
 fi
 read -p "Press [Enter] to return to the main menu."
@@ -938,7 +929,7 @@ function restore_boot_stub()
 #check OS
 [[ "$isChromeOS" = true ]] && { exit_red "\nThis functionality is not available under ChromeOS."; return 1; }
 
-echo_green "\nRestore stock BOOT_STUB from backup"
+echo_green "\nRestore stock BOOT_STUB firmware"
 
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
@@ -947,6 +938,8 @@ technical knowledge to recover.  You have been warned."
 read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
 
+# ensure hardware write protect disabled
+[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot restore BOOT_STUB firmware."; return 1; }
 
 # cd to working dir
 cd /tmp
@@ -1014,7 +1007,7 @@ fi
 #update legacy BIOS
 flash_rwlegacy skip_usb > /dev/null
 
-echo_green "Stock BOOT_STUB successfully restored"
+echo_green "Stock BOOT_STUB firmware successfully restored"
 
 #all done
 read -p "Press [Enter] to return to the main menu."
@@ -1027,11 +1020,16 @@ function menu_fwupdate() {
     printf "\ec"
     echo -e "${NORMAL}\n ChromeOS Firmware Utility Script ${script_date} ${NORMAL}"
     echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
-    echo -e "${MENU}************************************************${NORMAL}"
-    echo -e "${MENU}**${NUMBER} Device:${NORMAL}   ${deviceDesc} (${device^^})"
-    echo -e "${MENU}**${NUMBER} CPU Type:${NORMAL} $deviceCpuType"
-    echo -e "${MENU}**${NUMBER} Fw Type:${NORMAL}  $firmwareType"
-    echo -e "${MENU}************************************************${NORMAL}"
+    echo -e "${MENU}******************************************************${NORMAL}"
+    echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${device^^})"
+    echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
+    echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
+    if [ "$wpEnabled" = true ]; then
+        echo -e "${MENU}**${NUMBER}    Fw WP: ${RED_TEXT}Enabled${NORMAL}"
+    else
+        echo -e "${MENU}**${NUMBER}    Fw WP: ${NORMAL}Disabled"
+    fi
+    echo -e "${MENU}******************************************************${NORMAL}"
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
         echo -e "${MENU}**${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
@@ -1044,9 +1042,9 @@ function menu_fwupdate() {
     fi
     if [[ "$unlockMenu" = true || ( ( "$isBaytrail" = false && "$isBraswell" = false && "$isSkylake" = false ) \
             || "$bayTrailHasFullROM" = "true" ) ]]; then
-        echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Custom coreboot Firmware (Full ROM) ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Full ROM Firmware ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Custom coreboot Firmware (Full ROM) ${NORMAL}"
+        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Full ROM Firmware${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
         echo -e "${MENU}**${NUMBER} 4)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
@@ -1074,7 +1072,7 @@ function menu_fwupdate() {
     fi
     echo -e "${MENU}**${NORMAL}"
     echo -e "${MENU}**${NUMBER} U)${NORMAL} Unlock Disabled Functions ${NORMAL}"
-    echo -e "${MENU}************************************************${NORMAL}"
+    echo -e "${MENU}******************************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or${NORMAL}"
     echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
     read opt

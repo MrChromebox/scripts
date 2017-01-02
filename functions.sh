@@ -33,6 +33,7 @@ hasRwLegacy=false
 unlockMenu=false
 hasUEFIoption=false
 hasShellball=false
+wpEnabled=false
 
 hsw_boxes=('<mccloud>' '<panther>' '<tricky>' '<zako>');
 hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
@@ -43,7 +44,7 @@ baytrail_full_rom=('<candy>' '<enguarde>' '<glimmer>' '<gnawty>' '<kip>' '<ninja
 braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '<ultima>');
 skylake=('<chell>' '<lars>' '<sentry>');
 
-UEFI_ROMS=($(printf "%s %s %s %s parrot" "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
+UEFI_ROMS=($(printf "%s %s %s %s parrot stumpy" "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
 shellballs=($(printf "%s %s %s %s %s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}"));
 
 #menu text output
@@ -249,6 +250,9 @@ function prelim_setup()
 # Must run as root 
 [ "$(whoami)" = "root" ] || die "You need to run this script as root; use 'sudo bash <script name>'"
 
+#must be x86_64
+[ "$(uname -m)"  = 'x86_64' ] || die "This script must be run from a 64-bit OS"
+
 #check for required tools
 which dmidecode > /dev/null 2>&1
 if [ $? -ne 0 ]; then
@@ -305,7 +309,7 @@ else
     isChromeOS=false
     isChromiumOS=false
 fi
-    
+
 if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
     #disable power mgmt
     initctl stop powerd > /dev/null 2>&1
@@ -381,13 +385,25 @@ elif [[ "$isFullRom" = true ]]; then
     #get more info
     fwVer=$(dmidecode -s bios-version)
     fwDate=$(dmidecode -s bios-release-date)
-    firmwareType="Full ROM ($fwVer $fwDate)"
+    if [[ -d /sys/firmware/efi ]]; then
+        firmwareType="Full ROM / UEFI ($fwVer $fwDate)"
+    else
+        firmwareType="Full ROM / Legacy ($fwVer $fwDate)"
+    fi
 elif [[ "$isChromeOS" = false && "$hasRwLegacy" = true ]]; then
     firmwareType="Stock w/RW_LEGACY support"
 elif [[ "$isChromeOS" = true && "$isBaytrail" = true && "$hasRwLegacy" = true ]]; then
     firmwareType="Stock w/RW_LEGACY support"
 elif [[ "$isSkylake" = true ]]; then
     firmwareType="Stock w/RW_LEGACY support"
+fi
+
+#check WP status
+if [[ "$isChromeOS" = true ]]; then
+    [[ "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ]] && wpEnabled=true
+else
+    ${flashromcmd} --wp-disable > /dev/null 2>&1
+    [ $? -ne 0 ] && wpEnabled=true
 fi
 
 #get full device info
@@ -447,7 +463,7 @@ case "${_hwid}" in
     KITTY*)                 _x='ARM|Acer Chromebase' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
-    LINK*)                  _x='IVB|Google Chromebook Pixel' ;;
+    LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 7310' ;;
     LUMPY*)                 _x='SDB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
@@ -475,7 +491,7 @@ case "${_hwid}" in
     REKS*)                  _x='BSW|Lenovo N22 Chromebook' ;;
     RIKKU*)                 _x='BDW|Acer Chromebox CXI2' ;;
     SAMS_ALEX*)             _x='PNV|Samsung Chromebook Series 5' ;;
-    SAMUS*)                 _x='BDW|Google Chromebook Pixel' ;;
+    SAMUS*)                 _x='BDW|Google Chromebook Pixel 2015' ;;
     SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
     SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;
     SKATE*)                 _x='ARM|HP Chromebook 11 G2' ;;
