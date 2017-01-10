@@ -642,7 +642,7 @@ function set_boot_options()
 # set boot options via firmware boot flags
 
 # ensure hardware write protect disabled
-[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."; return 1; }
+[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."; return 1; }
 
 
 [[ -z "$1" ]] && legacy_text="Legacy Boot" || legacy_text="$1"
