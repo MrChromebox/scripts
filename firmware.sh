@@ -19,12 +19,10 @@ fi
 echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
 
 #determine proper file 
-if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "monroe" ]]; then
+if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
     seabios_file=$seabios_hswbdw_box
-elif [ "$isHswBook" = true ]; then
-    seabios_file=$seabios_hsw_book
-elif [ "$isBdwBook" = true ]; then
-    seabios_file=$seabios_bdw_book
+elif [[ "$isHswBook" = true || "$isBdwBook" = true ]]; then
+    seabios_file=$seabios_hswbdw_book
 elif [ "$isBaytrail" = true ]; then
     seabios_file=$seabios_baytrail
 elif [ "$isBraswell" = true ]; then
@@ -137,11 +135,11 @@ else
         echo -e ""
         echo_yellow "Install UEFI-compatible firmware?"
         echo -e "UEFI firmware is preferred for Windows and OSX;
-    Linux requires the use of a boot manager like rEFInd.
-    Some Linux distros are not UEFI-compatible and work better 
-    with Legacy Boot (SeaBIOS) firmware.  If you have an existing
-    Linux install you want to keep using, then choose the Legacy option.
-    "
+Linux requires the use of a boot manager like rEFInd.
+Some Linux distros are not UEFI-compatible and work better 
+with Legacy Boot (SeaBIOS) firmware.  If you have an existing
+Linux install you want to keep using, then choose the Legacy option.
+"
         REPLY=""
         while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
         do
@@ -156,7 +154,7 @@ fi
 #determine correct file / URL
 firmware_source=${fullrom_source}
 if [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
-            || "$device" = "stumpy" || "$device" = "parrot"|| "$bayTrailHasFullROM" = "true" ]]; then
+            || "$device" = "stumpy" || "$device" = "parrot" || "$isBaytrail" = true ]]; then
     if [ "$useUEFI" = true ]; then
         eval coreboot_file=$`echo "coreboot_uefi_${device}"`
     else
@@ -372,6 +370,12 @@ fi
 ${flashromcmd} --wp-disable > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     exit_red "Error disabling software write-protect; unable to flash firmware."; return 1
+fi
+
+#clear SW WP range (needed for BYT/BSW)
+${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
 fi
 
 #flash coreboot firmware
@@ -1040,8 +1044,7 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( ( "$isBaytrail" = false && "$isBraswell" = false && "$isSkylake" = false ) \
-            || "$bayTrailHasFullROM" = "true" ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isUnsupported" = false && "$isBraswell" = false && "$isSkylake" = false ) ]]; then
         echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Full ROM Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Full ROM Firmware${NORMAL}"
@@ -1085,21 +1088,21 @@ function menu_fwupdate() {
             case $opt in
                     
                 1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
-                            && "$isBootStub" = false ]]; then
+                            && "$isBootStub" = false && "$isUnsupported" = false ]]; then
                         update_rwlegacy     
                     fi
                     menu_fwupdate
                     ;;
                     
-                2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false ) ]]; then
+                2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false \
+                            && "$isUnsupported" = false ) ]]; then
                         modify_boot_stub  
                     fi
                     menu_fwupdate        
                     ;;
                     
-                3)  if [[ "$unlockMenu" = true || ( "$isUnsupported" = false && "$isBaytrail" = false \
-                            && "$isBraswell" = false && "$isSkylake" = false ) \
-                            || ( "$isBaytrail" = true && "$bayTrailHasFullROM" = true ) ]]; then
+                3)  if [[ "$unlockMenu" = true || ( "$isUnsupported" = false \
+                            && "$isBraswell" = false && "$isSkylake" = false ) ]]; then
                         flash_coreboot
                     fi        
                     menu_fwupdate

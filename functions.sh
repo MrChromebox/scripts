@@ -23,8 +23,8 @@ isBdwBook=false
 isBaytrail=false
 isBraswell=false
 isSkylake=false
+isSnbIvb=false
 isUnsupported=false
-bayTrailHasFullROM=false
 firmwareType=""
 isStock=true
 isFullRom=false
@@ -40,12 +40,12 @@ hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
 bdw_books=('<auron_paine>' '<auron_yuna>' '<buddy>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');
-baytrail_full_rom=('<candy>' '<enguarde>' '<glimmer>' '<gnawty>' '<kip>' '<ninja>' '<quawks>' '<swanky>');
 braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '<ultima>');
-skylake=('<chell>' '<lars>' '<sentry>');
+skylake=('<cave>' '<chell>' '<lars>' '<sentry>');
+snb_ivb=('<link>' '<parrot>' '<stumpy>')
 
-UEFI_ROMS=($(printf "%s %s %s %s parrot stumpy" "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
-shellballs=($(printf "%s %s %s %s %s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}"));
+UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "parrot" "stumpy"));
+shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}"));
 
 #menu text output
 NORMAL=$(echo "\033[m")
@@ -285,11 +285,11 @@ fi
 [[ "${baytrail[@]}" =~ "$device" ]] && isBaytrail=true
 [[ "${braswell[@]}" =~ "$device" ]] && isBraswell=true
 [[ "${skylake[@]}" =~ "$device" ]] && isSkylake=true
-[[ "${baytrail_full_rom[@]}" =~ "$device" ]] && bayTrailHasFullROM=true
+[[ "${snb_ivb[@]}" =~ "$device" ]] && isSnbIvb=true
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
-    || "$isBraswell" = true || "$isSkylake" = true || "$device" = "stumpy" || "$device" = "parrot" ]] || isUnsupported=true
+    || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" ]] || isUnsupported=true
 
 #check if running under ChromeOS / ChromiumOS
 if [ -f /etc/lsb-release ]; then
