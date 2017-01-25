@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2017-01-23]"
+script_date="[2017-01-25]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -45,12 +45,12 @@ coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20170123.rom"
 #Broadwell
 coreboot_uefi_auron_paine="coreboot_tiano-auron_paine-mrchromebox_20170123.rom"
 coreboot_uefi_auron_yuna="coreboot_tiano-auron_yuna-mrchromebox_20170123.rom"
-coreboot_uefi_gandof="coreboot_tiano-gandof-mrchromebox_20170123.rom"
-coreboot_uefi_guado="coreboot_tiano-guado-mrchromebox_20170123.rom"
+coreboot_uefi_gandof="coreboot_tiano-gandof-mrchromebox_20170125.rom"
+coreboot_uefi_guado="coreboot_tiano-guado-mrchromebox_20170125.rom"
 coreboot_uefi_lulu="coreboot_tiano-lulu-mrchromebox_20170123.rom"
-coreboot_uefi_rikku="coreboot_tiano-rikku-mrchromebox_20170123.rom"
+coreboot_uefi_rikku="coreboot_tiano-rikku-mrchromebox_20170125.rom"
 coreboot_uefi_samus="coreboot_tiano-samus-mrchromebox_20170123.rom"
-coreboot_uefi_tidus="coreboot_tiano-tidus-mrchromebox_20170123.rom"
+coreboot_uefi_tidus="coreboot_tiano-tidus-mrchromebox_20170125.rom"
 #Baytrail
 coreboot_uefi_banjo="coreboot_tiano-banjo-mrchromebox_20170123.rom"
 coreboot_uefi_candy="coreboot_tiano-candy-mrchromebox_20170123.rom"
