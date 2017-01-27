@@ -127,7 +127,7 @@ echo -e ""
 [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
 #UEFI or legacy firmware
-if [[ ! -z "$1" || ( -d /sys/firmware/efi && "$unlockMenu" = false ) ]]; then
+if [[ ! -z "$1" || ( -d /sys/firmware/efi && "$unlockMenu" = false ) || "$hasLegacyOption" = false ]]; then
     useUEFI=true
 else
     useUEFI=false

@@ -32,6 +32,7 @@ isBootStub=false
 hasRwLegacy=false
 unlockMenu=false
 hasUEFIoption=false
+hasLegacyOption=false
 hasShellball=false
 wpEnabled=false
 
@@ -44,6 +45,7 @@ braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '
 skylake=('<cave>' '<chell>' '<lars>' '<sentry>');
 snb_ivb=('<link>' '<parrot>' '<stumpy>')
 
+LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "parrot" "stumpy"));
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}"));
 
@@ -288,6 +290,7 @@ fi
 [[ "${snb_ivb[@]}" =~ "$device" ]] && isSnbIvb=true
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
+[[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
     || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" ]] || isUnsupported=true
 
@@ -359,7 +362,7 @@ ${cbfstoolcmd} bios.bin read -r BOOT_STUB -f bs.tmp >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     #see if BOOT_STUB is stock
     ${cbfstoolcmd} bs.tmp extract -n fallback/vboot -f vb.tmp -m x86 >/dev/null 2>&1
-    [[ $? -ne 0 ]] && isBootStub=true
+    [[ $? -ne 0 && "$device" != "Link" ]] && isBootStub=true
     #check RW_LEGACY
     ${cbfstoolcmd} bios.bin read -r RW_LEGACY -f rwl.tmp >/dev/null 2>&1
     [[ $? -eq 0 ]] && hasRwLegacy=true
