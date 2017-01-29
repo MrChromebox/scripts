@@ -45,7 +45,7 @@ braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<setzer>' '<terra>' '
 skylake=('<cave>' '<chell>' '<lars>' '<sentry>');
 snb_ivb=('<link>' '<parrot>' '<stumpy>')
 
-LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}"));
+LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "parrot" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "parrot" "stumpy"));
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}"));
 
