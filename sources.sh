@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2017-01-27]"
+script_date="[2017-01-29]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -54,9 +54,9 @@ coreboot_uefi_tidus="coreboot_tiano-tidus-mrchromebox_20170127.rom"
 #Baytrail
 coreboot_uefi_banjo="coreboot_tiano-banjo-mrchromebox_20170127.rom"
 coreboot_uefi_candy="coreboot_tiano-candy-mrchromebox_20170127.rom"
-coreboot_uefi_clapper="coreboot_tiano-clapper-mrchromebox_20170127.rom"
+coreboot_uefi_clapper="coreboot_tiano-clapper-mrchromebox_20170129.rom"
 coreboot_uefi_enguarde="coreboot_tiano-enguarde-mrchromebox_20170127.rom"
-coreboot_uefi_glimmer="coreboot_tiano-glimmer-mrchromebox_20170127.rom"
+coreboot_uefi_glimmer="coreboot_tiano-glimmer-mrchromebox_20170129.rom"
 coreboot_uefi_gnawty="coreboot_tiano-gnawty-mrchromebox_20170127.rom"
 coreboot_uefi_heli="coreboot_tiano-heli-mrchromebox_20170127.rom"
 coreboot_uefi_kip="coreboot_tiano-kip-mrchromebox_20170127.rom"
