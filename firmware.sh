@@ -153,8 +153,7 @@ fi
 
 #determine correct file / URL
 firmware_source=${fullrom_source}
-if [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
-            || "$device" = "stumpy" || "$device" = "parrot" || "$isBaytrail" = true ]]; then
+if [[ "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
     if [ "$useUEFI" = true ]; then
         eval coreboot_file=$`echo "coreboot_uefi_${device}"`
     else
