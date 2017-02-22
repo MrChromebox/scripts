@@ -20,8 +20,8 @@ chrx_url="https://chrx.org/go"
 
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
-LE_version_stable="7.0.3"
-LE_version_latest="7.95.3"
+LE_version_stable="8.0.0"
+LE_version_latest="8.0.0"
 
 #syslinux version
 syslinux_version="syslinux-6.04-pre1"
