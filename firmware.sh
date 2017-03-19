@@ -255,7 +255,7 @@ fi
 
 #check if existing firmware is stock
 grep -obUa "vboot" /tmp/bios.bin >/dev/null
-if [[ ! -d /sys/firmware/efi && $? -eq 0 ]]; then
+if [[ "$isStock" == "true" && $? -eq 0 ]]; then
     echo_yellow "\nCreate a backup copy of your stock firmware?"
     read -p "This is highly recommended in case you wish to return your device to stock 
 configuration/run ChromeOS, or in the (unlikely) event that things go south
@@ -1095,7 +1095,7 @@ function menu_fwupdate() {
                     
                 2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false \
                             && "$isUnsupported" = false ) ]]; then
-                        modify_boot_stub  
+                        modify_boot_stub
                     fi
                     menu_fwupdate        
                     ;;
