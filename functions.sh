@@ -41,8 +41,8 @@ hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
 bdw_books=('<auron_paine>' '<auron_yuna>' '<buddy>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');
-braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>');
-skylake=('<asuka>' '<cave>' '<chell>' '<kefka>'  '<lars>' '<sentry>');
+braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>');
+skylake=('<asuka>' '<cave>' '<chell>' '<lars>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "parrot" "stumpy"));
@@ -446,7 +446,7 @@ case "${_hwid}" in
     GUADO*)                 _x='BDW|ASUS Chromebox CN62' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
     IEC_MARIO)              _x='PNV|Google Cr-48' ;;
-    KEFKA*)                 _x='SKL|Dell Chromebook 11 (3180,3189)' ;;
+    KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
