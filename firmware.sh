@@ -129,7 +129,7 @@ echo -e ""
 [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
 #UEFI or legacy firmware
-if [[ ! -z "$1" || "$unlockMenu" = false || "$hasLegacyOption" = false || "$isHswBox" = false || "$isBdwBox" = false ]]; then
+if [[ ! -z "$1" || "$unlockMenu" = false || "$hasLegacyOption" = false || "$isHswBox" = false || "$isBdwBox" = false || "$device" = "stumpy" || "$device" = "monroe" ]]; then
     useUEFI=true
     if [[ "$isStock" == true || "$isChromeOS" = true || ! -d /sys/firmware/efi ]]; then
         echo -e ""
@@ -142,7 +142,7 @@ Debian/Ubuntu-based distros require a fix to boot after installation.
 Please see the FAQ at https://mrchromebox.tech/ for more information.
 Legacy SeaBIOS Full ROMs are deprecated and no longer developed.
 "
-if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
+if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "stumpy" || "$device" = "monroe" ]]; then
 echo -e "If you know you must have Legacy SeaBIOS, re-run this option after 
 Unlocking Disabled Features (U).
 "
