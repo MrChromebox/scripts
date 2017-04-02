@@ -129,7 +129,7 @@ echo -e ""
 [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
 #UEFI or legacy firmware
-if [[ ! -z "$1" || "$unlockMenu" = false || "$hasLegacyOption" = false || "$isHswBox" = false || "$isBdwBox" = false || "$device" = "stumpy" || "$device" = "monroe" ]]; then
+if [[ ! -z "$1" || "$unlockMenu" = false || "$hasLegacyOption" = false || "$isHswBox" = false || "$isBdwBox" = false || "$device" != "stumpy" || "$device" != "monroe" ]]; then
     useUEFI=true
     if [[ "$isStock" == true || "$isChromeOS" = true || ! -d /sys/firmware/efi ]]; then
         echo -e ""
