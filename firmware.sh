@@ -117,6 +117,8 @@ echo_yellow "Standard disclaimer: flashing the firmware has the potential to
 brick your device, requiring relatively inexpensive hardware and some 
 technical knowledge to recover.  You have been warned."
 
+echo_yellow "Also, flashing a Full ROM will remove the ability to run ChromeOS."
+
 read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 
@@ -127,18 +129,38 @@ echo -e ""
 [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
 #UEFI or legacy firmware
-if [[ ! -z "$1" || ( -d /sys/firmware/efi && "$unlockMenu" = false ) || "$hasLegacyOption" = false ]]; then
+if [[ ! -z "$1" || "$unlockMenu" = false || "$hasLegacyOption" = false || ( "$isHswBox" = false && "$isBdwBox" = false && "$device" != "stumpy" && "$device" != "monroe" ) ]]; then
     useUEFI=true
+    if [[ "$isStock" == true || "$isChromeOS" = true || ! -d /sys/firmware/efi ]]; then
+        echo -e ""
+        echo_yellow "Install UEFI-compatible firmware?"
+        echo_red "\nWarning: If you have a Legacy OS installation, it will not boot on UEFI firmware!"
+        echo -e "UEFI firmware supports Windows and Linux on all platforms;
+macOS is supported on i3 Acer C720(P) and may work partially on 
+other i3/i5/i7 Haswell/Broadwell devices.
+Debian/Ubuntu-based distros require a fix to boot after installation.
+Please see the FAQ at https://mrchromebox.tech/ for more information.
+Legacy SeaBIOS Full ROMs are deprecated and no longer developed.
+"
+if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "stumpy" || "$device" = "monroe" ]]; then
+echo -e "If you know you must have Legacy SeaBIOS, re-run this option after 
+Unlocking Disabled Features (U).
+"
+read -p "Do you wish to continue? [y/N] "
+[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
+fi
 else
     useUEFI=false
     if [[ "$hasUEFIoption" = true ]]; then
         echo -e ""
         echo_yellow "Install UEFI-compatible firmware?"
-        echo -e "UEFI firmware is preferred for Windows and OSX;
-Linux requires the use of a boot manager like rEFInd.
-Some Linux distros are not UEFI-compatible and work better 
-with Legacy Boot (SeaBIOS) firmware.  If you have an existing
-Linux install you want to keep using, then choose the Legacy option.
+        echo_red "\nWarning: If you have a Legacy OS installation, it will not boot on UEFI firmware!"
+        echo -e "UEFI firmware supports Windows and Linux on all platforms;
+macOS is supported on i3 Acer C720(P) and may work partially on 
+other i3/i5/i7 Haswell/Broadwell devices.
+Debian/Ubuntu-based distros require a fix to boot after installation.
+Please see the FAQ at https://mrchromebox.tech/ for more information.
+Legacy SeaBIOS Full ROMs are deprecated and no longer developed.
 "
         REPLY=""
         while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
@@ -146,6 +168,12 @@ Linux install you want to keep using, then choose the Legacy option.
             read -p "Enter 'U' for UEFI, 'L' for Legacy: "
             if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
                 useUEFI=true
+            fi
+            if [[ "$REPLY" = "L" || "$REPLY" = "l" ]]; then
+                echo_red "\nWarning: Legacy Full ROMs are deprecated and no longer developed!"
+                echo_red "\nUEFI brings significant advantages and is supported by most OSes/distros."
+                read -p "Are you sure you wish to continue? [y/N] "
+                [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
             fi
         done 
     fi

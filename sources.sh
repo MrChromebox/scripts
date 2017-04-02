@@ -72,25 +72,13 @@ coreboot_uefi_winky="coreboot_tiano-winky-mrchromebox_20170319.rom"
 
 #Legacy Full ROMs (deprecated)
 #SNB/IVB
-coreboot_parrot="coreboot_seabios-parrot_snb-mrchromebox_20161127.rom"
-coreboot_parrot_ivb="coreboot_seabios-parrot_ivb-mrchromebox_20161127.rom"
 coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20170123.rom"
 #Haswell
-coreboot_falco="coreboot_seabios-falco-mrchromebox_20161107.rom"
-coreboot_leon="coreboot_seabios-leon-mrchromebox_20161107.rom"
 coreboot_monroe="coreboot_seabios-monroe-mrchromebox_20161107.rom"
 coreboot_hsw_box="coreboot_seabios-panther-mrchromebox_20161107.rom"
-coreboot_peppy="coreboot_seabios-peppy-mrchromebox_20161107.rom"
-coreboot_peppy_elan="coreboot_seabios-peppy_elan-mrchromebox_20161107.rom"
-coreboot_wolf="coreboot_seabios-wolf-mrchromebox_20161107.rom"
 #Broadwell
-coreboot_auron_paine="coreboot_seabios-auron_paine-mrchromebox_20161107.rom"
-coreboot_auron_yuna="coreboot_seabios-auron_yuna-mrchromebox_20161107.rom"
-coreboot_gandof="coreboot_seabios-gandof-mrchromebox_20161107.rom"
 coreboot_guado="coreboot_seabios-guado-mrchromebox_20161107.rom"
-coreboot_lulu="coreboot_seabios-lulu-mrchromebox_20161107.rom"
 coreboot_rikku="coreboot_seabios-rikku-mrchromebox_20161107.rom"
-coreboot_samus="coreboot_seabios-samus-mrchromebox_20161107.rom"
 coreboot_tidus="coreboot_seabios-tidus-mrchromebox_20161107.rom"
 
 
