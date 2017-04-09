@@ -112,10 +112,20 @@ read -p "Press [Enter] to return to the main menu."
 #############################
 function flash_coreboot()
 {
-echo_green "\nInstall/Update Full ROM Firmware"
+
+fwTypeStr=""
+if [[ "$hasLegacyOption" = true && "$unlockMenu" = true ]]; then
+    fwTypeStr="Legacy/UEFI"
+else
+    fwTypeStr="UEFI"
+fi
+
+echo_green "\nInstall/Update ${fwTypeStr} Full ROM Firmware"
 echo_yellow "Standard disclaimer: flashing the firmware has the potential to 
 brick your device, requiring relatively inexpensive hardware and some 
 technical knowledge to recover.  You have been warned."
+
+[[ "$isChromeOS" = true ]] && echo_yellow "Also, flashing Full ROM firmware will remove your ability to run ChromeOS."
 
 read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
@@ -134,21 +144,36 @@ else
     if [[ "$hasUEFIoption" = true ]]; then
         echo -e ""
         echo_yellow "Install UEFI-compatible firmware?"
-        echo -e "UEFI firmware is preferred for Windows and OSX;
-Linux requires the use of a boot manager like rEFInd.
-Some Linux distros are not UEFI-compatible and work better 
-with Legacy Boot (SeaBIOS) firmware.  If you have an existing
-Linux install you want to keep using, then choose the Legacy option.
+        echo -e "UEFI firmware is the preferred option for all OSes.
+Legacy SeaBIOS firmware is deprecated but available for Chromeboxes to enable 
+PXE (network boot) capability and compatibility with Legacy OS installations.
 "
         REPLY=""
         while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
         do
             read -p "Enter 'U' for UEFI, 'L' for Legacy: "
-            if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+            if [[ "$REPLY" = "L" || "$REPLY" = "l" ]]; then
+                echo_yellow "\nWarning: UEFI brings significant advantages and is supported by most OSes/distros."
+                read -p "Are you sure you wish to continue installing Legacy firmware? [y/N] "
+                [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && REPLY="L" || return
+            else 
                 useUEFI=true
             fi
         done 
     fi
+fi
+
+#UEFI notice if flashing from ChromeOS or Legacy
+if [[ "$useUEFI" = true && ! -d /sys/firmware/efi ]]; then
+    [[ "$isChromeOS" = true ]] && currOS="ChromeOS" || currOS="Your Legacy-installed OS"
+    echo_yellow "
+NOTE: After flashing UEFI firmware, you will need to install a UEFI-compatible
+OS; ${currOS} will no longer be bootable. UEFI firmware supports 
+Windows and Linux on all devices. Debian/Ubuntu-based distros require a small
+fix to boot after install -- see https://mrchromebox.tech/#faq for more info."
+    REPLY=""
+    read -p "Press Y to continue or any other key to abort. "
+    [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 fi
 
 #determine correct file / URL
@@ -281,11 +306,10 @@ preferUSB=false
 if [ $useUEFI = false ]; then
     echo -e ""
     echo_yellow "Default to booting from USB?"
-    echo -e "
-    If you default to USB, then any bootable USB device 
-    will have boot priority over the internal SSD.
-    If you default to SSD, you will need to manually select
-    the USB Device from Boot Manager in order to boot it.
+    echo -e "If you default to USB, then any bootable USB device 
+will have boot priority over the internal SSD.
+If you default to SSD, you will need to manually select
+the USB Device from Boot Manager in order to boot it.
     "
     REPLY=""
     while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
