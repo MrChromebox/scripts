@@ -362,7 +362,7 @@ ${cbfstoolcmd} bios.bin read -r BOOT_STUB -f bs.tmp >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     #see if BOOT_STUB is stock
     ${cbfstoolcmd} bs.tmp extract -n fallback/vboot -f vb.tmp -m x86 >/dev/null 2>&1
-    [[ $? -ne 0 && "$device" != "Link" ]] && isBootStub=true
+    [[ $? -ne 0 && "${device^^}" != "LINK" ]] && isBootStub=true
     #check RW_LEGACY
     ${cbfstoolcmd} bios.bin read -r RW_LEGACY -f rwl.tmp >/dev/null 2>&1
     [[ $? -eq 0 ]] && hasRwLegacy=true

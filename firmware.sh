@@ -1067,7 +1067,7 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isUnsupported" = false && "$isBraswell" = false && "$isSkylake" = false ) ]]; then
+    if [[ "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
         echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Full ROM Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Full ROM Firmware${NORMAL}"
