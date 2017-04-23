@@ -370,7 +370,15 @@ else
     # check 'coreboot' for SKL
     ${cbfstoolcmd} bios.bin read -r COREBOOT -f cb.tmp >/dev/null 2>&1
     if [[ $? -eq 0 && "$isSkylake" = true ]]; then
-        hasRwLegacy=true
+        #check for verstage
+        ${cbfstoolcmd} bios.bin extract -n fallback/verstage -f /dev/null >/dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            hasRwLegacy=true
+        else
+            #non-stock firmware
+            isStock=false
+            isFullRom=true
+        fi
     else 
         if [ "$isChromeOS" = false ]; then
         #non-stock firmware
@@ -447,7 +455,7 @@ case "${_hwid}" in
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
     IEC_MARIO)              _x='PNV|Google Cr-48' ;;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
-    KIP*)                   _x='BYT|HP Chromebook 11 G3/G4' ;;
+    KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;

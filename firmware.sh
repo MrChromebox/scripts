@@ -396,9 +396,11 @@ if [ $? -ne 0 ]; then
 fi
 
 #clear SW WP range (needed for BYT/BSW)
-${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+if [[ "$isBaytrail" = true || "$isBraswell" = true ]]; then
+    ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+    fi
 fi
 
 #flash coreboot firmware
@@ -1124,8 +1126,7 @@ function menu_fwupdate() {
                     menu_fwupdate        
                     ;;
                     
-                3)  if [[ "$unlockMenu" = true || ( "$isUnsupported" = false \
-                            && "$isBraswell" = false && "$isSkylake" = false ) ]]; then
+                3)  if [[  "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
                         flash_coreboot
                     fi        
                     menu_fwupdate
