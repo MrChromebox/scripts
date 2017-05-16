@@ -371,7 +371,7 @@ else
     ${cbfstoolcmd} bios.bin read -r COREBOOT -f cb.tmp >/dev/null 2>&1
     if [[ $? -eq 0 && "$isSkylake" = true ]]; then
         #check for verstage
-        ${cbfstoolcmd} bios.bin extract -n fallback/verstage -f /dev/null >/dev/null 2>&1
+        ${cbfstoolcmd} bios.bin extract -n fallback/verstage -f /dev/null -m x86 >/dev/null 2>&1
         if [[ $? -eq 0 ]]; then
             hasRwLegacy=true
         else
