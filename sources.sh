@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2017-04-09]"
+script_date="[2017-05-29]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -82,15 +82,15 @@ coreboot_tidus="coreboot_seabios-tidus-mrchromebox_20161107.rom"
 
 
 #RW_LEGACY payloads
-seabios_hswbdw_box="seabios-hswbdw_box-mrchromebox_20161107.bin"
-seabios_hswbdw_book="seabios-hswbdw_book-mrchromebox_20170123.bin"
-seabios_baytrail="seabios-byt-mrchromebox_20161107.bin"
-seabios_braswell="seabios-bsw-mrchromebox_20161107.bin"
-seabios_skylake="seabios-skl-mrchromebox_20161107.bin"
+seabios_hswbdw_box="seabios-hswbdw_box-mrchromebox_20170529.bin"
+seabios_hswbdw_book="seabios-hswbdw_book-mrchromebox_20170529.bin"
+seabios_baytrail="seabios-byt-mrchromebox_20170529.bin"
+seabios_braswell="seabios-bsw-mrchromebox_20170529.bin"
+seabios_skylake="seabios-skl-mrchromebox_20170529.bin"
 seabios_link="seabios-link.bin"
 
 #BOOT_STUB payloads
-bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20161107.bin"
+bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20170529.bin"
 
 
 #hsw/bdw headless VBIOS
