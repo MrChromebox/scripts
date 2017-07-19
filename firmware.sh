@@ -729,7 +729,7 @@ function set_hwid()
 # set HWID using gbb_utility
 
 # ensure hardware write protect disabled
-[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot set HWID."; return 1; }
+[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot set HWID."; return 1; }
 
 echo_green "Set Hardware ID (HWID) using gbb_utility"
 
@@ -768,7 +768,7 @@ function remove_bitmaps()
 # remove bitmaps from GBB using gbb_utility
 
 # ensure hardware write protect disabled
-[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot remove bitmaps."; return 1; }
+[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot remove bitmaps."; return 1; }
 
 echo_green "\nRemove ChromeOS Boot Screen Bitmaps"
 
@@ -801,7 +801,7 @@ function restore_bitmaps()
 # restore bitmaps from GBB using gbb_utility
 
 # ensure hardware write protect disabled
-[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot restore bitmaps."; return 1; }
+[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot restore bitmaps."; return 1; }
 
 echo_green "\nRestore ChromeOS Boot Screen Bitmaps"
 
@@ -856,7 +856,7 @@ read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y"|| "$REPLY" = "y" ]] || return
 
 # ensure hardware write protect disabled
-[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot flash/modify BOOT_STUB firmware."; return 1; }
+[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot flash/modify BOOT_STUB firmware."; return 1; }
 
 # cd to working dir
 cd /tmp
@@ -968,7 +968,7 @@ read -p "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
 
 # ensure hardware write protect disabled
-[[ "$wpEnabled" = true ]] && { exit_red  exit_red "\nHardware write-protect enabled, cannot restore BOOT_STUB firmware."; return 1; }
+[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot restore BOOT_STUB firmware."; return 1; }
 
 # cd to working dir
 cd /tmp
