@@ -253,7 +253,7 @@ function prelim_setup()
 [ "$(whoami)" = "root" ] || die "You need to run this script as root; use 'sudo bash <script name>'"
 
 #must be x86_64
-[ "$(uname -m)"  = 'x86_64' ] || die "This script must be run from a 64-bit OS"
+[ "$(uname -m)"  = 'x86_64' ] || die "This script only supports 64-bit OS on Intel-based devices; ARM devices are not supported."
 
 #check for required tools
 which dmidecode > /dev/null 2>&1
