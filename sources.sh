@@ -33,7 +33,7 @@ coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20170714.rom"
 coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20170714.rom"
 coreboot_uefi_parrot="coreboot_tiano-parrot_snb-mrchromebox_20170714.rom"
 coreboot_uefi_parrot_ivb="coreboot_tiano-parrot_ivb-mrchromebox_20170714.rom"
-coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20170714.rom"
+coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20170719.rom"
 #Haswell
 coreboot_uefi_falco="coreboot_tiano-falco-mrchromebox_20170714.rom"
 coreboot_uefi_leon="coreboot_tiano-leon-mrchromebox_20170714.rom"
