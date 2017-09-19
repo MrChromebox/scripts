@@ -41,7 +41,7 @@ hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
 bdw_boxes=('<guado>' '<rikku>' '<tidus>');
 bdw_books=('<auron_paine>' '<auron_yuna>' '<buddy>' '<gandof>' '<lulu>' '<samus>');
 baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');
-braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>');
+braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>' '<wizpig>');
 skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>'  '<lili>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 
@@ -490,6 +490,7 @@ case "${_hwid}" in
     TRICKY*)                _x='HSW|Dell Chromebox' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     WINKY*)                 _x='BYT|Samsung Chromebook 2 (XE500C12)' ;;
+    WIZPIG*)                _x='BSW|<White Label>' ;;
     WOLF*)                  _x='HSW|Dell Chromebook 11' ;;
     YUNA*)                  _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     ZAKO*)                  _x='HSW|HP Chromebox CB1' ;;
