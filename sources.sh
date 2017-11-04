@@ -52,7 +52,7 @@ coreboot_uefi_gandof="coreboot_tiano-gandof-mrchromebox_20170714.rom"
 coreboot_uefi_guado="coreboot_tiano-guado-mrchromebox_20170714.rom"
 coreboot_uefi_lulu="coreboot_tiano-lulu-mrchromebox_20170714.rom"
 coreboot_uefi_rikku="coreboot_tiano-rikku-mrchromebox_20170714.rom"
-coreboot_uefi_samus="coreboot_tiano-samus-mrchromebox_20170714.rom"
+coreboot_uefi_samus="coreboot_tiano-samus-mrchromebox_20170127.rom"
 coreboot_uefi_tidus="coreboot_tiano-tidus-mrchromebox_20170714.rom"
 #Baytrail
 coreboot_uefi_banjo="coreboot_tiano-banjo-mrchromebox_20170714.rom"
