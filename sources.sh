@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2017-07-14]"
+script_date="[2017-12-02]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -81,14 +81,15 @@ coreboot_guado="coreboot_seabios-guado-mrchromebox_20161107.rom"
 coreboot_rikku="coreboot_seabios-rikku-mrchromebox_20161107.rom"
 coreboot_tidus="coreboot_seabios-tidus-mrchromebox_20161107.rom"
 
-
 #RW_LEGACY payloads
+seabios_link="seabios-link.bin"
 seabios_hswbdw_box="seabios-hswbdw_box-mrchromebox_20170529.bin"
 seabios_hswbdw_book="seabios-hswbdw_book-mrchromebox_20170529.bin"
 seabios_baytrail="seabios-byt-mrchromebox_20170602.bin"
 seabios_braswell="seabios-bsw-mrchromebox_20170529.bin"
 seabios_skylake="seabios-skl-mrchromebox_20170529.bin"
-seabios_link="seabios-link.bin"
+seabios_apl="seabios-apl-mrchromebox_20171202.bin"
+seabios_kbl="seabios-kbl-mrchromebox_20171202.bin"
 
 #BOOT_STUB payloads
 bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20170529.bin"

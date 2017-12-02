@@ -29,8 +29,12 @@ elif [ "$isBraswell" = true ]; then
     seabios_file=$seabios_braswell
 elif [ "$isSkylake" = true ]; then
     seabios_file=$seabios_skylake
+elif [ "$isKbl" = true ]; then
+    seabios_file=$seabios_kbl
 elif [ "$device" = "link" ]; then
     seabios_file=$seabios_link
+elif [ "$isApl" = true ]; then
+    seabios_file=$seabios_apl
 else
     echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."; return 1
 fi
@@ -64,7 +68,12 @@ md5sum -c ${seabios_file}.md5 --quiet 2> /dev/null
 
 #preferUSB?
 if [ "$preferUSB" = true  ]; then
-    curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
+    #swanky special case
+    if [[ "$device" = "swanky" ]]; then
+    	curl -s -L -o bootorder "${cbfs_source}bootorder.usb2"
+    else
+	curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
+    fi
     if [ $? -ne 0 ]; then
         echo_red "Unable to download bootorder file; boot order cannot be changed."
     else
@@ -88,6 +97,22 @@ if [ "$useHeadless" = true  ]; then
             echo_yellow "Headless VGA BIOS installed"
         fi
     fi      
+fi
+
+#handle NINJA VGABIOS
+if [[ "$device" = "ninja" ]]; then
+    #extract vbios from stock BOOT_STUB, inject into RWL
+     ${cbfstoolcmd} bios.bin extract -r BOOT_STUB -n pci8086,0f31.rom -f vgabios.bin > /dev/null 2>&1
+     rc0=$?
+     ${cbfstoolcmd} ${seabios_file} remove -n pci8086,0f31.rom > /dev/null 2>&1
+     rc1=$?
+     ${cbfstoolcmd} ${seabios_file} add -f vgabios.bin -n pci8086,0f31.rom -t optionrom > /dev/null 2>&1
+     rc2=$?
+     if [[ "$rc0" -ne 0 || "$rc1" -ne 0 || "$rc2" -ne 0 ]]; then
+            echo_red "Warning: error installing VGA BIOS"
+        else
+            echo_yellow "VGA BIOS installed"
+        fi
 fi
 
 #flash updated legacy BIOS
