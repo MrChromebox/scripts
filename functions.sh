@@ -462,7 +462,6 @@ esac
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
-[[ "$isBraswell" = true ]] && get_flashrom_ups
 #read entire firmware
 ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
 if [ $? -ne 0 ]; then 
