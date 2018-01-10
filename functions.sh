@@ -99,7 +99,13 @@ function die()
 function list_usb_devices()
 {
 #list available drives, excluding internal storage and root/boot device
-[[ -b /dev/mmcblk0 ]] && intStor="/dev/mmcblk0" || intStor="/dev/sda"
+if [[ -b /dev/mmcblk0 ]]; then
+	intStor="/dev/mmcblk0"
+elif [[ -b /dev/nvme0n1 ]]; then
+	intstor="/dev/nvme0n1"
+else intStor="/dev/sda"
+fi
+
 rootdev=${intStor}
 if [ "$(which rootdev)" ]; then
     rootdev=$(rootdev -d -s)
@@ -142,7 +148,7 @@ if [ ! -f ${cbfstoolcmd} ]; then
         #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
         [[ "$isCloudready" = true ]] && part_num="27" || part_num="12"
-        [[ "${rootdev}" =~ "mmcblk" ]] && part_num="p${part_num}"  
+        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_num="p${part_num}"  
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
