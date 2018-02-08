@@ -78,9 +78,11 @@ coreboot_uefi_cyan="coreboot_tiano-cyan-mrchromebox_20180204.rom"
 coreboot_uefi_edgar="coreboot_tiano-edgar-mrchromebox_20180204.rom"
 coreboot_uefi_kefka="coreboot_tiano-kefka-mrchromebox_20180204.rom"
 coreboot_uefi_reks="coreboot_tiano-reks-mrchromebox_20180204.rom"
+coreboot_uefi_relm="coreboot_tiano-relm-mrchromebox_20180204.rom"
 coreboot_uefi_setzer="coreboot_tiano-setzer-mrchromebox_20180204.rom"
 coreboot_uefi_terra="coreboot_tiano-terra-mrchromebox_20180204.rom"
 coreboot_uefi_ultima="coreboot_tiano-ultima-mrchromebox_20180204.rom"
+coreboot_uefi_wizpig="coreboot_tiano-wizpig-mrchromebox_20180204.rom"
 
 #Legacy Full ROMs (deprecated)
 #SNB/IVB
