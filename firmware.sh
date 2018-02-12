@@ -434,6 +434,13 @@ if [ $? -eq 0 ]; then
     if [[ "$isStock" = true && "$isChromeOS" = true &&  "$useUEFI" = true ]]; then
         mv /tmp/boot/EFI /tmp/boot/EFI_ > /dev/null 2>&1
     fi
+    
+    #Warn about long RAM training time on Braswell
+    if [[ "$isBraswell" = true ]]; then
+        echo_yellow "IMPORTANT:\nThe first boot after flashing takes substantially
+longer than subsequent boots -- up to 30s or more.
+Be patient and eventually your device will boot :)"
+    fi
 else
     echo_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"
 fi
