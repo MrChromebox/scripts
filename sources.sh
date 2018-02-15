@@ -74,7 +74,7 @@ coreboot_uefi_winky="coreboot_tiano-winky-mrchromebox_20180204.rom"
 #Braswell
 coreboot_uefi_banon="coreboot_tiano-banon-mrchromebox_20180204.rom"
 coreboot_uefi_celes="coreboot_tiano-celes-mrchromebox_20180204.rom"
-coreboot_uefi_cyan="coreboot_tiano-cyan-mrchromebox_20180204.rom"
+coreboot_uefi_cyan="coreboot_tiano-cyan-mrchromebox_20180215.rom"
 coreboot_uefi_edgar="coreboot_tiano-edgar-mrchromebox_20180204.rom"
 coreboot_uefi_kefka="coreboot_tiano-kefka-mrchromebox_20180204.rom"
 coreboot_uefi_reks="coreboot_tiano-reks-mrchromebox_20180204.rom"
