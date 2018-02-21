@@ -86,7 +86,7 @@ coreboot_uefi_wizpig="coreboot_tiano-wizpig-mrchromebox_20180204.rom"
 
 #Legacy Full ROMs (deprecated)
 #SNB/IVB
-coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20170123.rom"
+coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20180204.rom"
 #Haswell
 coreboot_mccloud="coreboot_seabios-mccloud-mrchromebox_20180204.rom"
 coreboot_panther="coreboot_seabios-panther-mrchromebox_20180204.rom"
