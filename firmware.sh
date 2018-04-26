@@ -435,11 +435,14 @@ if [ $? -eq 0 ]; then
         mv /tmp/boot/EFI /tmp/boot/EFI_ > /dev/null 2>&1
     fi
     
-    #Warn about long RAM training time on Braswell
+    #Warn about long RAM training time, keyboard on Braswell
     if [[ "$isBraswell" = true ]]; then
         echo_yellow "IMPORTANT:\nThe first boot after flashing takes substantially
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
+        echo_yellow "Additionally, GalliumOS users need to use pre-2.2 ISO linked
+on homepage of https://mrchromebox.tech; the keyboard
+will not work with the 2.1 ISO due to use of older kernel."
     fi
 else
     echo_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"
