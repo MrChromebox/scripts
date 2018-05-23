@@ -46,7 +46,7 @@ baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<
 braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>' '<wizpig>');
 skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
-apl=('<astronaut>' '<electro>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
+apl=('<astronaut>' '<coral>' '<electro>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
 kbl=('<eve>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
@@ -387,6 +387,7 @@ case "${_hwid}" in
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
+    LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
     LILI*)                  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
