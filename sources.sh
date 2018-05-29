@@ -104,7 +104,7 @@ seabios_hswbdw_book="seabios-hswbdw_book-mrchromebox_20170529.bin"
 seabios_baytrail="seabios-byt-mrchromebox_20170602.bin"
 seabios_braswell="seabios-bsw-mrchromebox_20170529.bin"
 seabios_skylake="seabios-skl-mrchromebox_20170529.bin"
-seabios_apl="seabios-apl-mrchromebox_20171202.bin"
+seabios_apl="seabios-apl-mrchromebox_20180529.bin"
 seabios_kbl="seabios-kbl-mrchromebox_20171202.bin"
 
 #BOOT_STUB payloads
