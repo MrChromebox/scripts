@@ -47,7 +47,7 @@ braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<
 skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<coral>' '<electro>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
-kbl=('<eve>' '<soraka>')
+kbl=('<eve>' '<kench>' '<sion>' '<soraka>' '<teemo>' '<wukong>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"));
@@ -345,7 +345,13 @@ if [ $? -ne 0 ]; then
 fi
 
 #get full device info
-[[ "$isChromeOS" = true ]] && _hwid=$(crossystem hwid | sed 's/ /_/g') || _hwid=${device^^}
+if [[ "$isChromeOS" = true ]]; then
+    _hwid=$(crossystem hwid | sed 's/ /_/g')
+    device=$(crossystem hwid | tr '[:upper:]' '[:lower:]' | awk 'NR==1{print $1}')
+else
+_hwid=${device^^}
+fi
+
 case "${_hwid}" in
     ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
@@ -381,10 +387,11 @@ case "${_hwid}" in
     GANDOF*)                _x='BDW|Toshiba Chromebook 2 (2015) CB30/CB35' ;;
     GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
     GNAWTY*)                _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)' ;;
-    GUADO*)                 _x='BDW|ASUS Chromebox CN62' ;;
+    GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
     IEC_MARIO)              _x='PNV|Google Cr-48' ;;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
+    KENCH*)                 _x='KBL|HP Chromebox G2' ;;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
@@ -428,6 +435,7 @@ case "${_hwid}" in
     SANTA*)                 _x='APL|Acer Chromebook 11 (CB311-8H)' ;;
     SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
     SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;
+    SION*)                  _x='KBL|Acer Chromebox CXI3' ;;
     SNAPPY_???-A*)          _x='APL|HP Chromebook x360 11 G1 EE' ; device="snappy";;
     SNAPPY_???-B*)          _x='APL|HP Chromebook 11 G6 EE' device="snappy";;
     SNAPPY_???-C*)          _x='APL|HP Chromebook 14 G5' device="snappy";;
@@ -438,6 +446,7 @@ case "${_hwid}" in
     STUMPY*)                _x='SNB|Samsung Chromebox Series 3' ;;
     SUMO*)                  _x='BYT|AOpen Chromebase Commercial' ;;
     SWANKY*)                _x='BYT|Toshiba Chromebook 2 (2014) CB30/CB35' ;;
+    TEEMO*)                 _x='KBL|Asus Chromebox 3 / CN65' ;;
     TERRA_???-???-???-A*)   _x='BSW|ASUS Chromebook C202SA' ; device="terra";;
     TERRA_???-???-???-B*)   _x='BSW|ASUS Chromebook C300SA/C301SA' ; device="terra";;
     TERRA*)                 _x='BSW|ASUS Chromebook C202SA, C300SA/C301SA' ;;
@@ -454,6 +463,8 @@ case "${_hwid}" in
     WIZPIG_???-???-??I*)    _x='BSW|Multilaser M11C Chromebook' ; device="wizpig";;
     WIZPIG*)                _x='BSW|(unknown WIZPIG)' ; device="wizpig";;
     WOLF*)                  _x='HSW|Dell Chromebook 11' ;;
+    WUKONG_???-???-???-??D*) _x='KBL|CTL Chromebox CBx1' ;;
+    WUKONG_???-???-???-??C*) _x='KBL|ViewSonic NMP660 Chromebox' ;;
     YUNA*)                  _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     ZAKO*)                  _x='HSW|HP Chromebox CB1' ;;
 esac

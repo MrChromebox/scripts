@@ -1112,7 +1112,8 @@ function menu_fwupdate() {
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 4)${GRAY_TEXT} Set Boot Options (GBB flags)${NORMAL}"
         echo -e "${GRAY_TEXT}**${GRAY_TEXT} 5)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
+		"$isSkylake" = false && "$isKbl" = false && "$isApl" = false) ]]; then
         echo -e "${MENU}**${NUMBER} 6)${MENU} Remove ChromeOS Bitmaps ${NORMAL}"
         echo -e "${MENU}**${NUMBER} 7)${MENU} Restore ChromeOS Bitmaps ${NORMAL}"
     else
@@ -1177,15 +1178,17 @@ function menu_fwupdate() {
                     menu_fwupdate
                     ;;
                                                             
-                6)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
-                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false ]]; then
+                6)  if [[ "$unlockMenu" = true || ("$isChromeOS" = true && "$isUnsupported" = false \
+                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false \
+                            && "$isKbl" = false && "$isApl" = false) ]]; then
                         remove_bitmaps   
                     fi
                     menu_fwupdate
                     ;;
                     
-                7)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
-                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false ]]; then
+                7)  if [[ "$unlockMenu" = true || ("$isChromeOS" = true && "$isUnsupported" = false \
+                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false \
+                            && "$isKbl" = false && "$isApl" = false) ]]; then
                         restore_bitmaps   
                     fi
                     menu_fwupdate
