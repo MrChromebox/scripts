@@ -1081,7 +1081,7 @@ function menu_fwupdate() {
     echo -e "${NORMAL}\n ChromeOS Firmware Utility Script ${script_date} ${NORMAL}"
     echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
     echo -e "${MENU}******************************************************${NORMAL}"
-    echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${device^^})"
+    echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
     echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
     echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
     if [ "$wpEnabled" = true ]; then
