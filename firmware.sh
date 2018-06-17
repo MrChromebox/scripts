@@ -288,7 +288,7 @@ an Acer C740 (Auron_Paine) or Acer C910/CB5-571 (Auron_Yuna)?
 fi
 
 #extract MAC address if needed
-if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ]]; then
+if [[ "$hasLAN" = true ]]; then
     #check if contains MAC address, extract
     extract_vpd /tmp/bios.bin
     if [ $? -ne 0 ]; then
@@ -344,7 +344,7 @@ fi
 
 #add PXE?
 addPXE=false
-if [[  $useUEFI = false && ( "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" ) ]]; then
+if [[  $useUEFI = false && "$hasLAN" = true ]]; then
     echo -e ""
     echo_yellow "Add PXE network booting capability?"
     read -p "(This is not needed for by most users) [y/N] "
@@ -578,17 +578,13 @@ else
     [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
     
     #extract VPD if present
-    if [[ "$isHswBox" = true || "$isBdwBox" = true || "$device" = "ninja" || "$device" = "monroe" ]]; then
-        #read current firmware to extract VPD
-        echo_yellow "Reading current firmware"
-        ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
-        [[ $? -ne 0 ]] && { exit_red "Failure reading current firmware; cannot proceed."; return 1; }
-        #extract VPD
+    if [[ "$hasLAN" = true ]]; then
+        #extract VPD from current firmware 
         extract_vpd /tmp/bios.bin
         #merge with recovery image firmware
         if [ -f /tmp/vpd.bin ]; then
             echo_yellow "Merging VPD into recovery image firmware"
-            dd if=/tmp/vpd.bin bs=1 seek=$((0x00600000)) count=$((0x00004000)) of=/tmp/stock-firmware.rom conv=notrunc > /dev/null 2>&1
+            cbfstool /tmp/stock-firmware.rom write -r RO_VPD -f /tmp/vpd.bin
         fi
     fi
     firmware_file=/tmp/stock-firmware.rom
@@ -618,20 +614,15 @@ firmware_file="$1"
 #check if file contains MAC address
 grep -obUa "ethernet_mac" ${firmware_file} >/dev/null
 if [ $? -eq 0 ]; then
-    #we have a MAC; determine if stock firmware (FMAP) or coreboot (CBFS)
-    grep -obUa "vboot" ${firmware_file} >/dev/null
-    if [ $? -eq 0 ]; then
-        #stock firmware, extract w/dd
-        extract_cmd="dd if=${firmware_file} bs=1 skip=$((0x00600000)) count=$((0x00004000)) of=/tmp/vpd.bin"
-    else
-        #coreboot firmware, extract w/cbfstool
-        extract_cmd="${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin"
-    fi
-    #run extract command
-    ${extract_cmd}  > /dev/null 2>&1
-    if [ $? -ne 0 ]; then 
-        echo_red "Failure extracting MAC address from current firmware."
-        return 1
+    #try FMAP extraction
+    ${cbfstoolcmd} ${firmware_file} read -r RO_VPD -f /tmp/vpd.bin >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        #try CBFS extraction
+        ${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin >/dev/null 2>&1
+        if [ $? -ne 0 ]; then 
+            echo_red "Failure extracting MAC address from current firmware."
+            return 1
+        fi
     fi
 else
     #file doesn't contain VPD

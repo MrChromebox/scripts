@@ -37,6 +37,7 @@ hasUEFIoption=false
 hasLegacyOption=false
 hasShellball=false
 wpEnabled=false
+hasLAN=false
 
 hsw_boxes=('<mccloud>' '<panther>' '<tricky>' '<zako>');
 hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
@@ -47,7 +48,8 @@ braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<
 skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<coral>' '<electro>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
-kbl=('<eve>' '<fizz>' '<kench>' '<sion>' '<soraka>' '<teemo>' '<wukong>')
+kbl_boxes=('<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
+kbl=($(printf "%s " "${kbl_boxes[@]}") '<eve>' '<soraka>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"));
@@ -505,7 +507,7 @@ esac
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
     || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" || "$isApl" = "true" || "$isKbl" = "true" ]] || isUnsupported=true
-
+[[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" || "$device" = "ninja" ]] && hasLAN=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
