@@ -62,6 +62,7 @@ NUMBER=$(echo "\033[33m") #yellow
 FGRED=$(echo "\033[41m")
 RED_TEXT=$(echo "\033[31m")
 GRAY_TEXT=$(echo "\033[1;30m")
+GREEN_TEXT=$(echo "\033[1;32m")
 ENTER_LINE=$(echo "\033[33m")
 
 function echo_red()

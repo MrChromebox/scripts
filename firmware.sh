@@ -1077,49 +1077,51 @@ function menu_fwupdate() {
     echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
     if [ "$wpEnabled" = true ]; then
         echo -e "${MENU}**${NUMBER}    Fw WP: ${RED_TEXT}Enabled${NORMAL}"
+	WP_TEXT=${RED_TEXT}
     else
         echo -e "${MENU}**${NUMBER}    Fw WP: ${NORMAL}Disabled"
+	WP_TEXT=${GREEN_TEXT}
     fi
     echo -e "${MENU}******************************************************${NORMAL}"
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
-        echo -e "${MENU}**${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
+        echo -e "${MENU}**     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBaytrail" = true ) ]]; then
-        echo -e "${MENU}**${NUMBER} 2)${MENU} Install/Update BOOT_STUB Firmware ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Install/Update BOOT_STUB Firmware ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
-        echo -e "${MENU}**${NUMBER} 3)${MENU} Install/Update Full ROM Firmware ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 3)${MENU} Install/Update Full ROM Firmware ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Full ROM Firmware${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Full ROM Firmware${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
-        echo -e "${MENU}**${NUMBER} 4)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
-        echo -e "${MENU}**${NUMBER} 5)${MENU} Set Hardware ID (HWID) ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 5)${MENU} Set Hardware ID (HWID) ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 4)${GRAY_TEXT} Set Boot Options (GBB flags)${NORMAL}"
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 5)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 4)${GRAY_TEXT} Set Boot Options (GBB flags)${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 5)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
 		"$isSkylake" = false && "$isKbl" = false && "$isApl" = false) ]]; then
-        echo -e "${MENU}**${NUMBER} 6)${MENU} Remove ChromeOS Bitmaps ${NORMAL}"
-        echo -e "${MENU}**${NUMBER} 7)${MENU} Restore ChromeOS Bitmaps ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 6)${MENU} Remove ChromeOS Bitmaps ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 7)${MENU} Restore ChromeOS Bitmaps ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 6)${GRAY_TEXT} Remove ChromeOS Bitmaps ${NORMAL}"
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 7)${GRAY_TEXT} Restore ChromeOS Bitmaps ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 6)${GRAY_TEXT} Remove ChromeOS Bitmaps ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 7)${GRAY_TEXT} Restore ChromeOS Bitmaps ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isBootStub" = true && "$isChromeOS" = false ) ]]; then
-        echo -e "${MENU}**${NUMBER} 8)${MENU} Restore Stock BOOT_STUB ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 8)${MENU} Restore Stock BOOT_STUB ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 8)${GRAY_TEXT} Restore Stock BOOT_STUB ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 8)${GRAY_TEXT} Restore Stock BOOT_STUB ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isChromeOS" = false  && "$isFullRom" = true ) ]]; then
-        echo -e "${MENU}**${NUMBER} 9)${MENU} Restore Stock Firmware (full) ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 9)${MENU} Restore Stock Firmware (full) ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**${GRAY_TEXT} 9)${GRAY_TEXT} Restore Stock Firmware (full) ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 9)${GRAY_TEXT} Restore Stock Firmware (full) ${NORMAL}"
     fi
     echo -e "${MENU}******************************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or${NORMAL}"
