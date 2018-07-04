@@ -48,7 +48,7 @@ braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<
 skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<coral>' '<electro>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
-kbl_boxes=('<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
+kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
 kbl=($(printf "%s " "${kbl_boxes[@]}") '<eve>' '<soraka>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
@@ -111,13 +111,13 @@ fi
 rootdev=${intStor}
 if [ "$(which rootdev)" ]; then
     rootdev=$(rootdev -d -s)
-fi  
+fi
 eval usb_devs="($(fdisk -l 2> /dev/null | grep -v "Disk ${intStor}" | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
 #ensure at least 1 drive available
 [ "$usb_devs" != "" ] || return 1
 echo -e "\nDevices available:\n"
 num_usb_devs=0
-for dev in "${usb_devs[@]}" 
+for dev in "${usb_devs[@]}"
 do
 let "num_usb_devs+=1"
 vendor=$(udevadm info --query=all --name=sd${dev} | grep -E "ID_VENDOR=" | awk -F"=" '{print $2}')
@@ -130,7 +130,7 @@ fi
 if [ -n "${model}" ]; then
     echo -n " ${model}"
 fi
-echo -e " (${sz} GB)"  
+echo -e " (${sz} GB)"
 done
 echo -e ""
 return 0
@@ -150,13 +150,13 @@ if [ ! -f ${cbfstoolcmd} ]; then
         #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
         [[ "$isCloudready" = true ]] && part_num="27" || part_num="12"
-        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_num="p${part_num}"  
+        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_num="p${part_num}"
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
             mkdir /tmp/boot >/dev/null 2>&1
             mount "$(rootdev -d -s)""${part_num}" /tmp/boot
-            if [ $? -ne 0 ]; then 
+            if [ $? -ne 0 ]; then
                 echo_red "Error mounting boot partition; cannot proceed."
                 return 1
             fi
@@ -165,17 +165,17 @@ if [ ! -f ${cbfstoolcmd} ]; then
         mkdir /tmp/boot/util 2>/dev/null
         cd /tmp/boot/util
     fi
-    
+
     #echo_yellow "Downloading cbfstool utility"
     curl -sLO "${util_source}"/cbfstool.tar.gz
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         echo_red "Error downloading cbfstool; cannot proceed."
         #restore working dir
         cd ${working_dir}
         return 1
     fi
     tar -zxf cbfstool.tar.gz --no-same-owner
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         echo_red "Error extracting cbfstool; cannot proceed."
         #restore working dir
         cd ${working_dir}
@@ -186,7 +186,7 @@ if [ ! -f ${cbfstoolcmd} ]; then
     #restore working dir
     cd ${working_dir}
 fi
-return 0    
+return 0
 }
 
 
@@ -200,14 +200,14 @@ if [ ! -f ${flashromcmd} ]; then
     cd /tmp
 
     curl -sLO "${util_source}"/flashrom.tar.gz
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         echo_red "Error downloading flashrom; cannot proceed."
         #restore working dir
         cd ${working_dir}
         return 1
     fi
     tar -zxf flashrom.tar.gz
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         echo_red "Error extracting flashrom; cannot proceed."
         #restore working dir
         cd ${working_dir}
@@ -218,7 +218,7 @@ if [ ! -f ${flashromcmd} ]; then
     #restore working dir
     cd ${working_dir}
 fi
-return 0    
+return 0
 }
 
 
@@ -232,14 +232,14 @@ if [ ! -f ${gbbutilitycmd} ]; then
     cd /tmp
 
     curl -sLO "${util_source}"/gbb_utility.tar.gz
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         echo_red "Error downloading gbb_utility; cannot proceed."
         #restore working dir
         cd ${working_dir}
         return 1
     fi
     tar -zxf gbb_utility.tar.gz
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
         echo_red "Error extracting gbb_utility; cannot proceed."
         #restore working dir
         cd ${working_dir}
@@ -250,7 +250,7 @@ if [ ! -f ${gbbutilitycmd} ]; then
     #restore working dir
     cd ${working_dir}
 fi
-return 0    
+return 0
 }
 
 
@@ -258,10 +258,10 @@ return 0
 # Prelim Setup #
 ################
 
-function prelim_setup() 
+function prelim_setup()
 {
 
-# Must run as root 
+# Must run as root
 [ "$(whoami)" = "root" ] || die "You need to run this script as root; use 'sudo bash <script name>'"
 
 #must be x86_64
@@ -286,7 +286,7 @@ fi
 
 
 #get device name
-device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}') 
+device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}')
 if [[ $? -ne 0 || "${device}" = "" ]]; then
     echo_red "Unable to determine Chromebox/book model; cannot continue."
     echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,\nonly Intel-based devices are supported at this time."
@@ -363,6 +363,7 @@ case "${_hwid}" in
     AURON_YUNA*)            _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     BANJO*)                 _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
     BANON*)                 _x='BSW|Acer Chromebook 15 (CB3-532)' ;;
+    BLEEMO*)                _x='KBL|UNK Fizz-based Chromebox' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
     CANDY*)                 _x='BYT|Dell Chromebook 11' ;;
@@ -513,7 +514,7 @@ esac
 echo -e "\nGetting device/system info..."
 #read entire firmware
 ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
-if [ $? -ne 0 ]; then 
+if [ $? -ne 0 ]; then
     echo_red "\nUnable to read current firmware; cannot continue."
     echo_red "Either add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."
     echo_red "See https://www.flashrom.org/FAQ for more info."
@@ -541,7 +542,7 @@ else
             isStock=false
             isFullRom=true
         fi
-    else 
+    else
         if [ "$isChromeOS" = false ]; then
         #non-stock firmware
             isStock=false
@@ -586,7 +587,7 @@ return 0
 ###########
 # Cleanup #
 ###########
-function cleanup() 
+function cleanup()
 {
 #remove temp files, unmount temp stuff
 if [ -d /tmp/boot/util ]; then
