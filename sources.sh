@@ -30,7 +30,7 @@ syslinux_version="syslinux-6.04-pre1"
 #SNB/IVB
 coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20180204.rom"
 coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20180204.rom"
-coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20180204.rom"
+coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20180311.rom"
 coreboot_uefi_parrot="coreboot_tiano-parrot_snb-mrchromebox_20180204.rom"
 coreboot_uefi_parrot_ivb="coreboot_tiano-parrot_ivb-mrchromebox_20180204.rom"
 coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20180204.rom"
