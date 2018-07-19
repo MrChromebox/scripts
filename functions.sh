@@ -49,7 +49,7 @@ skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>')
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<coral>' '<electro>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
 kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
-kbl=($(printf "%s " "${kbl_boxes[@]}") '<eve>' '<soraka>')
+kbl=($(printf "%s " "${kbl_boxes[@]}") '<eve>' '<nautilus>' '<soraka>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"));
@@ -408,6 +408,7 @@ case "${_hwid}" in
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
     MONROE*)                _x='HSW|LG Chromebase' ;;
+    NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
     NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ; device="nasher";;
     NASHER*)                _x='APL|Dell Chromebook 11 5190' ;;
     NINJA*)                 _x='BYT|AOpen Chromebox Commercial' ;;
