@@ -440,9 +440,8 @@ if [ $? -eq 0 ]; then
         echo_yellow "IMPORTANT:\nThe first boot after flashing takes substantially
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
-        echo_yellow "Additionally, GalliumOS users need to use pre-2.2 ISO linked
-on homepage of https://mrchromebox.tech; the keyboard
-will not work with the 2.1 ISO due to use of older kernel."
+        echo_yellow "Additionally, GalliumOS users need to use the v3.0 ISO; the keyboard
+will not work with the 2.1 ISO due a bug in the older kernel."
     fi
 else
     echo_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"
@@ -1169,17 +1168,15 @@ function menu_fwupdate() {
                     menu_fwupdate
                     ;;
 
-                6)  if [[ "$unlockMenu" = true || ("$isChromeOS" = true && "$isUnsupported" = false \
-                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false \
-                            && "$isKbl" = false && "$isApl" = false) ]]; then
+                6)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
+		                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
                         remove_bitmaps
                     fi
                     menu_fwupdate
                     ;;
 
-                7)  if [[ "$unlockMenu" = true || ("$isChromeOS" = true && "$isUnsupported" = false \
-                            && "$isFullRom" = false && "$isBootStub" = false && "$isSkylake" = false \
-                            && "$isKbl" = false && "$isApl" = false) ]]; then
+                7)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
+		                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
                         restore_bitmaps
                     fi
                     menu_fwupdate
