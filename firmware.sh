@@ -373,6 +373,7 @@ sha1sum -c ${coreboot_file}.sha1 --quiet > /dev/null 2>&1
 if [ -f /tmp/vpd.bin ]; then
     ${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
 fi
+
 #preferUSB?
 if [[ "$preferUSB" = true  && $useUEFI = false ]]; then
 	curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
@@ -383,6 +384,7 @@ if [[ "$preferUSB" = true  && $useUEFI = false ]]; then
 	    ${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 	fi
 fi
+
 #useHeadless?
 if [ "$useHeadless" = true  ]; then
     curl -s -L -O "${cbfs_source}${hswbdw_headless_vbios}"
@@ -393,6 +395,7 @@ if [ "$useHeadless" = true  ]; then
         ${cbfstoolcmd} ${coreboot_file} add -f ${hswbdw_headless_vbios} -n pci8086,0406.rom -t optionrom > /dev/null 2>&1
     fi
 fi
+
 #addPXE?
 if [ "$addPXE" = true  ]; then
     curl -s -L -O "${cbfs_source}${pxe_optionrom}"
@@ -410,23 +413,53 @@ if [ "$addPXE" = true  ]; then
     fi
 fi
 
+#Persist RW_MRC_CACHE for BSW Full ROM firmware
+${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
+if [[ $isBraswell = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
+    ${cbfstoolcmd} ${coreboot_file} write -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
+fi
+
 #disable software write-protect
+echo_yellow "Disabling software write-protect and clearing the WP range"
 ${flashromcmd} --wp-disable > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     exit_red "Error disabling software write-protect; unable to flash firmware."; return 1
 fi
 
-#clear SW WP range (needed for BYT/BSW)
-if [[ "$isBaytrail" = true || "$isBraswell" = true ]]; then
-    ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
+#clear SW WP range
+${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+fi
+
+#flash Full ROM firmware
+echo_yellow "Installing Full ROM firmware (may take up to 90s)"
+${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
+fi
+
+#re-verify flash
+echo_yellow "Verifying firmware flash"
+${flashromcmd} -v "${coreboot_file}" > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    exit_red "An error occurred verifying the Full ROM firmware. DO NOT REBOOT!"; return 1
+fi
+
+#re-enable software WP
+#exclude SKL/KBL for now until issues resolved
+if [[ !("$isSkylake" = "true" || "$isKbl" = "true" ) ]]; then
+    echo_yellow "Re-enabling software write-protect"
+    if [[ "$useUEFI" = "true" ]]; then
+        ${flashromcmd} --wp-range $((0x600000)) $((0x200000)) > /dev/null 2>&1
+    fi
+    ${flashromcmd} --wp-enable > /dev/null 2>&1
     if [ $? -ne 0 ]; then
-        exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+        echo_red "Unable to re-enable firmware write-protect;\n
+the firmware flash was successful and verified, but please let MrChromebox know."
     fi
 fi
 
-#flash coreboot firmware
-echo_yellow "Installing Full ROM firmware"
-${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo_green "Full ROM firmware successfully installed/updated."
 
@@ -437,7 +470,7 @@ if [ $? -eq 0 ]; then
 
     #Warn about long RAM training time, keyboard on Braswell
     if [[ "$isBraswell" = true ]]; then
-        echo_yellow "IMPORTANT:\nThe first boot after flashing takes substantially
+        echo_yellow "IMPORTANT:\nThe first boot after flashing may take substantially
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
         echo_yellow "Additionally, GalliumOS users need to use the v3.0 ISO; the keyboard
@@ -587,6 +620,19 @@ else
         fi
     fi
     firmware_file=/tmp/stock-firmware.rom
+fi
+
+#disable software write-protect
+${flashromcmd} --wp-disable > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+#if [[ $? -ne 0 && ( "$isBraswell" = false || "$isFullRom" = false ) ]]; then
+    exit_red "Error disabling software write-protect; unable to restore stock firmware."; return 1
+fi
+
+#clear SW WP range
+${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	exit_red "Error clearing software write-protect range; unable to restore stock firmware."; return 1
 fi
 
 #flash stock firmware

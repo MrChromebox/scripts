@@ -52,8 +52,8 @@ kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
 kbl=($(printf "%s " "${kbl_boxes[@]}") '<eve>' '<nautilus>' '<soraka>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
-UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"));
-shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"));
+UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}"));
+shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}"));
 
 #menu text output
 NORMAL=$(echo "\033[m")
@@ -578,8 +578,14 @@ fi
 if [[ "$isChromeOS" = true ]]; then
     [[ "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ]] && wpEnabled=true
 else
+    #save SW WP state
+    ${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
+    [[ $? -eq 0 ]] && swWp="enabled" || swWp="disabed"
+    #test disabling SW WP to see if HW WP enabled
     ${flashromcmd} --wp-disable > /dev/null 2>&1
-    [[ $? -ne 0 && "$isBraswell" = false ]] && wpEnabled=true
+    [[ $? -ne 0 ]] && wpEnabled=true
+    #restore previous SW WP state
+    [[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
 fi
 
 return 0
