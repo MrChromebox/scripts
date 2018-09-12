@@ -9,10 +9,10 @@ function select_le_version()
 {
 	LE_version="${LE_version_base}-${LE_version_latest}"
 	if [ "$LE_version_latest" != "$LE_version_stable" ]; then
-		read -p "Do you want to install a LibreELEC 8.0 beta version (${LE_version_latest}) ?
-It is based on Kodi 17.0, is reasonably stable, and is the recommended version, but some issues may remain.
+		read -p "Do you want to install a LibreELEC 9.0 beta version (${LE_version_latest}) ?
+It is based on Kodi 18, is reasonably stable, and is the recommended version, but some issues may remain.
 
-If N, the latest stable version of LibreELEC 7.0 ($LE_version_stable) based on Kodi 16.1 will be used. [Y/n] "
+If N, the latest stable version of LibreELEC 8.0 ($LE_version_stable) based on Kodi 17.6 will be used. [Y/n] "
 		if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 			LE_version="${LE_version_base}-${LE_version_stable}"
 			#LE_url=${LE_url_official}

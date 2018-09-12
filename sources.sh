@@ -21,7 +21,7 @@ chrx_url="https://chrx.org/go"
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
 LE_version_stable="8.2.5"
-LE_version_latest="8.2.5"
+LE_version_latest="8.90.004"
 
 #syslinux version
 syslinux_version="syslinux-6.04-pre1"
@@ -117,7 +117,7 @@ seabios_apl="seabios-apl-mrchromebox_20180912.bin"
 seabios_kbl="seabios-kbl-mrchromebox_20180912.bin"
 
 #BOOT_STUB payloads
-bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20170529.bin"
+bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20180912.bin"
 
 
 #hsw/bdw headless VBIOS
