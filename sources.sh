@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2018-08-27]"
+script_date="[2018-09-12]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -107,14 +107,14 @@ coreboot_rikku="coreboot_seabios-rikku-mrchromebox_20180204.rom"
 coreboot_tidus="coreboot_seabios-tidus-mrchromebox_20180204.rom"
 
 #RW_LEGACY payloads
-seabios_link="seabios-link.bin"
-seabios_hswbdw_box="seabios-hswbdw_box-mrchromebox_20170529.bin"
-seabios_hswbdw_book="seabios-hswbdw_book-mrchromebox_20170529.bin"
-seabios_baytrail="seabios-byt-mrchromebox_20170602.bin"
-seabios_braswell="seabios-bsw-mrchromebox_20170529.bin"
-seabios_skylake="seabios-skl-mrchromebox_20170529.bin"
-seabios_apl="seabios-apl-mrchromebox_20180529.bin"
-seabios_kbl="seabios-kbl-mrchromebox_20171202.bin"
+seabios_link="seabios-link-mrchromebox_20180912.bin"
+seabios_hswbdw_box="seabios-hswbdw_box-mrchromebox_20180912.bin"
+seabios_hswbdw_book="seabios-hswbdw_book-mrchromebox_20180912.bin"
+seabios_baytrail="seabios-byt-mrchromebox_20180912.bin"
+seabios_braswell="seabios-bsw-mrchromebox_20180912.bin"
+seabios_skylake="seabios-skl-mrchromebox_20180912.bin"
+seabios_apl="seabios-apl-mrchromebox_20180912.bin"
+seabios_kbl="seabios-kbl-mrchromebox_20180912.bin"
 
 #BOOT_STUB payloads
 bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20170529.bin"
