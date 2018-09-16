@@ -616,7 +616,7 @@ else
         #merge with recovery image firmware
         if [ -f /tmp/vpd.bin ]; then
             echo_yellow "Merging VPD into recovery image firmware"
-            cbfstool /tmp/stock-firmware.rom write -r RO_VPD -f /tmp/vpd.bin
+            ${cbfstoolcmd} /tmp/stock-firmware.rom write -r RO_VPD -f /tmp/vpd.bin
         fi
     fi
     firmware_file=/tmp/stock-firmware.rom
