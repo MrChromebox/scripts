@@ -21,7 +21,7 @@ chrx_url="https://chrx.org/go"
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
 LE_version_stable="8.2.5"
-LE_version_latest="8.90.004"
+LE_version_latest="8.90.006"
 
 #syslinux version
 syslinux_version="syslinux-6.04-pre1"
