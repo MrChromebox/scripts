@@ -47,9 +47,9 @@ baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<
 braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>' '<wizpig>');
 skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>');
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
-apl=('<astronaut>' '<coral>' '<electro>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
+apl=('<astronaut>' '<blacktip>' '<coral>' '<electro>' '<epaulette>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
 kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
-kbl=($(printf "%s " "${kbl_boxes[@]}") '<eve>' '<nautilus>' '<soraka>')
+kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<pantheon>' '<soraka>' '<vayne>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}"));
@@ -358,12 +358,14 @@ fi
 
 case "${_hwid}" in
     ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
+    AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ;;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
     ASUKA*)                 _x='SKL|Dell Chromebook 13 (3380)' ;;
     AURON_PAINE*)           _x='BDW|Acer Chromebook 11 (C740)' ;;
     AURON_YUNA*)            _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     BANJO*)                 _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
     BANON*)                 _x='BSW|Acer Chromebook 15 (CB3-532)' ;;
+    BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|UNK Fizz-based Chromebox' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
@@ -387,6 +389,7 @@ case "${_hwid}" in
     ENGUARDE_???-???-??J*)  _x='BYT|eduGear Chromebook R' ; device="enguarde";;
     ENGUARDE_???-???-??K*)  _x='BYT|ASI Chromebook' ; device="enguarde";;
     ENGUARDE*)              _x='BYT|(multiple device matches)' ;;
+    EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
     EVE*)                   _x='KBL|Google Pixelbook' ;;
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
     FIZZ)                   _x='KBL|TBD KBL Chromebox' ;;
@@ -414,6 +417,7 @@ case "${_hwid}" in
     NINJA*)                 _x='BYT|AOpen Chromebox Commercial' ;;
     ORCO*)                  _x='BYT|Lenovo Ideapad 100S Chromebook' ;;
     PAINE*)                 _x='BDW|Acer Chromebook 11 (C740)' ;;
+    PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630' ;;
     PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
     PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
     PEPPY*)                 _x='HSW|Acer C720/C720P Chromebook' ;;
@@ -460,6 +464,7 @@ case "${_hwid}" in
     TIDUS*)                 _x='BDW|Lenovo ThinkCentre Chromebox' ;;
     TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
+    VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)' ;;
     WINKY*)                 _x='BYT|Samsung Chromebook 2 (XE500C12)' ;;
     WIZPIG_???-???-??A*)    _x='BSW|CTL Chromebook J5' ;;
     WIZPIG_???-???-??B*)    _x='BSW|Edugear CMT Chromebook' ;;
