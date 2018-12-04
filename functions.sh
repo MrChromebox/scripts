@@ -49,7 +49,7 @@ skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>')
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<blacktip>' '<coral>' '<electro>' '<epaulette>' '<lava>' '<nasher>'  '<pyro>' '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
 kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
-kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<pantheon>' '<soraka>' '<vayne>')
+kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<nocturne>' '<pantheon>' '<sona>' '<soraka>' '<vayne>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}"));
@@ -415,6 +415,7 @@ case "${_hwid}" in
     NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ; device="nasher";;
     NASHER*)                _x='APL|Dell Chromebook 11 5190' ;;
     NINJA*)                 _x='BYT|AOpen Chromebox Commercial' ;;
+    NOCTURNE*)              _x='KBL|Google Pixel Slate' ;;
     ORCO*)                  _x='BYT|Lenovo Ideapad 100S Chromebook' ;;
     PAINE*)                 _x='BDW|Acer Chromebook 11 (C740)' ;;
     PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630' ;;
@@ -451,6 +452,7 @@ case "${_hwid}" in
     SNAPPY_???-B*)          _x='APL|HP Chromebook 11 G6 EE' device="snappy";;
     SNAPPY_???-C*)          _x='APL|HP Chromebook 14 G5' device="snappy";;
     SNAPPY*)                _x='APL|(unknown SNAPPY)' device="snappy";;
+    SONA*)                  _x='KBL|HP Chromebook x360 14' ;;
     SORAKA*)                _x='KBL|HP Chromebook x2' ;;
     SQUAWKS*)               _x='BYT|ASUS Chromebook C200' ;;
     STOUT*)                 _x='IVB|Lenovo Thinkpad X131e Chromebook' ;;
