@@ -177,11 +177,7 @@ PXE (network boot) capability and compatibility with Legacy OS installations.
         while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
         do
             read -p "Enter 'U' for UEFI, 'L' for Legacy: "
-            if [[ "$REPLY" = "L" || "$REPLY" = "l" ]]; then
-                echo_yellow "\nWarning: UEFI brings significant advantages and is supported by most OSes/distros."
-                read -p "Are you sure you wish to continue installing Legacy firmware? [y/N] "
-                [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && REPLY="L" || return
-            else
+            if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
                 useUEFI=true
             fi
         done
@@ -330,7 +326,7 @@ if [ $useUEFI = false ]; then
     echo -e "If you default to USB, then any bootable USB device
 will have boot priority over the internal SSD.
 If you default to SSD, you will need to manually select
-the USB Device from Boot Manager in order to boot it.
+the USB Device from the Boot Menu in order to boot it.
     "
     REPLY=""
     while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
