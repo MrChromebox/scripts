@@ -705,7 +705,7 @@ if [ $? -ne 0 ]; then
     backup_fail "USB backup device failed to mount; cannot proceed."
     return 1
 fi
-backupname="stock-firmware-${device}-$(date +%Y%m%d).rom"
+backupname="stock-firmware-${boardName}-$(date +%Y%m%d).rom"
 echo_yellow "\nSaving firmware backup as ${backupname}"
 cp /tmp/bios.bin /tmp/usb/${backupname}
 if [ $? -ne 0 ]; then
