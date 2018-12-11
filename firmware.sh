@@ -459,9 +459,10 @@ fi
 if [ $? -eq 0 ]; then
     echo_green "Full ROM firmware successfully installed/updated."
 
-    #Prevent from trying to boot stock ChromeOS install in UEFI mode
-    if [[ "$isStock" = true && "$isChromeOS" = true &&  "$useUEFI" = true ]]; then
-        mv /tmp/boot/EFI /tmp/boot/EFI_ > /dev/null 2>&1
+    #Prevent from trying to boot stock ChromeOS install
+    if [[ "$isStock" = true && "$isChromeOS" = true ]]; then
+       rm -rf /tmp/boot/efi > /dev/null 2>&1
+       rm -rf /tmp/boot/syslinux > /dev/null 2>&1
     fi
 
     #Warn about long RAM training time, keyboard on Braswell
