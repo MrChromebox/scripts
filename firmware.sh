@@ -428,17 +428,26 @@ if [ $? -ne 0 ]; then
 	exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
 fi
 
+#flash only BIOS region for SKL/KBL, to avoid IFD mismatch upon verification 
+if [[ "$isSkylake" = "true" || "$isKbl" = "true" ]]; then
+    region="-i BIOS"
+else
+    region=""
+fi
+
 #flash Full ROM firmware
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
-${flashromcmd} -w "${coreboot_file}" > /dev/null 2>&1
+${flashromcmd} ${region} -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
+    cat /tmp/flashrom.log
     exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
 fi
 
 #re-verify flash
 echo_yellow "Verifying firmware flash"
-${flashromcmd} -v "${coreboot_file}" > /dev/null 2>&1
+${flashromcmd} ${region} -v "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
+    cat /tmp/flashrom.log
     exit_red "An error occurred verifying the Full ROM firmware. DO NOT REBOOT!"; return 1
 fi
 
