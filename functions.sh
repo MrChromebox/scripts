@@ -317,7 +317,12 @@ if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
     #disable power mgmt
     initctl stop powerd > /dev/null 2>&1
     #set cmds
-    flashromcmd=/usr/sbin/flashrom
+    #force stumpy to use newer flashrom binary under ChromeOS
+    if [[ "${device^^}" = "STUMPY" ]]; then
+    	flashromcmd=/tmp/boot/util/flashrom
+    else    
+        flashromcmd=/usr/sbin/flashrom
+    fi
     cbfstoolcmd=/tmp/boot/util/cbfstool
     gbbutilitycmd=$(which gbb_utility)
 else
