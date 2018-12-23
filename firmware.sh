@@ -1139,7 +1139,7 @@ function menu_fwupdate() {
     fi
     echo -e "${MENU}******************************************************${NORMAL}"
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
-        echo -e "${MENU}**     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
     fi
