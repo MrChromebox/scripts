@@ -1183,7 +1183,7 @@ function menu_fwupdate() {
     echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
     read opt
 
-    while [ opt != '' ]
+    while [ $opt != '' ]
         do
         if [[ $opt = "q" ]]; then
                 exit;
