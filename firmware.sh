@@ -443,14 +443,6 @@ if [ $? -ne 0 ]; then
     exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
 fi
 
-#re-verify flash
-echo_yellow "Verifying firmware flash"
-${flashromcmd} ${region} -v "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    cat /tmp/flashrom.log
-    exit_red "An error occurred verifying the Full ROM firmware. DO NOT REBOOT!"; return 1
-fi
-
 #re-enable software WP
 #exclude SKL/KBL for now until issues resolved
 if [[ !("$isSkylake" = "true" || "$isKbl" = "true" ) ]]; then
