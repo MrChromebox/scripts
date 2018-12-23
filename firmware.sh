@@ -320,7 +320,7 @@ fi
 
 #USB boot priority
 preferUSB=false
-if [ $useUEFI = false ]; then
+if [[ $useUEFI = false ]]; then
     echo -e ""
     echo_yellow "Default to booting from USB?"
     echo -e "If you default to USB, then any bootable USB device
