@@ -429,11 +429,13 @@ if [ $? -ne 0 ]; then
 fi
 
 #flash only BIOS region for SKL/KBL, to avoid IFD mismatch upon verification 
-#if [[ "$isSkylake" = "true" || "$isKbl" = "true" ]]; then
-#    region="-i BIOS"
-#else
+if [[ "$device" = "CAROLINE" && "$isChromeOS" = "true" && "$isStock" = "true" ]]; then
+    region="-i SI_BIOS"
+elif [[ "$isFullRom" = true && ("$isSkylake" = "true" || "$isKbl" = "true") ]]; then
+    region="-i BIOS"
+else
     region=""
-#fi
+fi
 
 #flash Full ROM firmware
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
