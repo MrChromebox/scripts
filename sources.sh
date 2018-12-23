@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2018-11-26]"
+script_date="[2018-12-23]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -21,7 +21,7 @@ chrx_url="https://chrx.org/go"
 #LE version
 LE_version_base="LibreELEC-Generic.x86_64"
 LE_version_stable="8.2.5"
-LE_version_latest="8.90.006"
+LE_version_latest="8.95.001"
 
 #syslinux version
 syslinux_version="syslinux-6.04-pre1"
