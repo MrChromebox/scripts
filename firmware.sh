@@ -474,6 +474,14 @@ Be patient and eventually your device will boot :)"
         echo_yellow "Additionally, GalliumOS users need to use the v3.0 ISO; the keyboard
 will not work with the 2.1 ISO due a bug in the older kernel."
     fi
+    #set vars to indicate new firmware type
+    isStock=false
+    isFullRom=true
+    if [[ "$useUEFI" = "true" ]]; then
+        firmwareType="Full ROM / UEFI (pending reboot)"
+    else
+        firmwareType="Full ROM / Legacy (pending reboot)"
+    fi
 else
     echo_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"
 fi
@@ -642,6 +650,10 @@ echo_green "Stock firmware successfully restored."
 echo_green "After rebooting, you will need to restore ChromeOS using the ChromeOS recovery media,
 then re-run this script to reset the Firmware Boot Flags (GBB Flags) to factory default."
 read -p "Press [Enter] to return to the main menu."
+#set vars to indicate new firmware type
+isStock=true
+isFullRom=false
+firmwareType="Stock ChromeOS (pending reboot)"
 }
 
 
