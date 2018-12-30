@@ -6,12 +6,12 @@
 #
 # Created by Mr.Chromebox <mrchromebox@gmail.com>
 #
-# May be freely distributed and modified as needed, 
+# May be freely distributed and modified as needed,
 # as long as proper attribution is given.
 #
 
 #where the stuff is
-script_url="https://raw.githubusercontent.com/MattDevo/scripts/master/"
+script_url="https://raw.githubusercontent.com/MrChromebox/scripts/master/"
 
 #set working dir
 cd /tmp
