@@ -31,6 +31,7 @@ firmwareType=""
 isStock=true
 isFullRom=false
 isBootStub=false
+isUEFI=false
 hasRwLegacy=false
 unlockMenu=false
 hasUEFIoption=false
@@ -52,7 +53,7 @@ kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
 kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<nocturne>' '<pantheon>' '<sona>' '<soraka>' '<vayne>')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
-UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}"));
+UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}" "eve"));
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}"));
 
 #menu text output
@@ -574,6 +575,7 @@ elif [[ "$isFullRom" = true ]]; then
     fwVer=$(dmidecode -s bios-version)
     fwDate=$(dmidecode -s bios-release-date)
     if [[ -d /sys/firmware/efi ]]; then
+        isUEFI=true
         firmwareType="Full ROM / UEFI ($fwVer $fwDate)"
     else
         firmwareType="Full ROM / Legacy ($fwVer $fwDate)"
@@ -588,14 +590,14 @@ fi
 
 #check WP status
 
-    #save SW WP state
-    ${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
+#save SW WP state
+${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
 [[ $? -eq 0 ]] && swWp="enabled" || swWp="disabled"
-    #test disabling SW WP to see if HW WP enabled
-    ${flashromcmd} --wp-disable > /dev/null 2>&1
-    [[ $? -ne 0 ]] && wpEnabled=true
-    #restore previous SW WP state
-    [[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
+#test disabling SW WP to see if HW WP enabled
+${flashromcmd} --wp-disable > /dev/null 2>&1
+[[ $? -ne 0 ]] && wpEnabled=true
+#restore previous SW WP state
+[[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
 
 return 0
 }

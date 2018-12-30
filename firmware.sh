@@ -168,7 +168,7 @@ read -e
 fi
 
 #UEFI or legacy firmware
-if [[ ! -z "$1" || ( -d /sys/firmware/efi && "$unlockMenu" = false ) || "$hasLegacyOption" = false ]]; then
+if [[ ! -z "$1" || ( "$isUEFI" = true && "$unlockMenu" = false ) || "$hasLegacyOption" = false ]]; then
     useUEFI=true
 else
     useUEFI=false
@@ -234,29 +234,6 @@ if [ "$device" = "peppy" ]; then
             coreboot_file=${coreboot_uefi_peppy_elan}
         else
             coreboot_file=${coreboot_peppy_elan}
-        fi
-    fi
-fi
-
-#parrot special case
-if [ "$device" = "parrot" ]; then
-    isSnb=$(cat /proc/cpuinfo | grep "847")
-    isIvb=$(cat /proc/cpuinfo | grep "1007")
-    if [[ $isSnb = "" && $isIvb = "" ]]; then
-        echo -e ""
-        read -p "Unable to automatically determine CPU type. Does your Parrot have a Celeron 1007U CPU? [y/N] "
-        if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
-            if [ "$useUEFI" = true ]; then
-                coreboot_file=${coreboot_uefi_parrot_ivb}
-            else
-                coreboot_file=${coreboot_parrot_ivb}
-            fi
-        fi
-    elif [[ $isIvb != "" ]]; then
-        if [ "$useUEFI" = true ]; then
-            coreboot_file=${coreboot_uefi_parrot_ivb}
-        else
-            coreboot_file=${coreboot_parrot_ivb}
         fi
     fi
 fi
@@ -419,6 +396,12 @@ fi
 ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
 if [[ $isBraswell = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
     ${cbfstoolcmd} ${coreboot_file} write -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
+fi
+
+#Persist SMMSTORE if exists
+${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
+if [[ $useUEFI = "true" &&  $? -eq 0 ]]; then
+    ${cbfstoolcmd} ${coreboot_file} write -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
 fi
 
 #disable software write-protect
@@ -1113,6 +1096,26 @@ echo_green "Stock BOOT_STUB firmware successfully restored"
 read -ep "Press [Enter] to return to the main menu."
 }
 
+
+function clear_nvram() {
+echo_green "\nClear UEFI NVRAM"
+echo_yellow "Clearing the NVRAM will remove all EFI variables\nand reset the boot order to the default."
+read -ep "Would you like to continue? [y/N] "
+[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
+
+echo_yellow "\nClearing NVRAM..."
+smmstore=$(mktemp)
+dd if=/dev/zero bs=256K count=1 2> /dev/null | tr '\000' '\377' > ${smmstore} 
+${flashromcmd} -w -i SMMSTORE:${smmstore} > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo_red "\nFailed to write SMMSTORE firmware region; NVRAM not cleared."
+    return 1;
+fi
+#all done
+echo_green "NVRAM has been cleared."
+read -ep "Press Enter to continue"
+}
+
 ########################
 # Firmware Update Menu #
 ########################
@@ -1174,8 +1177,9 @@ function menu_fwupdate() {
     fi
     echo -e "${MENU}*********************************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or${NORMAL}"
-    echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
-
+    [[ "$unlockMenu" = true || "$isUEFI" = true ]] && nvram="${RED_TEXT}C${NORMAL} to clear NVRAM  " || nvram=""
+    echo -e "${nvram}${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
+    
     read -e opt
     case $opt in
 
@@ -1260,6 +1264,12 @@ function menu_fwupdate() {
                 echo_yellow "\nAre you sure you wish to unlock all menu functions?"
                 read -ep "Only do this if you really know what you are doing... [y/N]? "
                 [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && unlockMenu=true
+            fi
+            menu_fwupdate
+            ;;
+
+        [cC]) if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
+                clear_nvram
             fi
             menu_fwupdate
             ;;
