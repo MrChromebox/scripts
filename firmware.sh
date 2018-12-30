@@ -154,6 +154,19 @@ echo -e ""
 # ensure hardware write protect disabled
 [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
+#special warning for EVE
+if [ "$device" = "eve" ]; then
+echo_yellow "VERY IMPORTANT: flashing your Pixelbook is serious business. 
+There is currently no way easy to unbrick if something goes wrong.
+Only do this if you understand and accept the risk, because it's a
+paperweight if something goes wrong.
+(there have been no bricks so far, but the possibility exists)"
+
+echo_yellow "If you wish to continue, type: 'I ACCEPT' and press enter."
+read -e
+[[ "$REPLY" = "I ACCEPT" ]] || return
+fi
+
 #UEFI or legacy firmware
 if [[ ! -z "$1" || ( -d /sys/firmware/efi && "$unlockMenu" = false ) || "$hasLegacyOption" = false ]]; then
     useUEFI=true
