@@ -451,20 +451,6 @@ if [ $? -ne 0 ]; then
     exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
 fi
 
-#re-enable software WP
-#exclude SKL/KBL for now until issues resolved
-if [[ !("$isSkylake" = "true" || "$isKbl" = "true" ) ]]; then
-    echo_yellow "Re-enabling software write-protect"
-    if [[ "$useUEFI" = "true" ]]; then
-        ${flashromcmd} --wp-range $((0x600000)) $((0x200000)) > /dev/null 2>&1
-    fi
-    ${flashromcmd} --wp-enable > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        echo_red "Unable to re-enable firmware write-protect;\n
-the firmware flash was successful and verified, but please let MrChromebox know."
-    fi
-fi
-
 if [ $? -eq 0 ]; then
     echo_green "Full ROM firmware successfully installed/updated."
 
