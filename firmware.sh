@@ -119,16 +119,9 @@ fi
 echo_yellow "Installing RW_LEGACY firmware"
 ${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
 echo_green "RW_LEGACY firmware successfully installed/updated."
-}
-
-
-######################
-# update legacy BIOS #
-######################
-function update_rwlegacy()
-{
-flash_rwlegacy
-read -p "Press [Enter] to return to the main menu."
+if [ -z "$1" ]; then
+    read -p "Press [Enter] to return to the main menu."
+fi
 }
 
 
@@ -1113,7 +1106,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #update legacy BIOS
-flash_rwlegacy skip_usb > /dev/null
+flash_rwlegacy skip_prompt > /dev/null
 
 echo_green "Stock BOOT_STUB firmware successfully restored"
 
@@ -1194,7 +1187,7 @@ function menu_fwupdate() {
 
                 1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
                             && "$isBootStub" = false && "$isUnsupported" = false ]]; then
-                        update_rwlegacy
+                        flash_rwlegacy
                     fi
                     menu_fwupdate
                     ;;

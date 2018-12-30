@@ -297,7 +297,7 @@ cp /tmp/Storage/${LE_version}/target/SYSTEM /tmp/System/
 [ -s /tmp/System/SYSTEM ] || LE_install_error "LE SYSTEM has file size 0"
 
 #update legacy BIOS
-flash_rwlegacy skip_usb > /dev/null
+flash_rwlegacy skip_prompt > /dev/null
 
 echo_green "LibreELEC Installation Complete"
 read -p "Press [Enter] to return to the main menu."
@@ -324,7 +324,7 @@ rec_ubuntu_size=$(($max_ubuntu_size - 1))
 if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	
 	#update legacy BIOS
-	flash_rwlegacy skip_usb > /dev/null
+	flash_rwlegacy skip_prompt > /dev/null
 	
 	echo_green "Stage 1: Repartitioning the internal HDD"
 	
@@ -562,7 +562,7 @@ rm -rf /tmp/Storage/*
 
 #update legacy BIOS
 if [ "$isChromeOS" = true ]; then
-	flash_rwlegacy skip_usb #> /dev/null
+	flash_rwlegacy skip_prompt #> /dev/null
 fi
 	
 echo_green "LibreELEC USB Installation Complete"
