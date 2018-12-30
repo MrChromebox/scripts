@@ -522,7 +522,7 @@ esac
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
     || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" || "$isApl" = "true" || "$isKbl" = "true" ]] || isUnsupported=true
-[[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" || "$device" = "ninja" ]] && hasLAN=true
+[[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
