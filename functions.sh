@@ -587,18 +587,15 @@ elif [[ "$isSkylake" = true || "$isKbl" = true ]]; then
 fi
 
 #check WP status
-if [[ "$isChromeOS" = true ]]; then
-    [[ "$(crossystem wpsw_cur)" == "1" || "$(crossystem wpsw_boot)" == "1" ]] && wpEnabled=true
-else
+
     #save SW WP state
     ${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
-    [[ $? -eq 0 ]] && swWp="enabled" || swWp="disabed"
+[[ $? -eq 0 ]] && swWp="enabled" || swWp="disabled"
     #test disabling SW WP to see if HW WP enabled
     ${flashromcmd} --wp-disable > /dev/null 2>&1
     [[ $? -ne 0 ]] && wpEnabled=true
     #restore previous SW WP state
     [[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
-fi
 
 return 0
 }
