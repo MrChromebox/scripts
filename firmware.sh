@@ -1120,7 +1120,7 @@ function menu_fwupdate() {
     printf "\ec"
     echo -e "${NORMAL}\n ChromeOS Firmware Utility Script ${script_date} ${NORMAL}"
     echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
-    echo -e "${MENU}******************************************************${NORMAL}"
+    echo -e "${MENU}*********************************************************${NORMAL}"
     echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
     echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
     echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
@@ -1131,7 +1131,7 @@ function menu_fwupdate() {
         echo -e "${MENU}**${NUMBER}    Fw WP: ${NORMAL}Disabled"
 	WP_TEXT=${GREEN_TEXT}
     fi
-    echo -e "${MENU}******************************************************${NORMAL}"
+    echo -e "${MENU}*********************************************************${NORMAL}"
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
@@ -1172,112 +1172,102 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 9)${GRAY_TEXT} Restore Stock Firmware (full) ${NORMAL}"
     fi
-    echo -e "${MENU}******************************************************${NORMAL}"
+    echo -e "${MENU}*********************************************************${NORMAL}"
     echo -e "${ENTER_LINE}Select a menu option or${NORMAL}"
     echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
+
     read opt
+    case $opt in
 
-    while [ $opt != '' ]
-        do
-        if [[ $opt = "q" ]]; then
-                exit;
-        else
-            case $opt in
+        1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
+                    && "$isBootStub" = false && "$isUnsupported" = false ]]; then
+                flash_rwlegacy
+            fi
+            menu_fwupdate
+            ;;
 
-                1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
-                            && "$isBootStub" = false && "$isUnsupported" = false ]]; then
-                        flash_rwlegacy
-                    fi
-                    menu_fwupdate
-                    ;;
+        2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false \
+                    && "$isUnsupported" = false ) ]]; then
+                modify_boot_stub
+            fi
+            menu_fwupdate
+            ;;
 
-                2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false \
-                            && "$isUnsupported" = false ) ]]; then
-                        modify_boot_stub
-                    fi
-                    menu_fwupdate
-                    ;;
+        3)  if [[  "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
+                flash_coreboot
+            fi
+            menu_fwupdate
+            ;;
 
-                3)  if [[  "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
-                        flash_coreboot
-                    fi
-                    menu_fwupdate
-                    ;;
+        4)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
+                    && "$isFullRom" = false && "$isBootStub" = false ]]; then
+                set_boot_options
+            fi
+            menu_fwupdate
+            ;;
 
-                4)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
-                            && "$isFullRom" = false && "$isBootStub" = false ]]; then
-                        set_boot_options
-                    fi
-                    menu_fwupdate
-                    ;;
+        5)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
+                    && "$isFullRom" = false && "$isBootStub" = false ]]; then
+                set_hwid
+            fi
+            menu_fwupdate
+            ;;
 
-                5)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
-                            && "$isFullRom" = false && "$isBootStub" = false ]]; then
-                        set_hwid
-                    fi
-                    menu_fwupdate
-                    ;;
+        6)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
+                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
+                remove_bitmaps
+            fi
+            menu_fwupdate
+            ;;
 
-                6)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-		                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
-                        remove_bitmaps
-                    fi
-                    menu_fwupdate
-                    ;;
+        7)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
+                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
+                restore_bitmaps
+            fi
+            menu_fwupdate
+            ;;
 
-                7)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-		                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
-                        restore_bitmaps
-                    fi
-                    menu_fwupdate
-                    ;;
+        8)  if [[ "$unlockMenu" = true || "$isBootStub" = true ]]; then
+                restore_boot_stub
+            fi
+            menu_fwupdate
+            ;;
 
-                8)  if [[ "$unlockMenu" = true || "$isBootStub" = true ]]; then
-                        restore_boot_stub
-                    fi
-                    menu_fwupdate
-                    ;;
+        9)  if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
+                    && "$isFullRom" = true ]]; then
+                restore_stock_firmware
+            fi
+            menu_fwupdate
+            ;;
 
-                9)  if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
-                            && "$isFullRom" = true ]]; then
-                        restore_stock_firmware
-                    fi
-                    menu_fwupdate
-                    ;;
+        [rR])  echo -e "\nRebooting...\n";
+            cleanup
+            reboot
+            exit
+            ;;
 
-                [rR])  echo -e "\nRebooting...\n";
-                    cleanup;
-                    reboot;
-                    exit;
-                    ;;
+        [pP])  echo -e "\nPowering off...\n";
+            cleanup
+            poweroff
+            exit
+            ;;
 
-                [pP])  echo -e "\nPowering off...\n";
-                    cleanup;
-                    poweroff;
-                    exit;
-                    ;;
+        [qQ])  cleanup;
+            exit;
+            ;;
 
-                [qQ])  cleanup;
-                    exit;
-                    ;;
+        [U])  if [ "$unlockMenu" = false ]; then
+                echo_yellow "\nAre you sure you wish to unlock all menu functions?"
+                read -p "Only do this if you really know what you are doing... [y/N]? "
+                [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && unlockMenu=true
+            fi
+            menu_fwupdate
+            ;;
 
-                [U])  if [ "$unlockMenu" = false ]; then
-                        echo_yellow "\nAre you sure you wish to unlock all menu functions?"
-                        read -p "Only do this if you really know what you are doing... [y/N]? "
-                        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && unlockMenu=true
-                    fi
-                    menu_fwupdate
-                    ;;
-                \n) cleanup;
-                    exit;
-                    ;;
-
-                *)  clear;
-                    menu_fwupdate;
-                    ;;
-            esac
-        fi
-    done
+        *)  clear
+            menu_fwupdate;
+            ;;
+    esac
 }
 
 
