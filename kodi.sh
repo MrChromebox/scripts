@@ -9,7 +9,7 @@ function select_le_version()
 {
 	LE_version="${LE_version_base}-${LE_version_latest}"
 	if [ "$LE_version_latest" != "$LE_version_stable" ]; then
-		read -p "Do you want to install a LibreELEC 9.0 beta version (${LE_version_latest}) ?
+		read -ep "Do you want to install a LibreELEC 9.0 beta version (${LE_version_latest}) ?
 It is based on Kodi 18-RC, is reasonably stable, and is the recommended version, but some issues may remain.
 
 If N, the latest stable version of LibreELEC 8.0 ($LE_version_stable) based on Kodi 17.6 will be used. [Y/n] "
@@ -37,11 +37,11 @@ free_spc=`df -m /tmp | awk 'FNR == 2 {print $4}'`
 #Install beta version?
 select_le_version
 
-read -p "Connect the USB/SD device (min 512MB) to be used as LibreELEC installation media and press [Enter] to continue.
+read -ep "Connect the USB/SD device (min 512MB) to be used as LibreELEC installation media and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
 list_usb_devices
 [ $? -eq 0 ] || { exit_red "No USB devices available to create LibreELEC install media."; return 1; }
-read -p "Enter the number for the device to be used to install LibreELEC: " usb_dev_index
+read -ep "Enter the number for the device to be used to install LibreELEC: " usb_dev_index
 [ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
 usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 
@@ -74,7 +74,7 @@ Upon reboot, press [ESC] at the boot menu prompt, then select your USB/SD device
 
 echo_yellow "If you have not already done so, run the 'Install/update: Custom coreboot Firmware' option before reboot."
 
-read -p "Press [Enter] to return to the main menu."
+read -ep "Press [Enter] to return to the main menu."
 }
 
 function le_fail() {
@@ -108,7 +108,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	while :
 	do
 		echo "Enter the size in GB you want to reserve for LibreELEC Storage."
-		read -p "Acceptable range is 2 to $max_libreelec_size but $rec_libreelec_size is the recommended maximum: " libreelec_size
+		read -ep "Acceptable range is 2 to $max_libreelec_size but $rec_libreelec_size is the recommended maximum: " libreelec_size
 		if [ $libreelec_size -ne $libreelec_size 2>/dev/null ]; then
 			echo_red "\n\nWhole numbers only please...\n\n"
 			continue
@@ -155,7 +155,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	echo_green "Stage 1 complete; after reboot, press CTRL-D and ChromeOS will \"repair\" itself."
 	echo_yellow "Afterwards, you must re-download/re-run this script to complete LibreELEC setup."
 
-	read -p "Press [Enter] to reboot..."
+	read -ep "Press [Enter] to reboot..."
 	reboot
 	exit
 fi
@@ -300,7 +300,7 @@ cp /tmp/Storage/${LE_version}/target/SYSTEM /tmp/System/
 flash_rwlegacy skip_prompt > /dev/null
 
 echo_green "LibreELEC Installation Complete"
-read -p "Press [Enter] to return to the main menu."
+read -ep "Press [Enter] to return to the main menu."
 }
 
 
@@ -331,7 +331,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	while :
 	do
 		echo "Enter the size in GB you want to reserve for Ubuntu."
-		read -p "Acceptable range is 6 to $max_ubuntu_size  but $rec_ubuntu_size is the recommended maximum: " ubuntu_size
+		read -ep "Acceptable range is 6 to $max_ubuntu_size  but $rec_ubuntu_size is the recommended maximum: " ubuntu_size
 		if [ $ubuntu_size -ne $ubuntu_size 2> /dev/null]; then
 			echo_red "\n\nWhole numbers only please...\n\n"
 			continue
@@ -378,7 +378,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	
 	echo_green "Stage 1 complete; after reboot, press CTRL-D and ChromeOS will \"repair\" itself."
 	echo_yellow "Afterwards, you must re-download/re-run this script to complete Ubuntu setup."
-	read -p "Press [Enter] to reboot and continue..."
+	read -ep "Press [Enter] to reboot and continue..."
 
 	cleanup
 	reboot
@@ -395,7 +395,7 @@ ubuntu_version="latest"
 validPackages=('<galliumos>' '<ubuntu>' '<kubuntu>' '<lubuntu>' '<xubuntu>' '<edubuntu>');
 echo -e "\nEnter the Ubuntu (or Ubuntu-derivative) to install.  Valid options are `echo ${validPackages[*]}`.
 If no (valid) option is entered, 'galliumos' will be used."
-read -p "" ubuntu_package	
+read -ep "" ubuntu_package	
 
 packageValid=$(echo ${validPackages[*]} | grep "<$ubuntu_package>")
 if [[ "$ubuntu_package" = "" || "$packageValid" = "" ]]; then
@@ -408,14 +408,14 @@ if [ "$ubuntu_package" != "galliumos" ]; then
 	validVersions=('<lts>' '<latest>' '<dev>' '<15.10>' '<15.04>' '<14.10>' '<14.04>');
 	echo -e "\nEnter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
 If no (valid) version is entered, 'latest' will be used."
-	read -p "" ubuntu_version	
+	read -ep "" ubuntu_version	
 
 	versionValid=$(echo ${validVersions[*]} | grep "<$ubuntu_version>")
 	if [[ "$ubuntu_version" = "" || "$versionValid" = "" ]]; then
 		ubuntu_version="latest"
 	fi
 else
-    read -p "Do you wish use the latest beta version? [Y/n] "
+    read -ep "Do you wish use the latest beta version? [Y/n] "
     [[ "$REPLY" != "n" && "$REPLY" != "N" ]] && useBeta="-r nightly"
 fi
 
@@ -423,14 +423,14 @@ fi
 
 #Install Kodi?
 kodi_install=""
-read -p "Do you wish to install Kodi ? [Y/n] "
+read -ep "Do you wish to install Kodi ? [Y/n] "
 if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 	kodi_install="-p kodi"
 fi
 
 echo_green "\nInstallation is ready to begin.\nThis is going to take some time, so be patient."
 
-read -p "Press [Enter] to continue..."
+read -ep "Press [Enter] to continue..."
 echo -e ""
 
 #Install via chrx
@@ -439,7 +439,7 @@ curl -L -s -o chrx ${chrx_url}
 sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $useBeta
 
 #chrx will end with prompt for user to press enter to reboot
-read -p ""
+read -ep ""
 cleanup;
 reboot;
 }
@@ -459,11 +459,11 @@ free_spc=$(df -m /tmp | awk 'FNR == 2 {print $4}')
 #Install beta version?
 select_le_version
 
-read -p "Connect the USB/SD device (min 4GB) to be used and press [Enter] to continue.
+read -ep "Connect the USB/SD device (min 4GB) to be used and press [Enter] to continue.
 This will erase all contents of the USB/SD device, so be sure no other USB/SD devices are connected. "
 list_usb_devices
 [ $? -eq 0 ] || { exit_red "No USB devices available onto which to install LibreELEC."; return 1; }
-read -p "Enter the number for the device to be used for LibreELEC: " usb_dev_index
+read -ep "Enter the number for the device to be used for LibreELEC: " usb_dev_index
 [ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
 target_disk="/dev/sd${usb_devs[${usb_dev_index}-1]}"
 
@@ -566,7 +566,7 @@ if [ "$isChromeOS" = true ]; then
 fi
 	
 echo_green "LibreELEC USB Installation Complete"
-read -p "Press [Enter] to return to the main menu."
+read -ep "Press [Enter] to return to the main menu."
 }
 
 function LE_install_error()

@@ -86,7 +86,7 @@ echo -e '\e[0m'
 function exit_red()
 {
     echo_red "$@"
-    read -p "Press [Enter] to return to the main menu."
+    read -ep "Press [Enter] to return to the main menu."
 }
 
 function die()
