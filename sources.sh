@@ -29,7 +29,7 @@ syslinux_version="syslinux-6.04-pre1"
 #UEFI Full ROMs
 #SNB/IVB
 coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20181230.rom"
-coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20181230.rom"
+coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20181231.rom"
 coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20181230.rom"
 coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20181230.rom"
 coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20181230.rom"
