@@ -418,7 +418,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #flash only BIOS region for SKL/KBL, to avoid IFD mismatch upon verification 
-if [[ "$device" = "CAROLINE" && "$isChromeOS" = "true" && "$isStock" = "true" ]]; then
+if [[ ("$isSkylake" = "true" || "$isKbl" = "true") && "$isChromeOS" = "true" && "$isStock" = "true" ]]; then
     region="-i SI_BIOS"
 elif [[ "$isFullRom" = true && ("$isSkylake" = "true" || "$isKbl" = "true") ]]; then
     region="-i BIOS"
