@@ -199,7 +199,28 @@ function get_flashrom()
 {
 if [ ! -f ${flashromcmd} ]; then
     working_dir=`pwd`
-    cd /tmp
+ 
+    if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
+        cd /tmp
+    else
+        #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
+        rootdev=$(rootdev -d -s)
+        [[ "$isCloudready" = true ]] && part_num="27" || part_num="12"
+        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_num="p${part_num}"
+        boot_mounted=$(mount | grep "${rootdev}""${part_num}")
+        if [ "${boot_mounted}" = "" ]; then
+            #mount boot
+            mkdir /tmp/boot >/dev/null 2>&1
+            mount "$(rootdev -d -s)""${part_num}" /tmp/boot
+            if [ $? -ne 0 ]; then
+                echo_red "Error mounting boot partition; cannot proceed."
+                return 1
+            fi
+        fi
+        #create util dir
+        mkdir /tmp/boot/util 2>/dev/null
+        cd /tmp/boot/util
+    fi
 
     curl -sLO "${util_source}"/flashrom.tar.gz
     if [ $? -ne 0 ]; then
@@ -208,7 +229,7 @@ if [ ! -f ${flashromcmd} ]; then
         cd ${working_dir}
         return 1
     fi
-    tar -zxf flashrom.tar.gz
+    tar -zxf flashrom.tar.gz --no-same-owner
     if [ $? -ne 0 ]; then
         echo_red "Error extracting flashrom; cannot proceed."
         #restore working dir
@@ -318,8 +339,8 @@ if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
     #disable power mgmt
     initctl stop powerd > /dev/null 2>&1
     #set cmds
-    #force stumpy to use newer flashrom binary under ChromeOS
-    if [[ "${device^^}" = "STUMPY" ]]; then
+    #force SNB/IVB devices to use newer flashrom binary under ChromeOS
+    if [[ "${snb_ivb[@]}" =~ "$device" ]]; then
     	flashromcmd=/tmp/boot/util/flashrom
     else    
         flashromcmd=/usr/sbin/flashrom
