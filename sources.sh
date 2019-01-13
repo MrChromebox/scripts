@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-01-04]"
+script_date="[2019-01-13]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -28,12 +28,12 @@ syslinux_version="syslinux-6.04-pre1"
 
 #UEFI Full ROMs
 #SNB/IVB
-coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20190104.rom"
-coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20190104.rom"
-coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20190104.rom"
-coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20190104.rom"
-coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20190104.rom"
-coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20190104.rom"
+coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20190113.rom"
+coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20190113.rom"
+coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20190113.rom"
+coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20190113.rom"
+coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20190113.rom"
+coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20190113.rom"
 #Haswell
 coreboot_uefi_falco="coreboot_tiano-falco-mrchromebox_20190104.rom"
 coreboot_uefi_leon="coreboot_tiano-leon-mrchromebox_20190104.rom"

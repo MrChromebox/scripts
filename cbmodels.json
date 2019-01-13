@@ -1,27 +1,27 @@
 {
 	"butterfly": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-butterfly-mrchromebox_20190104.rom",
-		"sha1": "c9d69e5ddcbf67875429272069c51b76161225b7"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-butterfly-mrchromebox_20190113.rom",
+		"sha1": "88507a87f66ebddfb9f8185086f40c52f1291805"
 	},
 	"link": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-link-mrchromebox_20190104.rom",
-		"sha1": "d16fe4a915d6635546804a476ea76b592fcd72c6"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-link-mrchromebox_20190113.rom",
+		"sha1": "a28a8e123a7cd83349997fefc6554fd3de11fb7a"
 	},
 	"lumpy": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-lumpy-mrchromebox_20190104.rom",
-		"sha1": "72ea3f1c6791702a0403ab3352a077b33ecbb41f"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-lumpy-mrchromebox_20190113.rom",
+		"sha1": "98d77c81b3c85d070b72993011e97868fb50b973"
 	},
 	"parrot": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-parrot-mrchromebox_20190104.rom",
-		"sha1": "c991ffaa4a1b2ba1537c1000609100bf903f2d0a"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-parrot-mrchromebox_20190113.rom",
+		"sha1": "e7138dd1316ea85c6d357ebd42a3d98a670ddfd0"
 	},
 	"stout": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stout-mrchromebox_20190104.rom",
-		"sha1": "2e3a6c3a3a50f4e0fd2726e1a1837c3ed743550f"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stout-mrchromebox_20190113.rom",
+		"sha1": "556dd7d7d0abbee4ef63c5e492602ec8670fac3f"
 	},
 	"stumpy": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stumpy-mrchromebox_20190104.rom",
-		"sha1": "86b406c64dece6a385819d934ff99d310842d44b"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stumpy-mrchromebox_20190113.rom",
+		"sha1": "59d3d9a10ac1fe9ab201aedd2edf53c255a4d828"
 	},
 	"falco": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-falco-mrchromebox_20190104.rom",
