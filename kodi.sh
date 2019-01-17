@@ -645,7 +645,7 @@ function menu_kodi() {
 						menu_kodi;
 						;;
 					5)	clear;
-						update_rwlegacy;	
+						flash_rwlegacy;	
 						menu_kodi;
 						;;
 					*)
