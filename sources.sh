@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-01-13]"
+script_date="[2019-01-30]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -32,7 +32,7 @@ coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20190113.rom"
 coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20190113.rom"
 coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20190113.rom"
 coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20190113.rom"
-coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20190113.rom"
+coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20190130.rom"
 coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20190113.rom"
 #Haswell
 coreboot_uefi_falco="coreboot_tiano-falco-mrchromebox_20190104.rom"

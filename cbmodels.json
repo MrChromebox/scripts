@@ -16,8 +16,8 @@
 		"sha1": "e7138dd1316ea85c6d357ebd42a3d98a670ddfd0"
 	},
 	"stout": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stout-mrchromebox_20190113.rom",
-		"sha1": "556dd7d7d0abbee4ef63c5e492602ec8670fac3f"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stout-mrchromebox_20190130.rom",
+		"sha1": "e759f92af9ac2cea9c3c4365349f13ed2c5a02a5"
 	},
 	"stumpy": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stumpy-mrchromebox_20190113.rom",
