@@ -339,12 +339,10 @@ if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
     #disable power mgmt
     initctl stop powerd > /dev/null 2>&1
     #set cmds
-    #force SNB/IVB devices to use newer flashrom binary under ChromeOS
-    if [[ "${snb_ivb[@]}" =~ "$device" ]]; then
-    	flashromcmd=/tmp/boot/util/flashrom
-    else    
-        flashromcmd=/usr/sbin/flashrom
-    fi
+    #check if we need to use a newer flashrom which supports output to log file (-o)
+    flashromcmd=$(which flashrom)
+    ${flashromcmd} -V -o /dev/null > /dev/null 2>&1
+    [[ $? -ne 0 ]] && flashromcmd=/tmp/boot/util/flashrom  
     cbfstoolcmd=/tmp/boot/util/cbfstool
     gbbutilitycmd=$(which gbb_utility)
 else
