@@ -285,7 +285,7 @@ if [[ "$isStock" == "true" && $? -eq 0 ]]; then
     read -ep "This is highly recommended in case you wish to return your device to stock
 configuration/run ChromeOS, or in the (unlikely) event that things go south
 and you need to recover using an external EEPROM programmer. [Y/n] "
-    [ "$REPLY" = "n" ] || backup_firmware
+    [[ "$REPLY" = "n" || "$REPLY" = "N" ]] || backup_firmware
 fi
 #check that backup succeeded
 [ $? -ne 0 ] && return 1
