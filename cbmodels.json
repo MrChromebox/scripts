@@ -172,8 +172,8 @@
 		"sha1": "a010f46734b11fde89a453a8524e0858e2c3eb8c"
 	},
 	"edgar": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-edgar-mrchromebox_20190104.rom",
-		"sha1": "62301657d22f619358eea1211ca020ae1904be49"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-edgar-mrchromebox_20190226.rom",
+		"sha1": "e2ea313beb0ae5688470ee0d0a98601979ec395d"
 	},
 	"kefka": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-kefka-mrchromebox_20190104.rom",

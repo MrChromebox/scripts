@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-02-14]"
+script_date="[2019-02-26]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -75,7 +75,7 @@ coreboot_uefi_winky="coreboot_tiano-winky-mrchromebox_20190104.rom"
 coreboot_uefi_banon="coreboot_tiano-banon-mrchromebox_20190104.rom"
 coreboot_uefi_celes="coreboot_tiano-celes-mrchromebox_20190104.rom"
 coreboot_uefi_cyan="coreboot_tiano-cyan-mrchromebox_20190104.rom"
-coreboot_uefi_edgar="coreboot_tiano-edgar-mrchromebox_20190104.rom"
+coreboot_uefi_edgar="coreboot_tiano-edgar-mrchromebox_20190226.rom"
 coreboot_uefi_kefka="coreboot_tiano-kefka-mrchromebox_20190104.rom"
 coreboot_uefi_reks="coreboot_tiano-reks-mrchromebox_20190104.rom"
 coreboot_uefi_relm="coreboot_tiano-relm-mrchromebox_20190104.rom"
