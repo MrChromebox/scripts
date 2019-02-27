@@ -72,8 +72,8 @@
 		"sha1": "db08a947c1694d3410d1a2334aaef19758872e6d"
 	},
 	"buddy": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-buddy-mrchromebox_20190104.rom",
-		"sha1": "b5c671296a5ed6822935917f41ea5e5edd89e979"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-buddy-mrchromebox_20190226.rom",
+		"sha1": "1599ad44a1a69dda666d387de151cf280c599ab4"
 	},
 	"gandof": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-gandof-mrchromebox_20190104.rom",

@@ -48,7 +48,7 @@ coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20190104.rom"
 #Broadwell
 coreboot_uefi_auron_paine="coreboot_tiano-auron_paine-mrchromebox_20190104.rom"
 coreboot_uefi_auron_yuna="coreboot_tiano-auron_yuna-mrchromebox_20190104.rom"
-coreboot_uefi_buddy="coreboot_tiano-buddy-mrchromebox_20190104.rom"
+coreboot_uefi_buddy="coreboot_tiano-buddy-mrchromebox_2019226.rom"
 coreboot_uefi_gandof="coreboot_tiano-gandof-mrchromebox_20190104.rom"
 coreboot_uefi_guado="coreboot_tiano-guado-mrchromebox_20190104.rom"
 coreboot_uefi_lulu="coreboot_tiano-lulu-mrchromebox_20190104.rom"
