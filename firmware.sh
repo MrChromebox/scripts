@@ -423,11 +423,15 @@ fi
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
 ${flashromcmd} -i BIOS -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    #try without specifying region
-    ${flashromcmd} -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+    #try using SI_BIOS
+    ${flashromcmd} -i SI_BIOS -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
     if [ $? -ne 0 ]; then
-        cat /tmp/flashrom.log
-        exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
+        #try without specifying region
+        ${flashromcmd} -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            cat /tmp/flashrom.log
+            exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
+        fi
     fi
 fi
 
