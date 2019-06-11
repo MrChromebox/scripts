@@ -106,7 +106,7 @@ function list_usb_devices()
 if [[ -b /dev/mmcblk0 ]]; then
 	intStor="/dev/mmcblk0"
 elif [[ -b /dev/nvme0n1 ]]; then
-	intstor="/dev/nvme0n1"
+	intStor="/dev/nvme0n1"
 else intStor="/dev/sda"
 fi
 
