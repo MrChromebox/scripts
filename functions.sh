@@ -52,7 +52,7 @@ skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>')
 snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<babymega>' '<blacktip>' '<coral>' '<electro>' '<epaulette>' '<lava>' '<nasher>'  '<pyro>' '<rabbid>'  '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
 kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
-kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<nocturne>' '<pantheon>' '<rammus>' '<shyvana>' '<sona>' '<soraka>' '<vayne>')
+kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<nocturne>' '<pantheon>' '<rammus>' '<shyvana>' '<sona>' '<soraka>' '<syndra>' '<vayne>')
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' 'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
@@ -500,6 +500,7 @@ case "${_hwid}" in
     STUMPY*)                _x='SNB|Samsung Chromebox Series 3' ;;
     SUMO*)                  _x='BYT|AOpen Chromebase Commercial' ;;
     SWANKY*)                _x='BYT|Toshiba Chromebook 2 (2014) CB30/CB35' ;;
+    SYNDRA*)                _x='KBL|HP Chromebook 15 G1' ; device="nami";;
     TEEMO*)                 _x='KBL|Asus Chromebox 3 / CN65' ; device="fizz";;
     TERRA_???-???-???-A*)   _x='BSW|ASUS Chromebook C202SA' ; device="terra";;
     TERRA_???-???-???-B*)   _x='BSW|ASUS Chromebook C300SA/C301SA' ; device="terra";;
