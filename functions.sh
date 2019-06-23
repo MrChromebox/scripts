@@ -40,6 +40,7 @@ hasLegacyOption=false
 hasShellball=false
 wpEnabled=false
 hasLAN=false
+hasCR50=false
 
 hsw_boxes=('<mccloud>' '<panther>' '<tricky>' '<zako>');
 hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
@@ -560,6 +561,7 @@ esac
 [[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
     || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" || "$isApl" = "true" || "$isKbl" = "true" ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
+[[ "$isKbl" = true || "$isApl" = true ]] && hasCR50=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
