@@ -26,6 +26,7 @@ isSkylake=false
 isSnbIvb=false
 isApl=false
 isKbl=false
+isGlk=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -51,6 +52,7 @@ snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
 apl=('<astronaut>' '<babymega>' '<blacktip>' '<coral>' '<electro>' '<epaulette>' '<lava>' '<nasher>'  '<pyro>' '<rabbid>'  '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
 kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
 kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<nocturne>' '<pantheon>' '<rammus>' '<shyvana>' '<sona>' '<soraka>' '<vayne>')
+glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' 'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}" "eve"));
@@ -384,6 +386,8 @@ fi
 case "${_hwid}" in
     ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
     AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
+    AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ; device="octopus";;
+    APEL*)                  _x='GLK|Asus Chromebook Flip C204' ; device="octopus";;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
     ASUKA*)                 _x='SKL|Dell Chromebook 13 (3380)' ;;
     AURON_PAINE*)           _x='BDW|Acer Chromebook 11 (C740)' ;;
@@ -393,6 +397,8 @@ case "${_hwid}" in
     BANON*)                 _x='BSW|Acer Chromebook 15 (CB3-532)' ;;
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
+    BOBBA360*)              _x='GLK|Acer Chromebook Spin 511' ;;
+    BOBBA*)                 _x='GLK|Acer Chromebook 311' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
     CANDY*)                 _x='BYT|Dell Chromebook 11' ;;
@@ -436,6 +442,8 @@ case "${_hwid}" in
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
+    MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ; device="octopus";;
+    MIMROCK*)               _x='GLK|HP Chromebook 11 G7 EE' ; device="octopus";;
     MONROE*)                _x='HSW|LG Chromebase' ;;
     NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
     NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ; device="nasher";;
@@ -448,6 +456,9 @@ case "${_hwid}" in
     PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
     PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
     PEPPY*)                 _x='HSW|Acer C720/C720P Chromebook' ;;
+    PHASER360S*)            _x='GLK|Lenovo 500e Chromebook 2nd Gen' ;;
+    PHASER360*)             _x='GLK|Lenovo 300e Chromebook 2nd Gen' ;;
+    PHASER*)                _x='GLK|Lenovo 100e Chromebook 2nd Gen' ;;
     PYRO*)                  _x='APL|Lenovo Thinkpad 11e/Yoga Chromebook (G4)' ;;
     QUAWKS*)                _x='BYT|ASUS Chromebook C300' ;;
     RABBID*)                _x='APL|ASUS Chromebook C423' ;;
@@ -480,6 +491,7 @@ case "${_hwid}" in
     SNAPPY_???-B*)          _x='APL|HP Chromebook 11 G6 EE' device="snappy";;
     SNAPPY_???-C*)          _x='APL|HP Chromebook 14 G5' device="snappy";;
     SNAPPY*)                _x='APL|(unknown SNAPPY)' device="snappy";;
+    SPARKY*)                _x='GLK|Acer Chromebook 512 (C851/C851T)' ;;
     SONA*)                  _x='KBL|HP Chromebook x360 14' ;;
     SORAKA*)                _x='KBL|HP Chromebook x2' ;;
     SQUAWKS*)               _x='BYT|ASUS Chromebook C200' ;;
@@ -527,6 +539,7 @@ BSW) deviceCpuType="Intel Braswell" ;;
 SKL) deviceCpuType="Intel Skylake" ;;
 APL) deviceCpuType="Intel ApolloLake" ;;
 KBL) deviceCpuType="Intel KabyLake" ;;
+GLK) deviceCpuType="Intel GeminiLake" ;;
 #*)   deviceCpuType="(unrecognized)" ;;
 esac
 
@@ -540,6 +553,7 @@ esac
 [[ "${snb_ivb[@]}" =~ "$device" ]] && isSnbIvb=true
 [[ "${apl[@]}" =~ "$device" ]] && isApl=true
 [[ "${kbl[@]}" =~ "$device" ]] && isKbl=true
+[[ "${glk[@]}" =~ "$device" ]] && isGlk=true
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
