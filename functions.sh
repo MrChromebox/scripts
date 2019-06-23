@@ -42,22 +42,31 @@ wpEnabled=false
 hasLAN=false
 hasCR50=false
 
-hsw_boxes=('<mccloud>' '<panther>' '<tricky>' '<zako>');
-hsw_books=('<falco>' '<leon>' '<monroe>' '<peppy>' '<wolf>');
-bdw_boxes=('<guado>' '<rikku>' '<tidus>');
-bdw_books=('<auron_paine>' '<auron_yuna>' '<buddy>' '<gandof>' '<lulu>' '<samus>');
-baytrail=('<banjo>' '<candy>' '<clapper>' '<enguarde>' '<glimmer>' '<gnawty>' '<heli>' '<kip>' '<ninja>' '<orco>' '<quawks>' '<squawks>' '<sumo>' '<swanky>' '<winky>');
-braswell=('<banon>' '<celes>' '<cyan>' '<edgar>' '<kefka>' '<reks>' '<relm>'  '<setzer>' '<terra>' '<ultima>' '<wizpig>');
-skylake=('<asuka>' '<caroline>' '<cave>' '<chell>' '<lars>' '<lili>' '<sentry>');
-snb_ivb=('<butterfly>' '<link>' '<lumpy>' '<parrot>' '<stout>' '<stumpy>')
-apl=('<astronaut>' '<babymega>' '<blacktip>' '<coral>' '<electro>' '<epaulette>' '<lava>' '<nasher>'  '<pyro>' '<rabbid>'  '<reef>'  '<robo>' '<sand>' '<santa>' '<snappy>')
-kbl_boxes=('<bleemo>''<fizz>' '<kench>' '<sion>' '<teemo>' '<wukong>')
-kbl=($(printf "%s " "${kbl_boxes[@]}") '<akali>' '<eve>' '<nami>' '<nautilus>' '<nocturne>' '<pantheon>' '<rammus>' '<shyvana>' '<sona>' '<soraka>' '<syndra>' '<vayne>')
-glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' 'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
+hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
+hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
+bdw_boxes=('guado' 'rikku' 'tidus')
+bdw_books=('auron_paine' 'auron_yuna' 'buddy' 'gandof' 'lulu' 'samus')
+baytrail=('banjo' 'candy' 'clapper' 'enguarde' 'glimmer' 'gnawty' 'heli' \
+    'kip' 'ninja' 'orco' 'quawks' 'squawks' 'sumo' 'swanky' 'winky')
+braswell=('banon' 'celes' 'cyan' 'edgar' 'kefka' 'reks' 'relm' \
+    'setzer' 'terra' 'ultima' 'wizpig')
+skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
+snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
+apl=('astronaut' 'babymega' 'blacktip' 'coral' 'electro' 'epaulette' 'lava' \
+    'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
+kbl_boxes=('bleemo' 'fizz' 'kench' 'sion' 'teemo' 'wukong')
+kbl=($(printf "%s " "${kbl_boxes[@]}") 'akali' 'eve' 'nami' 'nautilus' \
+    'nocturne' 'pantheon' 'rammus' 'shyvana' 'sona' 'soraka' 'syndra' 'vayne')
+glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
+    'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
-UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "${kbl_boxes[@]}" "eve"));
-shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" "eve"));
+UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
+    "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
+    "${skylake[@]}" "${kbl_boxes[@]}" "eve"))
+shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
+    "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
+    "${skylake[@]}" 'eve'))
 
 #menu text output
 NORMAL=$(echo "\033[m")
@@ -117,7 +126,8 @@ rootdev=${intStor}
 if [ "$(which rootdev)" ]; then
     rootdev=$(rootdev -d -s)
 fi
-eval usb_devs="($(fdisk -l 2> /dev/null | grep -v "Disk ${intStor}" | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
+eval usb_devs="($(fdisk -l 2> /dev/null | grep -v "Disk ${intStor}" \
+    | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
 #ensure at least 1 drive available
 [ "$usb_devs" != "" ] || return 1
 echo -e "\nDevices available:\n"
@@ -291,7 +301,8 @@ function prelim_setup()
 [ "$(whoami)" = "root" ] || die "You need to run this script as root; use 'sudo bash <script name>'"
 
 #must be x86_64
-[ "$(uname -m)"  = 'x86_64' ] || die "This script only supports 64-bit OS on Intel-based devices; ARM devices are not supported."
+[ "$(uname -m)"  = 'x86_64' ] \
+    || die "This script only supports 64-bit OS on Intel-based devices; ARM devices are not supported."
 
 #check for required tools
 which dmidecode > /dev/null 2>&1
@@ -559,9 +570,11 @@ esac
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
-[[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true || "$isBaytrail" = true \
-    || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" || "$isApl" = "true" || "$isKbl" = "true" ]] || isUnsupported=true
-[[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
+[[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
+    || "$isBaytrail" = true || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" \
+    || "$isApl" = "true" || "$isKbl" = "true" ]] || isUnsupported=true
+[[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
+    || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true ]] && hasCR50=true
 
 #get device firmware info
