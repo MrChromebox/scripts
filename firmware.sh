@@ -1108,11 +1108,9 @@ read -ep "Would you like to continue? [y/N] "
 [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 
 echo_yellow "\nClearing NVRAM..."
-smmstore=$(mktemp)
-dd if=/dev/zero bs=256K count=1 2> /dev/null | tr '\000' '\377' > ${smmstore} 
-${flashromcmd} -w -i SMMSTORE:${smmstore} > /dev/null 2>&1
+${flashromcmd} -E -i SMMSTORE > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    echo_red "\nFailed to write SMMSTORE firmware region; NVRAM not cleared."
+    echo_red "\nFailed to erase SMMSTORE firmware region; NVRAM not cleared."
     return 1;
 fi
 #all done
