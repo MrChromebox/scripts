@@ -66,7 +66,7 @@ str=('aleena' 'barla' 'careena' 'grunt' 'katsumi' 'liara')
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
-    "${skylake[@]}" "${kbl_boxes[@]}" "eve"))
+    "${skylake[@]}" "${kbl_boxes[@]}" "${purism[@]}" 'eve' 'nami' 'soraka'))
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" 'eve'))
