@@ -59,6 +59,7 @@ apl=('astronaut' 'babymega' 'blacktip' 'coral' 'electro' 'epaulette' 'lava' \
 kbl_boxes=('bleemo' 'fizz' 'kench' 'sion' 'teemo' 'wukong')
 kbl=($(printf "%s " "${kbl_boxes[@]}") 'akali' 'eve' 'nami' 'nautilus' \
     'nocturne' 'pantheon' 'rammus' 'shyvana' 'sona' 'soraka' 'syndra' 'vayne')
+purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4');
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'katsumi' 'liara')
@@ -456,6 +457,20 @@ case "${_hwid}" in
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
     LIARA*)                 _x='STR|Lenovo 14e Chromebook' ; device="grunt";;
+    LIBREM_13_V1)           _x='BDW|Purism Librem 13 v1' ; device="librem13v1";;
+    LIBREM13V1)             _x='BDW|Purism Librem 13 v1' ;;
+    LIBREM_13_V2)           _x='SKL|Purism Librem 13 v2' ; device="librem13v2";;
+    LIBREM13V2)             _x='SKL|Purism Librem 13 v2' ;;
+    LIBREM_13_V3)           _x='SKL|Purism Librem 13 v3' ; device="librem13v2";;
+    LIBREM13V3)             _x='SKL|Purism Librem 13 v3' ;;
+    LIBREM_13_V4)           _x='KBL|Purism Librem 13 v4' ; device="librem13v4";;
+    LIBREM13V4)             _x='KBL|Purism Librem 13 v4' ;;
+    LIBREM_15_V2)           _x='BDW|Purism Librem 15 v2' ; device="librem15v2";;
+    LIBREM15V2)             _x='BDW|Purism Librem 15 v2' ;;
+    LIBREM_15_V3)           _x='SKL|Purism Librem 15 v3' ; device="librem15v3";;
+    LIBREM15V3)             _x='SKL|Purism Librem 15 v3' ;;
+    LIBREM_15_V4)           _x='KBL|Purism Librem 15 v4' ; device="librem15v4";;
+    LIBREM15V4)             _x='KBL|Purism Librem 15 v4' ;;
     LILI*)                  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
