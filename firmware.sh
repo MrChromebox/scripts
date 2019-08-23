@@ -29,6 +29,8 @@ elif [ "$isBraswell" = true ]; then
     seabios_file=$seabios_braswell
 elif [ "$isSkylake" = true ]; then
     seabios_file=$seabios_skylake
+elif [ "$useRwlMulti" = true ]; then
+    seabios_file=$rwlegacy_multi
 elif [ "$isKbl" = true ]; then
     seabios_file=$seabios_kbl
 elif [ "$device" = "link" ]; then
@@ -36,13 +38,15 @@ elif [ "$device" = "link" ]; then
 elif [ "$isApl" = true ]; then
     seabios_file=$seabios_apl
 else
-    echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."; return 1
+    echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
+    read -ep "Press enter to return to the main menu"
+    return 1
 fi
 
 
 preferUSB=false
 useHeadless=false
-if [ -z "$1" ]; then
+if [[ -z "$1" && "$useRwlMulti" = false ]]; then
     echo -e ""
     #USB boot priority
     echo_yellow "Default to booting from USB?"
@@ -177,8 +181,7 @@ else
         echo_yellow "Install UEFI-compatible firmware?"
         echo -e "UEFI firmware is the preferred option for all OSes.
 Legacy SeaBIOS firmware is deprecated but available for Chromeboxes to enable
-PXE (network boot) capability and compatibility with Legacy OS installations.
-"
+PXE (network boot) capability and compatibility with Legacy OS installations.\n"
         REPLY=""
         while [[ "$REPLY" != "U" && "$REPLY" != "u" && "$REPLY" != "L" && "$REPLY" != "l"  ]]
         do

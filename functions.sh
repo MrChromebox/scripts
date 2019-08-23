@@ -27,6 +27,7 @@ isSnbIvb=false
 isApl=false
 isKbl=false
 isGlk=false
+isStr=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -41,6 +42,7 @@ hasShellball=false
 wpEnabled=false
 hasLAN=false
 hasCR50=false
+useRwlMulti=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
@@ -59,7 +61,7 @@ kbl=($(printf "%s " "${kbl_boxes[@]}") 'akali' 'eve' 'nami' 'nautilus' \
     'nocturne' 'pantheon' 'rammus' 'shyvana' 'sona' 'soraka' 'syndra' 'vayne')
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
-
+str=('aleena' 'barla' 'careena' 'grunt' 'katsumi' 'liara')
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -398,6 +400,7 @@ fi
 case "${_hwid}" in
     ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
     AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
+    ALEENA*)                _x='STR|Acer Chromebook 315' ; device="grunt";;
     AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ; device="octopus";;
     APEL*)                  _x='GLK|Asus Chromebook Flip C204' ; device="octopus";;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
@@ -407,6 +410,7 @@ case "${_hwid}" in
     BABYMEGA*)              _x='APL|Asus Chromebook C223NA' ;;
     BANJO*)                 _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
     BANON*)                 _x='BSW|Acer Chromebook 15 (CB3-532)' ;;
+    BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ; device="grunt";;
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
     BOBBA360*)              _x='GLK|Acer Chromebook Spin 511' ;;
@@ -414,6 +418,7 @@ case "${_hwid}" in
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
     CANDY*)                 _x='BYT|Dell Chromebook 11' ;;
+    CAREENA*)               _x='STR|HP Chromebook 14' ; device="grunt";;
     CAROLINE*)              _x='SKL|Samsung Chromebook Pro' ;;
     CAVE*)                  _x='SKL|ASUS Chromebook Flip C302' ;;
     CELES*)                 _x='BSW|Samsung Chromebook 3' ;;
@@ -443,12 +448,14 @@ case "${_hwid}" in
     GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
     IEC_MARIO)              _x='PNV|Google Cr-48' ;;
+    KASUMI*)                _x='STR|Acer Chromebook 311' ; device="grunt";;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
     KENCH*)                 _x='KBL|HP Chromebox G2' ; device="fizz";;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
+    LIARA*)                 _x='STR|Lenovo 14e Chromebook' ; device="grunt";;
     LILI*)                  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
@@ -553,6 +560,7 @@ SKL) deviceCpuType="Intel Skylake" ;;
 APL) deviceCpuType="Intel ApolloLake" ;;
 KBL) deviceCpuType="Intel KabyLake" ;;
 GLK) deviceCpuType="Intel GeminiLake" ;;
+STR) deviceCpuType="AMD StoneyRidge" ;;
 #*)   deviceCpuType="(unrecognized)" ;;
 esac
 
@@ -567,6 +575,7 @@ esac
 [[ "${apl[@]}" =~ "$device" ]] && isApl=true
 [[ "${kbl[@]}" =~ "$device" ]] && isKbl=true
 [[ "${glk[@]}" =~ "$device" ]] && isGlk=true
+[[ "${str[@]}" =~ "$device" ]] && isStr=true
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
@@ -576,6 +585,7 @@ esac
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true ]] && hasCR50=true
+[[ "$isStr" = true ]] && useRwlMulti=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."

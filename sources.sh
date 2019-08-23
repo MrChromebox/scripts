@@ -117,6 +117,8 @@ seabios_skylake="seabios-skl-mrchromebox_20180912.bin"
 seabios_apl="seabios-apl-mrchromebox_20180912.bin"
 seabios_kbl="seabios-kbl-mrchromebox_20180912.bin"
 
+rwlegacy_multi="rwlegacy_multi-mrchromebox_20190822.bin"
+
 #BOOT_STUB payloads
 bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20180912.bin"
 
