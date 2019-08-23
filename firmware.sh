@@ -453,7 +453,7 @@ if [ $? -eq 0 ]; then
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
         echo_yellow "Additionally, GalliumOS users need to use the v3.0 ISO; the keyboard
-will not work with the 2.1 ISO due a bug in the older kernel."
+will not work with older versions due a bug in the older kernel."
     fi
     #set vars to indicate new firmware type
     isStock=false
