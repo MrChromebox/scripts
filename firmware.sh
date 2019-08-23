@@ -281,6 +281,9 @@ if [[ "$hasLAN" = true ]]; then
     fi
 fi
 
+#extract device serial if present in cbfs
+${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/null 2>&1
+
 #check if existing firmware is stock
 grep -obUa "vboot" /tmp/bios.bin >/dev/null
 if [[ "$isStock" == "true" && $? -eq 0 ]]; then
@@ -365,6 +368,12 @@ if [[ "$preferUSB" = true  && $useUEFI = false ]]; then
 	    ${cbfstoolcmd} ${coreboot_file} remove -n bootorder > /dev/null 2>&1
 	    ${cbfstoolcmd} ${coreboot_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 	fi
+fi
+
+#persist serial number?
+if [ -f /tmp/serial.txt ]; then
+    echo_yellow "Persisting device serial number"
+    ${cbfstoolcmd} ${coreboot_file} add -n serial_number -f /tmp/serial.txt -t raw > /dev/null 2>&1
 fi
 
 #useHeadless?
