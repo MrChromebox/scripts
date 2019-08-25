@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-08-24]"
+script_date="[2019-08-25]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -84,17 +84,17 @@ coreboot_uefi_terra="coreboot_tiano-terra-mrchromebox_20190822.rom"
 coreboot_uefi_ultima="coreboot_tiano-ultima-mrchromebox_20190822.rom"
 coreboot_uefi_wizpig="coreboot_tiano-wizpig-mrchromebox_20190822.rom"
 #Skylake
-coreboot_uefi_asuka="coreboot_tiano-asuka-mrchromebox_20190822.rom"
-coreboot_uefi_caroline="coreboot_tiano-caroline-mrchromebox_20190822.rom"
-coreboot_uefi_cave="coreboot_tiano-cave-mrchromebox_20190822.rom"
-coreboot_uefi_chell="coreboot_tiano-chell-mrchromebox_20190822.rom"
-coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20190822.rom"
-coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20190822.rom"
+coreboot_uefi_asuka="coreboot_tiano-asuka-mrchromebox_20190825.rom"
+coreboot_uefi_caroline="coreboot_tiano-caroline-mrchromebox_20190825.rom"
+coreboot_uefi_cave="coreboot_tiano-cave-mrchromebox_20190825.rom"
+coreboot_uefi_chell="coreboot_tiano-chell-mrchromebox_20190825.rom"
+coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20190825.rom"
+coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20190825.rom"
 #KabyLake
-coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20190822.rom"
-coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20190822.rom"
-coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20190822.rom"
-coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20190822.rom"
+coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20190825.rom"
+coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20190825.rom"
+coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20190825.rom"
+coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20190825.rom"
 
 #Legacy Full ROMs (deprecated)
 #SNB/IVB
@@ -133,8 +133,8 @@ pxe_optionrom="10ec8168.rom"
 
 #Non-ChromeOS devices
 coreboot_uefi_librem13v1="coreboot_tiano-librem13v1-mrchromebox_20190822.rom"
-coreboot_uefi_librem13v2="coreboot_tiano-librem13v2-mrchromebox_20190822.rom"
-coreboot_uefi_librem13v4="coreboot_tiano-librem13v4-mrchromebox_20190822.rom"
+coreboot_uefi_librem13v2="coreboot_tiano-librem13v2-mrchromebox_20190825.rom"
+coreboot_uefi_librem13v4="coreboot_tiano-librem13v4-mrchromebox_20190825.rom"
 coreboot_uefi_librem15v2="coreboot_tiano-librem15v2-mrchromebox_20190822.rom"
-coreboot_uefi_librem15v3="coreboot_tiano-librem15v3-mrchromebox_20190822.rom"
-coreboot_uefi_librem15v4="coreboot_tiano-librem15v4-mrchromebox_20190822.rom"
+coreboot_uefi_librem15v3="coreboot_tiano-librem15v3-mrchromebox_20190825.rom"
+coreboot_uefi_librem15v4="coreboot_tiano-librem15v4-mrchromebox_20190825.rom"
