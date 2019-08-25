@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-08-22]"
+script_date="[2019-08-24]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -30,7 +30,7 @@ syslinux_version="syslinux-6.04-pre1"
 #SNB/IVB
 coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20190822.rom"
 coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20190822.rom"
-coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20190822.rom"
+coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20190824.rom"
 coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20190822.rom"
 coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20190822.rom"
 coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20190822.rom"
