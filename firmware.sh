@@ -199,8 +199,7 @@ if [[ "$useUEFI" = true && ! -d /sys/firmware/efi ]]; then
     echo_yellow "
 NOTE: After flashing UEFI firmware, you will need to install a UEFI-compatible
 OS; ${currOS} will no longer be bootable. UEFI firmware supports
-Windows and Linux on all devices. Debian/Ubuntu-based distros require a small
-fix to boot after install -- see https://mrchromebox.tech/#faq for more info."
+Windows and Linux on all devices. See https://mrchromebox.tech/#faq for more info."
     REPLY=""
     read -ep "Press Y to continue or any other key to abort. "
     [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
