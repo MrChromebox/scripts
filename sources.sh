@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-08-25]"
+script_date="[2019-09-05]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -84,12 +84,12 @@ coreboot_uefi_terra="coreboot_tiano-terra-mrchromebox_20190822.rom"
 coreboot_uefi_ultima="coreboot_tiano-ultima-mrchromebox_20190822.rom"
 coreboot_uefi_wizpig="coreboot_tiano-wizpig-mrchromebox_20190822.rom"
 #Skylake
-coreboot_uefi_asuka="coreboot_tiano-asuka-mrchromebox_20190825.rom"
-coreboot_uefi_caroline="coreboot_tiano-caroline-mrchromebox_20190825.rom"
-coreboot_uefi_cave="coreboot_tiano-cave-mrchromebox_20190825.rom"
-coreboot_uefi_chell="coreboot_tiano-chell-mrchromebox_20190825.rom"
-coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20190825.rom"
-coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20190825.rom"
+coreboot_uefi_asuka="coreboot_tiano-asuka-mrchromebox_20190905.rom"
+coreboot_uefi_caroline="coreboot_tiano-caroline-mrchromebox_20190905.rom"
+coreboot_uefi_cave="coreboot_tiano-cave-mrchromebox_20190905.rom"
+coreboot_uefi_chell="coreboot_tiano-chell-mrchromebox_20190905.rom"
+coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20190905.rom"
+coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20190905.rom"
 #KabyLake
 coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20190825.rom"
 coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20190825.rom"
