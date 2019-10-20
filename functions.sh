@@ -28,6 +28,7 @@ isApl=false
 isKbl=false
 isGlk=false
 isStr=false
+isWhl=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -63,6 +64,7 @@ purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'katsumi' 'liara')
+whl=('arcada' 'sarien')
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -404,6 +406,7 @@ case "${_hwid}" in
     ALEENA*)                _x='STR|Acer Chromebook 315' ; device="grunt";;
     AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ; device="octopus";;
     APEL*)                  _x='GLK|Asus Chromebook Flip C204' ; device="octopus";;
+    ARCADA*)                _x='WHL|Dell Latitude 5300/5400' ; device="sarien";;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
     ASUKA*)                 _x='SKL|Dell Chromebook 13 (3380)' ;;
     AURON_PAINE*)           _x='BDW|Acer Chromebook 11 (C740)' ;;
@@ -576,7 +579,8 @@ APL) deviceCpuType="Intel ApolloLake" ;;
 KBL) deviceCpuType="Intel KabyLake" ;;
 GLK) deviceCpuType="Intel GeminiLake" ;;
 STR) deviceCpuType="AMD StoneyRidge" ;;
-#*)   deviceCpuType="(unrecognized)" ;;
+WHL) deviceCpuType="Intel WhiskeyLake" ;;
+*)   deviceCpuType="(unrecognized)" ;;
 esac
 
 [[ "${hsw_boxes[@]}" =~ "$device" ]] && isHswBox=true
@@ -591,6 +595,7 @@ esac
 [[ "${kbl[@]}" =~ "$device" ]] && isKbl=true
 [[ "${glk[@]}" =~ "$device" ]] && isGlk=true
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
+[[ "${whl[@]}" =~ "$device" ]] && isWhl=true
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
