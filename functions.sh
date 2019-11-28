@@ -55,8 +55,8 @@ braswell=('banon' 'celes' 'cyan' 'edgar' 'kefka' 'reks' 'relm' \
     'setzer' 'terra' 'ultima' 'wizpig')
 skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
 snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
-apl=('astronaut' 'babymega' 'blacktip' 'coral' 'electro' 'epaulette' 'lava' \
-    'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
+apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'coral' 'electro' 'epaulette' \
+    'lava' 'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
 kbl_boxes=('bleemo' 'fizz' 'kench' 'sion' 'teemo' 'wukong')
 kbl=($(printf "%s " "${kbl_boxes[@]}") 'akali' 'eve' 'nami' 'nautilus' \
     'nocturne' 'pantheon' 'rammus' 'shyvana' 'sona' 'soraka' 'syndra' 'vayne')
@@ -412,6 +412,7 @@ case "${_hwid}" in
     AURON_PAINE*)           _x='BDW|Acer Chromebook 11 (C740)' ;;
     AURON_YUNA*)            _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     BABYMEGA*)              _x='APL|Asus Chromebook C223NA' ;;
+    BABYTIGER*)             _x='APL|Asus Chromebook C523NA' ;;
     BANJO*)                 _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
     BANON*)                 _x='BSW|Acer Chromebook 15 (CB3-532)' ;;
     BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ; device="grunt";;
