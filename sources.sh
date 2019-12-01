@@ -12,6 +12,7 @@ bootstub_source="https://www.mrchromebox.tech/files/firmware/boot_stub/"
 fullrom_source="https://www.mrchromebox.tech/files/firmware/full_rom/"
 shellball_source="https://www.mrchromebox.tech/files/firmware/shellball/"
 cbfs_source="https://www.mrchromebox.tech/files/firmware/cbfs/"
+other_source="https://www.mrchromebox.tech/files/firmware/other/"
 
 #LE sources
 LE_url_official="http://releases.libreelec.tv/"
@@ -138,3 +139,6 @@ coreboot_uefi_librem13v4="coreboot_tiano-librem13v4-mrchromebox_20191125.rom"
 coreboot_uefi_librem15v2="coreboot_tiano-librem15v2-mrchromebox_20191125.rom"
 coreboot_uefi_librem15v3="coreboot_tiano-librem15v3-mrchromebox_20191125.rom"
 coreboot_uefi_librem15v4="coreboot_tiano-librem15v4-mrchromebox_20191125.rom"
+
+# other
+touchpad_eve_fw="rose_v1.1.8546-ee1861e9e.bin"

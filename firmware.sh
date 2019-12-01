@@ -479,6 +479,45 @@ fi
 read -ep "Press [Enter] to return to the main menu."
 }
 
+#########################
+# Downgrade Touchpad FW #
+#########################
+function downgrade_touchpad_fw()
+{
+# offer to downgrade touchpad firmware on EVE
+if [[ "${device^^}" = "EVE" ]]; then
+    echo_green "\nDowngrade Touchpad Firmware"
+    echo_yellow "If you plan to run Windows on your Pixelbook, it is necessary to downgrade 
+the touchpad firmware, otherwise the touchpad will not work."
+    read -ep "Do you wish to downgrade the touchpad firmware?? [y/N] "
+    if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
+        # ensure firmware write protect disabled
+        [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot downgrade touchpad firmware."; return 1; }
+        # download TP firmware
+        echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw})"
+        curl -s -LO "${other_source}${touchpad_eve_fw}"
+        curl -s -LO "${other_source}${touchpad_eve_fw}.sha1"
+        #verify checksum on downloaded file
+        sha1sum -c ${touchpad_eve_fw}.sha1 --quiet > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            # flash TP firmware
+            echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
+            ${flashromcmd} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                echo_green "Touchpad firmware successfully downgraded."
+                echo_yellow "Please reboot your Pixelbook now."
+            else 
+                echo_red "Error flashing touchpad firmware:"
+                cat /tmp/flashrom.log
+                echo_yellow "\nThis function sometimes doesn't work under Linux, in which case it is\nrecommended to try under ChromiumOS."
+            fi
+        else
+            echo_red "Touchpad firmware download checksum fail; download corrupted, cannot flash."
+        fi
+        read -ep "Press [Enter] to return to the main menu."
+    fi
+fi
+}
 
 ##########################
 # Restore Stock Firmware #
@@ -1161,6 +1200,9 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 3)${GRAY_TEXT} Install/Update Full ROM Firmware${NORMAL}"
     fi
+    if [[ "${device^^}" = "EVE" ]]; then
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
+    fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 5)${MENU} Set Hardware ID (HWID) ${NORMAL}"
@@ -1210,6 +1252,12 @@ function menu_fwupdate() {
 
         3)  if [[  "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
                 flash_coreboot
+            fi
+            menu_fwupdate
+            ;;
+
+        [dD])  if [[  "${device^^}" = "EVE" ]]; then
+                downgrade_touchpad_fw
             fi
             menu_fwupdate
             ;;
