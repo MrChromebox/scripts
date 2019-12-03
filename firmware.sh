@@ -418,7 +418,6 @@ fi
 
 # [EVE only]
 # Ask user if he wants Intel ME region to be stripped down from the firmware
-# This will clone intel me cleaner repository and run the script
 if [[ "${device^^}" = "EVE" ]]; then
     echo -e ""
     echo_yellow "Deblob Intel ME region before flashing?"
