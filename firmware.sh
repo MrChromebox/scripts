@@ -418,12 +418,20 @@ fi
 
 # [EVE only]
 # Ask user if he wants Intel ME region to be stripped down from the firmware
-# This will clone intel me cleaner repository and run the script (python needed)
+# This will clone intel me cleaner repository and run the script
 if [[ "${device^^}" = "EVE" ]]; then
     echo -e ""
     echo_yellow "Deblob Intel ME region before flashing?"
     read -ep "(This will use corna's IntelME cleaner script) [y/N] "
     if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+
+        # Check if python is installed
+        which python > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo_red "Required package 'python' not found; cannot continue.  Please install and try again."
+            return 1
+        fi
+
         echo_yellow "Downloading needed script (@corna/me_cleaner)"
         curl -s -LO  ${mecleaner_source}
         mv ${coreboot_file} ${coreboot_file}.bak
