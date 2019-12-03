@@ -489,7 +489,8 @@ if [[ "${device^^}" = "EVE" ]]; then
     echo_green "\nDowngrade Touchpad Firmware"
     echo_yellow "If you plan to run Windows on your Pixelbook, it is necessary to downgrade 
 the touchpad firmware, otherwise the touchpad will not work."
-    read -ep "Do you wish to downgrade the touchpad firmware?? [y/N] "
+    echo_yellow "You should do this after flashing the UEFI firmware, but before rebooting."
+    read -ep "Do you wish to downgrade the touchpad firmware now? [y/N] "
     if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
         # ensure firmware write protect disabled
         [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot downgrade touchpad firmware."; return 1; }
