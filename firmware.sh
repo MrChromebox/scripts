@@ -439,6 +439,7 @@ if [[ "${device^^}" = "EVE" ]]; then
         echo_yellow "Firmware successfully deblobbed"
 
     fi
+fi
 
 #disable software write-protect
 echo_yellow "Disabling software write-protect and clearing the WP range"
