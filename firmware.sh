@@ -428,8 +428,7 @@ if [[ "${device^^}" = "EVE" ]]; then
         # Check if python is installed
         which python > /dev/null 2>&1
         if [ $? -ne 0 ]; then
-            echo_red "Required package 'python' not found; cannot continue.  Please install and try again."
-            return 1
+            exit_red "Required package 'python' not found; cannot continue.  Please install and try again."
         fi
 
         echo_yellow "Downloading needed script (@corna/me_cleaner)"
