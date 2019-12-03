@@ -416,6 +416,23 @@ if [[ $useUEFI = "true" &&  $? -eq 0 && "$firmwareType" != *"10/28/2019"* ]]; th
     ${cbfstoolcmd} ${coreboot_file} write -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
 fi
 
+# [EVE only]
+# Ask user if he wants Intel ME region to be stripped down from the firmware
+# This will clone intel me cleaner repository and run the script (python needed)
+if [[ "${device^^}" = "EVE" ]]; then
+    echo -e ""
+    echo_yellow "Deblob Intel ME region before flashing?"
+    read -ep "(This will use corna's IntelME cleaner script) [y/N] "
+    if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
+        echo_yellow "Downloading needed script (@corna/me_cleaner)"
+        curl -s -LO  ${mecleaner_source}
+        mv ${coreboot_file} ${coreboot_file}.bak
+        # whitelisting MFS partition
+        ${mecleanercmd} -S -w MFS -O ${coreboot_file} ${coreboot_file}.bak
+        echo_yellow "Firmware successfully deblobbed"
+
+    fi
+
 #disable software write-protect
 echo_yellow "Disabling software write-protect and clearing the WP range"
 ${flashromcmd} --wp-disable > /dev/null 2>&1

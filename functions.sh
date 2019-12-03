@@ -10,6 +10,7 @@ isChromeOS=true
 isChromiumOS=false
 isCloudready=false
 flashromcmd=""
+mecleanercmd = "python me_cleaner.py"
 cbfstoolcmd=""
 gbbutilitycmd=""
 preferUSB=false

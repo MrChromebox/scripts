@@ -14,6 +14,8 @@ shellball_source="https://www.mrchromebox.tech/files/firmware/shellball/"
 cbfs_source="https://www.mrchromebox.tech/files/firmware/cbfs/"
 other_source="https://www.mrchromebox.tech/files/firmware/other/"
 
+mecleaner_source = "https://raw.githubusercontent.com/corna/me_cleaner/master/me_cleaner.py"
+
 #LE sources
 LE_url_official="http://releases.libreelec.tv/"
 LE_url=${LE_url_official}
