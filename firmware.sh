@@ -464,6 +464,13 @@ Be patient and eventually your device will boot :)"
         echo_yellow "Additionally, GalliumOS users need to use the v3.0 ISO; the keyboard
 will not work with older versions due a bug in the older kernel."
     fi
+    # Add note on touchpad firmware for EVE
+    if [[ "${device^^}" = "EVE" ]]; then
+        echo_yellow "IMPORTANT:\n
+If you're going to run Windows on your Pixelbook, you must downgrade
+the touchpad firmware now (before rebooting) otherwise it will not work.
+Select the D option from the main main in order to do so."
+    fi
     #set vars to indicate new firmware type
     isStock=false
     isFullRom=true
