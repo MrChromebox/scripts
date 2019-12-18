@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2019-12-01]"
+script_date="[2019-12-18]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -49,7 +49,7 @@ coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20191201.rom"
 #Broadwell
 coreboot_uefi_auron_paine="coreboot_tiano-auron_paine-mrchromebox_20191201.rom"
 coreboot_uefi_auron_yuna="coreboot_tiano-auron_yuna-mrchromebox_20191201.rom"
-coreboot_uefi_buddy="coreboot_tiano-buddy-mrchromebox_20191201.rom"
+coreboot_uefi_buddy="coreboot_tiano-buddy-mrchromebox_20191218.rom"
 coreboot_uefi_gandof="coreboot_tiano-gandof-mrchromebox_20191201.rom"
 coreboot_uefi_guado="coreboot_tiano-guado-mrchromebox_20191201.rom"
 coreboot_uefi_lulu="coreboot_tiano-lulu-mrchromebox_20191201.rom"
