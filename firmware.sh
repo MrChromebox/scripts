@@ -680,8 +680,21 @@ fi
 
 #flash stock firmware
 echo_yellow "Restoring stock firmware"
-${flashromcmd} -w ${firmware_file} > /dev/null 2>&1
-[[ $? -ne 0 ]] && { exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1; }
+#flash only BIOS region, to avoid IFD mismatch upon verification 
+${flashromcmd} -i BIOS -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    #try using SI_BIOS
+    ${flashromcmd} -i SI_BIOS -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        #try without specifying region
+        ${flashromcmd} -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            cat /tmp/flashrom.log
+            exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
+        fi
+    fi
+fi
+
 #all good
 echo_green "Stock firmware successfully restored."
 echo_green "After rebooting, you will need to restore ChromeOS using the ChromeOS recovery media,
