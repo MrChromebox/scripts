@@ -93,6 +93,7 @@ coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20191201.rom"
 coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20191201.rom"
 #KabyLake
 coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20191220.rom"
+coreboot_uefi_eve_prev="coreboot_tiano-eve-mrchromebox_20191201.rom"
 coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20191201.rom"
 coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20191201.rom"
 coreboot_uefi_nautilus="coreboot_tiano-nautilus-mrchromebox_20191201.rom"
