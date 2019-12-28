@@ -23,11 +23,11 @@ if [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
     seabios_file=$seabios_hswbdw_box
 elif [[ "$isHswBook" = true || "$isBdwBook" = true ]]; then
     seabios_file=$seabios_hswbdw_book
-elif [ "$isBaytrail" = true ]; then
+elif [ "$isByt" = true ]; then
     seabios_file=$seabios_baytrail
-elif [ "$isBraswell" = true ]; then
+elif [ "$isBsw" = true ]; then
     seabios_file=$seabios_braswell
-elif [ "$isSkylake" = true ]; then
+elif [ "$isSkl" = true ]; then
     seabios_file=$seabios_skylake
 elif [ "$useRwlMulti" = true ]; then
     seabios_file=$rwlegacy_multi
@@ -423,7 +423,7 @@ fi
 
 #Persist RW_MRC_CACHE for BSW Full ROM firmware
 ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
-if [[ $isBraswell = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
+if [[ $isBsw = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
     ${cbfstoolcmd} ${coreboot_file} write -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
 fi
 
@@ -475,7 +475,7 @@ if [ $? -eq 0 ]; then
     fi
 
     #Warn about long RAM training time, keyboard on Braswell
-    if [[ "$isBraswell" = true ]]; then
+    if [[ "$isBsw" = true ]]; then
         echo_yellow "IMPORTANT:\nThe first boot after flashing may take substantially
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
@@ -686,7 +686,7 @@ fi
 #disable software write-protect
 ${flashromcmd} --wp-disable > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-#if [[ $? -ne 0 && ( "$isBraswell" = false || "$isFullRom" = false ) ]]; then
+#if [[ $? -ne 0 && ( "$isBsw" = false || "$isFullRom" = false ) ]]; then
     exit_red "Error disabling software write-protect; unable to restore stock firmware."; return 1
 fi
 
@@ -986,7 +986,7 @@ function modify_boot_stub()
 # flash back modified slots
 
 #check baytrail
-[[ "$isBaytrail" = false ]] && { exit_red "\nThis functionality is only available for Baytrail ChromeOS devices currently"; return 1; }
+[[ "$isByt" = false ]] && { exit_red "\nThis functionality is only available for Baytrail ChromeOS devices currently"; return 1; }
 
 echo_green "\nInstall/Update BOOT_STUB Firmware (Legacy BIOS)"
 
@@ -1229,7 +1229,7 @@ function menu_fwupdate() {
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBaytrail" = true ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isByt" = true ) ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Install/Update BOOT_STUB Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update BOOT_STUB Firmware ${NORMAL}"
@@ -1250,14 +1250,14 @@ function menu_fwupdate() {
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 5)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-		"$isSkylake" = false && "$isKbl" = false && "$isApl" = false) ]]; then
+		("$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true )) ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 6)${MENU} Remove ChromeOS Bitmaps ${NORMAL}"
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 7)${MENU} Restore ChromeOS Bitmaps ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 6)${GRAY_TEXT} Remove ChromeOS Bitmaps ${NORMAL}"
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 7)${GRAY_TEXT} Restore ChromeOS Bitmaps ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isBootStub" = true && "$isChromeOS" = false ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isByt" = true && "$isBootStub" = true && "$isChromeOS" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 8)${MENU} Restore Stock BOOT_STUB ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 8)${GRAY_TEXT} Restore Stock BOOT_STUB ${NORMAL}"
@@ -1282,7 +1282,7 @@ function menu_fwupdate() {
             menu_fwupdate
             ;;
 
-        2)  if [[ "$unlockMenu" = true || ( "$isBaytrail" = true && "$isFullRom" = false \
+        2)  if [[ "$unlockMenu" = true || ( "$isByt" = true && "$isFullRom" = false \
                     && "$isUnsupported" = false ) ]]; then
                 modify_boot_stub
             fi
@@ -1316,14 +1316,14 @@ function menu_fwupdate() {
             ;;
 
         6)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
+                    ( "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true ) )  ]]; then
                 remove_bitmaps
             fi
             menu_fwupdate
             ;;
 
         7)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-                    "$isSkylake" = false && "$isKbl" = false && "$isApl" = false)  ]]; then
+                    ( "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true ) )  ]]; then
                 restore_bitmaps
             fi
             menu_fwupdate

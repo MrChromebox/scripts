@@ -20,9 +20,11 @@ isHswBox=false
 isBdwBox=false
 isHswBook=false
 isBdwBook=false
-isBaytrail=false
-isBraswell=false
-isSkylake=false
+isHsw=false
+isBdw=false
+isByt=false
+isBsw=false
+isSkl=false
 isSnbIvb=false
 isApl=false
 isKbl=false
@@ -591,12 +593,14 @@ WHL) deviceCpuType="Intel WhiskeyLake" ;;
 esac
 
 [[ "${hsw_boxes[@]}" =~ "$device" ]] && isHswBox=true
-[[ "${bdw_boxes[@]}" =~ "$device" ]] && isBdwBox=true
 [[ "${hsw_books[@]}" =~ "$device" ]] && isHswBook=true
+[[  "$isHswBox" = true || "$isHswBook" = true ]] && isHsw=true
+[[ "${bdw_boxes[@]}" =~ "$device" ]] && isBdwBox=true
 [[ "${bdw_books[@]}" =~ "$device" ]] && isBdwBook=true
-[[ "${baytrail[@]}" =~ "$device" ]] && isBaytrail=true
-[[ "${braswell[@]}" =~ "$device" ]] && isBraswell=true
-[[ "${skylake[@]}" =~ "$device" ]] && isSkylake=true
+[[  "$isBdwBox" = true || "$isBdwBook" = true ]] && isBdw=true
+[[ "${baytrail[@]}" =~ "$device" ]] && isByt=true
+[[ "${braswell[@]}" =~ "$device" ]] && isBsw=true
+[[ "${skylake[@]}" =~ "$device" ]] && isSkl=true
 [[ "${snb_ivb[@]}" =~ "$device" ]] && isSnbIvb=true
 [[ "${apl[@]}" =~ "$device" ]] && isApl=true
 [[ "${kbl[@]}" =~ "$device" ]] && isKbl=true
@@ -606,9 +610,9 @@ esac
 [[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
-[[ "$isHswBox" = true || "$isBdwBox" = true || "$isHswBook" = true || "$isBdwBook" = true \
-    || "$isBaytrail" = true || "$isBraswell" = true || "$isSkylake" = true || "$isSnbIvb" = "true" \
-    || "$isApl" = "true" || "$isKbl" = "true" ]] || isUnsupported=true
+[[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
+    || "$isSkl" = true || "$isSnbIvb" = "true" \
+    || "$isApl" = "true" || "$isKbl" = "true" || "$isStr" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true ]] && hasCR50=true
@@ -624,43 +628,27 @@ if [ $? -ne 0 ]; then
     echo_red "See https://www.flashrom.org/FAQ for more info."
     return 1;
 fi
-#break out BOOT_STUB and RW_LEGACY pieces, check for validity
-${cbfstoolcmd} bios.bin read -r BOOT_STUB -f bs.tmp >/dev/null 2>&1
-if [ $? -eq 0 ]; then
-    #see if BOOT_STUB is stock
-    ${cbfstoolcmd} bs.tmp extract -n fallback/vboot -f vb.tmp -m x86 >/dev/null 2>&1
-    [[ $? -ne 0 && "${device^^}" != "LINK" ]] && isBootStub=true
-    #check RW_LEGACY
-    ${cbfstoolcmd} bios.bin read -r RW_LEGACY -f rwl.tmp >/dev/null 2>&1
-    [[ $? -eq 0 ]] && hasRwLegacy=true
-else
-    # check 'coreboot' for SKL/KBL/APL
-    ${cbfstoolcmd} bios.bin read -r COREBOOT -f cb.tmp >/dev/null 2>&1
-    if [[ $? -eq 0 && ( "$isSkylake" = true || "$isApl" = true || "$isKbl" = true) ]]; then
-        #check for verstage
-        ${cbfstoolcmd} bios.bin extract -n fallback/verstage -f /dev/null -m x86 >/dev/null 2>&1
-        if [[ $? -eq 0 ]]; then
-            hasRwLegacy=true
-        else
-            #non-stock firmware
-            isStock=false
-            isFullRom=true
-        fi
-    else
-        if [ "$isChromeOS" = false ]; then
-        #non-stock firmware
-            isStock=false
-            isFullRom=true
-        fi
+
+# check firmware type
+${cbfstoolcmd} bios.bin layout -w > /tmp/layout 2>/dev/null
+if grep "RO_VPD" /tmp/layout >/dev/null 2>&1; then
+  # stock firmware
+  isStock=true
+  firmwareType="Stock ChromeOS"
+  # check BOOT_STUB
+  if grep "BOOT_STUB" /tmp/layout >/dev/null 2>&1; then
+    if ! ${cbfstoolcmd} bios.bin print -r BOOT_STUB 2>/dev/null | grep -e "vboot" >/dev/null 2>&1 ; then
+        [[ "${device^^}" != "LINK" ]] && firmwareType="Stock w/modified BOOT_STUB"
     fi
-fi
-#set firmware type
-if [[ "$isChromeOS" = true && "$isStock" = true && "$isBootStub" = false && "$isSkylake" = false ]]; then
-    firmwareType="Stock ChromeOS"
-elif [[ "$isBootStub" = true ]]; then
-    firmwareType="Stock w/modified BOOT_STUB"
-elif [[ "$isFullRom" = true ]]; then
-    #get more info
+  fi
+  # check RW_LEGACY
+  if ${cbfstoolcmd} bios.bin print -r RW_LEGACY 2>/dev/null | grep -e "payload" -e "altfw" >/dev/null 2>&1 ; then
+    firmwareType="Stock ChromeOS w/RW_LEGACY"
+  fi
+else
+    # non-stock firmware
+    isStock=false
+    isFullRom=true
     fwVer=$(dmidecode -s bios-version)
     fwDate=$(dmidecode -s bios-release-date)
     if [[ -d /sys/firmware/efi ]]; then
@@ -669,13 +657,7 @@ elif [[ "$isFullRom" = true ]]; then
     else
         firmwareType="Full ROM / Legacy ($fwVer $fwDate)"
     fi
-elif [[ "$isChromeOS" = false && "$hasRwLegacy" = true ]]; then
-    firmwareType="Stock w/RW_LEGACY support"
-elif [[ "$isChromeOS" = true && "$isBaytrail" = true && "$hasRwLegacy" = true ]]; then
-    firmwareType="Stock w/RW_LEGACY support"
-elif [[ "$isSkylake" = true || "$isKbl" = true ]]; then
-    firmwareType="Stock w/RW_LEGACY support"
-fi
+fi 
 
 #check WP status
 
