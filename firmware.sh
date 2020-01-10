@@ -343,24 +343,6 @@ if [[  $useUEFI = false && "$hasLAN" = true ]]; then
     fi
 fi
 
-# EVE previous version
-if [[ "${device^^}" = "EVE" ]]; then
-    echo -e ""
-    echo_yellow "Install previous version firmware?"
-    echo -e "Some Windows users have experienced lockups with the latest firmware,
-which enables display backlight control. If you experience problems,
-then you should revert to the previous version without blacklight control.\n"
-    REPLY=""
-    while [[ "$REPLY" != "Y" && "$REPLY" != "y" && "$REPLY" != "N" && "$REPLY" != "n"  ]]
-    do
-        read -ep "Use previous firmware release? [y/N] "
-        [[ "$REPLY" = "" ]] && "$REPLY" = "n"
-        if [[ "$REPLY" = "Y" || "$REPLY" = "y" ]]; then
-            coreboot_file=${coreboot_uefi_eve_prev}
-        fi
-    done
-fi
-
 #download firmware file
 cd /tmp
 echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
@@ -483,7 +465,7 @@ Be patient and eventually your device will boot :)"
 will not work with older versions due a bug in the older kernel."
     fi
     # Add note on touchpad firmware for EVE
-    if [[ "${device^^}" = "EVE" ]]; then
+    if [[ "${device^^}" = "EVE" && "$isStock" = true ]]; then
         echo_yellow "IMPORTANT:\n
 If you're going to run Windows on your Pixelbook, you must downgrade
 the touchpad firmware now (before rebooting) otherwise it will not work.

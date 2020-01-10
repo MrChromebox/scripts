@@ -228,8 +228,8 @@
 		"sha1": "1706d5767fdf2b31502ccdd6ccf95f39453296a4"
 	},
 	"eve": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-eve-mrchromebox_20191201.rom",
-		"sha1": "21e32796879151ccf0727dfe5be33a9ccf3018c6"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-eve-mrchromebox_20200110.rom",
+		"sha1": "7592d6cd75f86b274b9ba4b1582228db4ff17f48"
 	},
 	"fizz": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-fizz-mrchromebox_20191201.rom",
