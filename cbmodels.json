@@ -100,8 +100,8 @@
 		"sha1": "bd299cafc8dda49399215c35ef25c0d27fa452e0"
 	},
 	"banjo": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-banjo-mrchromebox_20191201.rom",
-		"sha1": "8ae47dfaa62578d033b6bbea71407c35a500ffd9"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-banjo-mrchromebox_20200112.rom",
+		"sha1": "6d389b65200275d3acb88050633ebf0531cb9c92"
 	},
 	"candy": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-candy-mrchromebox_20191201.rom",

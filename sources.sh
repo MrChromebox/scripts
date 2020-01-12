@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2020-01-10]"
+script_date="[2020-01-12]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -57,7 +57,7 @@ coreboot_uefi_rikku="coreboot_tiano-rikku-mrchromebox_20191201.rom"
 coreboot_uefi_samus="coreboot_tiano-samus-mrchromebox_20191201.rom"
 coreboot_uefi_tidus="coreboot_tiano-tidus-mrchromebox_20191201.rom"
 #Baytrail
-coreboot_uefi_banjo="coreboot_tiano-banjo-mrchromebox_20191201.rom"
+coreboot_uefi_banjo="coreboot_tiano-banjo-mrchromebox_20200112.rom"
 coreboot_uefi_candy="coreboot_tiano-candy-mrchromebox_20191201.rom"
 coreboot_uefi_clapper="coreboot_tiano-clapper-mrchromebox_20191201.rom"
 coreboot_uefi_enguarde="coreboot_tiano-enguarde-mrchromebox_20191201.rom"
