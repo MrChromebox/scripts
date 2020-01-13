@@ -97,7 +97,7 @@ coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20191201.rom"
 coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20191201.rom"
 coreboot_uefi_nautilus="coreboot_tiano-nautilus-mrchromebox_20191201.rom"
 coreboot_uefi_rammus="coreboot_tiano-rammus-mrchromebox_20191201.rom"
-coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20191201.rom"
+coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20200112.rom"
 
 #Legacy Full ROMs (deprecated)
 #SNB/IVB
