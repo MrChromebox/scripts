@@ -71,10 +71,10 @@ whl=('arcada' 'sarien')
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
-    "${skylake[@]}" "${kbl_boxes[@]}" "${purism[@]}" 'eve' 'nami' 'nautilus' 'rammus' 'soraka'))
+    "${skylake[@]}" "${kbl_boxes[@]}" "${purism[@]}" "${kbl[@]}" ))
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
-    "${skylake[@]}" 'eve'))
+    "${skylake[@]}" 'atlas' 'eve' 'nocturne'))
 
 #menu text output
 NORMAL=$(echo "\033[m")

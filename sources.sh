@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2020-01-17]"
+script_date="[2020-02-15]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -92,10 +92,12 @@ coreboot_uefi_chell="coreboot_tiano-chell-mrchromebox_20191201.rom"
 coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20191201.rom"
 coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20191201.rom"
 #KabyLake
+coreboot_uefi_atlas="coreboot_tiano-atlas-mrchromebox_20200215.rom"
 coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20200110.rom"
 coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20191201.rom"
 coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20191201.rom"
 coreboot_uefi_nautilus="coreboot_tiano-nautilus-mrchromebox_20191201.rom"
+coreboot_uefi_nocturne="coreboot_tiano-nocturne-mrchromebox_20200215.rom"
 coreboot_uefi_rammus="coreboot_tiano-rammus-mrchromebox_20191201.rom"
 coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20200112.rom"
 
