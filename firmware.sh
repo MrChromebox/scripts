@@ -121,8 +121,13 @@ fi
 
 #flash updated legacy BIOS
 echo_yellow "Installing RW_LEGACY firmware"
-${flashromcmd} -w -i RW_LEGACY:${seabios_file} > /dev/null 2>&1
-echo_green "RW_LEGACY firmware successfully installed/updated."
+${flashromcmd} -w -i RW_LEGACY:${seabios_file} -o /tmp/flashrom.log > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    cat /tmp/flashrom.log
+    echo_red "An error occurred flashing the RW_LEGACY firmware."
+else
+    echo_green "RW_LEGACY firmware successfully installed/updated."
+fi
 if [ -z "$1" ]; then
     read -ep "Press [Enter] to return to the main menu."
 fi
