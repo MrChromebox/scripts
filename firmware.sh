@@ -291,17 +291,20 @@ fi
 #extract device serial if present in cbfs
 ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/null 2>&1
 
-#check if existing firmware is stock
-grep -obUa "vboot" /tmp/bios.bin >/dev/null
-if [[ "$isStock" == "true" && $? -eq 0 ]]; then
-    echo_yellow "\nCreate a backup copy of your stock firmware?"
-    read -ep "This is highly recommended in case you wish to return your device to stock
+# create backup if existing firmware is stock
+if [[ "$isStock" == "true" ]]; then
+    if [[ "$hasShellball" = "false" ]]; then
+        REPLY=y
+    else
+        echo_yellow "\nCreate a backup copy of your stock firmware?"
+        read -ep "This is highly recommended in case you wish to return your device to stock
 configuration/run ChromeOS, or in the (unlikely) event that things go south
 and you need to recover using an external EEPROM programmer. [Y/n] "
-    [[ "$REPLY" = "n" || "$REPLY" = "N" ]] || backup_firmware
+    fi
+    [[ "$REPLY" = "n" || "$REPLY" = "N" ]] && true || backup_firmware
+    #check that backup succeeded
+    [ $? -ne 0 ] && return 1
 fi
-#check that backup succeeded
-[ $? -ne 0 ] && return 1
 
 #headless?
 useHeadless=false
