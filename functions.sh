@@ -45,7 +45,8 @@ hasShellball=false
 wpEnabled=false
 hasLAN=false
 hasCR50=false
-useRwlMulti=false
+isPoppy=false
+useAltfwStd=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
@@ -60,9 +61,10 @@ snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'coral' 'electro' 'epaulette' \
     'lava' 'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
 kbl_boxes=('bleemo' 'fizz' 'kench' 'sion' 'teemo' 'wukong')
-kbl=($(printf "%s " "${kbl_boxes[@]}") 'akali' 'atlas' 'bard' 'ekko' 'eve' \
-    'leona' 'nami' 'nautilus' 'nocturne' 'pantheon' 'rammus' 'shyvana' \
-    'sona' 'soraka' 'syndra' 'vayne')
+kbl_poppy=('akali' 'atlas' 'bard' 'ekko'  'nami' 'nautilus' 'nocturne' \
+    'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
+kbl_rammus=('leona' 'rammus' 'shyvana')
+kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_poppy[@]}" "${kbl_rammus[@]}" 'eve'))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4');
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
@@ -605,6 +607,7 @@ esac
 [[ "${skylake[@]}" =~ "$device" ]] && isSkl=true
 [[ "${snb_ivb[@]}" =~ "$device" ]] && isSnbIvb=true
 [[ "${apl[@]}" =~ "$device" ]] && isApl=true
+[[ "${kbl_poppy[@]}" =~ "$device" ]] && isPoppy=true
 [[ "${kbl[@]}" =~ "$device" ]] && isKbl=true
 [[ "${glk[@]}" =~ "$device" ]] && isGlk=true
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
@@ -617,8 +620,8 @@ esac
     || "$isApl" = "true" || "$isKbl" = "true" || "$isStr" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
-[[ "$isKbl" = true || "$isApl" = true ]] && hasCR50=true
-[[ "$isStr" = true ]] && useRwlMulti=true
+[[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
+[[ "$device" = "rammus" || "$isGlk" = true ]]&& useAltfwStd=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."

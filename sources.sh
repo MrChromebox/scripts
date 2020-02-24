@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2020-02-15]"
+script_date="[2020-02-23]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -122,9 +122,10 @@ seabios_baytrail="seabios-byt-mrchromebox_20180912.bin"
 seabios_braswell="seabios-bsw-mrchromebox_20180912.bin"
 seabios_skylake="seabios-skl-mrchromebox_20180912.bin"
 seabios_apl="seabios-apl-mrchromebox_20180912.bin"
-seabios_kbl="seabios-kbl-mrchromebox_20180912.bin"
-
-rwlegacy_multi="rwlegacy_multi-mrchromebox_20200107.bin"
+seabios_kbl="seabios-kbl-mrchromebox_20200223.bin"
+seabios_kbl_poppy="seabios-kbl_poppy-mrchromebox_20200223.bin"
+rwl_altfw_stoney="rwl_altfw_stoney-mrchromebox_20200107.bin"
+#rwl_altfw="rwl_altfw-mrchromebox_20200223.bin"
 
 #BOOT_STUB payloads
 bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20180912.bin"
