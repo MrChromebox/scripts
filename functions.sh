@@ -125,6 +125,8 @@ function list_usb_devices()
 #list available drives, excluding internal storage and root/boot device
 if [[ -b /dev/mmcblk0 ]]; then
 	intStor="/dev/mmcblk0"
+elif [[ -b /dev/mmcblk1 ]]; then
+	intStor="/dev/mmcblk1"
 elif [[ -b /dev/nvme0n1 ]]; then
 	intStor="/dev/nvme0n1"
 else intStor="/dev/sda"
