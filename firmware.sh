@@ -127,7 +127,10 @@ if [ $? -ne 0 ]; then
     echo_red "An error occurred flashing the RW_LEGACY firmware."
 else
     echo_green "RW_LEGACY firmware successfully installed/updated."
+  # update firmware type
+  firmwareType="Stock ChromeOS w/RW_LEGACY"
 fi
+
 if [ -z "$1" ]; then
     read -ep "Press [Enter] to return to the main menu."
 fi
