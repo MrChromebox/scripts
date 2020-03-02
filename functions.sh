@@ -45,7 +45,7 @@ hasShellball=false
 wpEnabled=false
 hasLAN=false
 hasCR50=false
-isPoppy=false
+kbl_use_rwl18=false
 useAltfwStd=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
@@ -61,10 +61,10 @@ snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'coral' 'electro' 'epaulette' \
     'lava' 'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
 kbl_boxes=('bleemo' 'fizz' 'kench' 'sion' 'teemo' 'wukong')
-kbl_poppy=('akali' 'atlas' 'bard' 'ekko'  'nami' 'nautilus' 'nocturne' \
+kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
-kbl_rammus=('leona' 'rammus' 'shyvana')
-kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_poppy[@]}" "${kbl_rammus[@]}" 'eve'))
+kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
+kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4');
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
@@ -607,7 +607,7 @@ esac
 [[ "${skylake[@]}" =~ "$device" ]] && isSkl=true
 [[ "${snb_ivb[@]}" =~ "$device" ]] && isSnbIvb=true
 [[ "${apl[@]}" =~ "$device" ]] && isApl=true
-[[ "${kbl_poppy[@]}" =~ "$device" ]] && isPoppy=true
+[[ "${kbl_rwl_18[@]}" =~ "$device" ]] && kbl_use_rwl18=true
 [[ "${kbl[@]}" =~ "$device" ]] && isKbl=true
 [[ "${glk[@]}" =~ "$device" ]] && isGlk=true
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
@@ -621,7 +621,7 @@ esac
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
-[[ "$device" = "rammus" || "$isGlk" = true ]]&& useAltfwStd=true
+[[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."

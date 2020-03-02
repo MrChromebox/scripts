@@ -123,7 +123,7 @@ seabios_braswell="seabios-bsw-mrchromebox_20180912.bin"
 seabios_skylake="seabios-skl-mrchromebox_20180912.bin"
 seabios_apl="seabios-apl-mrchromebox_20180912.bin"
 seabios_kbl="seabios-kbl-mrchromebox_20200223.bin"
-seabios_kbl_poppy="seabios-kbl_poppy-mrchromebox_20200223.bin"
+seabios_kbl_18="seabios-kbl_18-mrchromebox_20200223.bin"
 rwl_altfw_stoney="rwl_altfw_stoney-mrchromebox_20200107.bin"
 #rwl_altfw="rwl_altfw-mrchromebox_20200223.bin"
 
