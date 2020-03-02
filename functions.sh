@@ -10,6 +10,7 @@ isChromeOS=true
 isChromiumOS=false
 isCloudready=false
 flashromcmd=""
+flashrom_params="-p host"
 cbfstoolcmd=""
 gbbutilitycmd=""
 preferUSB=false
@@ -68,7 +69,7 @@ kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4');
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
-str=('aleena' 'barla' 'careena' 'grunt' 'katsumi' 'liara')
+str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara')
 whl=('arcada' 'sarien')
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -263,6 +264,8 @@ if [ ! -f ${flashromcmd} ]; then
     fi
     #set +x
     chmod +x flashrom
+    #add params
+    flashromcmd="${flashromcmd} ${flashrom_params}"
     #restore working dir
     cd ${working_dir}
 fi
