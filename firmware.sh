@@ -425,9 +425,8 @@ if [[ $isBsw = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
 fi
 
 #Persist SMMSTORE if exists
-# don't persist if running bugged 10/28 release
 ${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
-if [[ $useUEFI = "true" &&  $? -eq 0 && "$firmwareType" != *"10/28/2019"* ]]; then
+if [[ $useUEFI = "true" &&  $? -eq 0 ]]; then
     ${cbfstoolcmd} ${coreboot_file} write -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
 fi
 
