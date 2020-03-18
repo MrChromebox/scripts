@@ -1206,6 +1206,21 @@ function menu_fwupdate() {
     echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
     echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
     echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
+    if [[ $isUEFI == true && $hasUEFIoption = true ]]; then
+        # check if update available
+        curr_yy=`echo $fwDate | cut -f 3 -d '/'`
+        curr_mm=`echo $fwDate | cut -f 1 -d '/'`
+        curr_dd=`echo $fwDate | cut -f 2 -d '/'`
+        eval coreboot_file=$`echo "coreboot_uefi_${device}"`
+        uefi_yy=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c1-4`
+        uefi_mm=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c5-6`
+        uefi_dd=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c7-8`
+        if [[ ($uefi_yy > $curr_yy) || \
+            ($uefi_yy == $curr_yy && $uefi_mm > $curr_mm) || \
+            ($uefi_yy == $curr_yy && $uefi_mm == $curr_mm && $uefi_dd > $curr_dd) ]]; then
+            echo -e "${MENU}**${NORMAL}           ${GREEN_TEXT}Update Available ($uefi_mm/$uefi_dd/$uefi_yy)${NORMAL}"
+        fi
+    fi
     if [ "$wpEnabled" = true ]; then
         echo -e "${MENU}**${NUMBER}    Fw WP: ${RED_TEXT}Enabled${NORMAL}"
 	WP_TEXT=${RED_TEXT}
