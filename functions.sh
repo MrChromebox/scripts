@@ -77,7 +77,7 @@ UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" 
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}"))
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
-    "${skylake[@]}" 'atlas' 'eve' 'nocturne' 'soraka'))
+    "${skylake[@]}" 'atlas' 'eve' 'nocturne' 'soraka' 'vayne'))
 
 #menu text output
 NORMAL=$(echo "\033[m")
