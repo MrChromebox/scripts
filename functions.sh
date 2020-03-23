@@ -615,7 +615,7 @@ esac
 [[ "${glk[@]}" =~ "$device" ]] && isGlk=true
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
 [[ "${whl[@]}" =~ "$device" ]] && isWhl=true
-[[ "${shellballs[@]}" =~ "$device" ]] && hasShellball=true
+[[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \

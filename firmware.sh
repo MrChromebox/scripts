@@ -605,14 +605,14 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 
 else
     if [[ "$hasShellball" = false ]]; then
-        exit_red "\nUnfortunately I don't have a stock firmware available to download for '${device^^}' at this time."
+        exit_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
         return 1
     fi
 
     #download firmware extracted from recovery image
     echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
 
-    if [ "${device^^}" = "PANTHER" ]; then
+    if [ "${boardName^^}" = "PANTHER" ]; then
         echo -e "Which device do you have?\n"
         echo "1) Asus CN60 [PANTHER]"
         echo "2) HP CB1 [ZAKO]"
@@ -651,7 +651,7 @@ else
 	    #confirm device detection
         echo_yellow "Confirm system details:"
         echo -e "Device: ${deviceDesc}"
-        echo -e "Board Name: ${device^^}"
+        echo -e "Board Name: ${boardName^^}"
         echo -e ""
         read -ep "? [y/N] "
         if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
@@ -659,7 +659,7 @@ else
             return 1
         fi
         echo -e ""
-        _device=${device}
+        _device=${boardName,,}
     fi
 
     #download shellball ROM
