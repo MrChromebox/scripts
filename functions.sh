@@ -48,6 +48,7 @@ hasLAN=false
 hasCR50=false
 kbl_use_rwl18=false
 useAltfwStd=false
+runsWindows=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
@@ -78,6 +79,9 @@ UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" 
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" 'atlas' 'eve' 'nocturne' 'soraka' 'vayne'))
+runs_windows=($(printf "%s " "${snb_ivb[@]}" "${hsw_boxes[@]}" "${hsw_books[@]}" \
+    "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${braswell[@]}" 'eve' \
+    "${purism[@]}"))
 
 #menu text output
 NORMAL=$(echo "\033[m")
@@ -625,6 +629,7 @@ esac
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
+[[ "${runs_windows[@]}" =~ "$device" ]] && runsWindows=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
