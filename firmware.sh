@@ -461,23 +461,13 @@ fi
 
 #flash Full ROM firmware
 
-#flash only BIOS region, to avoid IFD mismatch upon verification 
+#flash without verify, to avoid IFD mismatch upon verification 
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
-${flashromcmd} -i BIOS -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+${flashromcmd} -n -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    #try using SI_BIOS
-    ${flashromcmd} -i SI_BIOS -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        #try without specifying region
-        ${flashromcmd} -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            cat /tmp/flashrom.log
-            exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
-        fi
-    fi
-fi
-
-if [ $? -eq 0 ]; then
+    cat /tmp/flashrom.log
+    exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
+else
     echo_green "Full ROM firmware successfully installed/updated."
 
     #Prevent from trying to boot stock ChromeOS install
@@ -509,8 +499,6 @@ Select the D option from the main main in order to do so."
     else
         firmwareType="Full ROM / Legacy (pending reboot)"
     fi
-else
-    echo_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"
 fi
 
 read -ep "Press [Enter] to return to the main menu."
