@@ -92,8 +92,8 @@
 		"sha1": "4e80b4ae00b0220a82a947c0f13969204c62d0cb"
 	},
 	"lulu": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-lulu-mrchromebox_20200317.rom",
-		"sha1": "47a42c814330bcfe6788610b2fd601ab8cd649ef"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-lulu-mrchromebox_20200320.rom",
+		"sha1": "360cb61dd67be847e561aca5599fff3320aedc65"
 	},
 	"rikku": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-rikku-mrchromebox_20200317.rom",
