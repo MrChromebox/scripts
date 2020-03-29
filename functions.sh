@@ -78,7 +78,7 @@ UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" 
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}"))
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
-    "${skylake[@]}" 'atlas' 'eve' 'nocturne' 'soraka' 'vayne'))
+    "${skylake[@]}" 'atlas' 'eve' 'nocturne' 'soraka' 'teemo' 'vayne'))
 runs_windows=($(printf "%s " "${snb_ivb[@]}" "${hsw_boxes[@]}" "${hsw_books[@]}" \
     "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${braswell[@]}" 'eve' \
     "${purism[@]}"))
