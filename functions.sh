@@ -32,6 +32,7 @@ isKbl=false
 isGlk=false
 isStr=false
 isWhl=false
+isCml=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -72,6 +73,7 @@ glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara')
 whl=('arcada' 'sarien')
+cml=('hatch' 'helios' 'kohaku')
 LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -468,12 +470,14 @@ case "${_hwid}" in
     GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
     GNAWTY*)                _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)' ;;
     GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
+    HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
     IEC_MARIO)              _x='PNV|Google Cr-48' ;;
     KASUMI*)                _x='STR|Acer Chromebook 311' ; device="kasumi";;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
     KENCH*)                 _x='KBL|HP Chromebox G2' ; device="fizz";;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
+    KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
     LEONA*)                 _x='KBL|Asus Chromebook C425TA' ; device="rammus";;
@@ -600,6 +604,7 @@ KBL) deviceCpuType="Intel KabyLake" ;;
 GLK) deviceCpuType="Intel GeminiLake" ;;
 STR) deviceCpuType="AMD StoneyRidge" ;;
 WHL) deviceCpuType="Intel WhiskeyLake" ;;
+CML) deviceCpuType="Intel CometLake" ;;
 *)   deviceCpuType="(unrecognized)" ;;
 esac
 
@@ -619,6 +624,7 @@ esac
 [[ "${glk[@]}" =~ "$device" ]] && isGlk=true
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
 [[ "${whl[@]}" =~ "$device" ]] && isWhl=true
+[[ "${cml[@]}" =~ "$device" ]] && isCml=true
 [[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
