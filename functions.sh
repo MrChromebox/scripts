@@ -553,7 +553,7 @@ case "${_hwid}" in
     SNAPPY_???-C*)          _x='APL|HP Chromebook 14 G5' device="snappy";;
     SNAPPY*)                _x='APL|(unknown SNAPPY)' device="snappy";;
     SPARKY*)                _x='GLK|Acer Chromebook 512 (C851/C851T)' ;;
-    SONA*)                  _x='KBL|HP Chromebook x360 14' ;;
+    SONA*)                  _x='KBL|HP Chromebook x360 14' ; device="nami";;
     SORAKA*)                _x='KBL|HP Chromebook x2' ;;
     SQUAWKS*)               _x='BYT|ASUS Chromebook C200' ;;
     STOUT*)                 _x='IVB|Lenovo Thinkpad X131e Chromebook' ;;
