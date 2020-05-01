@@ -63,7 +63,7 @@ skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
 snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'coral' 'electro' 'epaulette' \
     'lava' 'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
-kbl_boxes=('bleemo' 'fizz' 'kench' 'sion' 'teemo' 'wukong')
+kbl_boxes=('bleemo' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
@@ -473,6 +473,7 @@ case "${_hwid}" in
     HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
     IEC_MARIO)              _x='PNV|Google Cr-48' ;;
+    JAX*)                   _x='KBL|AOpen Chromebox Commercial 2' ; device="fizz";;
     KASUMI*)                _x='STR|Acer Chromebook 311' ; device="kasumi";;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
     KENCH*)                 _x='KBL|HP Chromebox G2' ; device="fizz";;
