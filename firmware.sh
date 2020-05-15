@@ -1386,4 +1386,92 @@ function menu_fwupdate() {
     esac
 }
 
+function uefi_menu() {
+    printf "\ec"
+    echo -e "${NORMAL}\nChromebook/Chromebox UEFI Flashing Script ${script_date} ${NORMAL}"
+    echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
+    echo -e "${MENU}*********************************************************${NORMAL}"
+    echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
+    echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
+    echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
+    if [[ $isUEFI == true && $hasUEFIoption = true ]]; then
+        # check if update available
+        curr_yy=`echo $fwDate | cut -f 3 -d '/'`
+        curr_mm=`echo $fwDate | cut -f 1 -d '/'`
+        curr_dd=`echo $fwDate | cut -f 2 -d '/'`
+        eval coreboot_file=$`echo "coreboot_uefi_${device}"`
+        uefi_yy=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c1-4`
+        uefi_mm=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c5-6`
+        uefi_dd=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c7-8`
+        if [[ ($uefi_yy > $curr_yy) || \
+            ($uefi_yy == $curr_yy && $uefi_mm > $curr_mm) || \
+            ($uefi_yy == $curr_yy && $uefi_mm == $curr_mm && $uefi_dd > $curr_dd) ]]; then
+            echo -e "${MENU}**${NORMAL}           ${GREEN_TEXT}Update Available ($uefi_mm/$uefi_dd/$uefi_yy)${NORMAL}"
+        fi
+    fi
+    if [ "$wpEnabled" = true ]; then
+        echo -e "${MENU}**${NUMBER}    Fw WP: ${RED_TEXT}Enabled${NORMAL}"
+	WP_TEXT=${RED_TEXT}
+    else
+        echo -e "${MENU}**${NUMBER}    Fw WP: ${NORMAL}Disabled"
+	WP_TEXT=${GREEN_TEXT}
+    fi
+    echo -e "${MENU}*********************************************************${NORMAL}"
+    if [[ "$hasUEFIoption" = true ]]; then
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 1)${MENU} Install/Update coreboot/UEFI Firmware ${NORMAL}"
+    else
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update coreboot/UEFI Firmware${NORMAL}"
+    fi
+    if [[ "$isChromeOS" = false  && "$isFullRom" = true ]]; then
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Restore Stock Firmware ${NORMAL}"
+    else
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Restore Stock Firmware ${NORMAL}"
+    fi
+    echo -e "${MENU}*********************************************************${NORMAL}"
+    echo -e "${ENTER_LINE}Select a menu option or${NORMAL}"
+    [[ "$unlockMenu" = true || "$isUEFI" = true ]] && nvram="${RED_TEXT}C${NORMAL} to clear NVRAM  " || nvram=""
+    echo -e "${nvram}${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
 
+    read -e opt
+    case $opt in
+
+        1)  if [[ "$hasUEFIoption" = true ]]; then
+                flash_coreboot
+            fi
+            uefi_menu
+            ;;
+
+        2)  if [[ "$isChromeOS" = false && "$isUnsupported" = false \
+                    && "$isFullRom" = true ]]; then
+                restore_stock_firmware
+            fi
+            uefi_menu
+            ;;
+
+        [rR])  echo -e "\nRebooting...\n";
+            cleanup
+            reboot
+            exit
+            ;;
+
+        [pP])  echo -e "\nPowering off...\n";
+            cleanup
+            poweroff
+            exit
+            ;;
+
+        [qQ])  cleanup;
+            exit;
+            ;;
+
+        [cC]) if [[ "$isUEFI" = true ]]; then
+                clear_nvram
+            fi
+            uefi_menu
+            ;;
+
+        *)  clear
+            uefi_menu;
+            ;;
+    esac
+}
