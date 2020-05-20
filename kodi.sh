@@ -614,7 +614,11 @@ function menu_kodi() {
 		echo -e "${MENU}**${NORMAL}"
 	fi
 	echo -e "${MENU}**${NORMAL}     Standalone ${NORMAL}"
-    echo -e "${MENU}**${NUMBER}  6)${MENU} Install/Update: Custom UEFI Firmware ${NORMAL}"
+	if [[ "$hasUEFIoption" = true ]]; then
+		echo -e "${MENU}**${NUMBER}  6)${MENU} Install/Update: Custom UEFI Firmware ${NORMAL}"
+    else
+		echo -e "${GRAY_TEXT}**${GRAY_TEXT}  6)${GRAY_TEXT} Install/Update: Custom UEFI Firmware ${NORMAL}"
+    fi
     echo -e "${MENU}**${NUMBER}  7)${MENU} Create LibreELEC Install Media ${NORMAL}"
     echo -e "${MENU}******************************************************${NORMAL}"
     echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
@@ -656,7 +660,9 @@ function menu_kodi() {
 			case $opt in
 				
 			6)	clear;
-				flash_coreboot useUEFI;
+				if [[ "$hasUEFIoption" = true ]]; then
+					flash_coreboot useUEFI;
+				fi
 				menu_kodi;
 				;;		
 			7) 	clear;
