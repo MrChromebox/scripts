@@ -377,7 +377,7 @@ if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
     #check if we need to use a newer flashrom which supports output to log file (-o)
     flashromcmd=$(which flashrom)
     ${flashromcmd} -V -o /dev/null > /dev/null 2>&1
-    [[ $? -ne 0 ]] && flashromcmd=/tmp/boot/util/flashrom  
+    [[ $? -ne 0 || -d /sys/firmware/efi ]] && flashromcmd=/tmp/boot/util/flashrom  
     cbfstoolcmd=/tmp/boot/util/cbfstool
     gbbutilitycmd=$(which gbb_utility)
 else
@@ -408,7 +408,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #get full device info
-if [[ "$isChromeOS" = true ]]; then
+if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
     _hwid=$(crossystem hwid | sed 's/ /_/g')
     boardName=$(crossystem hwid | awk 'NR==1{print $1}')
 else
