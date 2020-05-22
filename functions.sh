@@ -650,19 +650,19 @@ if [ $? -ne 0 ]; then
 fi
 
 # check firmware type
-${cbfstoolcmd} bios.bin layout -w > /tmp/layout 2>/dev/null
+${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
 if grep "RO_VPD" /tmp/layout >/dev/null 2>&1; then
   # stock firmware
   isStock=true
   firmwareType="Stock ChromeOS"
   # check BOOT_STUB
   if grep "BOOT_STUB" /tmp/layout >/dev/null 2>&1; then
-    if ! ${cbfstoolcmd} bios.bin print -r BOOT_STUB 2>/dev/null | grep -e "vboot" >/dev/null 2>&1 ; then
+    if ! ${cbfstoolcmd} /tmp/bios.bin print -r BOOT_STUB 2>/dev/null | grep -e "vboot" >/dev/null 2>&1 ; then
         [[ "${device^^}" != "LINK" ]] && firmwareType="Stock w/modified BOOT_STUB"
     fi
   fi
   # check RW_LEGACY
-  if ${cbfstoolcmd} bios.bin print -r RW_LEGACY 2>/dev/null | grep -e "payload" -e "altfw" >/dev/null 2>&1 ; then
+  if ${cbfstoolcmd} /tmp/bios.bin print -r RW_LEGACY 2>/dev/null | grep -e "payload" -e "altfw" >/dev/null 2>&1 ; then
     firmwareType="Stock ChromeOS w/RW_LEGACY"
   fi
 else
