@@ -479,6 +479,7 @@ case "${_hwid}" in
     KENCH*)                 _x='KBL|HP Chromebox G2' ; device="fizz";;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
+    LARS_???-???-???-?3?*)  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
     LEONA*)                 _x='KBL|Asus Chromebook C425TA' ; device="rammus";;
@@ -498,7 +499,6 @@ case "${_hwid}" in
     LIBREM15V3)             _x='SKL|Purism Librem 15 v3' ;;
     LIBREM_15_V4)           _x='KBL|Purism Librem 15 v4' ; device="librem15v4";;
     LIBREM15V4)             _x='KBL|Purism Librem 15 v4' ;;
-    LILI*)                  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
