@@ -669,15 +669,16 @@ else
     # non-stock firmware
     isStock=false
     isFullRom=true
-    fwVer=$(dmidecode -s bios-version)
-    fwDate=$(dmidecode -s bios-release-date)
     if [[ -d /sys/firmware/efi ]]; then
         isUEFI=true
-        firmwareType="Full ROM / UEFI ($fwVer $fwDate)"
+        firmwareType="Full ROM / UEFI"
     else
-        firmwareType="Full ROM / Legacy ($fwVer $fwDate)"
+        firmwareType="Full ROM / Legacy"
     fi
-fi 
+fi
+# firmware date/version
+fwVer=$(dmidecode -s bios-version)
+fwDate=$(dmidecode -s bios-release-date)
 
 #check WP status
 

@@ -130,7 +130,7 @@ if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     echo_red "An error occurred flashing the RW_LEGACY firmware."
 else
-    echo_green "RW_LEGACY firmware successfully installed/updated."
+  echo_green "RW_LEGACY firmware successfully installed/updated."
   # update firmware type
   firmwareType="Stock ChromeOS w/RW_LEGACY"
 fi
@@ -1208,8 +1208,9 @@ function menu_fwupdate() {
     echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
     echo -e "${MENU}*********************************************************${NORMAL}"
     echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
-    echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
+    echo -e "${MENU}**${NUMBER} Platform: ${NORMAL}$deviceCpuType"
     echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
+    echo -e "${MENU}**${NUMBER}   Fw Ver: ${NORMAL}$fwVer ($fwDate)"
     if [[ $isUEFI == true && $hasUEFIoption = true ]]; then
         # check if update available
         curr_yy=`echo $fwDate | cut -f 3 -d '/'`
@@ -1393,8 +1394,9 @@ function uefi_menu() {
     echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
     echo -e "${MENU}*********************************************************${NORMAL}"
     echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
-    echo -e "${MENU}**${NUMBER} CPU Type: ${NORMAL}$deviceCpuType"
+    echo -e "${MENU}**${NUMBER} Platform: ${NORMAL}$deviceCpuType"
     echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
+    echo -e "${MENU}**${NUMBER}   Fw Ver: ${NORMAL}$fwVer ($fwDate)"
     if [[ $isUEFI == true && $hasUEFIoption = true ]]; then
         # check if update available
         curr_yy=`echo $fwDate | cut -f 3 -d '/'`
