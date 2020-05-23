@@ -667,6 +667,7 @@ else
     fi
 
     #download shellball ROM
+    echo_yellow "Downloading shellball.${_device}.bin"
     curl -s -L -o /tmp/stock-firmware.rom ${shellball_source}shellball.${_device}.bin;
     [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
 
