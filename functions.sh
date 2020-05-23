@@ -420,8 +420,8 @@ case "${_hwid}" in
     ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
     AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
     ALEENA*)                _x='STR|Acer Chromebook 315' ; device="aleena";;
-    AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ; device="octopus";;
-    APEL*)                  _x='GLK|Asus Chromebook Flip C204' ; device="octopus";;
+    AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ;;
+    APEL*)                  _x='GLK|Asus Chromebook Flip C204' ;;
     ARCADA*)                _x='WHL|Dell Latitude 5300/5400' ; device="sarien";;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
     ASUKA*)                 _x='SKL|Dell Chromebook 13 (3380)' ;;
@@ -503,8 +503,8 @@ case "${_hwid}" in
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
-    MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ; device="octopus";;
-    MIMROCK*)               _x='GLK|HP Chromebook 11 G7 EE' ; device="octopus";;
+    MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ;;
+    MIMROCK*)               _x='GLK|HP Chromebook 11 G7 EE' ;;
     MONROE*)                _x='HSW|LG Chromebase' ;;
     NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
     NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ; device="nasher";;
