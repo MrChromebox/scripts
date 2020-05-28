@@ -74,7 +74,6 @@ glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara')
 whl=('arcada' 'sarien')
 cml=('hatch' 'helios' 'kohaku')
-LegacyROMs=($(printf "%s " "${hsw_boxes[@]}" "${bdw_boxes[@]}" "stumpy"));
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}"))
@@ -628,7 +627,6 @@ esac
 [[ "${cml[@]}" =~ "$device" ]] && isCml=true
 [[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
-[[ "${LegacyROMs[@]}" =~ "$device" ]] && hasLegacyOption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
     || "$isSkl" = true || "$isSnbIvb" = "true" \
     || "$isApl" = "true" || "$isKbl" = "true" || "$isStr" = true ]] || isUnsupported=true

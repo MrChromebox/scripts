@@ -108,18 +108,6 @@ coreboot_uefi_careena="coreboot_tiano-careena-mrchromebox_20200317.rom"
 coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20200317.rom"
 coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20200317.rom"
 
-#Legacy Full ROMs (deprecated)
-#SNB/IVB
-coreboot_stumpy="coreboot_seabios-stumpy-mrchromebox_20180204.rom"
-#Haswell
-coreboot_mccloud="coreboot_seabios-mccloud-mrchromebox_20180204.rom"
-coreboot_panther="coreboot_seabios-panther-mrchromebox_20180204.rom"
-coreboot_tricky="coreboot_seabios-tricky-mrchromebox_20180204.rom"
-coreboot_zako="coreboot_seabios-zako-mrchromebox_20180204.rom"
-#Broadwell
-coreboot_guado="coreboot_seabios-guado-mrchromebox_20180204.rom"
-coreboot_rikku="coreboot_seabios-rikku-mrchromebox_20180204.rom"
-coreboot_tidus="coreboot_seabios-tidus-mrchromebox_20180204.rom"
 
 #RW_LEGACY payloads
 seabios_link="seabios-link-mrchromebox_20180912.bin"
@@ -133,9 +121,6 @@ seabios_kbl="seabios-kbl-mrchromebox_20200223.bin"
 seabios_kbl_18="seabios-kbl_18-mrchromebox_20200223.bin"
 rwl_altfw_stoney="rwl_altfw_stoney-mrchromebox_20200107.bin"
 #rwl_altfw="rwl_altfw-mrchromebox_20200223.bin"
-
-#BOOT_STUB payloads
-bootstub_payload_baytrail="seabios-byt_bootstub-mrchromebox_20180912.bin"
 
 
 #hsw/bdw headless VBIOS
