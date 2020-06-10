@@ -1411,6 +1411,9 @@ function uefi_menu() {
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Restore Stock ChromeOS Firmware ${NORMAL}"
     fi
+    if [[ "${device^^}" = "EVE" ]]; then
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
+    fi
     if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
     fi
@@ -1434,6 +1437,12 @@ function uefi_menu() {
             else
               uefi_menu
             fi
+            ;;
+
+        [dD])  if [[  "${device^^}" = "EVE" ]]; then
+                downgrade_touchpad_fw
+            fi
+            uefi_menu
             ;;
 
         [rR])  echo -e "\nRebooting...\n";
