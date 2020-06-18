@@ -32,16 +32,16 @@
 		"sha1": "bad66fbc59cbea67cda3c269f6b0f9cadf7de40f"
 	},
 	"mccloud": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-mccloud-mrchromebox_20200604.rom",
-		"sha1": "174f191594ab9ef0e05310100b509e683099d7a0"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-mccloud-mrchromebox_20200618.rom",
+		"sha1": "221bdb37ea7ffd986e883b68b947b80d01c84dde"
 	},
 	"monroe": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-monroe-mrchromebox_20200604.rom",
 		"sha1": "2eb617e3da2b0f19a18813eb9d61aa2ae6043e63"
 	},
 	"panther": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-panther-mrchromebox_20200604.rom",
-		"sha1": "603b84c9e906f53e550e27d5e9952b3bbe12b264"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-panther-mrchromebox_20200618.rom",
+		"sha1": "6516fd0b4e0b9b9a36084b76ad943ec9b6e81db0"
 	},
 	"peppy": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20200604.rom",
@@ -52,16 +52,16 @@
 		"sha1": "5132e1d8a3a81aa5260ab9e7f27da258a8d234a3"
 	},
 	"tricky": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-tricky-mrchromebox_20200604.rom",
-		"sha1": "a41f6c04aa3738477fe419b29672153cb3fcc19a"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-tricky-mrchromebox_20200618.rom",
+		"sha1": "2f52f3f66ab574728b7fa51e5cb57b898215500b"
 	},
 	"wolf": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-wolf-mrchromebox_20200604.rom",
 		"sha1": "a78a717f89f8e11d0d21020a644c8261de717923"
 	},
 	"zako": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-zako-mrchromebox_20200604.rom",
-		"sha1": "0c4e6d4110f9a06014ba1b53994e491081893b26"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-zako-mrchromebox_20200618.rom",
+		"sha1": "2cfe53a73930552901360de8199cbf074e30a582"
 	},
 	"auron_paine": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-auron_paine-mrchromebox_20200604.rom",

@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2020-06-04]"
+script_date="[2020-06-18]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -38,14 +38,14 @@ coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20200604.rom"
 #Haswell
 coreboot_uefi_falco="coreboot_tiano-falco-mrchromebox_20200604.rom"
 coreboot_uefi_leon="coreboot_tiano-leon-mrchromebox_20200604.rom"
-coreboot_uefi_mccloud="coreboot_tiano-mccloud-mrchromebox_20200604.rom"
+coreboot_uefi_mccloud="coreboot_tiano-mccloud-mrchromebox_20200618.rom"
 coreboot_uefi_monroe="coreboot_tiano-monroe-mrchromebox_20200604.rom"
-coreboot_uefi_panther="coreboot_tiano-panther-mrchromebox_20200604.rom"
+coreboot_uefi_panther="coreboot_tiano-panther-mrchromebox_20200618.rom"
 coreboot_uefi_peppy="coreboot_tiano-peppy-mrchromebox_20200604.rom"
 coreboot_uefi_peppy_elan="coreboot_tiano-peppy_elan-mrchromebox_20200604.rom"
-coreboot_uefi_tricky="coreboot_tiano-tricky-mrchromebox_20200604.rom"
+coreboot_uefi_tricky="coreboot_tiano-tricky-mrchromebox_20200618.rom"
 coreboot_uefi_wolf="coreboot_tiano-wolf-mrchromebox_20200604.rom"
-coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20200604.rom"
+coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20200618.rom"
 #Broadwell
 coreboot_uefi_auron_paine="coreboot_tiano-auron_paine-mrchromebox_20200604.rom"
 coreboot_uefi_auron_yuna="coreboot_tiano-auron_yuna-mrchromebox_20200604.rom"
