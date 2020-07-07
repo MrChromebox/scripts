@@ -107,6 +107,7 @@ coreboot_uefi_barla="coreboot_tiano-barla-mrchromebox_20200604.rom"
 coreboot_uefi_careena="coreboot_tiano-careena-mrchromebox_20200604.rom"
 coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20200604.rom"
 coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20200604.rom"
+coreboot_uefi_treeya="coreboot_tiano-treeya-mrchromebox_20200707.rom"
 
 
 #RW_LEGACY payloads
