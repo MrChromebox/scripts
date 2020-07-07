@@ -649,7 +649,7 @@ fi
 
 # check firmware type
 ${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-if grep "RO_VPD" /tmp/layout >/dev/null 2>&1; then
+if grep "RW_VPD" /tmp/layout >/dev/null 2>&1; then
   # stock firmware
   isStock=true
   firmwareType="Stock ChromeOS"
