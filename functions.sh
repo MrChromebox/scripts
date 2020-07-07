@@ -409,7 +409,7 @@ fi
 #get full device info
 if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
     _hwid=$(crossystem hwid | sed 's/ /_/g')
-    boardName=$(crossystem hwid | awk 'NR==1{print $1}')
+    boardName=$(crossystem hwid | awk 'NR==1{print $1}' | cut -f 1 -d'-')
 else
     _hwid=${device^^}
     boardName=${device^^}
