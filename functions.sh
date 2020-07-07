@@ -71,9 +71,9 @@ kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4');
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
-str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara')
+str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
-cml=('hatch' 'helios' 'kohaku')
+cml=('akemi' 'hatch' 'helios' 'kindred' 'kohaku')
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}"))
@@ -418,6 +418,7 @@ fi
 case "${_hwid}" in
     ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
     AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
+    AKEMI*)                 _x='CML|Lenovo Ideapad Flex 5 Chromebook' ;;
     ALEENA*)                _x='STR|Acer Chromebook 315' ; device="aleena";;
     AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ;;
     APEL*)                  _x='GLK|Asus Chromebook Flip C204' ;;
@@ -476,6 +477,7 @@ case "${_hwid}" in
     KASUMI*)                _x='STR|Acer Chromebook 311' ; device="kasumi";;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
     KENCH*)                 _x='KBL|HP Chromebox G2' ; device="fizz";;
+    KINDRED*)               _x='CML|Acer Chromebook 712 (C871)' ;;
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
     LARS_???-???-???-?3?*)  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
@@ -566,6 +568,8 @@ case "${_hwid}" in
     TERRA_???-???-???-B*)   _x='BSW|ASUS Chromebook C300SA/C301SA' ; device="terra";;
     TERRA*)                 _x='BSW|ASUS Chromebook C202SA, C300SA/C301SA' ; device="terra";;
     TIDUS*)                 _x='BDW|Lenovo ThinkCentre Chromebox' ;;
+    TREEYA360*)             _x='STR|Lenovo 300e Chromebook 2nd Gen AMD' ; device="treeya";;
+    TREEYA*)                _x='STR|Lenovo 100e Chromebook 2nd Gen AMD' ; device="treeya";;
     TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
