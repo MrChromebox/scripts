@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2020-06-18]"
+script_date="[2020-07-18]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -137,6 +137,7 @@ coreboot_uefi_librem13v4="coreboot_tiano-librem13v4-mrchromebox_20200604.rom"
 coreboot_uefi_librem15v2="coreboot_tiano-librem15v2-mrchromebox_20200604.rom"
 coreboot_uefi_librem15v3="coreboot_tiano-librem15v3-mrchromebox_20200604.rom"
 coreboot_uefi_librem15v4="coreboot_tiano-librem15v4-mrchromebox_20200604.rom"
+coreboot_uefi_librem_mini="coreboot_tiano-librem_mini-mrchromebox_20200718.rom"
 
 # other
 touchpad_eve_fw="rose_v1.1.8546-ee1861e9e.bin"

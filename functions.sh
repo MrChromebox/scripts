@@ -68,7 +68,7 @@ kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
-purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4');
+purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' 'librem_mini');
 glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
@@ -500,6 +500,7 @@ case "${_hwid}" in
     LIBREM15V3)             _x='SKL|Purism Librem 15 v3' ;;
     LIBREM_15_V4)           _x='KBL|Purism Librem 15 v4' ; device="librem15v4";;
     LIBREM15V4)             _x='KBL|Purism Librem 15 v4' ;;
+    LIBREM_MINI)            _x='WHL|Purism Librem Mini' ; device="librem_mini";;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
