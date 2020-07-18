@@ -1236,9 +1236,10 @@ function show_header() {
         curr_mm=`echo $fwDate | cut -f 1 -d '/'`
         curr_dd=`echo $fwDate | cut -f 2 -d '/'`
         eval coreboot_file=$`echo "coreboot_uefi_${device}"`
-        uefi_yy=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c1-4`
-        uefi_mm=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c5-6`
-        uefi_dd=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c7-8`
+        date=`echo $coreboot_file | grep -o "mrchromebox.*" | cut -f 2 -d '_' | cut -f 1 -d '.'`
+        uefi_yy=`echo $date | cut -c1-4`
+        uefi_mm=`echo $date | cut -c5-6`
+        uefi_dd=`echo $date | cut -c7-8`
         if [[ ("$firmwareType" != *"pending"*) && (($uefi_yy > $curr_yy) || \
             ($uefi_yy == $curr_yy && $uefi_mm > $curr_mm) || \
             ($uefi_yy == $curr_yy && $uefi_mm == $curr_mm && $uefi_dd > $curr_dd)) ]]; then
