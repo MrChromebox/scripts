@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-script_date="[2020-07-18]"
+script_date="[2020-10-17]"
 
 #where the stuff is
 util_source="https://www.mrchromebox.tech/files/util/"
@@ -121,7 +121,7 @@ seabios_apl="seabios-apl-mrchromebox_20180912.bin"
 seabios_kbl="seabios-kbl-mrchromebox_20200223.bin"
 seabios_kbl_18="seabios-kbl_18-mrchromebox_20200223.bin"
 rwl_altfw_stoney="rwl_altfw_stoney-mrchromebox_20200107.bin"
-#rwl_altfw="rwl_altfw-mrchromebox_20200223.bin"
+rwl_altfw_whl="rwl_altfw_whl-mrchromebox_20201017.bin"
 
 
 #hsw/bdw headless VBIOS

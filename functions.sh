@@ -634,7 +634,8 @@ esac
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
     || "$isSkl" = true || "$isSnbIvb" = "true" \
-    || "$isApl" = "true" || "$isKbl" = "true" || "$isStr" = true ]] || isUnsupported=true
+    || "$isApl" = "true" || "$isKbl" = "true" \
+    || "$isStr" = true || "$isWhl" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
