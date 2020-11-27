@@ -109,6 +109,8 @@ coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20200604.rom"
 coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20200604.rom"
 coreboot_uefi_treeya="coreboot_tiano-treeya-mrchromebox_20200707.rom"
 
+#CometLake
+
 
 #RW_LEGACY payloads
 seabios_link="seabios-link-mrchromebox_20180912.bin"
