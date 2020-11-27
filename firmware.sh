@@ -478,14 +478,11 @@ else
        rm -rf /tmp/boot/syslinux > /dev/null 2>&1
     fi
 
-    #Warn about long RAM training time, keyboard on Braswell
-    if [[ "$isBsw" = true ]]; then
-        echo_yellow "IMPORTANT:\nThe first boot after flashing may take substantially
+    #Warn about long RAM training time
+    echo_yellow "IMPORTANT:\nThe first boot after flashing may take substantially
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
-        echo_yellow "Additionally, GalliumOS users need to use the v3.0 ISO; the keyboard
-will not work with older versions due a bug in the older kernel."
-    fi
+
     # Add note on touchpad firmware for EVE
     if [[ "${device^^}" = "EVE" && "$isStock" = true ]]; then
         echo_yellow "IMPORTANT:\n
