@@ -258,7 +258,12 @@ if [ ! -f ${flashromcmd} ]; then
         cd /tmp/boot/util
     fi
 
-    curl -sLO "${util_source}flashrom.tar.gz"
+    if if [[ "$isChromeOS" = true ]]; then
+        #needed to avoid dependencies not found on older ChromeOS
+        curl -sLO "${util_source}flashrom_old.tar.gz"
+    else
+        curl -sLO "${util_source}flashrom.tar.gz"
+    fi
     if [ $? -ne 0 ]; then
         echo_red "Error downloading flashrom; cannot proceed."
         #restore working dir
