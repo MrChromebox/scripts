@@ -69,7 +69,7 @@ kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
 kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' 'librem_mini');
-glk=('ampton' 'apel' 'bobba' 'bobba360' 'bobba' 'meep' 'mimrock' 'octopus' \
+glk=('ampton' 'apel' 'bluebird' 'bobba' 'bobba360' 'bobba' 'lick' 'meep' 'mimrock' 'octopus' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
@@ -436,6 +436,7 @@ case "${_hwid}" in
     BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ; device="barla";;
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
+    BLUEBIRD*)              _x='GLK|Samsung Chromebook 4' ; device="bluebird";;
     BOBBA360*)              _x='GLK|Acer Chromebook Spin 511' ;;
     BOBBA*)                 _x='GLK|Acer Chromebook 311' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
@@ -501,6 +502,7 @@ case "${_hwid}" in
     LIBREM_15_V4)           _x='KBL|Purism Librem 15 v4' ; device="librem15v4";;
     LIBREM15V4)             _x='KBL|Purism Librem 15 v4' ;;
     LIBREM_MINI)            _x='WHL|Purism Librem Mini' ; device="librem_mini";;
+    LICK*)                  _x='GLK|Lenovo Ideapad 3 Chromebook' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
