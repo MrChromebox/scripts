@@ -258,7 +258,7 @@ if [ ! -f ${flashromcmd} ]; then
         cd /tmp/boot/util
     fi
 
-    if if [[ "$isChromeOS" = true ]]; then
+    if [[ "$isChromeOS" = true ]]; then
         #needed to avoid dependencies not found on older ChromeOS
         curl -sLO "${util_source}flashrom_old.tar.gz"
     else
