@@ -33,6 +33,7 @@ isGlk=false
 isStr=false
 isWhl=false
 isCml=false
+isCmlBox=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -73,7 +74,9 @@ glk=('ampton' 'apel' 'bluebird' 'bobba' 'bobba360' 'bobba' 'lick' 'meep' 'mimroc
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
-cml=('akemi' 'hatch' 'helios' 'kindred' 'kohaku')
+cml_boxes=('duffy' 'kaisa' 'noibat' 'puff' 'wyvern')
+cml_books=('akemi' 'dragonair' 'drillion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku')
+cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}"))
@@ -641,12 +644,13 @@ esac
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
 [[ "${whl[@]}" =~ "$device" ]] && isWhl=true
 [[ "${cml[@]}" =~ "$device" ]] && isCml=true
+[[ "${cml_boxes[@]}" =~ "$device" ]] && isCmlBox=true
 [[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
-    || "$isSkl" = true || "$isSnbIvb" = "true" \
-    || "$isApl" = "true" || "$isKbl" = "true" \
-    || "$isStr" = true || "$isWhl" = true ]] || isUnsupported=true
+    || "$isSkl" = true || "$isSnbIvb" = "true" || "$isApl" = "true" \
+    || "$isKbl" = "true" || "$isStr" = true || "$isWhl" = true \
+    || "$isCmlBox" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true

@@ -41,6 +41,8 @@ elif [ "$isKbl" = true ]; then
     rwlegacy_file=$seabios_kbl
 elif [ "$isWhl" = true ]; then
     rwlegacy_file=$rwl_altfw_whl
+elif [ "$isCmlBox" = true ]; then
+    rwlegacy_file=$rwl_altfw_cml
 else
     echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
     read -ep "Press enter to return to the main menu"
