@@ -51,6 +51,7 @@ hasCR50=false
 kbl_use_rwl18=false
 useAltfwStd=false
 runsWindows=false
+persistVPD=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
@@ -656,6 +657,7 @@ esac
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
 [[ "${runs_windows[@]}" =~ "$device" ]] && runsWindows=true
+[[ "${cml[@]}" =~ "$device" ]] && persistVPD=true
 
 #get device firmware info
 echo -e "\nGetting device/system info..."

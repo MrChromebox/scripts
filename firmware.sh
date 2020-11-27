@@ -448,6 +448,12 @@ if [[ $useUEFI = "true" &&  $? -eq 0 ]]; then
     ${cbfstoolcmd} ${coreboot_file} write -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
 fi
 
+#Persist VPD?
+if [[ $persistVPD = "true" ]]; then
+    ${cbfstoolcmd} /tmp/bios.bin read -r RO_VPD -f /tmp/ro_vpd > /dev/null 2>&1
+    ${cbfstoolcmd} ${coreboot_file} write -r RO_VPD -f /tmp/ro_vpd > /dev/null 2>&1
+fi
+
 #disable software write-protect
 echo_yellow "Disabling software write-protect and clearing the WP range"
 ${flashromcmd} --wp-disable > /dev/null 2>&1
