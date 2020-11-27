@@ -71,7 +71,8 @@ kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
 kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' 'librem_mini');
-glk=('ampton' 'apel' 'bluebird' 'bobba' 'bobba360' 'bobba' 'lick' 'meep' 'mimrock' 'octopus' \
+glk=('ampton' 'apel' 'bluebird' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360' 'casta' 'droid' \
+    'fleex' 'glk' 'grabbiter' 'laser' 'laser14' 'lick' 'meep' 'mimrock' 'octopus' 'orbatrix' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
@@ -440,6 +441,9 @@ case "${_hwid}" in
     BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ; device="barla";;
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
+    BLOOGLET*)              _x='GLK|HP Chromebook 14a';;
+    BLOOGUARD*)             _x='GLK|HP Chromebook x360 14b';;
+    BLORB*)                 _x='GLK|Acer Chromebook 315';;
     BLUEBIRD*)              _x='GLK|Samsung Chromebook 4' ; device="bluebird";;
     BOBBA360*)              _x='GLK|Acer Chromebook Spin 511' ;;
     BOBBA*)                 _x='GLK|Acer Chromebook 311' ;;
@@ -448,6 +452,7 @@ case "${_hwid}" in
     CANDY*)                 _x='BYT|Dell Chromebook 11' ;;
     CAREENA*)               _x='STR|HP Chromebook 14' ; device="careena";;
     CAROLINE*)              _x='SKL|Samsung Chromebook Pro' ;;
+    CASTA*)                 _x='GLK|Samsung Chromebook 4+';;
     CAVE*)                  _x='SKL|ASUS Chromebook Flip C302' ;;
     CELES*)                 _x='BSW|Samsung Chromebook 3' ;;
     CHELL*)                 _x='SKL|HP Chromebook 13 G1' ;;
@@ -456,6 +461,7 @@ case "${_hwid}" in
     DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
     DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ;;
     DRATINI*)               _x='CML|HP Pro c640 Chromebook' ;;
+    DROID*)                 _x='GLK|Acer Chromebook 314';;
     DUFFY*)                 _x='CML|ASUS Chromebox 4' ;;
     EDGAR*)                 _x='BSW|Acer Chromebook 14 (CB3-431)' ;;
     EKKO*)                  _x='KBL|Acer Chromebook 714 (CB714)' ; device="nami";;
@@ -475,9 +481,13 @@ case "${_hwid}" in
     EVE*)                   _x='KBL|Google Pixelbook' ;;
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
     FIZZ)                   _x='KBL|TBD KBL Chromebox' ;;
+    FLEEX*)                 _x='GLK|Dell Chromebook 3100';;
     GANDOF*)                _x='BDW|Toshiba Chromebook 2 (2015) CB30/CB35' ;;
     GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
+    GLK360*)                _x='GLK|Acer Chromebook Spin 311';;
+    GLK*)                   _x='GLK|Acer Chromebook 311';;
     GNAWTY*)                _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)' ;;
+    GRABBITER*)             _x='GLK|Dell Chromebook 3100 2-in-1';;
     GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
     HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
@@ -494,6 +504,8 @@ case "${_hwid}" in
     KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
     LARS_???-???-???-?3?*)  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
+    LASER14*)               _x='GLK|Lenovo Chromebook S340';;
+    LASER*)                 _x='GLK|Lenovo Chromebook C340';;
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
     LEONA*)                 _x='KBL|Asus Chromebook C425TA' ; device="rammus";;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
@@ -528,6 +540,7 @@ case "${_hwid}" in
     NOCTURNE*)              _x='KBL|Google Pixel Slate' ;;
     NOIBAT*)                _x='CML|HP Chromebox G3' ;;
     ORCO*)                  _x='BYT|Lenovo Ideapad 100S Chromebook' ;;
+    ORBATRIX*)              _x='GLK|Dell Chromebook 3400';;
     PAINE*)                 _x='BDW|Acer Chromebook 11 (C740)' ;;
     PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630'  ; device="nami";;
     PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
