@@ -76,7 +76,7 @@ glk=('ampton' 'apel' 'bluebird' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
-cml_boxes=('duffy' 'kaisa' 'noibat' 'puff' 'wyvern')
+cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -484,6 +484,7 @@ case "${_hwid}" in
     ENGUARDE*)              _x='BYT|(multiple device matches)' ;;
     EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
     EVE*)                   _x='KBL|Google Pixelbook' ;;
+    FUFFY*)                 _x='CML|ASUS Fanless Chromebox (CF66)' ;;
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
     FIZZ)                   _x='KBL|TBD KBL Chromebox' ;;
     FLEEX*)                 _x='GLK|Dell Chromebook 3100';;
