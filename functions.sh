@@ -69,18 +69,19 @@ kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
-purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' 'librem_mini');
+purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
+        'librem_mini' 'librem_mini_v2' 'librem_14');
 glk=('ampton' 'apel' 'bluebird' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360' 'casta' 'droid' \
     'fleex' 'glk' 'grabbiter' 'laser' 'laser14' 'lick' 'meep' 'mimrock' 'octopus' 'orbatrix' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
 cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
-cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku')
+cml_books=('akemi' 'dragonair' 'drillion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
-    "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}"))
+    "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}" "${cml[@]}"))
 shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" 'atlas' 'eve' 'nocturne' 'sona' 'soraka' 'teemo' 'vayne' 'careena' 'liara'))
@@ -468,7 +469,7 @@ case "${_hwid}" in
     ENGUARDE*)              _x='BYT|(multiple device matches)' ;;
     EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
     EVE*)                   _x='KBL|Google Pixelbook' ;;
-    FUFFY*)                 _x='CML|ASUS Fanless Chromebox (CF66)' ;;
+    FAFFY*)                 _x='CML|ASUS Fanless Chromebox' ;;
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
     FIZZ)                   _x='KBL|TBD KBL Chromebox' ;;
     FLEEX*)                 _x='GLK|Dell Chromebook 3100';;
@@ -508,6 +509,7 @@ case "${_hwid}" in
     LIBREM13V3)             _x='SKL|Purism Librem 13 v3' ;;
     LIBREM_13_V4)           _x='KBL|Purism Librem 13 v4' ; device="librem13v4";;
     LIBREM13V4)             _x='KBL|Purism Librem 13 v4' ;;
+    LIBREM_14)              _x='CML|Purism Librem 14' ; device="librem_14";;
     LIBREM_15_V2)           _x='BDW|Purism Librem 15 v2' ; device="librem15v2";;
     LIBREM15V2)             _x='BDW|Purism Librem 15 v2' ;;
     LIBREM_15_V3)           _x='SKL|Purism Librem 15 v3' ; device="librem15v3";;
@@ -515,6 +517,7 @@ case "${_hwid}" in
     LIBREM_15_V4)           _x='KBL|Purism Librem 15 v4' ; device="librem15v4";;
     LIBREM15V4)             _x='KBL|Purism Librem 15 v4' ;;
     LIBREM_MINI)            _x='WHL|Purism Librem Mini' ; device="librem_mini";;
+    LIBREM_MINI_V2)         _x='CML|Purism Librem Mini v2' ; device="librem_mini_v2";;
     LICK*)                  _x='GLK|Lenovo Ideapad 3 Chromebook' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
@@ -526,6 +529,7 @@ case "${_hwid}" in
     NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
     NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ; device="nasher";;
     NASHER*)                _x='APL|Dell Chromebook 11 5190' ;;
+    NIGHTFURY*)             _x='CML|Samsung Galaxy Chromebook 2' ;;
     NINJA*)                 _x='BYT|AOpen Chromebox Commercial' ;;
     NOCTURNE*)              _x='KBL|Google Pixel Slate' ;;
     NOIBAT*)                _x='CML|HP Chromebox G3' ;;
@@ -654,7 +658,7 @@ esac
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
     || "$isSkl" = true || "$isSnbIvb" = "true" || "$isApl" = "true" \
     || "$isKbl" = "true" || "$isStr" = true || "$isWhl" = true \
-    || "$isCmlBox" = true ]] || isUnsupported=true
+    || "$isCml" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
