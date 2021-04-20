@@ -298,17 +298,6 @@ an Acer C740 (Auron_Paine) or Acer C910/CB5-571 (Auron_Yuna)?
     done
 fi
 
-#extract MAC address if needed
-if [[ "$hasLAN" = true ]]; then
-    #check if contains MAC address, extract
-    extract_vpd /tmp/bios.bin
-    if [ $? -ne 0 ]; then
-        #TODO - user enter MAC manually?
-        echo_red "\nWarning: firmware doesn't contain VPD info - unable to persist MAC address."
-        read -ep "Do you wish to continue? [y/N] "
-        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
-    fi
-fi
 
 #extract device serial if present in cbfs
 ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/null 2>&1
@@ -386,11 +375,6 @@ curl -s -L -O "${firmware_source}${coreboot_file}.sha1"
 sha1sum -c ${coreboot_file}.sha1 --quiet > /dev/null 2>&1
 [[ $? -ne 0 ]] && { exit_red "Firmware download checksum fail; download corrupted, cannot flash."; return 1; }
 
-#check if we have a VPD to restore
-if [ -f /tmp/vpd.bin ]; then
-    ${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
-fi
-
 #preferUSB?
 if [[ "$preferUSB" = true  && $useUEFI = false ]]; then
 	curl -s -L -o bootorder "${cbfs_source}bootorder.usb"
@@ -448,10 +432,13 @@ if [[ $useUEFI = "true" &&  $? -eq 0 ]]; then
     ${cbfstoolcmd} ${coreboot_file} write -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
 fi
 
-#Persist VPD?
-if [[ $persistVPD = "true" ]]; then
-    ${cbfstoolcmd} /tmp/bios.bin read -r RO_VPD -f /tmp/ro_vpd > /dev/null 2>&1
-    ${cbfstoolcmd} ${coreboot_file} write -r RO_VPD -f /tmp/ro_vpd > /dev/null 2>&1
+# persist VPD if possible
+if extract_vpd /tmp/bios.bin ; then
+    # try writing to RO_VPD FMAP region
+    if ! ${cbfstoolcmd} ${coreboot_file} write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1 ; then
+        # fall back to vpd.bin in CBFS
+        ${cbfstoolcmd} ${coreboot_file} add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
+    fi
 fi
 
 #disable software write-protect
@@ -685,10 +672,8 @@ else
     curl -s -L -o /tmp/stock-firmware.rom ${shellball_source}shellball.${_device}.bin;
     [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
 
-    #extract VPD if present
-    if [[ "$hasLAN" = true ]]; then
-        #extract VPD from current firmware
-        extract_vpd /tmp/bios.bin
+    #extract VPD from current firmware if present
+    if extract_vpd /tmp/bios.bin ; then
         #merge with recovery image firmware
         if [ -f /tmp/vpd.bin ]; then
             echo_yellow "Merging VPD into recovery image firmware"
@@ -743,23 +728,15 @@ function extract_vpd()
 [[ -z "$1" ]] && { exit_red "Error: extract_vpd(): missing function parameter"; return 1; }
 
 firmware_file="$1"
-#check if file contains MAC address
-grep -obUa "ethernet_mac" ${firmware_file} >/dev/null
-if [ $? -eq 0 ]; then
-    #try FMAP extraction
-    ${cbfstoolcmd} ${firmware_file} read -r RO_VPD -f /tmp/vpd.bin >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        #try CBFS extraction
-        ${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin >/dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo_red "Failure extracting MAC address from current firmware."
-            return 1
-        fi
+
+#try FMAP extraction
+if ! ${cbfstoolcmd} ${firmware_file} read -r RO_VPD -f /tmp/vpd.bin >/dev/null 2>&1 ; then
+    #try CBFS extraction
+    if ! ${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin >/dev/null 2>&1 ; then
+        return 1
     fi
-else
-    #file doesn't contain VPD
-    return 1
 fi
+echo_yellow "VPD extracted from current firmware"
 return 0
 }
 
