@@ -134,43 +134,28 @@ function die()
 ####################
 function list_usb_devices()
 {
-#list available drives, excluding internal storage and root/boot device
-if [[ -b /dev/mmcblk0 ]]; then
-	intStor="/dev/mmcblk0"
-elif [[ -b /dev/mmcblk1 ]]; then
-	intStor="/dev/mmcblk1"
-elif [[ -b /dev/nvme0n1 ]]; then
-	intStor="/dev/nvme0n1"
-else intStor="/dev/sda"
-fi
-
-rootdev=${intStor}
-if [ "$(which rootdev)" ]; then
-    rootdev=$(rootdev -d -s)
-fi
-eval usb_devs="($(fdisk -l 2> /dev/null | grep -v "Disk ${intStor}" \
-    | grep -v "Disk $rootdev" | grep 'Disk /dev/sd' | awk -F"/dev/sd|:" '{print $2}'))"
-#ensure at least 1 drive available
-[ "$usb_devs" != "" ] || return 1
-echo -e "\nDevices available:\n"
-num_usb_devs=0
-for dev in "${usb_devs[@]}"
-do
-let "num_usb_devs+=1"
-vendor=$(udevadm info --query=all --name=sd${dev} | grep -E "ID_VENDOR=" | awk -F"=" '{print $2}')
-model=$(udevadm info --query=all --name=sd${dev} | grep -E "ID_MODEL=" | awk -F"=" '{print $2}')
-sz=$(fdisk -l 2> /dev/null | grep "Disk /dev/sd${dev}" | awk '{print $3}')
-echo -n "$num_usb_devs)"
-if [ -n "${vendor}" ]; then
-    echo -n " ${vendor}"
-fi
-if [ -n "${model}" ]; then
-    echo -n " ${model}"
-fi
-echo -e " (${sz} GB)"
-done
-echo -e ""
-return 0
+    stat -c %N /sys/block/sd* 2>/dev/null | grep usb | cut -f1 -d ' ' | sed "s/[']//g;s|/sys/block|/dev|" > /tmp/usb_block_devices
+    eval usb_devs="($(cat  /tmp/usb_block_devices))"
+    [ "$usb_devs" != "" ] || return 1
+    echo -e "\nDevices available:\n"
+    num_usb_devs=0
+    for dev in "${usb_devs[@]}"
+    do
+    ((num_usb_devs+=1))
+    vendor=$(udevadm info --query=all --name=${dev#"/dev/"} | grep -E "ID_VENDOR=" | awk -F"=" '{print $2}')
+    model=$(udevadm info --query=all --name=${dev#"/dev/"} | grep -E "ID_MODEL=" | awk -F"=" '{print $2}')
+    sz=$(fdisk -l 2> /dev/null | grep "Disk ${dev}" | awk '{print $3}')
+    echo -n "$num_usb_devs)"
+    if [ -n "${vendor}" ]; then
+        echo -n " ${vendor}"
+    fi
+    if [ -n "${model}" ]; then
+        echo -n " ${model}"
+    fi
+    echo -e " (${sz} GB)"
+    done
+    echo -e ""
+    return 0
 }
 
 
