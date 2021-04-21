@@ -157,9 +157,13 @@ else
 fi
 
 echo_green "\nInstall/Update ${fwTypeStr} Full ROM Firmware"
-echo_yellow "Standard disclaimer: flashing the firmware has the potential to
+echo_yellow "IMPORTANT: flashing the firmware has the potential to
 brick your device, requiring relatively inexpensive hardware and some
-technical knowledge to recover.  You have been warned."
+technical knowledge to recover. Not all boards can be tested prior to release,
+and even then slight differences in hardware can lead to unforseen failures.
+If you don't have the ability to recover from a bad flash, you're taking a risk.
+
+You have been warned."
 
 [[ "$isChromeOS" = true ]] && echo_yellow "Also, flashing Full ROM firmware will remove your ability to run ChromeOS."
 
