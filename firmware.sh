@@ -579,7 +579,7 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
     [ $? -eq 0 ] || { exit_red "No USB devices available to read firmware backup."; return 1; }
     read -ep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
     [ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
-    usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
+    usb_device="${usb_devs[${usb_dev_index}-1]}"
     mkdir /tmp/usb > /dev/null 2>&1
     mount "${usb_device}" /tmp/usb > /dev/null 2>&1
     if [ $? -ne 0 ]; then
