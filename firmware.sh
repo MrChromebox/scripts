@@ -766,7 +766,7 @@ if [ $usb_dev_index -le 0 ] || [ $usb_dev_index  -gt $num_usb_devs ]; then
     return 1
 fi
 
-usb_device="/dev/sd${usb_devs[${usb_dev_index}-1]}"
+usb_device="${usb_devs[${usb_dev_index}-1]}"
 mkdir /tmp/usb > /dev/null 2>&1
 mount "${usb_device}" /tmp/usb > /dev/null 2>&1
 if [ $? != 0 ]; then
