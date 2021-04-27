@@ -64,8 +64,8 @@
 		"sha1": "589f2fdf343e04d144fc2c944e0db2d51486d494"
 	},
 	"auron_paine": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-auron_paine-mrchromebox_20210423.rom",
-		"sha1": "b7003277bb06f55a028935e474e2a546617b2ce8"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-auron_paine-mrchromebox_20210427.rom",
+		"sha1": "0d4d20e9e40655ea4589d6f73741a9c7e456393e"
 	},
 	"auron_yuna": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-auron_yuna-mrchromebox_20210423.rom",

@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2021-04-23]"
+export script_date="[2021-04-27]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -47,7 +47,7 @@ export coreboot_uefi_tricky="coreboot_tiano-tricky-mrchromebox_20210423.rom"
 export coreboot_uefi_wolf="coreboot_tiano-wolf-mrchromebox_20210423.rom"
 export coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20210423.rom"
 #Broadwell
-export coreboot_uefi_auron_paine="coreboot_tiano-auron_paine-mrchromebox_20210423.rom"
+export coreboot_uefi_auron_paine="coreboot_tiano-auron_paine-mrchromebox_20210427.rom"
 export coreboot_uefi_auron_yuna="coreboot_tiano-auron_yuna-mrchromebox_20210423.rom"
 export coreboot_uefi_buddy="coreboot_tiano-buddy-mrchromebox_20210423.rom"
 export coreboot_uefi_gandof="coreboot_tiano-gandof-mrchromebox_20210423.rom"
