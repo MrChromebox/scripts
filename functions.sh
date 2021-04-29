@@ -77,7 +77,7 @@ glk=('ampton' 'apel' 'bluebird' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
 cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
-cml_books=('akemi' 'dragonair' 'drillion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
+cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
