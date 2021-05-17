@@ -455,7 +455,11 @@ fi
 #clear SW WP range
 ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-	exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+	# use new command format as of commit 99b9550
+	${flashromcmd} --wp-range 0,0 > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+	fi
 fi
 
 #flash Full ROM firmware
@@ -697,7 +701,11 @@ fi
 #clear SW WP range
 ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-	exit_red "Error clearing software write-protect range; unable to restore stock firmware."; return 1
+	# use new command format as of commit 99b9550
+	${flashromcmd} --wp-range 0,0 > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		exit_red "Error clearing software write-protect range; unable to restore stock firmware."; return 1
+	fi
 fi
 
 #flash stock firmware
