@@ -14,6 +14,7 @@ cd /tmp
 # set dev mode legacy boot flag
 if [ "${isChromeOS}" = true ]; then
     crossystem dev_boot_legacy=1 > /dev/null 2>&1
+    crossystem dev_boot_altfw=1 > /dev/null 2>&1
 fi
 
 echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
@@ -43,6 +44,10 @@ elif [ "$isWhl" = true ]; then
     rwlegacy_file=$rwl_altfw_whl
 elif [ "$isCmlBox" = true ]; then
     rwlegacy_file=$rwl_altfw_cml
+elif [ "$isJsl" = true ]; then
+    rwlegacy_file=$rwl_altfw_jsl
+elif [ "$isZen2" = true ]; then
+    rwlegacy_file=$rwl_altfw_zen2
 else
     echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
     read -ep "Press enter to return to the main menu"
