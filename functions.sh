@@ -73,7 +73,7 @@ kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
         'librem_mini' 'librem_mini_v2' 'librem_14');
-glk=('ampton' 'apel' 'bluebird' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360' 'casta' 'droid' \
+glk=('ampton' 'apel' 'bluebird' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360' 'casta' 'droid' \
     'fleex' 'glk' 'grabbiter' 'laser' 'laser14' 'lick' 'meep' 'mimrock' 'octopus' 'orbatrix' \
     'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
@@ -437,6 +437,7 @@ case "${_hwid}" in
     BERKNIP*)               _x='ZEN2|HP Pro c645 Chromebook Enterprise' ;;
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
+    BLOOG*)                 _x='GLK|HP Chromebook x360 12b';;
     BLOOGLET*)              _x='GLK|HP Chromebook 14a';;
     BLOOGUARD*)             _x='GLK|HP Chromebook x360 14b';;
     BLORB*)                 _x='GLK|Acer Chromebook 315';;
