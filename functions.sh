@@ -189,6 +189,8 @@ if [ ! -f ${cbfstoolcmd} ]; then
                 return 1
             fi
         fi
+		# clear recovery logs which use valuable space
+		rm -rf /tmp/boot/recovery* 2>/dev/null
         #create util dir
         mkdir /tmp/boot/util 2>/dev/null
         cd /tmp/boot/util
@@ -243,6 +245,8 @@ if [ ! -f ${flashromcmd} ]; then
                 return 1
             fi
         fi
+		# clear recovery logs which use valuable space
+		rm -rf /tmp/boot/recovery* 2>/dev/null
         #create util dir
         mkdir /tmp/boot/util 2>/dev/null
         cd /tmp/boot/util
