@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2021-07-25]"
+export script_date="[2021-08-06]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -93,7 +93,7 @@ export coreboot_uefi_lars="coreboot_tiano-lars-mrchromebox_20210725.rom"
 export coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20210725.rom"
 #KabyLake
 export coreboot_uefi_atlas="coreboot_tiano-atlas-mrchromebox_20210725.rom"
-export coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20210725.rom"
+export coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20210806.rom"
 export coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20210725.rom"
 export coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20210725.rom"
 export coreboot_uefi_nautilus="coreboot_tiano-nautilus-mrchromebox_20210725.rom"
