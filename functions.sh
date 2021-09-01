@@ -177,8 +177,9 @@ if [ ! -f ${cbfstoolcmd} ]; then
     else
         #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
-        [[ "$isCloudready" = true ]] && part_num="27" || part_num="12"
-        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_num="p${part_num}"
+		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+        [[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
+				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
@@ -233,8 +234,9 @@ if [ ! -f ${flashromcmd} ]; then
     else
         #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
-        [[ "$isCloudready" = true ]] && part_num="27" || part_num="12"
-        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_num="p${part_num}"
+		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+        [[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
+				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
