@@ -82,7 +82,7 @@ cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
-jsl=('boten' 'drawcia' 'drawlat' 'drawman')
+jsl=('boten' 'drawcia' 'drawlat' 'drawman' 'magpie' 'magolor')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -538,6 +538,7 @@ case "${_hwid}" in
     LICK*)                  _x='GLK|Lenovo Ideapad 3 Chromebook' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
+    MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
     MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ;;
