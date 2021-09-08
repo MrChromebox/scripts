@@ -48,6 +48,8 @@ elif [ "$isJsl" = true ]; then
     rwlegacy_file=$rwl_altfw_jsl
 elif [ "$isZen2" = true ]; then
     rwlegacy_file=$rwl_altfw_zen2
+elif [ "$isTgl" = true ]; then
+    rwlegacy_file=$rwl_altfw_tgl
 else
     echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
     read -ep "Press enter to return to the main menu"
