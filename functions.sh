@@ -83,6 +83,7 @@ cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
+jsl=('boten' 'drawcia' 'drawlat' 'drawman' 'magpie' 'magolor' 'sasuke')
 tgl=('copano' 'delbin' 'drobit' 'elemi' 'lillipup' 'volta' 'voxel')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -595,6 +596,7 @@ case "${_hwid}" in
     SAMUS*)                 _x='BDW|Google Chromebook Pixel 2015' ;;
     SAND*)                  _x='APL|Acer Chromebook 15 (CB515-1HT)' ;;
     SANTA*)                 _x='APL|Acer Chromebook 11 (CB311-8H)' ;;
+    SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ;;
     SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
     SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;
     SHYVANA*)               _x='KBL|Asus Chromebook Flip C433/C434' ; device="rammus";;
