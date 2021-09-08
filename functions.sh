@@ -36,6 +36,7 @@ isCml=false
 isCmlBox=false
 isZen2=false
 isJsl=false
+isTgl=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -82,7 +83,7 @@ cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
-jsl=('boten' 'drawcia' 'drawlat' 'drawman' 'magpie' 'magolor')
+tgl=('copano' 'delbin' 'drobit' 'elemi' 'lillipup' 'volta' 'voxel')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -461,7 +462,9 @@ case "${_hwid}" in
     CELES*)                 _x='BSW|Samsung Chromebook 3' ;;
     CHELL*)                 _x='SKL|HP Chromebook 13 G1' ;;
     CLAPPER*)               _x='BYT|Lenovo N20/N20P Chromebook' ;;
+    COPANO*)                _x='TGL|Asus xxx Chromebook' ;;
     CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
+    DELBIN*)                _x='TGL|ASUS Chromebook Flip CX5' ;;
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
     DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
     DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ;;
@@ -469,10 +472,12 @@ case "${_hwid}" in
     DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
     DRAWLAT*)               _x='JSL|HP Chromebook 11 G9 EE' ;;
     DRAWMAN*)               _x='JSL|HP Chromebook 14 G7' ;;
+    DROBIT*)                _x='TGL|ASUS Chromebook CX9400' ;;
     DROID*)                 _x='GLK|Acer Chromebook 314';;
     DUFFY*)                 _x='CML|ASUS Chromebox 4' ;;
     EDGAR*)                 _x='BSW|Acer Chromebook 14 (CB3-431)' ;;
     EKKO*)                  _x='KBL|Acer Chromebook 714 (CB714)' ; device="nami";;
+    ELEMI*)                 _x='TGL|HP Pro c640 G2 Chromebook' ;;
     ENGUARDE_???-???-??A*)  _x='BYT|CTL N6 Education Chromebook' ; device="enguarde";;
     ENGUARDE_???-???-??B*)  _x='BYT|M&A Chromebook' ; device="enguarde";;
     ENGUARDE_???-???-??C*)  _x='BYT|Senkatel C1101 Chromebook' ; device="enguarde";;
@@ -538,6 +543,7 @@ case "${_hwid}" in
     LIBREM_MINI)            _x='WHL|Purism Librem Mini' ; device="librem_mini";;
     LIBREM_MINI_V2)         _x='CML|Purism Librem Mini v2' ; device="librem_mini_v2";;
     LICK*)                  _x='GLK|Lenovo Ideapad 3 Chromebook' ;;
+    LILIPUP*)               _x='TGL|Lenovo IdeaPad Flex 5i Chromebook' ;;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
@@ -616,6 +622,8 @@ case "${_hwid}" in
     TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
+    VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
+    VOXEL*)                 _x='TGL|Acer Chromebook Spin 713 (CP713-3W)' ;;
     WINKY*)                 _x='BYT|Samsung Chromebook 2 (XE500C12)' ;;
     WIZPIG_???-???-??A*)    _x='BSW|CTL Chromebook J5' ;;
     WIZPIG_???-???-??B*)    _x='BSW|Edugear CMT Chromebook' ;;
@@ -656,6 +664,7 @@ WHL) deviceCpuType="Intel WhiskeyLake" ;;
 CML) deviceCpuType="Intel CometLake" ;;
 ZEN2) deviceCpuType="AMD Zen2/Picasso" ;;
 JSL) deviceCpuType="Intel JasperLake" ;;
+TGL) deviceCpuType="Intel TigerLake" ;;
 *)   deviceCpuType="(unrecognized)" ;;
 esac
 
@@ -678,13 +687,15 @@ esac
 [[ "${cml[@]}" =~ "$device" ]] && isCml=true
 [[ "${zen2[@]}" =~ "$device" ]] && isZen2=true
 [[ "${jsl[@]}" =~ "$device" ]] && isJsl=true
+[[ "${tgl[@]}" =~ "$device" ]] && isTgl=true
 [[ "${cml_boxes[@]}" =~ "$device" ]] && isCmlBox=true
 [[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
     || "$isSkl" = true || "$isSnbIvb" = true || "$isApl" = true \
     || "$isKbl" = true || "$isStr" = true || "$isWhl" = true \
-    || "$isCml" = true || "$isZen2" = true || "$isJsl" = true ]] || isUnsupported=true
+    || "$isCml" = true || "$isZen2" = true || "$isJsl" = true \
+    || "$isTgl" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
