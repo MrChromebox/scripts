@@ -51,7 +51,7 @@ img_file="${LE_version}.img"
 img_url="${LE_url}${img_file}.gz"
 
 cd /tmp
-curl -L -o ${img_file}.gz $img_url
+$CURL -Lo ${img_file}.gz $img_url
 if [ $? -ne 0 ]; then
 	exit_red "Failed to download LibreELEC; check your Internet connection and try again"; return 1
 fi
@@ -215,7 +215,7 @@ echo_yellow "Updating bootloader"
 
 #get/extract syslinux
 tar_file="${util_source}${syslinux_version}.tar.bz2"
-curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file 
+$CURL -sLo /tmp/Storage/syslinux.tar.bz2 $tar_file 
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
 fi
@@ -278,7 +278,7 @@ echo_yellow "Downloading LibreELEC"
 tar_file="${LE_version}.tar"
 tar_url="${LE_url}${tar_file}"
 cd /tmp/Storage
-curl -L -o $tar_file $tar_url
+$CURL -Lo $tar_file $tar_url
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download LibreELEC; check your Internet connection and try again"
 fi
@@ -435,7 +435,7 @@ echo -e ""
 
 #Install via chrx
 export CHRX_NO_REBOOT=1
-curl -L -s -o chrx ${chrx_url}
+$CURL -sLo chrx ${chrx_url}
 sh ./chrx -d ${ubuntu_package} -r ${ubuntu_version} -H ChromeBox -y $kodi_install $useBeta
 
 #chrx will end with prompt for user to press enter to reboot
@@ -509,7 +509,7 @@ echo_yellow "Partitions formatted and mounted; installing bootloader"
 
 #get/extract syslinux
 tar_file="${util_source}${syslinux_version}.tar.bz2"
-curl -s -L -o /tmp/Storage/syslinux.tar.bz2 $tar_file > /dev/null 2>&1
+$CURL -sLo /tmp/Storage/syslinux.tar.bz2 $tar_file > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
 fi
@@ -539,7 +539,7 @@ echo_yellow "Downloading LibreELEC"
 tar_file="${LE_version}.tar"
 tar_url="${LE_url}${tar_file}"
 cd /tmp/Storage
-curl -L -o $tar_file $tar_url
+$CURL -Lo $tar_file $tar_url
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download LibreELEC; check your Internet connection and try again"
 fi

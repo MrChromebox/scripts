@@ -22,19 +22,26 @@ else
 	cd /tmp
 fi
 
+#check for cmd line param
+if [[ "$1" = "-k" ]]; then
+	export CURL="curl -k"
+else
+	export CURL="curl"
+fi
+
 #get support scripts
 echo -e "\nDownloading supporting files..."
 rm -rf firmware.sh >/dev/null 2>&1
 rm -rf functions.sh >/dev/null 2>&1
 rm -rf sources.sh >/dev/null 2>&1
 rm -rf kodi.sh >/dev/null 2>&1
-curl -sLO ${script_url}firmware.sh
+$CURL -sLO ${script_url}firmware.sh
 rc0=$?
-curl -sLO ${script_url}functions.sh
+$CURL -sLO ${script_url}functions.sh
 rc1=$?
-curl -sLO ${script_url}sources.sh
+$CURL -sLO ${script_url}sources.sh
 rc2=$?
-curl -sLO ${script_url}kodi.sh
+$CURL -sLO ${script_url}kodi.sh
 rc3=$?
 if [[ $rc0 -ne 0 || $rc1 -ne 0 || $rc2 -ne 0 || $rc3 -ne 0 ]]; then
 	echo -e "Error downloading one or more required files; cannot continue"

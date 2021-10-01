@@ -200,7 +200,7 @@ if [ ! -f ${cbfstoolcmd} ]; then
     fi
 
     #echo_yellow "Downloading cbfstool utility"
-    curl -sLO "${util_source}cbfstool.tar.gz"
+    $CURL -sLO "${util_source}cbfstool.tar.gz"
     if [ $? -ne 0 ]; then
         echo_red "Error downloading cbfstool; cannot proceed."
         #restore working dir
@@ -258,9 +258,9 @@ if [ ! -f ${flashromcmd} ]; then
 
     if [[ "$isChromeOS" = true ]]; then
         #needed to avoid dependencies not found on older ChromeOS
-        curl -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
+        $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
     else
-        curl -sLO "${util_source}flashrom.tar.gz"
+        $CURL -sLO "${util_source}flashrom.tar.gz"
     fi
     if [ $? -ne 0 ]; then
         echo_red "Error downloading flashrom; cannot proceed."
@@ -295,7 +295,7 @@ if [ ! -f ${gbbutilitycmd} ]; then
     working_dir=`pwd`
     cd /tmp
 
-    curl -sLO "${util_source}gbb_utility.tar.gz"
+    $CURL -sLO "${util_source}gbb_utility.tar.gz"
     if [ $? -ne 0 ]; then
         echo_red "Error downloading gbb_utility; cannot proceed."
         #restore working dir
