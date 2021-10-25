@@ -102,12 +102,12 @@ export coreboot_uefi_rammus="coreboot_tiano-rammus-mrchromebox_20210725.rom"
 export coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20210725.rom"
 
 #Stoneyridge
-export coreboot_uefi_aleena="coreboot_tiano-aleena-mrchromebox_20210426.rom"
-export coreboot_uefi_barla="coreboot_tiano-barla-mrchromebox_20210426.rom"
-export coreboot_uefi_careena="coreboot_tiano-careena-mrchromebox_20210426.rom"
-export coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20210426.rom"
-export coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20210426.rom"
-export coreboot_uefi_treeya="coreboot_tiano-treeya-mrchromebox_20210426.rom"
+export coreboot_uefi_aleena="coreboot_tiano-aleena-mrchromebox_20210725.rom"
+export coreboot_uefi_barla="coreboot_tiano-barla-mrchromebox_20210725.rom"
+export coreboot_uefi_careena="coreboot_tiano-careena-mrchromebox_20210725.rom"
+export coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20210725.rom"
+export coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20210725.rom"
+export coreboot_uefi_treeya="coreboot_tiano-treeya-mrchromebox_20210725.rom"
 
 #CometLake
 export coreboot_uefi_akemi="coreboot_tiano-akemi-mrchromebox_20210725.rom"
