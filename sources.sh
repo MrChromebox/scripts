@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2021-09-08]"
+export script_date="[2021-11-09]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -157,7 +157,7 @@ export coreboot_uefi_librem15v3="coreboot_tiano-librem15v3-mrchromebox_20210725.
 export coreboot_uefi_librem15v4="coreboot_tiano-librem15v4-mrchromebox_20210725.rom"
 export coreboot_uefi_librem_mini="coreboot_tiano-librem_mini-mrchromebox_20210725.rom"
 export coreboot_uefi_librem_mini_v2="coreboot_tiano-librem_mini_v2-mrchromebox_20210725.rom"
-export coreboot_uefi_librem_14="coreboot_tiano-librem_14-mrchromebox_20210725.rom"
+export coreboot_uefi_librem_14="coreboot_tiano-librem_14-mrchromebox_20211109.rom"
 
 # other
 export touchpad_eve_fw="rose_v1.1.8546-ee1861e9e.bin"
