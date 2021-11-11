@@ -84,7 +84,7 @@ cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'k
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
 jsl=('boten' 'drawcia' 'drawlat' 'drawman' 'magpie' 'magolor' 'sasuke')
-tgl=('copano' 'delbin' 'drobit' 'elemi' 'lillipup' 'volta' 'voxel')
+tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'volta' 'voxel')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -478,6 +478,7 @@ case "${_hwid}" in
     DUFFY*)                 _x='CML|ASUS Chromebox 4' ;;
     EDGAR*)                 _x='BSW|Acer Chromebook 14 (CB3-431)' ;;
     EKKO*)                  _x='KBL|Acer Chromebook 714 (CB714)' ; device="nami";;
+    ELDRID*)                _x='TGL|HP Chromebook x360 14c' ;;
     ELEMI*)                 _x='TGL|HP Pro c640 G2 Chromebook' ;;
     ENGUARDE_???-???-??A*)  _x='BYT|CTL N6 Education Chromebook' ; device="enguarde";;
     ENGUARDE_???-???-??B*)  _x='BYT|M&A Chromebook' ; device="enguarde";;
