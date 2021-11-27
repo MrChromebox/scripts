@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2021-11-15]"
+export script_date="[2021-11-27]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -21,8 +21,8 @@ export chrx_url="https://chrx.org/go"
 
 #LE version
 export LE_version_base="LibreELEC-Generic.x86_64"
-export LE_version_stable="9.2.6"
-export LE_version_latest="9.97.1"
+export LE_version_stable="10.0.1"
+export LE_version_latest="10.0.1"
 
 #syslinux version
 export syslinux_version="syslinux-6.04-pre1"
