@@ -430,7 +430,7 @@ case "${_hwid}" in
     ALEENA*)                _x='STR|Acer Chromebook 315' ; device="aleena";;
     AMPTON*)                _x='GLK|Asus Chromebook Flip C214' ;;
     APEL*)                  _x='GLK|Asus Chromebook Flip C204' ;;
-    ARCADA*)                _x='WHL|Dell Latitude 5300/5400' ; device="sarien";;
+    ARCADA*)                _x='WHL|Dell Latitude 5300' ; device="sarien";;
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
     ASUKA*)                 _x='SKL|Dell Chromebook 13 (3380)' ;;
     ATLAS*)                 _x='KBL|Google Pixelbook Go' ;;
@@ -597,6 +597,7 @@ case "${_hwid}" in
     SAMUS*)                 _x='BDW|Google Chromebook Pixel 2015' ;;
     SAND*)                  _x='APL|Acer Chromebook 15 (CB515-1HT)' ;;
     SANTA*)                 _x='APL|Acer Chromebook 11 (CB311-8H)' ;;
+    SARIEN*)                _x='WHL|Dell Latitude 5400' ;;
     SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ;;
     SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
     SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;
