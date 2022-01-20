@@ -143,7 +143,6 @@ else
   # update firmware type
   firmwareType="Stock ChromeOS w/RW_LEGACY"
   #Prevent from trying to boot stock ChromeOS install
-  rm -rf /tmp/boot/efi > /dev/null 2>&1
   rm -rf /tmp/boot/syslinux > /dev/null 2>&1
 fi
 
