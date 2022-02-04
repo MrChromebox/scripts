@@ -83,7 +83,8 @@ cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
-jsl=('boten' 'drawcia' 'drawlat' 'drawman' 'lantis' 'magpie' 'magolor' 'sasuke')
+jsl=('blipper' 'boten' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'lantis' \
+     'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
 tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volta' 'voxel')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -446,6 +447,7 @@ case "${_hwid}" in
     BERKNIP*)               _x='ZEN2|HP Pro c645 Chromebook Enterprise' ;;
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
+    BLIPPER*)               _x='JSL|Lenovo 3i-15 Chromebook	';;
     BLOOG*)                 _x='GLK|HP Chromebook x360 12b';;
     BLOOGLET*)              _x='GLK|HP Chromebook 14a';;
     BLOOGUARD*)             _x='GLK|HP Chromebook x360 14b';;
@@ -500,6 +502,8 @@ case "${_hwid}" in
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
     FIZZ)                   _x='KBL|TBD KBL Chromebox' ;;
     FLEEX*)                 _x='GLK|Dell Chromebook 3100';;
+    GALITH*)                _x='JSL|ASUS Chromebook CX1500CKA' ;;
+    GALLOP*)                _x='JSL|ASUS Chromebook CX1700CKA' ;;
     GANDOF*)                _x='BDW|Toshiba Chromebook 2 (2015) CB30/CB35' ;;
     GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
     GLK360*)                _x='GLK|Acer Chromebook Spin 311';;
@@ -613,6 +617,8 @@ case "${_hwid}" in
     SONA*)                  _x='KBL|HP Chromebook x360 14' ; device="nami";;
     SORAKA*)                _x='KBL|HP Chromebook x2' ;;
     SQUAWKS*)               _x='BYT|ASUS Chromebook C200' ;;
+    STORO360*)              _x='JSL|ASUS Chromebook CR1100CKA' ;;
+    STORO*)                 _x='JSL|ASUS Chromebook Flip CR1100FKA' ;;
     STOUT*)                 _x='IVB|Lenovo Thinkpad X131e Chromebook' ;;
     STUMPY*)                _x='SNB|Samsung Chromebox Series 3' ;;
     SUMO*)                  _x='BYT|AOpen Chromebase Commercial' ;;
