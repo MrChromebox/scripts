@@ -416,10 +416,67 @@ if [ $? -ne 0 ]; then
     return 1
 fi
 
+#get device firmware info
+echo -e "\nGetting device/system info..."
+#read entire firmware
+${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo_red "\nUnable to read current firmware; cannot continue."
+    echo_red "Either add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."
+    echo_red "See https://www.flashrom.org/FAQ for more info."
+    return 1;
+fi
+
+# check firmware type
+${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
+if grep "RW_VPD" /tmp/layout >/dev/null 2>&1; then
+  # stock firmware
+  isStock=true
+  firmwareType="Stock ChromeOS"
+  # check BOOT_STUB
+  if grep "BOOT_STUB" /tmp/layout >/dev/null 2>&1; then
+    if ! ${cbfstoolcmd} /tmp/bios.bin print -r BOOT_STUB 2>/dev/null | grep -e "vboot" >/dev/null 2>&1 ; then
+        [[ "${device^^}" != "LINK" ]] && firmwareType="Stock w/modified BOOT_STUB"
+    fi
+  fi
+  # check RW_LEGACY
+  if ${cbfstoolcmd} /tmp/bios.bin print -r RW_LEGACY 2>/dev/null | grep -e "payload" -e "altfw" >/dev/null 2>&1 ; then
+    firmwareType="Stock ChromeOS w/RW_LEGACY"
+  fi
+else
+    # non-stock firmware
+    isStock=false
+    isFullRom=true
+    if [[ -d /sys/firmware/efi ]]; then
+        isUEFI=true
+        firmwareType="Full ROM / UEFI"
+    else
+        firmwareType="Full ROM / Legacy"
+    fi
+fi
+# firmware date/version
+fwVer=$(dmidecode -s bios-version)
+fwDate=$(dmidecode -s bios-release-date)
+
+#check WP status
+
+#save SW WP state
+${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
+[[ $? -eq 0 ]] && swWp="enabled" || swWp="disabled"
+#test disabling SW WP to see if HW WP enabled
+${flashromcmd} --wp-disable > /dev/null 2>&1
+[[ $? -ne 0 ]] && wpEnabled=true
+#restore previous SW WP state
+[[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
+
 #get full device info
 if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
     _hwid=$(crossystem hwid | sed 's/ /_/g')
     boardName=$(crossystem hwid | sed 's/X86//g' | awk 'NR==1{print $1}' | cut -f 1 -d'-')
+elif echo $firmwareType | grep -e "Stock" -e "LEGACY"; then
+	# Stock + RW_LEGACY: read HWID from GBB
+	_hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed 's/X86//g' | cut -f 2 -d' ')
+	boardName=${_hwid^^}
 else
     _hwid=${device^^}
     boardName=${device^^}
@@ -713,59 +770,6 @@ esac
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
 [[ "${runs_windows[@]}" =~ "$device" ]] && runsWindows=true
-
-#get device firmware info
-echo -e "\nGetting device/system info..."
-#read entire firmware
-${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    echo_red "\nUnable to read current firmware; cannot continue."
-    echo_red "Either add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."
-    echo_red "See https://www.flashrom.org/FAQ for more info."
-    return 1;
-fi
-
-# check firmware type
-${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-if grep "RW_VPD" /tmp/layout >/dev/null 2>&1; then
-  # stock firmware
-  isStock=true
-  firmwareType="Stock ChromeOS"
-  # check BOOT_STUB
-  if grep "BOOT_STUB" /tmp/layout >/dev/null 2>&1; then
-    if ! ${cbfstoolcmd} /tmp/bios.bin print -r BOOT_STUB 2>/dev/null | grep -e "vboot" >/dev/null 2>&1 ; then
-        [[ "${device^^}" != "LINK" ]] && firmwareType="Stock w/modified BOOT_STUB"
-    fi
-  fi
-  # check RW_LEGACY
-  if ${cbfstoolcmd} /tmp/bios.bin print -r RW_LEGACY 2>/dev/null | grep -e "payload" -e "altfw" >/dev/null 2>&1 ; then
-    firmwareType="Stock ChromeOS w/RW_LEGACY"
-  fi
-else
-    # non-stock firmware
-    isStock=false
-    isFullRom=true
-    if [[ -d /sys/firmware/efi ]]; then
-        isUEFI=true
-        firmwareType="Full ROM / UEFI"
-    else
-        firmwareType="Full ROM / Legacy"
-    fi
-fi
-# firmware date/version
-fwVer=$(dmidecode -s bios-version)
-fwDate=$(dmidecode -s bios-release-date)
-
-#check WP status
-
-#save SW WP state
-${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
-[[ $? -eq 0 ]] && swWp="enabled" || swWp="disabled"
-#test disabling SW WP to see if HW WP enabled
-${flashromcmd} --wp-disable > /dev/null 2>&1
-[[ $? -ne 0 ]] && wpEnabled=true
-#restore previous SW WP state
-[[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
 
 return 0
 }
