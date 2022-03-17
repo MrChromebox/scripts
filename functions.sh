@@ -83,7 +83,7 @@ cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
-jsl=('blipper' 'boten' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'lantis' \
+jsl=('blipper' 'boten' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'galtic' 'lantis' \
      'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
 tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volta' 'voxel')
 
@@ -527,7 +527,7 @@ case "${_hwid}" in
     CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
     DELBIN*)                _x='TGL|ASUS Chromebook Flip CX5' ;;
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
-    DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
+    DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ; device="dragonair" ;;
     DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ;;
     DRATINI*)               _x='CML|HP Pro c640 Chromebook' ;;
     DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
