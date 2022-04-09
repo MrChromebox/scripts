@@ -260,29 +260,6 @@ else
     exit_red "Unknown or unsupported device (${device^^}); cannot continue."; return 1
 fi
 
-#peppy special case
-if [ "$device" = "peppy" ]; then
-    hasElan=$(cat /proc/bus/input/devices | grep "Elan")
-    hasCypress=$(cat /proc/bus/input/devices | grep "Cypress")
-    if [[ $hasElan = "" && $hasCypress = "" ]]; then
-        echo -e ""
-        read -ep "Unable to automatically determine trackpad type. Does your Peppy have an Elan pad? [y/N] "
-        if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
-            if [ "$useUEFI" = true ]; then
-                coreboot_file=${coreboot_uefi_peppy_elan}
-            else
-                coreboot_file=${coreboot_peppy_elan}
-            fi
-        fi
-    elif [[ $hasElan != "" ]]; then
-        if [ "$useUEFI" = true ]; then
-            coreboot_file=${coreboot_uefi_peppy_elan}
-        else
-            coreboot_file=${coreboot_peppy_elan}
-        fi
-    fi
-fi
-
 #auron special case (upgrade from coolstar legacy rom)
 if [ "$device" = "auron" ]; then
     echo -e ""
