@@ -67,7 +67,7 @@ skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
 snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'coral' 'electro' 'epaulette' \
     'lava' 'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
-kbl_boxes=('bleemo' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
+kbl_boxes=('bleemo' 'fizz' 'jax' 'karma' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
