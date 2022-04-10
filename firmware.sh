@@ -1240,7 +1240,7 @@ function stock_menu() {
     
     show_header
 
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false && "$isGlk" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
@@ -1283,7 +1283,7 @@ function stock_menu() {
     case $opt in
 
         1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
-                    && "$isBootStub" = false && "$isUnsupported" = false ]]; then
+                    && "$isBootStub" = false && "$isUnsupported" = false && "$isGlk" = false ]]; then
                 flash_rwlegacy
             fi
             menu_fwupdate
