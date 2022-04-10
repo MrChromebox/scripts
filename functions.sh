@@ -632,7 +632,7 @@ case "${_hwid}" in
     NOIBAT*)                _x='CML|HP Chromebox G3' ;;
     ORCO*)                  _x='BYT|Lenovo Ideapad 100S Chromebook' ;;
     ORBATRIX*)              _x='GLK|Dell Chromebook 3400';;
-    PAINE*)                 _x='BDW|Acer Chromebook 11 (C740)' ;;
+    PAINE*)                 _x='BDW|Acer Chromebook 11 (C740)' ; device="auron_paine";;
     PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630'  ; device="nami";;
     PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
     PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
