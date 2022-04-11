@@ -65,8 +65,9 @@ braswell=('banon' 'celes' 'cyan' 'edgar' 'kefka' 'reks' 'relm' \
     'setzer' 'terra' 'ultima' 'wizpig')
 skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
 snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
-apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'coral' 'electro' 'epaulette' \
-    'lava' 'nasher'  'pyro' 'rabbid'  'reef'  'robo' 'sand' 'santa' 'snappy')
+apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
+    'electro' 'epaulette' 'lava' 'nasher' 'nasher360' 'pyro' 'rabbid'  'reef' \
+	'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
 kbl_boxes=('bleemo' 'fizz' 'jax' 'karma' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
@@ -74,9 +75,11 @@ kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
         'librem_mini' 'librem_mini_v2' 'librem_14');
-glk=('ampton' 'apel' 'bluebird' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bobba' 'bobba360' 'casta' 'droid' \
-    'fleex' 'glk' 'grabbiter' 'laser' 'laser14' 'lick' 'meep' 'mimrock' 'octopus' 'orbatrix' \
-    'phaser' 'phaser360' 'phaser360s' 'sparky' 'sparky360')
+glk=('ampton' 'apel' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
+    'bobba360' 'casta' 'dood' 'droid' 'dorp' 'fleex' 'foob' 'foob360' 'garg' \
+	'garg360' 'garfour' 'glk' 'glk360' 'grabbiter' 'laser' 'laser14' 'lick' \
+	'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
+	'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
 cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
