@@ -701,6 +701,8 @@ case "${_hwid}" in
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
     VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
+	VORTICON*)              _x='GLK|HP Chromebook 11 G8 EE' ;;
+	VORTININJA*)            _x='GLK|HP Chromebook x360 11 G3 EE' ;;
     VOXEL*)                 _x='TGL|Acer Chromebook Spin 713 (CP713-3W)' ;;
     WHITETIP*)              _x='APL|CTL Chromebook J41/J41T' ;;
     WINKY*)                 _x='BYT|Samsung Chromebook 2 (XE500C12)' ;;
