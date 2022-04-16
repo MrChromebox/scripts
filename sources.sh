@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2022-04-12]"
+export script_date="[2022-04-16]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -41,7 +41,7 @@ export coreboot_uefi_leon="coreboot_tiano-leon-mrchromebox_20220409.rom"
 export coreboot_uefi_mccloud="coreboot_tiano-mccloud-mrchromebox_20220409.rom"
 export coreboot_uefi_monroe="coreboot_tiano-monroe-mrchromebox_20220409.rom"
 export coreboot_uefi_panther="coreboot_tiano-panther-mrchromebox_20220409.rom"
-export coreboot_uefi_peppy="coreboot_tiano-peppy-mrchromebox_20220409.rom"
+export coreboot_uefi_peppy="coreboot_tiano-peppy-mrchromebox_20220416.rom"
 export coreboot_uefi_tricky="coreboot_tiano-tricky-mrchromebox_20220409.rom"
 export coreboot_uefi_wolf="coreboot_tiano-wolf-mrchromebox_20220409.rom"
 export coreboot_uefi_zako="coreboot_tiano-zako-mrchromebox_20220409.rom"

@@ -44,12 +44,12 @@
 		"sha1": "f8e6af1736b9bc67db461375e9b5053842641a97"
 	},
 	"peppy-cypress": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20220409.rom",
-		"sha1": "9e6faff8eeebaa0c4f7a2db5786167cec932a8e0"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20220416.rom",
+		"sha1": "c880a96fc612c77947e59429b4415be64aeb90a0"
 	},
 	"peppy-elan": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20220409.rom",
-		"sha1": "9e6faff8eeebaa0c4f7a2db5786167cec932a8e0"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20220416.rom",
+		"sha1": "c880a96fc612c77947e59429b4415be64aeb90a0"
 	},
 	"tricky": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-tricky-mrchromebox_20220409.rom",
