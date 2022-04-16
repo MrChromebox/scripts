@@ -86,7 +86,7 @@ cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
-jsl=('blipper' 'boten' 'botenflex' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'galtic' 'kracko' \
+jsl=('blipper' 'boten' 'botenflex' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'galtic' 'kracko360' \
      'lantis' 'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
 tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volta' 'voxel')
 
