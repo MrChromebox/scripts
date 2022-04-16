@@ -43,7 +43,11 @@
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-panther-mrchromebox_20220409.rom",
 		"sha1": "f8e6af1736b9bc67db461375e9b5053842641a97"
 	},
-	"peppy": {
+	"peppy-cypress": {
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20220409.rom",
+		"sha1": "9e6faff8eeebaa0c4f7a2db5786167cec932a8e0"
+	},
+	"peppy-elan": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-peppy-mrchromebox_20220409.rom",
 		"sha1": "9e6faff8eeebaa0c4f7a2db5786167cec932a8e0"
 	},
