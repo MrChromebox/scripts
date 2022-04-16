@@ -87,7 +87,7 @@ cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'k
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
 jsl=('blipper' 'boten' 'botenflex' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'galtic' 'kracko' \
-     'lantis' 'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
+     'kracko360' 'lantis' 'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
 tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volta' 'voxel')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -589,6 +589,8 @@ case "${_hwid}" in
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     KLED*)                  _x='CML|Acer Chromebook Spin 713 (CP713-2W)' ;;
     KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
+    KRACKO-WPBT*)           _x='JSL|CTL Chromebook NL72' ;;
+    KRACKO360-BLXA*)        _x='JSL|CTL Chromebook NL72T' ;;
     KRACKO360*)             _x='JSL|LG Chromebook 11TC50Q/11TQ50Q' ;;
     LANTIS-MEXL*)           _x='JSL|HP Chromebook 14a' ;;
     LARS_???-???-???-?3?*)  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
