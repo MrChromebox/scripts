@@ -336,8 +336,8 @@
 		"sha1": "d707f8f4c6115cdcce806c5aa651ff9a7a5ba12b"
 	},
 	"fizz": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-fizz-mrchromebox_20220409.rom",
-		"sha1": "e6a384bcf8cf4e432d1ab5e7d9f544d10d6570d5"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-fizz-mrchromebox_20220427.rom",
+		"sha1": "d0c84358c1be3f611d8a5b16aa7cc4baa9bf85e8"
 	},
 	"karma": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-karma-mrchromebox_20220409.rom",
