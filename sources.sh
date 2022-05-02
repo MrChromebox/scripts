@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2022-04-27]"
+export script_date="[2022-05-02]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -178,7 +178,7 @@ export coreboot_uefi_jinlon="coreboot_tiano-jinlon-mrchromebox_20220409.rom"
 export coreboot_uefi_kaisa="coreboot_tiano-kaisa-mrchromebox_20220409.rom"
 export coreboot_uefi_kindred="coreboot_tiano-kindred-mrchromebox_20220409.rom"
 export coreboot_uefi_kled="coreboot_tiano-kled-mrchromebox_20220409.rom"
-export coreboot_uefi_kohaku="coreboot_tiano-kohaku-mrchromebox_20220409.rom"
+export coreboot_uefi_kohaku="coreboot_tiano-kohaku-mrchromebox_20220502.rom"
 export coreboot_uefi_nightfury="coreboot_tiano-nightfury-mrchromebox_20220412.rom"
 export coreboot_uefi_noibat="coreboot_tiano-noibat-mrchromebox_20220409.rom"
 export coreboot_uefi_wyvern="coreboot_tiano-wyvern-mrchromebox_20220409.rom"
