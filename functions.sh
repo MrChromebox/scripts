@@ -68,10 +68,10 @@ snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
     'electro' 'epaulette' 'lava' 'nasher' 'nasher360' 'pyro' 'rabbid'  'reef' \
 	'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
-kbl_boxes=('bleemo' 'fizz' 'jax' 'karma' 'kench' 'sion' 'teemo' 'wukong')
+kbl_boxes=('bleemo' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
-kbl_rwl_18=('atlas' 'leona' 'nocturne' 'rammus' 'shyvana')
+kbl_rwl_18=('atlas' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
         'librem_mini' 'librem_mini_v2' 'librem_14');
