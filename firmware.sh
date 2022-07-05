@@ -288,6 +288,25 @@ an Acer C740 (Auron_Paine) or Acer C910/CB5-571 (Auron_Yuna)?
     done
 fi
 
+#rammus special case (upgrade from older UEFI firmware)
+if [ "$device" = "rammus" ]; then
+    echo -e ""
+    echo_yellow "Unable to determine Chromebook model"
+    echo -e "Because of your current firmware, I'm unable to
+determine the exact mode of your Chromebook.  Are you using
+an Asus C425 (LEONA) or Asus C433/C434 (SHYVANA)?
+"
+    REPLY=""
+    while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
+    do
+        read -ep "Enter 'L' for LEONA, 'S' for SHYVANA: "
+        if [[ "$REPLY" = "S" || "$REPLY" = "s" ]]; then
+            coreboot_file=${coreboot_uefi_shyvana}
+        else
+            coreboot_file=${coreboot_uefi_leona}
+        fi
+    done
+fi
 
 #extract device serial if present in cbfs
 ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/null 2>&1

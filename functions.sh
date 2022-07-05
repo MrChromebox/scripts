@@ -599,7 +599,7 @@ case "${_hwid}" in
     LASER14*)               _x='GLK|Lenovo Chromebook S340';;
     LASER*)                 _x='GLK|Lenovo Chromebook C340';;
     LAVA*)                  _x='APL|Acer Chromebook Spin 11 CP311' ;;
-    LEONA*)                 _x='KBL|Asus Chromebook C425TA' ; device="rammus";;
+    LEONA*)                 _x='KBL|Asus Chromebook C425TA' ;;
     LEON*)                  _x='HSW|Toshiba CB30/CB35 Chromebook' ;;
     LIARA*)                 _x='STR|Lenovo 14e Chromebook' ;;
     LIBREM_13_V1)           _x='BDW|Purism Librem 13 v1' ; device="librem13v1";;
@@ -677,7 +677,7 @@ case "${_hwid}" in
     SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ;;
     SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
     SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;
-    SHYVANA*)               _x='KBL|Asus Chromebook Flip C433/C434' ; device="rammus";;
+    SHYVANA*)               _x='KBL|Asus Chromebook Flip C433/C434' ;;
     SION*)                  _x='KBL|Acer Chromebox CXI3' ; device="fizz";;
     SNAPPY_???-A*)          _x='APL|HP Chromebook x360 11 G1 EE' ;;
     SNAPPY_???-B*)          _x='APL|HP Chromebook 11 G6 EE' ;;
