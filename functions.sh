@@ -82,7 +82,7 @@ glk=('ampton' 'apel' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
 	'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
-cml_boxes=('duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
+cml_boxes=('dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
@@ -534,7 +534,8 @@ case "${_hwid}" in
     CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
     DELBIN*)                _x='TGL|ASUS Chromebook Flip CX5' ;;
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
-    DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
+    DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
+	DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
     DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ;;
     DRATINI*)               _x='CML|HP Pro c640 Chromebook' ;;
     DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
