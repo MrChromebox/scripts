@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2022-07-18]"
+export script_date="[2022-08-04]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -29,12 +29,12 @@ export syslinux_version="syslinux-6.04-pre1"
 
 #UEFI Full ROMs
 #SNB/IVB
-export coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20220718.rom"
-export coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20220718.rom"
-export coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20220718.rom"
-export coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20220718.rom"
-export coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20220718.rom"
-export coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20220718.rom"
+export coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20220804.rom"
+export coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20220804.rom"
+export coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20220804.rom"
+export coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20220804.rom"
+export coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20220804.rom"
+export coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20220804.rom"
 #Haswell
 export coreboot_uefi_falco="coreboot_tiano-falco-mrchromebox_20220718.rom"
 export coreboot_uefi_leon="coreboot_tiano-leon-mrchromebox_20220718.rom"
@@ -161,12 +161,12 @@ export coreboot_uefi_vorticon="coreboot_tiano-vorticon-mrchromebox_20220718.rom"
 export coreboot_uefi_vortininja="coreboot_tiano-vortininja-mrchromebox_20220718.rom"
 
 #Stoneyridge
-export coreboot_uefi_aleena="coreboot_tiano-aleena-mrchromebox_20220718.rom"
-export coreboot_uefi_barla="coreboot_tiano-barla-mrchromebox_20220718.rom"
-export coreboot_uefi_careena="coreboot_tiano-careena-mrchromebox_20220718.rom"
-export coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20220718.rom"
-export coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20220718.rom"
-export coreboot_uefi_treeya="coreboot_tiano-treeya-mrchromebox_20220718.rom"
+export coreboot_uefi_aleena="coreboot_tiano-aleena-mrchromebox_20220804.rom"
+export coreboot_uefi_barla="coreboot_tiano-barla-mrchromebox_20220804.rom"
+export coreboot_uefi_careena="coreboot_tiano-careena-mrchromebox_20220804.rom"
+export coreboot_uefi_kasumi="coreboot_tiano-kasumi-mrchromebox_20220804.rom"
+export coreboot_uefi_liara="coreboot_tiano-liara-mrchromebox_20220804.rom"
+export coreboot_uefi_treeya="coreboot_tiano-treeya-mrchromebox_20220804.rom"
 
 #CometLake
 export coreboot_uefi_akemi="coreboot_tiano-akemi-mrchromebox_20220718.rom"
