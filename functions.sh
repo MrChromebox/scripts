@@ -88,7 +88,7 @@ cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
 jsl=('blipper' 'boten' 'botenflex' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'galtic' 'kracko' \
      'kracko360' 'lantis' 'madoo' 'magolor' 'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
-tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volta' 'voxel')
+tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volet' 'volta' 'voxel')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -707,7 +707,8 @@ case "${_hwid}" in
     TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
-    VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
+    VOLET*)                 _x='TGL| Acer Chromebook 515 (CB515-1W)' ;;
+	VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
 	VORTICON*)              _x='GLK|HP Chromebook 11 G8 EE' ;;
 	VORTININJA*)            _x='GLK|HP Chromebook x360 11 G3 EE' ;;
     VOXEL*)                 _x='TGL|Acer Chromebook Spin 713 (CP713-3W)' ;;
