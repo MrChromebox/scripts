@@ -189,7 +189,8 @@ echo -e ""
 
 if [[ "$hasLocalPath" = true ]]; then
 	read -ep "Please provide local path for Full ROM Firmware: "
-	[[ ! -f "$REPLY" ]] || echo_red "->$REPLY<- file does note exist" && return
+	[[ -f "$REPLY" ]] || { exit_red "->$REPLY<- file does note exist"; return 1; }
+	coreboot_file=$REPLY
 fi
 
 # ensure hardware write protect disabled
@@ -258,16 +259,18 @@ OS; ${currOS} will no longer be bootable. See https://mrchromebox.tech/#faq"
     [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 fi
 
-#determine correct file / URL
-firmware_source=${fullrom_source}
-if [[ "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
-    if [ "$useUEFI" = true ]; then
-        eval coreboot_file=$`echo "coreboot_uefi_${device}"`
-    else
-        eval coreboot_file=$`echo "coreboot_${device}"`
-    fi
-else
-    exit_red "Unknown or unsupported device (${device^^}); cannot continue."; return 1
+if [[ "hasLocalPath" == false ]];then
+	#determine correct file / URL
+	firmware_source=${fullrom_source}
+	if [[ "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
+	    if [ "$useUEFI" = true ]; then
+	        eval coreboot_file=$`echo "coreboot_uefi_${device}"`
+	    else
+	        eval coreboot_file=$`echo "coreboot_${device}"`
+	    fi
+	else
+	    exit_red "Unknown or unsupported device (${device^^}); cannot continue."; return 1
+	fi
 fi
 
 #auron special case (upgrade from coolstar legacy rom)
@@ -386,13 +389,17 @@ fi
 
 #download firmware file
 cd /tmp
-echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
-$CURL -sLO "${firmware_source}${coreboot_file}"
-$CURL -sLO "${firmware_source}${coreboot_file}.sha1"
 
-#verify checksum on downloaded file
-sha1sum -c ${coreboot_file}.sha1 --quiet > /dev/null 2>&1
-[[ $? -ne 0 ]] && { exit_red "Firmware download checksum fail; download corrupted, cannot flash."; return 1; }
+if [[ "$hasLocalPath" = false ]]; then
+	echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
+
+	$CURL -sLO "${firmware_source}${coreboot_file}"
+	$CURL -sLO "${firmware_source}${coreboot_file}.sha1"
+
+	#verify checksum on downloaded file
+	sha1sum -c ${coreboot_file}.sha1 --quiet > /dev/null 2>&1
+	[[ $? -ne 0 ]] && { exit_red "Firmware download checksum fail; download corrupted, cannot flash."; return 1; }
+fi
 
 #preferUSB?
 if [[ "$preferUSB" = true  && $useUEFI = false ]]; then
@@ -1417,14 +1424,14 @@ function uefi_menu() {
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update UEFI (Full ROM) Firmware${NORMAL}"
     fi
     if [[ "$hasUEFIoption" = true ]]; then
-        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 1)${MENU} Install/Update Custom UEFI (Full ROM) Firmware from local path ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Install/Update Custom UEFI (Full ROM) Firmware from local path ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update Custom UEFI (Full ROM) Firmware from local path${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update Custom UEFI (Full ROM) Firmware from local path${NORMAL}"
     fi
     if [[ "$isChromeOS" = false  && "$isFullRom" = true ]]; then
-        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Restore Stock Firmware ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 3)${MENU} Restore Stock Firmware ${NORMAL}"
     else
-        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Restore Stock ChromeOS Firmware ${NORMAL}"
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 3)${GRAY_TEXT} Restore Stock ChromeOS Firmware ${NORMAL}"
     fi
     if [[ "${device^^}" = "EVE" ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
@@ -1446,7 +1453,7 @@ function uefi_menu() {
             ;;
 
         2)  if [[ "$hasUEFIoption" = true ]]; then
-		hasLocalPath = true
+		hasLocalPath=true
                 flash_coreboot
             fi
             uefi_menu
