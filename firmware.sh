@@ -187,7 +187,7 @@ read -ep "Do you wish to continue? [y/N] "
 #spacing
 echo -e ""
 
-if [[ "$hasLocalPath" = true]]; then
+if [[ "$hasLocalPath" = true ]]; then
 	read -ep "Please provide local path for Full ROM Firmware: "
 	[[ ! -f "$REPLY" ]] || echo_red "->$REPLY<- file does note exist" && return
 fi
