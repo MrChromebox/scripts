@@ -166,7 +166,7 @@ else
 fi
 
 
-if [[ "$hasLocalPath" = true]]; then
+if [[ "$hasLocalPath" = true ]]; then
 	echo_green "\nInstall/Update Custom ${fwTypeStr} Full ROM Firmware from local path"
 else
 	echo_green "\nInstall/Update ${fwTypeStr} Full ROM Firmware"
