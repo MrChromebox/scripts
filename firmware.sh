@@ -165,7 +165,12 @@ else
     fwTypeStr="UEFI"
 fi
 
-echo_green "\nInstall/Update ${fwTypeStr} Full ROM Firmware"
+
+if [[ "$hasLocalPath" = true]]; then
+	echo_green "\nInstall/Update Custom ${fwTypeStr} Full ROM Firmware from local path"
+else
+	echo_green "\nInstall/Update ${fwTypeStr} Full ROM Firmware"
+fi
 echo_yellow "IMPORTANT: flashing the firmware has the potential to brick your device, 
 requiring relatively inexpensive hardware and some technical knowledge to 
 recover.Not all boards can be tested prior to release, and even then slight 
@@ -181,6 +186,11 @@ read -ep "Do you wish to continue? [y/N] "
 
 #spacing
 echo -e ""
+
+if [[ "$hasLocalPath" = true]]; then
+	read -ep "Please provide local path for Full ROM Firmware: "
+	[[ ! -f "$REPLY" ]] || echo_red "->$REPLY<- file does note exist" && return
+fi
 
 # ensure hardware write protect disabled
 [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
@@ -1406,6 +1416,11 @@ function uefi_menu() {
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update UEFI (Full ROM) Firmware${NORMAL}"
     fi
+    if [[ "$hasUEFIoption" = true ]]; then
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 1)${MENU} Install/Update Custom UEFI (Full ROM) Firmware from local path ${NORMAL}"
+    else
+        echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update Custom UEFI (Full ROM) Firmware from local path${NORMAL}"
+    fi
     if [[ "$isChromeOS" = false  && "$isFullRom" = true ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Restore Stock Firmware ${NORMAL}"
     else
@@ -1430,7 +1445,14 @@ function uefi_menu() {
             uefi_menu
             ;;
 
-        2)  if [[ "$isChromeOS" = false && "$isUnsupported" = false \
+        2)  if [[ "$hasUEFIoption" = true ]]; then
+		hasLocalPath = true
+                flash_coreboot
+            fi
+            uefi_menu
+            ;;
+
+        3)  if [[ "$isChromeOS" = false && "$isUnsupported" = false \
                     && "$isFullRom" = true ]]; then
                 restore_stock_firmware
                 menu_fwupdate
