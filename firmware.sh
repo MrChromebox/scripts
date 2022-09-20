@@ -50,6 +50,8 @@ elif [ "$isZen2" = true ]; then
     rwlegacy_file=$rwl_altfw_zen2
 elif [ "$isTgl" = true ]; then
     rwlegacy_file=$rwl_altfw_tgl
+elif [ "$isGlk" = true ]; then
+	rwlegacy_file=$rwl_altfw_glk
 else
     echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
     read -ep "Press enter to return to the main menu"
@@ -1259,7 +1261,7 @@ function stock_menu() {
     
     show_header
 
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false && "$isGlk" = false ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
@@ -1302,7 +1304,7 @@ function stock_menu() {
     case $opt in
 
         1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
-                    && "$isBootStub" = false && "$isUnsupported" = false && "$isGlk" = false ]]; then
+                    && "$isBootStub" = false && "$isUnsupported" = false ]]; then
                 flash_rwlegacy
             fi
             menu_fwupdate
