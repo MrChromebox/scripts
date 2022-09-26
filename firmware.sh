@@ -227,10 +227,10 @@ if [[ "$isStock" = true && "$useUEFI" = true && "$runsWindows" = false ]]; then
 clear
 echo_red "VERY IMPORTANT:"
 echo -e "Although UEFI firmware is available for your device,
-running Windows on it is $RED_TEXT**NOT SUPPORTED**$NORMAL, no matter what
-some Youtube video claims. If you post on reddit asking for
-help, your post will likely be locked or deleted. Additionally,
-your device may not be fully functional under Linux either. 
+running Windows on it is currently $RED_TEXT**NOT SUPPORTED**$NORMAL,
+per www.coolstar.org, no matter what some Youtube video claims.
+If you post on reddit asking for help, your post may be locked or deleted
+without warning. Your device may not be fully functional under Linux either. 
 Do your homework and be sure you understand what you are getting into."
 
 echo_yellow "\nIf you still wish to continue, type: 'I UNDERSTAND' and press enter
