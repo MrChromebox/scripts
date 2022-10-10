@@ -101,7 +101,7 @@ shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}"
 	'dratini' 'rabbid' 'blooglet' 'shyvana'))
 runs_windows=($(printf "%s " "${snb_ivb[@]}" "${hsw_boxes[@]}" "${hsw_books[@]}" \
     "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${braswell[@]}" "${skl[@]}" \
-    "${purism[@]}" "${kbl[@]}" "${apl[@]}" "${cml_boxes[@]}"))
+    "${purism[@]}" "${kbl[@]}" "${apl[@]}" "${glk[@]}" "${cml_boxes[@]}"))
 
 #menu text output
 NORMAL=$(echo "\033[m")
