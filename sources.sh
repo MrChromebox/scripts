@@ -93,14 +93,14 @@ export coreboot_uefi_sentry="coreboot_tiano-sentry-mrchromebox_20221024.rom"
 #KabyLake
 export coreboot_uefi_atlas="coreboot_tiano-atlas-mrchromebox_20221024.rom"
 export coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20221024.rom"
-export coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20221024.rom"
-export coreboot_uefi_karma="coreboot_tiano-karma-mrchromebox_20221024.rom"
+export coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20220718.rom"
+export coreboot_uefi_karma="coreboot_tiano-karma-mrchromebox_20220718.rom"
 export coreboot_uefi_leona="coreboot_tiano-leona-mrchromebox_20221024.rom"
 export coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20221024.rom"
 export coreboot_uefi_nautilus="coreboot_tiano-nautilus-mrchromebox_20221024.rom"
-export coreboot_uefi_nocturne="coreboot_tiano-nocturne-mrchromebox_20221024.rom"
+export coreboot_uefi_nocturne="coreboot_tiano-nocturne-mrchromebox_20220805.rom"
 export coreboot_uefi_shyvana="coreboot_tiano-shyvana-mrchromebox_20221024.rom"
-export coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20221024.rom"
+export coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20220718.rom"
 
 #ApolloLake
 export coreboot_uefi_astronaut="coreboot_tiano-astronaut-mrchromebox_20221024.rom"
