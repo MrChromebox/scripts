@@ -1,19 +1,19 @@
 {
 	"butterfly": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-butterfly-mrchromebox_20221027.rom"
-		"sha1": "5a5a5db8c3b96d634aad7811d3524c03d0ad502f"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-butterfly-mrchromebox_20221028.rom"
+		"sha1": "c043f2e54c42663028b238aaed8e2ed48d3fbb23"
 	}
 	"link": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-link-mrchromebox_20221027.rom"
 		"sha1": "85e4f4958a3291d2a0b5ea4536d716c13bfc5491"
 	}
 	"lumpy": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-lumpy-mrchromebox_20221027.rom"
-		"sha1": "6230b9cc89b00a35f40e79466159b9a1c5b91578"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-lumpy-mrchromebox_20221028.rom"
+		"sha1": "89443b6c0e496c91319cc147ac7b00c53fdad8c3"
 	}
 	"parrot": {
-		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-parrot-mrchromebox_20221027.rom"
-		"sha1": "f16126281b262d2668a1fd3ba34267fc70049edb"
+		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-parrot-mrchromebox_20221028.rom"
+		"sha1": "4a97ee70deeaede9677cd59ff147d007d9a5edce"
 	}
 	"stout": {
 		"url": "https://www.mrchromebox.tech/files/firmware/full_rom/coreboot_tiano-stout-mrchromebox_20221027.rom"

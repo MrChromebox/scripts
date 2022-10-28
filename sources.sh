@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2022-10-27]"
+export script_date="[2022-10-28]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -29,10 +29,10 @@ export syslinux_version="syslinux-6.04-pre1"
 
 #UEFI Full ROMs
 #SNB/IVB
-export coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20221027.rom"
-export coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20221027.rom"
+export coreboot_uefi_butterfly="coreboot_tiano-butterfly-mrchromebox_20221028.rom"
+export coreboot_uefi_lumpy="coreboot_tiano-lumpy-mrchromebox_20221028.rom"
 export coreboot_uefi_link="coreboot_tiano-link-mrchromebox_20221027.rom"
-export coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20221027.rom"
+export coreboot_uefi_parrot="coreboot_tiano-parrot-mrchromebox_20221028.rom"
 export coreboot_uefi_stout="coreboot_tiano-stout-mrchromebox_20221027.rom"
 export coreboot_uefi_stumpy="coreboot_tiano-stumpy-mrchromebox_20221027.rom"
 #Haswell
