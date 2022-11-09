@@ -11,13 +11,14 @@ function flash_rwlegacy()
 #set working dir
 cd /tmp
 
+echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
+
 # set dev mode legacy boot flag
 if [ "${isChromeOS}" = true ]; then
     crossystem dev_boot_legacy=1 > /dev/null 2>&1
     crossystem dev_boot_altfw=1 > /dev/null 2>&1
 fi
 
-echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
 
 #determine proper file
 if [ "$device" = "link" ]; then
