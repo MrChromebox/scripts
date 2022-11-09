@@ -627,69 +627,84 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
     echo -e ""
 
 else
-    if [[ "$hasShellball" = false ]]; then
-        exit_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
-        return 1
+	if [[ "$hasShellball" = true ]]; then
+		#download firmware extracted from recovery image
+		echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
+
+		if [ "${boardName^^}" = "PANTHER" ]; then
+			echo -e "Which device do you have?\n"
+			echo "1) Asus CN60 [PANTHER]"
+			echo "2) HP CB1 [ZAKO]"
+			echo "3) Dell 3010 [TRICKY]"
+			echo "4) Acer CXI [MCCLOUD]"
+			echo "5) LG Chromebase [MONROE]"
+			echo ""
+			read -ep "? " fw_num
+			if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
+				exit_red "Invalid input - cancelling"
+				return 1
+			fi
+			#confirm menu selection
+			echo -e ""
+			read -ep "Confirm selection number ${fw_num} [y/N] "
+			[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
+
+			#download firmware file
+			echo -e ""
+			echo_yellow "Downloading recovery image firmware file"
+			case "$fw_num" in
+				1) _device="panther";
+					;;
+				2) _device="zako";
+					;;
+				3) _device="tricky";
+					;;
+				4) _device="mccloud";
+					;;
+				5) _device="monroe";
+					;;
+			esac
+		else
+			#confirm device detection
+			echo_yellow "Confirm system details:"
+			echo -e "Device: ${deviceDesc}"
+			echo -e "Board Name: ${boardName^^}"
+			echo -e ""
+			read -ep "? [y/N] "
+			if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
+				exit_red "Device detection failed; unable to restoring stock firmware"
+				return 1
+			fi
+			echo -e ""
+			_device=${boardName,,}
+		fi
+
+		#download shellball ROM
+		echo_yellow "Downloading shellball.${_device}.bin"
+		$CURL -sLo /tmp/stock-firmware.rom ${shellball_source}shellball.${_device}.bin;
+		[[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
+
+	else
+		# no shellball available, offer to use recovery image
+        echo_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
+		echo_yellow "Would you like to use one from a ChromeOS recovery image?\n
+This will be a 2GB+ download and take a bit of time depending on your connection"
+		read -ep  "Download and extract firmware from a recovery image? [y/N] "
+		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
+			echo_yellow "Sit tight, this will take some time as recovery images are 2GB+"
+			$CURL -LO https://raw.githubusercontent.com/coreboot/coreboot/master/util/chromeos/crosfirmware.sh
+			if ! bash crosfirmware.sh ${boardName,,} ; then
+				exit_red "Downloading/extracting from the recovery image failed"
+				return 1
+			fi
+			mv coreboot-Google_* /tmp/stock-firmware.rom
+			echo_yellow "Stock firmware successfully extracted from ChromeOS recovery image"
+		else
+			exit_red "No stock firmware available to restore"
+			return 1
+		fi
     fi
-
-    #download firmware extracted from recovery image
-    echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
-
-    if [ "${boardName^^}" = "PANTHER" ]; then
-        echo -e "Which device do you have?\n"
-        echo "1) Asus CN60 [PANTHER]"
-        echo "2) HP CB1 [ZAKO]"
-        echo "3) Dell 3010 [TRICKY]"
-        echo "4) Acer CXI [MCCLOUD]"
-        echo "5) LG Chromebase [MONROE]"
-        echo ""
-        read -ep "? " fw_num
-        if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
-            exit_red "Invalid input - cancelling"
-            return 1
-        fi
-        #confirm menu selection
-        echo -e ""
-        read -ep "Confirm selection number ${fw_num} [y/N] "
-        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
-
-        #download firmware file
-        echo -e ""
-        echo_yellow "Downloading recovery image firmware file"
-        case "$fw_num" in
-            1) _device="panther";
-                ;;
-            2) _device="zako";
-                ;;
-            3) _device="tricky";
-                ;;
-            4) _device="mccloud";
-                ;;
-            5) _device="monroe";
-                ;;
-        esac
-
-
-    else
-	    #confirm device detection
-        echo_yellow "Confirm system details:"
-        echo -e "Device: ${deviceDesc}"
-        echo -e "Board Name: ${boardName^^}"
-        echo -e ""
-        read -ep "? [y/N] "
-        if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
-            exit_red "Device detection failed; unable to restoring stock firmware"
-            return 1
-        fi
-        echo -e ""
-        _device=${boardName,,}
-    fi
-
-    #download shellball ROM
-    echo_yellow "Downloading shellball.${_device}.bin"
-    $CURL -sLo /tmp/stock-firmware.rom ${shellball_source}shellball.${_device}.bin;
-    [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
-
+    
     #extract VPD from current firmware if present
     if extract_vpd /tmp/bios.bin ; then
         #merge with recovery image firmware
