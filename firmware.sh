@@ -226,21 +226,21 @@ PXE (network boot) capability and compatibility with Legacy OS installations.\n"
 fi
 
 # Windows support disclaimer
-if [[ "$isStock" = true && "$useUEFI" = true && "$runsWindows" = false ]]; then
-clear
-echo_red "VERY IMPORTANT:"
-echo -e "Although UEFI firmware is available for your device,
-running Windows on it is currently $RED_TEXT**NOT SUPPORTED**$NORMAL,
-per www.coolstar.org, no matter what some Youtube video claims.
-If you post on reddit asking for help, your post may be locked or deleted
-without warning. Your device may not be fully functional under Linux either. 
-Do your homework and be sure you understand what you are getting into."
+#if [[ "$isStock" = true && "$useUEFI" = true && "$runsWindows" = false ]]; then
+#clear
+#echo_red "VERY IMPORTANT:"
+#echo -e "Although UEFI firmware is available for your device,
+#running Windows on it is $RED_TEXT**NOT SUPPORTED**$NORMAL, no matter what
+#some Youtube video claims. If you post on reddit asking for
+#help, your post will likely be locked or deleted. Additionally,
+#your device may not be fully functional under Linux either. 
+#Do your homework and be sure you understand what you are getting into."
 
-echo_yellow "\nIf you still wish to continue, type: 'I UNDERSTAND' and press enter
-(or just press enter to return to the main menu)"
-read -e
-[[ "$REPLY" = "I UNDERSTAND" ]] || return
-fi
+#echo_yellow "\nIf you still wish to continue, type: 'I UNDERSTAND' and press enter
+#(or just press enter to return to the main menu)"
+#read -e
+#[[ "$REPLY" = "I UNDERSTAND" ]] || return
+#fi
 
 #UEFI notice if flashing from ChromeOS or Legacy
 if [[ "$useUEFI" = true && ! -d /sys/firmware/efi ]]; then
