@@ -535,7 +535,7 @@ case "${_hwid}" in
     DELBIN*)                _x='TGL|ASUS Chromebook Flip CX5' ;;
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
     DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
-	DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
+    DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
     DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ;;
     DRATINI*)               _x='CML|HP Pro c640 Chromebook' ;;
     DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
@@ -627,7 +627,7 @@ case "${_hwid}" in
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     MADOO*)                 _x='JSL|HP Chromebook x360 14b' ;;
-	MAGOLOR*)               _x='JSL| Acer Chromebook Spin 511 [R753T]' ;;
+    MAGOLOR*)               _x='JSL| Acer Chromebook Spin 511 [R753T]' ;;
     MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
@@ -708,9 +708,9 @@ case "${_hwid}" in
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
     VOLET*)                 _x='TGL| Acer Chromebook 515 (CB515-1W)' ;;
-	VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
-	VORTICON*)              _x='GLK|HP Chromebook 11 G8 EE' ;;
-	VORTININJA*)            _x='GLK|HP Chromebook x360 11 G3 EE' ;;
+    VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
+    VORTICON*)              _x='GLK|HP Chromebook 11 G8 EE' ;;
+    VORTININJA*)            _x='GLK|HP Chromebook x360 11 G3 EE' ;;
     VOXEL*)                 _x='TGL|Acer Chromebook Spin 713 (CP713-3W)' ;;
     WHITETIP*)              _x='APL|CTL Chromebook J41/J41T' ;;
     WINKY*)                 _x='BYT|Samsung Chromebook 2 (XE500C12)' ;;
@@ -751,9 +751,10 @@ GLK) deviceCpuType="Intel GeminiLake" ;;
 STR) deviceCpuType="AMD StoneyRidge" ;;
 WHL) deviceCpuType="Intel WhiskeyLake" ;;
 CML) deviceCpuType="Intel CometLake" ;;
-ZEN2) deviceCpuType="AMD Zen2/Picasso" ;;
+ZEN2) deviceCpuType="AMD Zen+/Picasso" ;;
 JSL) deviceCpuType="Intel JasperLake" ;;
 TGL) deviceCpuType="Intel TigerLake" ;;
+ADL) deviceCpuType="Intel AlderLake" ;;
 *)   deviceCpuType="(unrecognized)" ;;
 esac
 
@@ -777,6 +778,7 @@ esac
 [[ "${zen2[@]}" =~ "$device" ]] && isZen2=true
 [[ "${jsl[@]}" =~ "$device" ]] && isJsl=true
 [[ "${tgl[@]}" =~ "$device" ]] && isTgl=true
+[[ "${adl[@]}" =~ "$device" ]] && isAdl=true
 [[ "${cml_boxes[@]}" =~ "$device" ]] && isCmlBox=true
 [[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
@@ -784,7 +786,7 @@ esac
     || "$isSkl" = true || "$isSnbIvb" = true || "$isApl" = true \
     || "$isKbl" = true || "$isStr" = true || "$isWhl" = true \
     || "$isGlk" = true || "$isCml" = true || "$isZen2" = true \
-    || "$isJsl" = true || "$isTgl" = true ]] || isUnsupported=true
+    || "$isJsl" = true || "$isTgl" = true || "$isAdl" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
