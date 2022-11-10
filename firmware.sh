@@ -458,7 +458,7 @@ fi
 #disable software write-protect
 echo_yellow "Disabling software write-protect and clearing the WP range"
 ${flashromcmd} --wp-disable > /dev/null 2>&1
-if [[ $? -ne 0 && swWp = "enabled" ]]; then
+if [[ $? -ne 0 && $swWp = "enabled" ]]; then
     exit_red "Error disabling software write-protect; unable to flash firmware."; return 1
 fi
 
@@ -718,7 +718,7 @@ fi
 
 #disable software write-protect
 ${flashromcmd} --wp-disable > /dev/null 2>&1
-if [[ $? -ne 0 && swWp = "enabled" ]]; then
+if [[ $? -ne 0 && $swWp = "enabled" ]]; then
 #if [[ $? -ne 0 && ( "$isBsw" = false || "$isFullRom" = false ) ]]; then
     exit_red "Error disabling software write-protect; unable to restore stock firmware."; return 1
 fi
