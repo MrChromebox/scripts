@@ -536,7 +536,7 @@ case "${_hwid}" in
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
     DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
     DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
-    DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ;;
+    DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ; device="drallion";;
     DRATINI*)               _x='CML|HP Pro c640 Chromebook' ;;
     DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
     DRAWLAT*)               _x='JSL|HP Chromebook 11 G9 EE' ;;
