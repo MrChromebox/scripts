@@ -11,13 +11,14 @@ function flash_rwlegacy()
 #set working dir
 cd /tmp
 
+echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
+
 # set dev mode legacy boot flag
 if [ "${isChromeOS}" = true ]; then
     crossystem dev_boot_legacy=1 > /dev/null 2>&1
     crossystem dev_boot_altfw=1 > /dev/null 2>&1
 fi
 
-echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
 
 #determine proper file
 if [ "$device" = "link" ]; then
@@ -42,6 +43,8 @@ elif [ "$isKbl" = true ]; then
     rwlegacy_file=$seabios_kbl
 elif [ "$isWhl" = true ]; then
     rwlegacy_file=$rwl_altfw_whl
+elif [ "$device" = "drallion" ]; then
+    rwlegacy_file=$rwl_altfw_drallion
 elif [ "$isCmlBox" = true ]; then
     rwlegacy_file=$rwl_altfw_cml
 elif [ "$isJsl" = true ]; then
@@ -50,6 +53,8 @@ elif [ "$isZen2" = true ]; then
     rwlegacy_file=$rwl_altfw_zen2
 elif [ "$isTgl" = true ]; then
     rwlegacy_file=$rwl_altfw_tgl
+elif [ "$isGlk" = true ]; then
+	rwlegacy_file=$rwl_altfw_glk
 else
     echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
     read -ep "Press enter to return to the main menu"
@@ -232,21 +237,21 @@ PXE (network boot) capability and compatibility with Legacy OS installations.\n"
 fi
 
 # Windows support disclaimer
-if [[ "$isStock" = true && "$useUEFI" = true && "$runsWindows" = false ]]; then
-clear
-echo_red "VERY IMPORTANT:"
-echo -e "Although UEFI firmware is available for your device,
-running Windows on it is $RED_TEXT**NOT SUPPORTED**$NORMAL, no matter what
-some Youtube video claims. If you post on reddit asking for
-help, your post will likely be locked or deleted. Additionally,
-your device may not be fully functional under Linux either. 
-Do your homework and be sure you understand what you are getting into."
+#if [[ "$isStock" = true && "$useUEFI" = true && "$runsWindows" = false ]]; then
+#clear
+#echo_red "VERY IMPORTANT:"
+#echo -e "Although UEFI firmware is available for your device,
+#running Windows on it is $RED_TEXT**NOT SUPPORTED**$NORMAL, no matter what
+#some Youtube video claims. If you post on reddit asking for
+#help, your post will likely be locked or deleted. Additionally,
+#your device may not be fully functional under Linux either. 
+#Do your homework and be sure you understand what you are getting into."
 
-echo_yellow "\nIf you still wish to continue, type: 'I UNDERSTAND' and press enter
-(or just press enter to return to the main menu)"
-read -e
-[[ "$REPLY" = "I UNDERSTAND" ]] || return
-fi
+#echo_yellow "\nIf you still wish to continue, type: 'I UNDERSTAND' and press enter
+#(or just press enter to return to the main menu)"
+#read -e
+#[[ "$REPLY" = "I UNDERSTAND" ]] || return
+#fi
 
 #UEFI notice if flashing from ChromeOS or Legacy
 if [[ "$useUEFI" = true && ! -d /sys/firmware/efi ]]; then
@@ -470,7 +475,7 @@ fi
 #disable software write-protect
 echo_yellow "Disabling software write-protect and clearing the WP range"
 ${flashromcmd} --wp-disable > /dev/null 2>&1
-if [ $? -ne 0 ]; then
+if [[ $? -ne 0 && $swWp = "enabled" ]]; then
     exit_red "Error disabling software write-protect; unable to flash firmware."; return 1
 fi
 
@@ -639,69 +644,84 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
     echo -e ""
 
 else
-    if [[ "$hasShellball" = false ]]; then
-        exit_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
-        return 1
+	if [[ "$hasShellball" = true ]]; then
+		#download firmware extracted from recovery image
+		echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
+
+		if [ "${boardName^^}" = "PANTHER" ]; then
+			echo -e "Which device do you have?\n"
+			echo "1) Asus CN60 [PANTHER]"
+			echo "2) HP CB1 [ZAKO]"
+			echo "3) Dell 3010 [TRICKY]"
+			echo "4) Acer CXI [MCCLOUD]"
+			echo "5) LG Chromebase [MONROE]"
+			echo ""
+			read -ep "? " fw_num
+			if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
+				exit_red "Invalid input - cancelling"
+				return 1
+			fi
+			#confirm menu selection
+			echo -e ""
+			read -ep "Confirm selection number ${fw_num} [y/N] "
+			[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
+
+			#download firmware file
+			echo -e ""
+			echo_yellow "Downloading recovery image firmware file"
+			case "$fw_num" in
+				1) _device="panther";
+					;;
+				2) _device="zako";
+					;;
+				3) _device="tricky";
+					;;
+				4) _device="mccloud";
+					;;
+				5) _device="monroe";
+					;;
+			esac
+		else
+			#confirm device detection
+			echo_yellow "Confirm system details:"
+			echo -e "Device: ${deviceDesc}"
+			echo -e "Board Name: ${boardName^^}"
+			echo -e ""
+			read -ep "? [y/N] "
+			if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
+				exit_red "Device detection failed; unable to restoring stock firmware"
+				return 1
+			fi
+			echo -e ""
+			_device=${boardName,,}
+		fi
+
+		#download shellball ROM
+		echo_yellow "Downloading shellball.${_device}.bin"
+		$CURL -sLo /tmp/stock-firmware.rom ${shellball_source}shellball.${_device}.bin;
+		[[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
+
+	else
+		# no shellball available, offer to use recovery image
+        echo_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
+		echo_yellow "Would you like to use one from a ChromeOS recovery image?\n
+This will be a 2GB+ download and take a bit of time depending on your connection"
+		read -ep  "Download and extract firmware from a recovery image? [y/N] "
+		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
+			echo_yellow "Sit tight, this will take some time as recovery images are 2GB+"
+			$CURL -LO https://raw.githubusercontent.com/coreboot/coreboot/master/util/chromeos/crosfirmware.sh
+			if ! bash crosfirmware.sh ${boardName,,} ; then
+				exit_red "Downloading/extracting from the recovery image failed"
+				return 1
+			fi
+			mv coreboot-Google_* /tmp/stock-firmware.rom
+			echo_yellow "Stock firmware successfully extracted from ChromeOS recovery image"
+		else
+			exit_red "No stock firmware available to restore"
+			return 1
+		fi
     fi
-
-    #download firmware extracted from recovery image
-    echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
-
-    if [ "${boardName^^}" = "PANTHER" ]; then
-        echo -e "Which device do you have?\n"
-        echo "1) Asus CN60 [PANTHER]"
-        echo "2) HP CB1 [ZAKO]"
-        echo "3) Dell 3010 [TRICKY]"
-        echo "4) Acer CXI [MCCLOUD]"
-        echo "5) LG Chromebase [MONROE]"
-        echo ""
-        read -ep "? " fw_num
-        if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
-            exit_red "Invalid input - cancelling"
-            return 1
-        fi
-        #confirm menu selection
-        echo -e ""
-        read -ep "Confirm selection number ${fw_num} [y/N] "
-        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
-
-        #download firmware file
-        echo -e ""
-        echo_yellow "Downloading recovery image firmware file"
-        case "$fw_num" in
-            1) _device="panther";
-                ;;
-            2) _device="zako";
-                ;;
-            3) _device="tricky";
-                ;;
-            4) _device="mccloud";
-                ;;
-            5) _device="monroe";
-                ;;
-        esac
-
-
-    else
-	    #confirm device detection
-        echo_yellow "Confirm system details:"
-        echo -e "Device: ${deviceDesc}"
-        echo -e "Board Name: ${boardName^^}"
-        echo -e ""
-        read -ep "? [y/N] "
-        if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
-            exit_red "Device detection failed; unable to restoring stock firmware"
-            return 1
-        fi
-        echo -e ""
-        _device=${boardName,,}
-    fi
-
-    #download shellball ROM
-    echo_yellow "Downloading shellball.${_device}.bin"
-    $CURL -sLo /tmp/stock-firmware.rom ${shellball_source}shellball.${_device}.bin;
-    [[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
-
+    
     #extract VPD from current firmware if present
     if extract_vpd /tmp/bios.bin ; then
         #merge with recovery image firmware
@@ -715,7 +735,7 @@ fi
 
 #disable software write-protect
 ${flashromcmd} --wp-disable > /dev/null 2>&1
-if [ $? -ne 0 ]; then
+if [[ $? -ne 0 && $swWp = "enabled" ]]; then
 #if [[ $? -ne 0 && ( "$isBsw" = false || "$isFullRom" = false ) ]]; then
     exit_red "Error disabling software write-protect; unable to restore stock firmware."; return 1
 fi
@@ -1276,7 +1296,7 @@ function stock_menu() {
     
     show_header
 
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false && "$isGlk" = false ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
@@ -1319,7 +1339,7 @@ function stock_menu() {
     case $opt in
 
         1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
-                    && "$isBootStub" = false && "$isUnsupported" = false && "$isGlk" = false ]]; then
+                    && "$isBootStub" = false && "$isUnsupported" = false ]]; then
                 flash_rwlegacy
             fi
             menu_fwupdate
