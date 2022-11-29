@@ -505,6 +505,7 @@ case "${_hwid}" in
     BABYTIGER*)             _x='APL|Asus Chromebook C523NA' ;;
     BANJO*)                 _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
     BANON*)                 _x='BSW|Acer Chromebook 15 (CB3-532)' ;;
+    BANSHEE*)               _x='ADL|Framework Chromebook' ;;
     BARD*)                  _x='KBL|Acer Chromebook 715 (CB715)' ; device="nami";;
     BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ;;
     BERKNIP*)               _x='ZEN2|HP Pro c645 Chromebook Enterprise' ;;
@@ -521,6 +522,7 @@ case "${_hwid}" in
     BOTENFLEX*)             _x='JSL|Lenovo Flex 3i/3i-11 Chromebook' ;;
     BOTEN*)                 _x='JSL|Lenovo 500e Chromebook 2nd Gen' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
+    BUGZZY*)                _x='JSL|Samsung Chromebook 2 360' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
     CANDY*)                 _x='BYT|Dell Chromebook 11' ;;
     CAREENA*)               _x='STR|HP Chromebook 14' ;;
@@ -594,7 +596,7 @@ case "${_hwid}" in
     KRACKO-WPBT*)           _x='JSL|CTL Chromebook NL72' ;;
     KRACKO360-BLXA*)        _x='JSL|CTL Chromebook NL72T' ;;
     KRACKO360*)             _x='JSL|LG Chromebook 11TC50Q/11TQ50Q' ;;
-    LANTIS-MEXL*)           _x='JSL|HP Chromebook 14a' ;;
+    LANTIS*)                _x='JSL|HP Chromebook 14a' ;;
     LARS_???-???-???-?3?*)  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
     LASER14*)               _x='GLK|Lenovo Chromebook S340';;
@@ -622,8 +624,8 @@ case "${_hwid}" in
     LIBREM_MINI_V2)         _x='CML|Purism Librem Mini v2' ; device="librem_mini_v2";;
     LICK*)                  _x='GLK|Lenovo Ideapad 3 Chromebook' ;;
     LILLIPUP*)              _x='TGL|Lenovo IdeaPad Flex 5i Chromebook' ;;
-	LINDAR-EDFZ*)           _x='TGL|Lenovo 5i-14 Chromebook' ;;
-	LINDAR-LCDF*)           _x='TGL|Lenovo Slim 5 Chromebook' ;;
+    LINDAR-EDFZ*)           _x='TGL|Lenovo 5i-14 Chromebook' ; device="lindar";;
+    LINDAR-LCDF*)           _x='TGL|Lenovo Slim 5 Chromebook' ; device="lindar";;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     MADOO*)                 _x='JSL|HP Chromebook x360 14b' ;;
