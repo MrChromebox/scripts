@@ -434,9 +434,9 @@ if [ "$addPXE" = true  ]; then
     fi
 fi
 
-#Persist RW_MRC_CACHE for BSW Full ROM firmware
+#Persist RW_MRC_CACHE UEFI Full ROM firmware
 ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
-if [[ $isBsw = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
+if [[ $isUEFI = "true" &&  $isFullRom = "true" && $? -eq 0 ]]; then
     ${cbfstoolcmd} ${coreboot_file} write -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
 fi
 
