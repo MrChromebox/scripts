@@ -523,7 +523,7 @@ case "${_hwid}" in
     BOTENFLEX*)             _x='JSL|Lenovo Flex 3i/3i-11 Chromebook' ;;
     BOTEN*)                 _x='JSL|Lenovo 500e Chromebook 2nd Gen' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
-    BUGZZY*)                _x='JSL|Samsung Chromebook 2 360' ;;
+    BUGZZY*)                _x='JSL|Samsung Galaxy Chromebook 2 360' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
     CANDY*)                 _x='BYT|Dell Chromebook 11' ;;
     CAREENA*)               _x='STR|HP Chromebook 14' ;;
