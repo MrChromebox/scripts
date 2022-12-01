@@ -624,7 +624,7 @@ case "${_hwid}" in
     LIBREM_MINI)            _x='WHL|Purism Librem Mini' ; device="librem_mini";;
     LIBREM_MINI_V2)         _x='CML|Purism Librem Mini v2' ; device="librem_mini_v2";;
     LICK*)                  _x='GLK|Lenovo Ideapad 3 Chromebook' ;;
-    LILLIPUP*)              _x='TGL|Lenovo IdeaPad Flex 5i Chromebook' ;;
+    LILLIPUP*)              _x='TGL|Lenovo IdeaPad Flex 5i Chromebook' ; device="lillipup";;
     LINDAR-EDFZ*)           _x='TGL|Lenovo 5i-14 Chromebook' ; device="lindar";;
     LINDAR-LCDF*)           _x='TGL|Lenovo Slim 5 Chromebook' ; device="lindar";;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
