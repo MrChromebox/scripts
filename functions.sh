@@ -83,11 +83,15 @@ glk=('ampton' 'apel' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
 cml_boxes=('dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
-cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' 'kohaku' 'nightfury')
+cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
+           'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
-jsl=('beetley' 'blipper' 'boten' 'botenflex' 'bugzzy' 'drawcia' 'drawlat' 'drawman' 'galith' 'gallop' 'galtic' 'kracko' \
-     'kracko360' 'lantis' 'madoo' 'magolor' 'magpie' 'magolor' 'sasuke' 'storo' 'storo360')
+jsl=('beetley' 'blipper' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 'drawcia' 'drawlat' \
+     'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' 'galtic' \
+	 'galtic-360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' 'maglet' \
+	 'maglia' 'maglith' 'magma' 'magneto'  'magolor' 'magpie' 'metaknight' 'pasara' 'pirette' \
+	 'pirika' 'sasuke' 'storo' 'storo360')
 tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volet' 'volta' 'voxel')
 adl=('brya' 'banshee')
 
@@ -490,7 +494,6 @@ else
 fi
 
 case "${_hwid}" in
-    ACER_ZGB*)              _x='PNV|Acer AC700 Chromebook' ;;
     AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
     AKEMI*)                 _x='CML|Lenovo Ideapad Flex 5 Chromebook' ;;
     ALEENA*)                _x='STR|Acer Chromebook 315' ;;
@@ -521,8 +524,9 @@ case "${_hwid}" in
     BLUEBIRD*)              _x='GLK|Samsung Chromebook 4' ;;
     BOBBA360*)              _x='GLK|Acer Chromebook Spin 511' ;;
     BOBBA*)                 _x='GLK|Acer Chromebook 311' ;;
+    BOOKEM*)                _x='JSL|Lenovo 100e Chromebook Gen 3' ;;
     BOTENFLEX*)             _x='JSL|Lenovo Flex 3i/3i-11 Chromebook' ;;
-    BOTEN*)                 _x='JSL|Lenovo 500e Chromebook 2nd Gen' ;;
+    BOTEN*)                 _x='JSL|Lenovo 500e Chromebook Gen 3' ;;
     BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
     BUGZZY*)                _x='JSL|Samsung Galaxy Chromebook 2 360' ;;
     BUTTERFLY*)             _x='SNB|HP Pavilion Chromebook 14' ;;
@@ -535,6 +539,8 @@ case "${_hwid}" in
     CHELL*)                 _x='SKL|HP Chromebook 13 G1' ;;
     CLAPPER*)               _x='BYT|Lenovo N20/N20P Chromebook' ;;
     COPANO*)                _x='TGL|Asus xxx Chromebook' ;;
+    CRET360*)               _x='JSL|Dell Chromebook 3110 2-in-1' ;;
+    CRET*)                  _x='JSL|Dell Chromebook 3110' ;;
     CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
     DELBIN*)                _x='TGL|ASUS Chromebook Flip CX5' ;;
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
@@ -545,6 +551,7 @@ case "${_hwid}" in
     DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
     DRAWLAT*)               _x='JSL|HP Chromebook 11 G9 EE' ;;
     DRAWMAN*)               _x='JSL|HP Chromebook 14 G7' ;;
+    DRAWPER*)               _x='JSL|HP Fortis 14 G10 Chromebook' ;;
     DROBIT*)                _x='TGL|ASUS Chromebook CX9400' ;;
     DROID*)                 _x='GLK|Acer Chromebook 314';;
     DUFFY*)                 _x='CML|ASUS Chromebox 4' ;;
@@ -572,8 +579,13 @@ case "${_hwid}" in
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
     FIZZ)                   _x='KBL|TBD KBL Chromebox' ;;
     FLEEX*)                 _x='GLK|Dell Chromebook 3100';;
+    GALITH360*)             _x='JSL|ASUS Chromebook CX1500FKA' ;;
     GALITH*)                _x='JSL|ASUS Chromebook CX1500CKA' ;;
     GALLOP*)                _x='JSL|ASUS Chromebook CX1700CKA' ;;
+    GALNAT360*)             _x='JSL|ASUS Chromebook Flip CX1102' ;;
+    GALNAT*)                _x='JSL|ASUS Chromebook CX1102' ;;
+    GALTIC360*)             _x='JSL|ASUS Chromebook CX1400FKA' ;;
+    GALTIC*)                _x='JSL|ASUS Chromebook CX1' ;;
     GANDOF*)                _x='BDW|Toshiba Chromebook 2 (2015) CB30/CB35' ;;
     GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
     GLK360*)                _x='GLK|Acer Chromebook Spin 311';;
@@ -595,9 +607,11 @@ case "${_hwid}" in
     KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
     KLED*)                  _x='CML|Acer Chromebook Spin 713 (CP713-2W)' ;;
     KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
-    KRACKO-WPBT*)           _x='JSL|CTL Chromebook NL72' ;;
     KRACKO360-BLXA*)        _x='JSL|CTL Chromebook NL72T' ;;
     KRACKO360*)             _x='JSL|LG Chromebook 11TC50Q/11TQ50Q' ;;
+    KRACKO*)                _x='JSL|CTL Chromebook NL72' ;;
+    LANDIA*)                _x='JSL|HP Chromebook x360 14a' ;;
+    LANDRID*)               _x='JSL|HP Chromebook 15a' ;;
     LANTIS*)                _x='JSL|HP Chromebook 14a' ;;
     LARS_???-???-???-?3?*)  _x='SKL|Acer Chromebook 11 (C771, C771T)' ;;
     LARS*)                  _x='SKL|Acer Chromebook 14 for Work' ;;
@@ -631,8 +645,16 @@ case "${_hwid}" in
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     MADOO*)                 _x='JSL|HP Chromebook x360 14b' ;;
-    MAGOLOR*)               _x='JSL| Acer Chromebook Spin 511 [R753T]' ;;
+    MAGISTER*)              _x='JSL|Acer Chromebook Spin 314' ;;
+    MAGLET*)                _x='JSL|Acer Chromebook 512 (C852)' ;;
+    MAGLIA*)                _x='JSL|Acer Chromebook Spin 512' ;;
+    MAGLITH*)               _x='JSL|Acer Chromebook 511' ;;
+    MAGMA*)                 _x='JSL|Acer Chromebook 315' ;;
+    MAGNETO-BWYB*)          _x='JSL|Acer Chromebook 314' ;;
+    MAGNETO-SGGB*)          _x='JSL|Packard Bell Chromebook 314' ;;
+    MAGOLOR*)               _x='JSL|Acer Chromebook Spin 511 [R753T]' ;;
     MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
+    METAKNIGHT*)            _x='JSL|NEC Chromebook Y3' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
     MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ;;
@@ -652,10 +674,18 @@ case "${_hwid}" in
     PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630'  ; device="nami";;
     PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
     PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
+    PASARA*)                _x='JSL|Gateway Chromebook 15' ;;
     PEPPY*)                 _x='HSW|Acer C720/C720P Chromebook' ;;
     PHASER360S*)            _x='GLK|Lenovo 500e Chromebook 2nd Gen' ;;
     PHASER360*)             _x='GLK|Lenovo 300e Chromebook 2nd Gen' ;;
     PHASER*)                _x='GLK|Lenovo 100e Chromebook 2nd Gen' ;;
+    PIRETTE-LLJI*)          _x='JSL|Axioo Chromebook P11' ;;
+    PIRETTE-NGVJ*)          _x='JSL|SPC Chromebook Z1 Mini' ;;
+    PIRETTE-RVKU*)          _x='JSL|CTL Chromebook PX11E' ;;
+    PIRETTE-UBKE*)          _x='JSL|Zyrex Chromebook M432-2' ;;
+    PIRIKA-BMAD*)           _x='JSL|CTL Chromebook PX14E/PX14EX/PX14EXT' ;;
+    PIRIKA-NPXS*)           _x='JSL|Axioo Chromebook P14' ;;
+    PIRIKA-XAJY*)           _x='JSL|Gateway Chromebook 14' ;;
     PYRO*)                  _x='APL|Lenovo Thinkpad 11e/Yoga Chromebook (G4)' ;;
     QUAWKS*)                _x='BYT|ASUS Chromebook C300' ;;
     RABBID*)                _x='APL|ASUS Chromebook C423' ;;
@@ -694,8 +724,8 @@ case "${_hwid}" in
     SONA*)                  _x='KBL|HP Chromebook x360 14' ; device="nami";;
     SORAKA*)                _x='KBL|HP Chromebook x2' ;;
     SQUAWKS*)               _x='BYT|ASUS Chromebook C200' ;;
-    STORO360*)              _x='JSL|ASUS Chromebook CR1100CKA' ;;
-    STORO*)                 _x='JSL|ASUS Chromebook Flip CR1100FKA' ;;
+    STORO360*)              _x='JSL|ASUS Chromebook Flip CR1100FKA' ;;
+    STORO*)                 _x='JSL|ASUS Chromebook CR1100CKA' ;;
     STOUT*)                 _x='IVB|Lenovo Thinkpad X131e Chromebook' ;;
     STUMPY*)                _x='SNB|Samsung Chromebox Series 3' ;;
     SUMO*)                  _x='BYT|AOpen Chromebase Commercial' ;;
@@ -740,8 +770,6 @@ deviceDesc=$(echo $_x | cut -d\| -f2-)
 
 ## CPU family, Processor core, other distinguishing characteristic
 case "$deviceCpuType" in
-ARM) deviceCpuType="ARM" ;;
-PNV) deviceCpuType="Intel Pineview" ;;
 SNB) deviceCpuType="Intel SandyBridge" ;;
 IVB) deviceCpuType="Intel IvyBridge" ;;
 HSW) deviceCpuType="Intel Haswell" ;;
