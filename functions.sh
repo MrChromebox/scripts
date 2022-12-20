@@ -833,6 +833,14 @@ esac
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
 [[ "${runs_windows[@]}" =~ "$device" ]] && runsWindows=true
 
+# set unsupported if the script fails to identify the platform
+# force all menu options disabled
+if [[ "$deviceCpuType" = "(unrecognized)" ]] ; then
+  isUnsupported=true
+  hasUEFIoption=false
+  hasLegacyOption=false
+fi
+
 return 0
 }
 
