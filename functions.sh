@@ -771,6 +771,7 @@ case "${_hwid}" in
     WYVERN*)                _x='CML|CTL Chromebox CBx2' ;;
     YUNA*)                  _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ; device="auron_yuna";;
     ZAKO*)                  _x='HSW|HP Chromebox CB1' ;;
+    *)                      _x='UNK|ERROR: unknown or unidentifiable device' ;; 
 esac
 
 deviceCpuType=$(echo $_x | cut -d\| -f1)
