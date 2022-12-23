@@ -225,23 +225,6 @@ PXE (network boot) capability and compatibility with Legacy OS installations.\n"
     fi
 fi
 
-# Windows support disclaimer
-#if [[ "$isStock" = true && "$useUEFI" = true && "$runsWindows" = false ]]; then
-#clear
-#echo_red "VERY IMPORTANT:"
-#echo -e "Although UEFI firmware is available for your device,
-#running Windows on it is $RED_TEXT**NOT SUPPORTED**$NORMAL, no matter what
-#some Youtube video claims. If you post on reddit asking for
-#help, your post will likely be locked or deleted. Additionally,
-#your device may not be fully functional under Linux either. 
-#Do your homework and be sure you understand what you are getting into."
-
-#echo_yellow "\nIf you still wish to continue, type: 'I UNDERSTAND' and press enter
-#(or just press enter to return to the main menu)"
-#read -e
-#[[ "$REPLY" = "I UNDERSTAND" ]] || return
-#fi
-
 #UEFI notice if flashing from ChromeOS or Legacy
 if [[ "$useUEFI" = true && ! -d /sys/firmware/efi ]]; then
     [[ "$isChromeOS" = true ]] && currOS="ChromeOS" || currOS="Your Legacy-installed OS"
@@ -576,6 +559,19 @@ technical knowledge to recover.  You have been warned."
 
 read -ep "Do you wish to continue? [y/N] "
 [[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
+
+# check if EOL
+if [ "$isEOL" = true ]; then
+	echo_yellow
+"VERY IMPORTANT:
+Your device has reached end of life (EOL) and is no longer supported by Google.
+Returning the to stock firmware **IS NOT REFCOMMENDED**.
+MrChromebox will not provide any support for EOL devices running anything
+other than the latest UEFI Full ROM firmware release."
+
+	read -ep "Do you wish to continue? [y/N] "
+	[[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
+fi
 
 #spacing
 echo -e ""
@@ -1279,7 +1275,7 @@ function stock_menu() {
     
     show_header
 
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false ) ]]; then
+    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false && "$isEOL" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
@@ -1322,7 +1318,7 @@ function stock_menu() {
     case $opt in
 
         1)  if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isFullRom" = false \
-                    && "$isBootStub" = false && "$isUnsupported" = false ]]; then
+                    && "$isBootStub" = false && "$isUnsupported" = false && "$isEOL" = false  ]]; then
                 flash_rwlegacy
             fi
             menu_fwupdate

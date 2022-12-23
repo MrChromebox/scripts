@@ -99,14 +99,12 @@ UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" 
     "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}" "${cml[@]}" \
     "${glk[@]}" "${apl[@]}" 'delbin' 'drobit' 'lillipup' 'voxel' 'bugzzy' 'lantis' 'magpie' ))
-shellballs=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
-    "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
+shellballs=($(printf "%s " \
     "${skylake[@]}" 'atlas' 'eve' 'nautilus' 'nocturne' 'pantheon' 'sona' 'soraka' \
 	'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
 	'dratini' 'rabbid' 'blooglet' 'shyvana' 'leona'))
-runs_windows=($(printf "%s " "${snb_ivb[@]}" "${hsw_boxes[@]}" "${hsw_books[@]}" \
-    "${bdw_boxes[@]}" "${bdw_books[@]}" "${baytrail[@]}" "${braswell[@]}" "${skl[@]}" \
-    "${purism[@]}" "${kbl[@]}" "${apl[@]}" "${glk[@]}" "${cml_boxes[@]}"))
+eol_devices=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
+        "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"))
 
 #menu text output
 NORMAL=$(echo "\033[m")
@@ -602,7 +600,6 @@ case "${_hwid}" in
     GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
     HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
-    IEC_MARIO)              _x='PNV|Google Cr-48' ;;
     JAX*)                   _x='KBL|AOpen Chromebox Commercial 2' ; device="fizz";;
     JINLON*)                _x='CML|HP Elite c1030 Chromebook / HP Chromebook x360 13c';;
     KAISA*)                 _x='CML|Acer Chromebox CXI4' ;;
@@ -832,7 +829,7 @@ esac
     || "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
 [[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
-[[ "${runs_windows[@]}" =~ "$device" ]] && runsWindows=true
+[[ "${eol_devices[@]}" =~ "$device" ]] && isEOL=true
 
 # set unsupported if the script fails to identify the platform
 # force all menu options disabled
