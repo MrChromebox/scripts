@@ -301,7 +301,7 @@ ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/n
 
 # create backup if existing firmware is stock
 if [[ "$isStock" == "true" ]]; then
-    if [[ "$hasShellball" = "false" ]]; then
+    if [[ "$hasShellball" = "false" && "$isEOL" = "false" ]]; then
         REPLY=y
     else
         echo_yellow "\nCreate a backup copy of your stock firmware?"
