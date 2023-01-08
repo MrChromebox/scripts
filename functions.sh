@@ -479,7 +479,7 @@ ${flashromcmd} --wp-disable > /dev/null 2>&1
 
 #get full device info
 if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
-    _hwid=$(crossystem hwid | sed 's/ *$//g' | sed 's/ /_/g')
+    _hwid=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g' | sed 's/ /_/g')
     boardName=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g'| awk 'NR==1{print $1}' | cut -f 1 -d'-')
 	device=${boardName,,}
 elif echo $firmwareType | grep -e "Stock" -e "LEGACY"; then
