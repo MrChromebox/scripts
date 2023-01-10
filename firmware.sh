@@ -450,7 +450,7 @@ ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	# use new command format as of commit 99b9550
 	${flashromcmd} --wp-range 0,0 > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
+	if [[ $? -ne 0 && $swWp = "enabled" ]]; then
 		exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
 	fi
 fi
