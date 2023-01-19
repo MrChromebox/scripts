@@ -92,7 +92,8 @@ jsl=('beetley' 'blipper' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 'drawcia'
 	 'galtic-360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' 'maglet' \
 	 'maglia' 'maglith' 'magma' 'magneto'  'magolor' 'magpie' 'metaknight' 'pasara' 'pirette' \
 	 'pirika' 'sasuke' 'storo' 'storo360')
-tgl=('copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' 'volet' 'volta' 'voxel')
+tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
+     'voema' 'volet' 'volta' 'voxel')
 adl=('brya' 'banshee')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -536,12 +537,14 @@ case "${_hwid}" in
     CAVE*)                  _x='SKL|ASUS Chromebook Flip C302' ;;
     CELES*)                 _x='BSW|Samsung Chromebook 3' ;;
     CHELL*)                 _x='SKL|HP Chromebook 13 G1' ;;
+    CHRONICLER*)            _x='TGL|FMV Chromebook 14F' ;;
     CLAPPER*)               _x='BYT|Lenovo N20/N20P Chromebook' ;;
-    COPANO*)                _x='TGL|Asus xxx Chromebook' ;;
+    COLLIS*)                _x='TGL|AAsus Chromebook Flip CX3' ;;
+    COPANO*)                _x='TGL|Asus Chromebook Flip CX5 (CX5400)' ;;
     CRET360*)               _x='JSL|Dell Chromebook 3110 2-in-1' ;;
     CRET*)                  _x='JSL|Dell Chromebook 3110' ;;
     CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
-    DELBIN*)                _x='TGL|ASUS Chromebook Flip CX5' ;;
+    DELBIN*)                _x='TGL|ASUS Chromebook Flip CX55/CX5500/C536' ;;
     DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
     DOOD*)                  _x='GLK|NEC Chromebook Y2';;
     DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
@@ -553,7 +556,7 @@ case "${_hwid}" in
     DRAWLAT*)               _x='JSL|HP Chromebook 11 G9 EE' ;;
     DRAWMAN*)               _x='JSL|HP Chromebook 14 G7' ;;
     DRAWPER*)               _x='JSL|HP Fortis 14 G10 Chromebook' ;;
-    DROBIT*)                _x='TGL|ASUS Chromebook CX9400' ;;
+    DROBIT*)                _x='TGL|ASUS Chromebook CX9 (CX9400)' ;;
     DROID*)                 _x='GLK|Acer Chromebook 314';;
     DUFFY*)                 _x='CML|ASUS Chromebox 4' ;;
     EDGAR*)                 _x='BSW|Acer Chromebook 14 (CB3-431)' ;;
@@ -746,8 +749,9 @@ case "${_hwid}" in
     TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
-    VOLET*)                 _x='TGL| Acer Chromebook 515 (CB515-1W)' ;;
-    VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1H)' ;;
+    VOEMA*)                 _x='TGL|Acer Chromebook Spin 514 (CB514-2H)' ;;
+    VOLET*)                 _x='TGL|Acer Chromebook 515 (CB515-1W, CB515-1WT)' ;;
+    VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1W, CB514-1WT)' ;;
     VORTICON*)              _x='GLK|HP Chromebook 11 G8 EE' ;;
     VORTININJA*)            _x='GLK|HP Chromebook x360 11 G3 EE' ;;
     VOXEL*)                 _x='TGL|Acer Chromebook Spin 713 (CP713-3W)' ;;
