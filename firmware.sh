@@ -901,6 +901,19 @@ _hwid="$(crossystem hwid)" >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     echo_yellow "Current HWID is $_hwid"
 fi
+
+echo_yellow "Are you sure you know what you're doing here? 
+Changing this is not normally needed, and if you mess it up,
+MrChromebox is not going to help you fix it. This won't let
+you run a different/newer version of ChromeOS.
+Proceed at your own risk."
+
+read -ep "Really channge your HWID? [y/N] " confirm
+[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
+
+read -ep "This is serious. Are you really sure? [y/N] " confirm
+[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
+
 read -ep "Enter a new HWID (use all caps): " hwid
 echo -e ""
 read -ep "Confirm changing HWID to $hwid [y/N] " confirm
