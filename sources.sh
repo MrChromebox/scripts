@@ -95,11 +95,11 @@ export coreboot_uefi_atlas="coreboot_tiano-atlas-mrchromebox_20230123.rom"
 export coreboot_uefi_eve="coreboot_tiano-eve-mrchromebox_20230123.rom"
 export coreboot_uefi_fizz="coreboot_tiano-fizz-mrchromebox_20230123.rom"
 export coreboot_uefi_karma="coreboot_tiano-karma-mrchromebox_20230123.rom"
-export coreboot_uefi_leona="coreboot_tiano-leona-mrchromebox_20230123.rom"
+export coreboot_uefi_leona="coreboot_tiano-leona-mrchromebox_20230125.rom"
 export coreboot_uefi_nami="coreboot_tiano-nami-mrchromebox_20230123.rom"
 export coreboot_uefi_nautilus="coreboot_tiano-nautilus-mrchromebox_20230123.rom"
 export coreboot_uefi_nocturne="coreboot_tiano-nocturne-mrchromebox_20230123.rom"
-export coreboot_uefi_shyvana="coreboot_tiano-shyvana-mrchromebox_20230123.rom"
+export coreboot_uefi_shyvana="coreboot_tiano-shyvana-mrchromebox_20230125.rom"
 export coreboot_uefi_soraka="coreboot_tiano-soraka-mrchromebox_20230123.rom"
 
 #ApolloLake
