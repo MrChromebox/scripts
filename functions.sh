@@ -54,6 +54,7 @@ hasCR50=false
 kbl_use_rwl18=false
 useAltfwStd=false
 runsWindows=false
+hasLocalPath=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
