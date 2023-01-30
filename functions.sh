@@ -427,6 +427,11 @@ fi
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
+#try reading only flash descriptor
+if ${flashromcmd} --ifd -i fd -r /tmp/bios.bin > /dev/null 2>&1; then
+    #we can flash only BIOS region later
+    flashrom_params="--ifd -i bios"
+fi
 #read entire firmware
 ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
 if [ $? -ne 0 ]; then

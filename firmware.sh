@@ -459,7 +459,7 @@ fi
 
 #flash without verify, to avoid IFD mismatch upon verification 
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
-${flashromcmd} -n -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+${flashromcmd}  ${flashrom_params} -n -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
@@ -732,7 +732,7 @@ fi
 echo_yellow "Restoring stock firmware"
 # we won't verify here, since we need to flash the entire BIOS region
 # but don't want to get a mismatch from the IFD or ME 
-${flashromcmd} -n -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+${flashromcmd}  ${flashrom_params} -n -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
