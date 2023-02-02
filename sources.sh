@@ -109,7 +109,6 @@ export coreboot_uefi_babytiger="coreboot_tiano-babytiger-mrchromebox_20230129.ro
 export coreboot_uefi_blacktip="coreboot_tiano-blacktip-mrchromebox_20230129.rom"
 export coreboot_uefi_blue="coreboot_tiano-blue-mrchromebox_20230129.rom"
 export coreboot_uefi_bruce="coreboot_tiano-bruce-mrchromebox_20230129.rom"
-export coreboot_uefi_coral="coreboot_tiano-coral-mrchromebox_20230129.rom"
 export coreboot_uefi_electro="coreboot_tiano-electro-mrchromebox_20230129.rom"
 export coreboot_uefi_epaulette="coreboot_tiano-epaulette-mrchromebox_20230129.rom"
 export coreboot_uefi_lava="coreboot_tiano-lava-mrchromebox_20230129.rom"
