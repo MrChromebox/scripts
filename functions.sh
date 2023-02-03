@@ -10,7 +10,8 @@ isChromeOS=true
 isChromiumOS=false
 isCloudready=false
 flashromcmd=""
-flashrom_params="-p host"
+flashrom_params=""
+flashrom_programmer="-p internal"
 cbfstoolcmd=""
 gbbutilitycmd=""
 preferUSB=false
@@ -37,6 +38,7 @@ isCmlBox=false
 isZen2=false
 isJsl=false
 isTgl=false
+isAdl=false
 isUnsupported=false
 firmwareType=""
 isStock=true
@@ -53,7 +55,6 @@ hasLAN=false
 hasCR50=false
 kbl_use_rwl18=false
 useAltfwStd=false
-runsWindows=false
 
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
@@ -247,7 +248,7 @@ if [ ! -f ${flashromcmd} ]; then
     else
         #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
-		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
         [[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
 				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
@@ -271,7 +272,7 @@ if [ ! -f ${flashromcmd} ]; then
         #needed to avoid dependencies not found on older ChromeOS
         $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
     else
-        $CURL -sLO "${util_source}flashrom.tar.gz"
+        $CURL -sLO "${util_source}flashrom_20230202.tar.gz"
     fi
     if [ $? -ne 0 ]; then
         echo_red "Error downloading flashrom; cannot proceed."
@@ -279,7 +280,7 @@ if [ ! -f ${flashromcmd} ]; then
         cd ${working_dir}
         return 1
     fi
-    tar -zxf flashrom.tar.gz --no-same-owner
+    tar -zxf flashrom_20230202.tar.gz --no-same-owner
     if [ $? -ne 0 ]; then
         echo_red "Error extracting flashrom; cannot proceed."
         #restore working dir
@@ -288,8 +289,6 @@ if [ ! -f ${flashromcmd} ]; then
     fi
     #set +x
     chmod +x flashrom
-    #add params
-    flashromcmd="${flashromcmd} ${flashrom_params}"
     #restore working dir
     cd ${working_dir}
 fi
@@ -414,11 +413,15 @@ if [ $? -ne 0 ]; then
     echo_red "Unable to download flashrom utility; cannot continue"
     return 1
 fi
+# append programmer type
+flashromcmd="${flashromcmd} ${flashrom_programmer}"
+
 get_cbfstool
 if [ $? -ne 0 ]; then
     echo_red "Unable to download cbfstool utility; cannot continue"
     return 1
 fi
+
 get_gbb_utility
 if [ $? -ne 0 ]; then
     echo_red "Unable to download gbb_utility utility; cannot continue"
@@ -427,13 +430,15 @@ fi
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
-#try reading only flash descriptor
-if ${flashromcmd} --ifd -i fd -r /tmp/bios.bin > /dev/null 2>&1; then
-    #we can flash only BIOS region later
-    flashrom_params="--ifd -i bios"
+#try reading only BIOS region
+[[ "$isChromeOS" = "false" ]] && test_params=":ich_spi_mode=hwseq" || test_params=""
+if ${flashromcmd}${test_params} --ifd -i bios -r /tmp/bios.bin > /dev/null 2>&1; then
+        flashromcmd="${flashromcmd}${test_params}"
+        flashrom_params="--ifd -i bios"
+else
+    #read entire firmware
+    ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
 fi
-#read entire firmware
-${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo_red "\nUnable to read current firmware; cannot continue."
     echo_red "Either add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."

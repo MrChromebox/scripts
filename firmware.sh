@@ -457,11 +457,30 @@ fi
 
 #flash Full ROM firmware
 
-#flash without verify, to avoid IFD mismatch upon verification 
+# ensure no issues overwriting log file
+rm -f /tmp/flashrom.log
+
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
-${flashromcmd}  ${flashrom_params} -n -w "${coreboot_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+#check if flashrom supports --noverify-all
+if ${flashromcmd} -h | grep -q "noverify-all" ; then
+    noverify="--noverify-all"
+else
+    noverify="--noverify"
+fi
+#check if flashrom supports logging to file
+if ${flashromcmd} -L -o /dev/null >/dev/null 2>&1 ; then
+    output_params=">/dev/null 2>&1 -o /tmp/flashrom.log"
+	${flashromcmd} ${flashrom_params} ${noverify} -w ${coreboot_file} >/dev/null 2>&1 -o /tmp/flashrom.log
+else
+    output_params=">/tmp/flashrom.log 2>&1"
+	${flashromcmd} ${flashrom_params} ${noverify} -w ${coreboot_file} >/tmp/flashrom.log 2>&1
+fi
 if [ $? -ne 0 ]; then
-    cat /tmp/flashrom.log
+	echo_red "Error running cmd: ${flashromcmd} ${flashrom_params} ${noverify} -w ${coreboot_file} ${output_params}"
+	if [ -f /tmp/flashrom.log ]; then
+	    read -rp "Press enter to view the flashrom log file, then space for next page, q to quit"
+        more /tmp/flashrom.log
+	fi
     exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
 else
     echo_green "Full ROM firmware successfully installed/updated."
@@ -530,7 +549,7 @@ the touchpad firmware, otherwise the touchpad will not work."
         if [[ $? -eq 0 ]]; then
             # flash TP firmware
             echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
-            ${flashromcmd#${flashrom_params}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1
+            ${flashromcmd#${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 echo_green "Touchpad firmware successfully downgraded."
                 echo_yellow "Please reboot your Pixelbook now."
@@ -732,7 +751,7 @@ fi
 echo_yellow "Restoring stock firmware"
 # we won't verify here, since we need to flash the entire BIOS region
 # but don't want to get a mismatch from the IFD or ME 
-${flashromcmd}  ${flashrom_params} -n -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+${flashromcmd} ${flashrom_params} --noverify-all -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
