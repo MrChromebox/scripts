@@ -463,9 +463,9 @@ rm -f /tmp/flashrom.log
 echo_yellow "Installing Full ROM firmware (may take up to 90s)"
 #check if flashrom supports --noverify-all
 if ${flashromcmd} -h | grep -q "noverify-all" ; then
-    noverify="--noverify-all"
+    noverify="-N"
 else
-    noverify="--noverify"
+    noverify="-n"
 fi
 #check if flashrom supports logging to file
 if ${flashromcmd} -L -o /dev/null >/dev/null 2>&1 ; then
@@ -739,7 +739,7 @@ if echo "${flashromcmd}" | grep -q "hwseq"; then
 else
     int_params=":boardmismatch=force"
 fi
-${flashromcmd}${int_params} ${flashrom_params} --noverify-all -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+${flashromcmd}${int_params} ${flashrom_params} -N -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
