@@ -730,23 +730,6 @@ This will be a 2GB+ download and take a bit of time depending on your connection
     firmware_file=/tmp/stock-firmware.rom
 fi
 
-#disable software write-protect
-${flashromcmd} --wp-disable > /dev/null 2>&1
-if [[ $? -ne 0 && $swWp = "enabled" ]]; then
-#if [[ $? -ne 0 && ( "$isBsw" = false || "$isFullRom" = false ) ]]; then
-    exit_red "Error disabling software write-protect; unable to restore stock firmware."; return 1
-fi
-
-#clear SW WP range
-${flashromcmd} --wp-range 0 0 > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-	# use new command format as of commit 99b9550
-	${flashromcmd} --wp-range 0,0 > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		exit_red "Error clearing software write-protect range; unable to restore stock firmware."; return 1
-	fi
-fi
-
 #flash stock firmware
 echo_yellow "Restoring stock firmware"
 # we won't verify here, since we need to flash the entire BIOS region
