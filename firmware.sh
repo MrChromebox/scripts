@@ -732,9 +732,14 @@ fi
 
 #flash stock firmware
 echo_yellow "Restoring stock firmware"
-# we won't verify here, since we need to flash the entire BIOS region
-# but don't want to get a mismatch from the IFD or ME 
-${flashromcmd} ${flashrom_params} --noverify-all -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+# only verify part of flash we write
+# use boardmismatch param to work around HWID/board name differences
+if echo "${flashromcmd}" | grep -q "hwseq"; then
+    int_params=",boardmismatch=force"
+else
+    int_params=":boardmismatch=force"
+fi
+${flashromcmd}${int_params} ${flashrom_params} --noverify-all -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
