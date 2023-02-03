@@ -583,7 +583,7 @@ read -ep "Do you wish to continue? [y/N] "
 if [ "$isEOL" = true ]; then
 	echo_yellow "\nVERY IMPORTANT:
 Your device has reached end of life (EOL) and is no longer supported by Google.
-Returning the to stock firmware **IS NOT REFCOMMENDED**.
+Returning the to stock firmware **IS NOT RECOMMENDED**.
 MrChromebox will not provide any support for EOL devices running anything
 other than the latest UEFI Full ROM firmware release."
 
