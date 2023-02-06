@@ -733,13 +733,7 @@ fi
 #flash stock firmware
 echo_yellow "Restoring stock firmware"
 # only verify part of flash we write
-# use boardmismatch param to work around HWID/board name differences
-if echo "${flashromcmd}" | grep -q "hwseq"; then
-    int_params=",boardmismatch=force"
-else
-    int_params=":boardmismatch=force"
-fi
-${flashromcmd}${int_params} ${flashrom_params} -N -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
+${flashromcmd} ${flashrom_params} -N -w "${firmware_file}" -o /tmp/flashrom.log > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     cat /tmp/flashrom.log
     exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
@@ -1233,9 +1227,10 @@ read -ep "Would you like to continue? [y/N] "
 [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 
 echo_yellow "\nClearing NVRAM..."
-${flashromcmd} -E -i SMMSTORE > /dev/null 2>&1
+${flashromcmd} -E -i SMMSTORE > /tmp/flashrom.log 2>&1
 if [ $? -ne 0 ]; then
-    echo_red "\nFailed to erase SMMSTORE firmware region; NVRAM not cleared."
+    cat /tmp/flashrom.log
+    exit_red "\nFailed to erase SMMSTORE firmware region; NVRAM not cleared."
     return 1;
 fi
 #all done

@@ -272,7 +272,7 @@ if [ ! -f ${flashromcmd} ]; then
         #needed to avoid dependencies not found on older ChromeOS
         $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
     else
-        $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_20230202.tar.gz"
+        $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_cros_libpci37_20230206.tar.gz"
     fi
     if [ $? -ne 0 ]; then
         echo_red "Error downloading flashrom; cannot proceed."
@@ -292,6 +292,8 @@ if [ ! -f ${flashromcmd} ]; then
     #restore working dir
     cd ${working_dir}
 fi
+# append programmer type
+flashromcmd="${flashromcmd} ${flashrom_programmer}"
 return 0
 }
 
@@ -408,41 +410,44 @@ fi
 cleanup
 
 #get required tools
-get_flashrom
-if [ $? -ne 0 ]; then
-    echo_red "Unable to download flashrom utility; cannot continue"
-    return 1
-fi
-# append programmer type
-flashromcmd="${flashromcmd} ${flashrom_programmer}"
 
-get_cbfstool
-if [ $? -ne 0 ]; then
+if ! get_cbfstool; then
     echo_red "Unable to download cbfstool utility; cannot continue"
     return 1
 fi
 
-get_gbb_utility
-if [ $? -ne 0 ]; then
+
+if ! get_gbb_utility; then
     echo_red "Unable to download gbb_utility utility; cannot continue"
+    return 1
+fi
+
+
+if ! get_flashrom; then
+    echo_red "Unable to download flashrom utility; cannot continue"
     return 1
 fi
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
 #try reading only BIOS region
-[[ "$isChromeOS" = "false" ]] && test_params=":ich_spi_mode=hwseq" || test_params=""
-if ${flashromcmd}${test_params} --ifd -i bios -r /tmp/bios.bin > /dev/null 2>&1; then
-        flashromcmd="${flashromcmd}${test_params}"
+if ${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
         flashrom_params="--ifd -i bios"
 else
     #read entire firmware
-    ${flashromcmd} -r /tmp/bios.bin > /dev/null 2>&1
+    ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
 fi
 if [ $? -ne 0 ]; then
-    echo_red "\nUnable to read current firmware; cannot continue."
-    echo_red "Either add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."
-    echo_red "See https://www.flashrom.org/FAQ for more info."
+    echo_red "\nUnable to read current firmware; cannot continue:"
+	if [[ "$isChromeOS" = "false" ]]; then
+        if [ -f /tmp/flashrom.log ]; then
+            cat /tmp/flashrom.log
+            echo ""
+        fi
+    else
+        echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."
+        echo_red "See https://www.flashrom.org/FAQ for more info."
+    fi
     return 1;
 fi
 
