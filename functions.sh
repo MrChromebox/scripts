@@ -272,7 +272,7 @@ if [ ! -f ${flashromcmd} ]; then
         #needed to avoid dependencies not found on older ChromeOS
         $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
     else
-        $CURL -sLO "${util_source}flashrom_20230202.tar.gz"
+        $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_20230202.tar.gz"
     fi
     if [ $? -ne 0 ]; then
         echo_red "Error downloading flashrom; cannot proceed."
@@ -280,7 +280,7 @@ if [ ! -f ${flashromcmd} ]; then
         cd ${working_dir}
         return 1
     fi
-    tar -zxf flashrom_20230202.tar.gz --no-same-owner
+    tar -zxf flashrom.tar.gz --no-same-owner
     if [ $? -ne 0 ]; then
         echo_red "Error extracting flashrom; cannot proceed."
         #restore working dir
