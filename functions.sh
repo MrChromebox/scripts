@@ -87,7 +87,7 @@ cml_boxes=('dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
            'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
-zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax')
+zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax' 'vilboz')
 jsl=('beetley' 'blipper' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 'drawcia' 'drawlat' \
      'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' 'galtic' \
 	 'galtic-360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' 'maglet' \
@@ -764,6 +764,9 @@ case "${_hwid}" in
     TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
     ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
     VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
+    VILBOZ360*)             _x='ZEN2|Lenovo 300e Chromebook Gen 3'; device="vilboz" ;;
+    VILBOZ14*)              _x='ZEN2|Lenovo 14e Chromebook Gen 2'; device="vilboz" ;;
+    VILBOZ*)                _x='ZEN2|Lenovo 100e Chromebook Gen 3'; device="vilboz" ;;
     VOEMA*)                 _x='TGL|Acer Chromebook Spin 514 (CB514-2H)' ;;
     VOLET*)                 _x='TGL|Acer Chromebook 515 (CB515-1W, CB515-1WT)' ;;
     VOLTA*)                 _x='TGL|Acer Chromebook 514 (CB514-1W, CB514-1WT)' ;;
