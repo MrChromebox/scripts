@@ -69,7 +69,7 @@ snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
     'electro' 'epaulette' 'lava' 'nasher' 'nasher360' 'pyro' 'rabbid'  'reef' \
 	'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
-kbl_boxes=('bleemo' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
+kbl_boxes=('bleemo' 'excelsior' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
@@ -593,6 +593,7 @@ case "${_hwid}" in
     ENGUARDE*)              _x='BYT|(multiple device matches)' ;;
     EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
     EVE*)                   _x='KBL|Google Pixelbook' ;;
+    EXCELSIOR-URAR*)        _x='KBL|Asus Google Meet kit (KBL)'; device="fizz" ;;
     EZKINIL*)               _x='ZEN2|Acer Chromebook Spin 514' ;;
     FAFFY*)                 _x='CML|ASUS Fanless Chromebox' ;;
     FALCO*)                 _x='HSW|HP Chromebook 14' ;;
