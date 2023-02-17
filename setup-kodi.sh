@@ -15,18 +15,18 @@ script_url="https://raw.githubusercontent.com/MrChromebox/scripts/master/"
 
 #set working dir
 if cat /etc/lsb-release | grep "Chrom" > /dev/null 2>&1; then
-	# needed for ChromeOS/ChromiumOS v82+
-	mkdir -p /usr/local/bin
-	cd /usr/local/bin
+    # needed for ChromeOS/ChromiumOS v82+
+    mkdir -p /usr/local/bin
+    cd /usr/local/bin
 else
-	cd /tmp
+    cd /tmp
 fi
 
 #check for cmd line param, expired CrOS certs
 if ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
-	export CURL="curl -k"
+    export CURL="curl -k"
 else
-	export CURL="curl"
+    export CURL="curl"
 fi
 
 #get support scripts
@@ -44,8 +44,8 @@ rc2=$?
 $CURL -sLO ${script_url}kodi.sh
 rc3=$?
 if [[ $rc0 -ne 0 || $rc1 -ne 0 || $rc2 -ne 0 || $rc3 -ne 0 ]]; then
-	echo -e "Error downloading one or more required files; cannot continue"
-	exit 1
+    echo -e "Error downloading one or more required files; cannot continue"
+    exit 1
 fi
 
 source ./sources.sh

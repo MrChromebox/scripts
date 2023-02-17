@@ -68,7 +68,7 @@ skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
 snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
     'electro' 'epaulette' 'lava' 'nasher' 'nasher360' 'pyro' 'rabbid'  'reef' \
-	'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
+    'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
 kbl_boxes=('bleemo' 'excelsior' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
     'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
@@ -78,9 +78,9 @@ purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem
         'librem_mini' 'librem_mini_v2' 'librem_14');
 glk=('ampton' 'apel' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
     'bobba360' 'casta' 'dood' 'droid' 'dorp' 'fleex' 'foob' 'foob360' 'garg' \
-	'garg360' 'garfour' 'glk' 'glk360' 'grabbiter' 'laser' 'laser14' 'lick' \
-	'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
-	'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
+    'garg360' 'garfour' 'glk' 'glk360' 'grabbiter' 'laser' 'laser14' 'lick' \
+    'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
+    'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
 cml_boxes=('dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
@@ -90,9 +90,9 @@ cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax' 'vilboz')
 jsl=('beetley' 'blipper' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 'drawcia' 'drawlat' \
      'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' 'galtic' \
-	 'galtic-360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' 'maglet' \
-	 'maglia' 'maglith' 'magma' 'magneto'  'magolor' 'magpie' 'metaknight' 'pasara' 'pirette' \
-	 'pirika' 'sasuke' 'storo' 'storo360')
+     'galtic-360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' 'maglet' \
+     'maglia' 'maglith' 'magma' 'magneto'  'magolor' 'magpie' 'metaknight' 'pasara' 'pirette' \
+     'pirika' 'sasuke' 'storo' 'storo360')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
      'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'osiris' 'primus' \
@@ -104,8 +104,8 @@ UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" 
     "${glk[@]}" "${apl[@]}" "${tgl[@]}" 'bugzzy' 'lantis' 'magpie' ))
 shellballs=($(printf "%s " \
     "${skylake[@]}" 'atlas' 'eve' 'nautilus' 'nocturne' 'pantheon' 'sona' 'soraka' \
-	'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
-	'dratini' 'rabbid' 'blooglet' 'shyvana' 'leona'))
+    'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
+    'dratini' 'rabbid' 'blooglet' 'shyvana' 'leona'))
 eol_devices=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
         "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}"))
 
@@ -192,9 +192,9 @@ if [ ! -f ${cbfstoolcmd} ]; then
     else
         #have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
         rootdev=$(rootdev -d -s)
-		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+        [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
         [[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
-				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
+                && part_num="${part_pfx}27" || part_num="${part_pfx}12"
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
@@ -205,8 +205,8 @@ if [ ! -f ${cbfstoolcmd} ]; then
                 return 1
             fi
         fi
-		# clear recovery logs which use valuable space
-		rm -rf /tmp/boot/recovery* 2>/dev/null
+        # clear recovery logs which use valuable space
+        rm -rf /tmp/boot/recovery* 2>/dev/null
         #create util dir
         mkdir /tmp/boot/util 2>/dev/null
         cd /tmp/boot/util
@@ -251,7 +251,7 @@ if [ ! -f ${flashromcmd} ]; then
         rootdev=$(rootdev -d -s)
         [[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
         [[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
-				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
+                && part_num="${part_pfx}27" || part_num="${part_pfx}12"
         boot_mounted=$(mount | grep "${rootdev}""${part_num}")
         if [ "${boot_mounted}" = "" ]; then
             #mount boot
@@ -262,8 +262,8 @@ if [ ! -f ${flashromcmd} ]; then
                 return 1
             fi
         fi
-		# clear recovery logs which use valuable space
-		rm -rf /tmp/boot/recovery* 2>/dev/null
+        # clear recovery logs which use valuable space
+        rm -rf /tmp/boot/recovery* 2>/dev/null
         #create util dir
         mkdir /tmp/boot/util 2>/dev/null
         cd /tmp/boot/util
@@ -440,7 +440,7 @@ else
 fi
 if [ $? -ne 0 ]; then
     echo_red "\nUnable to read current firmware; cannot continue:"
-	if [[ "$isChromeOS" = "false" ]]; then
+    if [[ "$isChromeOS" = "false" ]]; then
         if [ -f /tmp/flashrom.log ]; then
             cat /tmp/flashrom.log
             echo ""
@@ -498,11 +498,11 @@ ${flashromcmd} --wp-disable > /dev/null 2>&1
 if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
     _hwid=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g' | sed 's/ /_/g')
     boardName=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g'| awk 'NR==1{print $1}' | cut -f 1 -d'-')
-	device=${boardName,,}
+    device=${boardName,,}
 elif echo $firmwareType | grep -e "Stock" -e "LEGACY"; then
-	# Stock + RW_LEGACY: read HWID from GBB
-	_hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed 's/X86//g' | cut -f 2 -d' ')
-	boardName=${_hwid^^}
+    # Stock + RW_LEGACY: read HWID from GBB
+    _hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed 's/X86//g' | cut -f 2 -d' ')
+    boardName=${_hwid^^}
 else
     _hwid=${device^^}
     boardName=${device^^}
