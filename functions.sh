@@ -560,6 +560,7 @@ case "${_hwid}" in
     CLAPPER*)               _x='BYT|Lenovo N20/N20P Chromebook' ;;
     COLLIS*)                _x='TGL|AAsus Chromebook Flip CX3' ;;
     COPANO*)                _x='TGL|Asus Chromebook Flip CX5 (CX5400)' ;;
+    CORAL*)                 _x='APL|Incorrectly identified APL Chromebook' ;;
     CRET360*)               _x='JSL|Dell Chromebook 3110 2-in-1' ;;
     CRET*)                  _x='JSL|Dell Chromebook 3110' ;;
     CROTA360*)              _x='ADL|Dell Latitude 5430 2-in-1 Chromebook'; device="crota360" ;;
