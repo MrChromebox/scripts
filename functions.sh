@@ -674,6 +674,7 @@ case "${_hwid}" in
     LILLIPUP*)              _x='TGL|Lenovo IdeaPad Flex 5i Chromebook' ; device="lillipup";;
     LINDAR-EDFZ*)           _x='TGL|Lenovo 5i-14 Chromebook' ; device="lindar";;
     LINDAR-LCDF*)           _x='TGL|Lenovo Slim 5 Chromebook' ; device="lindar";;
+    LINDAR*)                _x='TGL|Lenovo Slim 5/5i/Flex 5i Chromebook' ; device="lindar";;
     LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
     LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
     MADOO*)                 _x='JSL|HP Chromebook x360 14b' ;;
