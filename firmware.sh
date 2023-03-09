@@ -581,7 +581,7 @@ the touchpad firmware, otherwise the touchpad will not work."
         if [[ $? -eq 0 ]]; then
             # flash TP firmware
             echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
-            ${flashromcmd#${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1
+            ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 echo_green "Touchpad firmware successfully downgraded."
                 echo_yellow "Please reboot your Pixelbook now."
