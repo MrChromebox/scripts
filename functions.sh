@@ -533,13 +533,13 @@ case "${_hwid}" in
     BLACKTIP*)              _x='APL|White Label Chrombook' ;;
     BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
     BEETLEY*)               _x='JSL|Lenovo Flex 3i/3i-15 Chromebook' ;;
-    BLUE*)                  _x='APL|Acer Chromebook 15 [CB315-1H*]' ;;
     BLIPPER*)               _x='JSL|Lenovo 3i-15 Chromebook	';;
     BLOOGLET*)              _x='GLK|HP Chromebook 14a';;
     BLOOGUARD*)             _x='GLK|HP Chromebook x360 14a/14b';;
     BLOOG*)                 _x='GLK|HP Chromebook x360 12b';;
     BLORB*)                 _x='GLK|Acer Chromebook 315';;
     BLUEBIRD*)              _x='GLK|Samsung Chromebook 4' ;;
+    BLUE*)                  _x='APL|Acer Chromebook 15 [CB315-1H*]' ;;
     BOBBA360*)              _x='GLK|Acer Chromebook Spin 311/511' ;;
     BOBBA*)                 _x='GLK|Acer Chromebook 311' ;;
     BOOKEM*)                _x='JSL|Lenovo 100e Chromebook Gen 3' ;;
