@@ -429,6 +429,9 @@ if ! get_flashrom; then
     return 1
 fi
 
+# unload Intel SPI driver if loaded, causes issues with flashrom
+rmmod spi_intel_platform >/dev/null 2>&1
+
 #get device firmware info
 echo -e "\nGetting device/system info..."
 #try reading only BIOS region
