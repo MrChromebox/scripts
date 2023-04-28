@@ -434,13 +434,19 @@ rmmod spi_intel_platform >/dev/null 2>&1
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
-#try reading only BIOS region
-if ${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
+if cat /proc/cpuinfo | grep -q -i Intel; then
+    #try reading only BIOS region
+    if ${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
         flashrom_params="--ifd -i bios"
+    else
+        #read entire firmware
+        ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+    fi
 else
     #read entire firmware
     ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
 fi
+
 if [ $? -ne 0 ]; then
     echo_red "\nUnable to read current firmware; cannot continue:"
     if [[ "$isChromeOS" = "false" ]]; then
