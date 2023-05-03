@@ -778,7 +778,7 @@ case "${_hwid}" in
 	SWANKY*)                _x='BYT|Toshiba Chromebook 2 (2014) CB30/CB35' ;;
 	SYNDRA*)                _x='KBL|HP Chromebook 15 G1' ; device="nami";;
 	TAEKO*)                 _x='ADL|Lenovo Lenovo Flex 5i Chromebook 14"'; device="taeko" ;;
-	TANIKS*)                _x='ADL|Lenovo IdeaPad Gaming Chromebook 16'; device="tankis" ;;
+	TANIKS*)                _x='ADL|Lenovo IdeaPad Gaming Chromebook 16'; device="taniks" ;;
 	TEEMO*)                 _x='KBL|Asus Chromebox 3 / CN65' ; device="fizz";;
 	TERRA_???-???-???-A*)   _x='BSW|ASUS Chromebook C202SA' ;;
 	TERRA_???-???-???-B*)   _x='BSW|ASUS Chromebook C300SA/C301SA' ;;
