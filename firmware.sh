@@ -55,6 +55,8 @@ elif [ "$isTgl" = true ]; then
 	rwlegacy_file=$rwl_altfw_tgl
 elif [ "$isGlk" = true ]; then
 	rwlegacy_file=$rwl_altfw_glk
+elif [ "$isAdl" = true ]; then
+	rwlegacy_file=$rwl_altfw_adl
 else
 	echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
 	read -ep "Press enter to return to the main menu"
