@@ -21,8 +21,8 @@ export chrx_url="https://chrx.org/go"
 
 #LE version
 export LE_version_base="LibreELEC-Generic.x86_64"
-export LE_version_stable="10.0.1"
-export LE_version_latest="10.0.1"
+export LE_version_stable="11.0.1"
+export LE_version_latest="11.0.1"
 
 #syslinux version
 export syslinux_version="syslinux-6.04-pre1"
