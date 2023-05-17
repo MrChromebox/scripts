@@ -101,7 +101,7 @@ adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'osiris' '
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
 	"${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
 	"${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}" "${cml[@]}" \
-	"${glk[@]}" "${apl[@]}" "${tgl[@]}" 'bugzzy' 'lantis' 'magpie' ))
+	"${glk[@]}" "${apl[@]}" "${tgl[@]}" "${jsl[@]}"  "${adl[@]}"))
 shellballs=($(printf "%s " \
 	"${skylake[@]}" 'atlas' 'eve' 'nautilus' 'nocturne' 'pantheon' 'sona' 'soraka' \
 	'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
