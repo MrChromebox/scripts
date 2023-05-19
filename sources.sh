@@ -78,7 +78,7 @@ export coreboot_uefi_winky="coreboot_edk2-winky-mrchromebox_20230515.rom"
 #Braswell
 export coreboot_uefi_banon="coreboot_edk2-banon-mrchromebox_20230515.rom"
 export coreboot_uefi_celes="coreboot_edk2-celes-mrchromebox_20230515.rom"
-export coreboot_uefi_cyan="coreboot_edk2-cyan-mrchromebox_20230515.rom"
+export coreboot_uefi_cyan="coreboot_edk2-cyan-mrchromebox_20230519.rom"
 export coreboot_uefi_edgar="coreboot_edk2-edgar-mrchromebox_20230515.rom"
 export coreboot_uefi_kefka="coreboot_edk2-kefka-mrchromebox_20230515.rom"
 export coreboot_uefi_reks="coreboot_edk2-reks-mrchromebox_20230515.rom"
