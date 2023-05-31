@@ -76,7 +76,7 @@ kbl_rwl_18=('atlas' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
 		'librem_mini' 'librem_mini_v2' 'librem_14');
-glk=('ampton' 'apel' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
+glk=('ampton' 'apel' 'apele' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
 	'bobba360' 'casta' 'dood' 'droid' 'dorp' 'fleex' 'foob' 'foob360' 'garg' \
 	'garg360' 'garfour' 'glk' 'glk360' 'grabbiter' 'laser' 'laser14' 'lick' \
 	'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
@@ -523,7 +523,7 @@ case "${_hwid}" in
 	ALEENA*)                _x='STR|Acer Chromebook 315' ;;
 	AMPTON*)                _x='GLK|Asus Chromebook Flip C214/C234' ;;
 	ANAHERA*)               _x='ADL|HP Elite c640 14 inch G3 Chromebook'; device="anahera" ;;
-	APELE*)                 _x='GLK|Asus Chromebook CX1101CMA' ;;
+	APELE*)                 _x='GLK|Asus Chromebook CX1101CMA' ; device="apel";;
 	APEL*)                  _x='GLK|Asus Chromebook Flip C204' ;;
 	ARCADA*)                _x='WHL|Dell Latitude 5300' ; device="sarien";;
 	ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
