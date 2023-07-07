@@ -539,7 +539,7 @@ case "${_hwid}" in
 	BARD*)                  _x='KBL|Acer Chromebook 715 (CB715)' ; device="nami";;
 	BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ;;
 	BERKNIP*)               _x='ZEN2|HP Pro c645 Chromebook Enterprise' ;;
-	BLACKTIP*)              _x='APL|White Label Chrombook' ;;
+	BLACKTIP*)              _x='APL|White Label Chrombook' ; device="blacktip";;
 	BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
 	BEETLEY*)               _x='JSL|Lenovo Flex 3i/3i-15 Chromebook' ;;
 	BLIPPER*)               _x='JSL|Lenovo 3i-15 Chromebook	';;
