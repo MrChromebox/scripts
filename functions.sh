@@ -726,6 +726,7 @@ case "${_hwid}" in
 	PIRETTE-NGVJ*)          _x='JSL|SPC Chromebook Z1 Mini' ; device="pirette" ;;
 	PIRETTE-RVKU*)          _x='JSL|CTL Chromebook PX11E' ; device="pirette" ;;
 	PIRETTE-UBKE*)          _x='JSL|Zyrex Chromebook M432-2' ; device="pirette" ;;
+	PIRETTE*)               _x='JSL|White Label Pirette Chromebook' ; device="pirette" ;;
 	PIRIKA-BMAD*)           _x='JSL|CTL Chromebook PX14E/PX14EX/PX14EXT' ; device="pirika" ;;
 	PIRIKA-NPXS*)           _x='JSL|Axioo Chromebook P14' ; device="pirika" ;;
 	PIRIKA-XAJY*)           _x='JSL|Gateway Chromebook 14' ; device="pirika" ;;
