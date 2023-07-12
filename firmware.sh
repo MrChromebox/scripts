@@ -655,7 +655,7 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 		do 
 		if [[ ${i} =~ [0-9]+$ ]]; 
 		then 
-			echo -n "Partition ${num_usb_partition} size: ";
+			echo -n "Partition ${i: -1} size: ";
 			lsblk --noheadings -l -o SIZE $usb_device|tail -n $num_usb_partitions|sed -n ${num_usb_partition}p;
 			echo "";
 			num_usb_partition=$((num_usb_partition+1));
