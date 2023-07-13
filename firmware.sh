@@ -639,7 +639,7 @@ if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
 	list_usb_devices
 	[ $? -eq 0 ] || { exit_red "No USB devices available to read firmware backup."; return 1; }
-	read -ep "Enter the number for the device: " usb_dev_index
+	read -ep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
 	[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
 	mkdir /tmp/usb > /dev/null 2>&1
@@ -1557,6 +1557,6 @@ function partition_selection() {
 		num_usb_partition=$((num_usb_partition+1));
 	fi; 
 	done
-	read -ep "Enter the number for the device partition which contains the stock firmware backup: " usb_dev_partition_index
+	read -ep "Enter the number for the device partition in the USB drive: " usb_dev_partition_index
 	return $usb_dev_partition_index
 }
