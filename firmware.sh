@@ -1551,7 +1551,7 @@ function partition_selection() {
 	do 
 	if [[ ${i} =~ [0-9]+$ ]]; 
 	then 
-		echo -n "Partition ${num_usb_partition} size: ";
+		echo -n "Partition ${BASH_REMATCH[0]} size: ";
 		lsblk --noheadings -l -o SIZE $1|tail -n $num_usb_partitions|sed -n ${num_usb_partition}p;
 		echo "";
 		num_usb_partition=$((num_usb_partition+1));
