@@ -642,27 +642,10 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 	read -ep "Enter the number for the device: " usb_dev_index
 	[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
-	for i in $usb_device*;
-	do
-		num_usb_partitions=$((num_usb_partitions+1));
-	done;
-	num_usb_partitions=$((num_usb_partitions-1));
 	mkdir /tmp/usb > /dev/null 2>&1
 	mount "${usb_device}" /tmp/usb > /dev/null 2>&1
 	if [ $? -ne 0 ]; then
-		num_usb_partition=1  
-		for i in $usb_device*; 
-		do 
-		if [[ ${i} =~ [0-9]+$ ]]; 
-		then 
-			echo -n "Partition ${i: -1} size: ";
-			lsblk --noheadings -l -o SIZE $usb_device|tail -n $num_usb_partitions|sed -n ${num_usb_partition}p;
-			echo "";
-			num_usb_partition=$((num_usb_partition+1));
-		fi; 
-		done
-		read -ep "Enter the number for the device partition which contains the stock firmware backup: " usb_dev_partition_index
-		[ $usb_dev_partition_index -gt 0 ] && [ $usb_dev_partition_index  -le $num_usb_partition ] || { exit_red "Error: Invalid option selected."; return 1; }
+		partition_selection $usb_device
 		mount "${usb_device}${usb_dev_partition_index}" /tmp/usb
 	fi
 	if [ $? -ne 0 ]; then
@@ -851,7 +834,8 @@ usb_device="${usb_devs[${usb_dev_index}-1]}"
 mkdir /tmp/usb > /dev/null 2>&1
 mount "${usb_device}" /tmp/usb > /dev/null 2>&1
 if [ $? != 0 ]; then
-	mount "${usb_device}1" /tmp/usb
+	partition_selection $usb_device
+	mount "${usb_device}${usb_dev_partition_index}" /tmp/usb
 fi
 if [ $? -ne 0 ]; then
 	backup_fail "USB backup device failed to mount; cannot proceed."
@@ -1553,4 +1537,26 @@ function uefi_menu() {
 			uefi_menu;
 			;;
 	esac
+}
+
+function partition_selection() {
+	num_usb_partitions=0;
+	for i in $1*;
+	do
+		num_usb_partitions=$((num_usb_partitions+1));
+	done;
+	num_usb_partitions=$((num_usb_partitions-1));
+	num_usb_partition=1  
+	for i in $1*; 
+	do 
+	if [[ ${i} =~ [0-9]+$ ]]; 
+	then 
+		echo -n "Partition ${num_usb_partition} size: ";
+		lsblk --noheadings -l -o SIZE $1|tail -n $num_usb_partitions|sed -n ${num_usb_partition}p;
+		echo "";
+		num_usb_partition=$((num_usb_partition+1));
+	fi; 
+	done
+	read -ep "Enter the number for the device partition which contains the stock firmware backup: " usb_dev_partition_index
+	return $usb_dev_partition_index
 }
