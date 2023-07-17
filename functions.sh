@@ -95,7 +95,7 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 	 'pirette' 'pirika' 'sasuke' 'storo' 'storo360')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
-adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'osiris' 'primus' \
+adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'mithrax' 'osiris' 'primus' \
 	 'redrix' 'taeko' 'taniks' 'volmar' 'zavala')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
@@ -697,6 +697,8 @@ case "${_hwid}" in
 	MAGOLOR*)               _x='JSL|Acer Chromebook Spin 511 [R753T]' ;;
 	MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
 	METAKNIGHT*)            _x='JSL|NEC Chromebook Y3' ;;
+	MITHRAX-HKVS*)          _x='ADL|ASUS Chromebook CX34 Flip (CX3401)' ; device="mithrax" ;;
+	MITHRAX-ISVS*)          _x='ADL|Asus Chromebook Vibe CX34 Flip (CX3401)' ; device="mithrax" ;;
 	LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
 	MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
 	MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ;;
