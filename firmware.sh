@@ -843,7 +843,7 @@ backupname="stock-firmware-${boardName}-$(date +%Y%m%d).rom"
 echo_yellow "\nSaving firmware backup as ${backupname}"
 cp /tmp/bios.bin /tmp/usb/${backupname}
 if [ $? -ne 0 ]; then
-	backup_fail "Failure reading stock firmware for backup; cannot proceed."
+	backup_fail "Failure copying stock firmware to USB; cannot proceed."
 	return 1
 fi
 sync
