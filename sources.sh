@@ -273,7 +273,7 @@ export rwl_altfw_cml="rwl_altfw_cml-mrchromebox_20210415.bin"
 export rwl_altfw_drallion="rwl_altfw_drallion-mrchromebox_20221019.bin"
 export rwl_altfw_glk="rwl_altfw_glk-mrchromebox_20230110.bin"
 export rwl_altfw_jsl="rwl_altfw_jsl-mrchromebox_20211115.bin"
-export rwl_altfw_zen2="rwl_altfw_zen2-mrchromebox_20210623.bin"
+export rwl_altfw_pco="rwl_altfw_pco-mrchromebox_20210623.bin"
 export rwl_altfw_tgl="rwl_altfw_tgl-mrchromebox_20210827.bin"
 export rwl_altfw_adl="rwl_altfw_adl-mrchromebox_20230509.bin"
 

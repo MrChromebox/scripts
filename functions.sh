@@ -35,7 +35,7 @@ isStr=false
 isWhl=false
 isCml=false
 isCmlBox=false
-isZen2=false
+isPco=false
 isJsl=false
 isTgl=false
 isAdl=false
@@ -87,7 +87,7 @@ cml_boxes=('dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
 		   'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
-zen2=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax' 'vilboz')
+pco=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax' 'vilboz')
 jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' \
 	 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
 	 'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' \
@@ -538,7 +538,7 @@ case "${_hwid}" in
 	BANSHEE*)               _x='ADL|Framework Chromebook' ;;
 	BARD*)                  _x='KBL|Acer Chromebook 715 (CB715)' ; device="nami";;
 	BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ;;
-	BERKNIP*)               _x='ZEN2|HP Pro c645 Chromebook Enterprise' ;;
+	BERKNIP*)               _x='PCO|HP Pro c645 Chromebook Enterprise' ;;
 	BLACKTIP*)              _x='APL|White Label Chrombook' ; device="blacktip";;
 	BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
 	BEETLEY*)               _x='JSL|Lenovo Flex 3i/3i-15 Chromebook' ;;
@@ -576,7 +576,7 @@ case "${_hwid}" in
 	CROTA*)                 _x='ADL|Dell Latitude 5430 Chromebook'; device="crota" ;;
 	CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
 	DELBIN*)                _x='TGL|ASUS Chromebook Flip CX55/CX5500/C536' ;;
-	DIRINBOZ*)              _x='ZEN2|HP Chromebook 14a' ;;
+	DIRINBOZ*)              _x='PCO|HP Chromebook 14a' ;;
 	DOOD*)                  _x='GLK|NEC Chromebook Y2';;
 	DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
 	DORP*)                  _x='GLK|HP Chromebook 14 G6';;
@@ -610,7 +610,7 @@ case "${_hwid}" in
 	EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
 	EVE*)                   _x='KBL|Google Pixelbook' ;;
 	EXCELSIOR-URAR*)        _x='KBL|Asus Google Meet kit (KBL)'; device="fizz" ;;
-	EZKINIL*)               _x='ZEN2|Acer Chromebook Spin 514' ;;
+	EZKINIL*)               _x='PCO|Acer Chromebook Spin 514' ;;
 	FAFFY*)                 _x='CML|ASUS Fanless Chromebox' ;;
 	FALCO*)                 _x='HSW|HP Chromebook 14' ;;
 	FELWINTER*)             _x='ADL|ASUS Chromebook Flip CX5(CX5601)'; device="felwinter" ;;
@@ -704,7 +704,7 @@ case "${_hwid}" in
 	MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ;;
 	MIMROCK*)               _x='GLK|HP Chromebook 11 G7 EE' ;;
 	MONROE*)                _x='HSW|LG Chromebase' ;;
-	MORPHIUS*)              _x='ZEN2|Lenovo ThinkPad C13 Yoga Chromebook' ;;
+	MORPHIUS*)              _x='PCO|Lenovo ThinkPad C13 Yoga Chromebook' ;;
 	NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
 	NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ;;
 	NASHER*)                _x='APL|Dell Chromebook 11 5190' ;;
@@ -792,9 +792,9 @@ case "${_hwid}" in
 	TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
 	ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
 	VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
-	VILBOZ360*)             _x='ZEN2|Lenovo 300e Chromebook Gen 3'; device="vilboz" ;;
-	VILBOZ14*)              _x='ZEN2|Lenovo 14e Chromebook Gen 2'; device="vilboz" ;;
-	VILBOZ*)                _x='ZEN2|Lenovo 100e Chromebook Gen 3'; device="vilboz" ;;
+	VILBOZ360*)             _x='PCO|Lenovo 300e Chromebook Gen 3'; device="vilboz" ;;
+	VILBOZ14*)              _x='PCO|Lenovo 14e Chromebook Gen 2'; device="vilboz" ;;
+	VILBOZ*)                _x='PCO|Lenovo 100e Chromebook Gen 3'; device="vilboz" ;;
 	VOEMA*)                 _x='TGL|Acer Chromebook Spin 514 (CB514-2H)' ;;
 	VOLET*)                 _x='TGL|Acer Chromebook 515 (CB515-1W, CB515-1WT)' ;;
 	VOLMAR*)                _x='ADL|Acer Chromebook Vero 514'; device="volmar" ;;
@@ -813,7 +813,7 @@ case "${_hwid}" in
 	WIZPIG_???-???-??I*)    _x='BSW|Multilaser M11C Chromebook' ;;
 	WIZPIG*)                _x='BSW|(unknown WIZPIG)' ;;
 	WOLF*)                  _x='HSW|Dell Chromebook 11' ;;
-	WOOMAX*)                _x='ZEN2|ASUS Chromebook Flip CM5' ;;
+	WOOMAX*)                _x='PCO|ASUS Chromebook Flip CM5' ;;
 	WUKONG_???-???-???-??C*) _x='KBL|ViewSonic NMP660 Chromebox' ; device="fizz";;
 	WUKONG*)                _x='KBL|CTL Chromebox CBx1' ; device="fizz";;
 	WYVERN*)                _x='CML|CTL Chromebox CBx2' ;;
@@ -841,7 +841,7 @@ GLK) deviceCpuType="Intel GeminiLake" ;;
 STR) deviceCpuType="AMD StoneyRidge" ;;
 WHL) deviceCpuType="Intel WhiskeyLake" ;;
 CML) deviceCpuType="Intel CometLake" ;;
-ZEN2) deviceCpuType="AMD Zen+/Picasso" ;;
+PCO) deviceCpuType="AMD Picasso" ;;
 JSL) deviceCpuType="Intel JasperLake" ;;
 TGL) deviceCpuType="Intel TigerLake" ;;
 ADL) deviceCpuType="Intel AlderLake" ;;
@@ -865,7 +865,7 @@ esac
 [[ "${str[@]}" =~ "$device" ]] && isStr=true
 [[ "${whl[@]}" =~ "$device" ]] && isWhl=true
 [[ "${cml[@]}" =~ "$device" ]] && isCml=true
-[[ "${zen2[@]}" =~ "$device" ]] && isZen2=true
+[[ "${pco[@]}" =~ "$device" ]] && isPco=true
 [[ "${jsl[@]}" =~ "$device" ]] && isJsl=true
 [[ "${tgl[@]}" =~ "$device" ]] && isTgl=true
 [[ "${adl[@]}" =~ "$device" ]] && isAdl=true
@@ -875,7 +875,7 @@ esac
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
 	|| "$isSkl" = true || "$isSnbIvb" = true || "$isApl" = true \
 	|| "$isKbl" = true || "$isStr" = true || "$isWhl" = true \
-	|| "$isGlk" = true || "$isCml" = true || "$isZen2" = true \
+	|| "$isGlk" = true || "$isCml" = true || "$isPco" = true \
 	|| "$isJsl" = true || "$isTgl" = true || "$isAdl" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
 	|| "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
