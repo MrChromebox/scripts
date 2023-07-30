@@ -11,7 +11,7 @@ function flash_rwlegacy()
 #set working dir
 cd /tmp
 
-echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS)"
+echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS / AltFw)"
 
 # set dev mode legacy boot flag
 if [ "${isChromeOS}" = true ]; then
