@@ -99,8 +99,8 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 	 'pirette' 'pirika' 'sasuke' 'storo' 'storo360')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
-adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'mithrax' 'osiris' 'primus' \
-	 'redrix' 'taeko' 'taniks' 'volmar' 'zavala')
+adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'mithrax' \
+	 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'volmar' 'zavala')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
 	"${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -635,6 +635,7 @@ case "${_hwid}" in
 	GARFOUR*)               _x='GLK|CTL Chromebook NL81/NL81T';;
 	GARG360*)               _x='GLK|CTL Chromebook NL71T/TW/TWB';;
 	GARG*)                  _x='GLK|CTL Chromebook NL71/CT/LTE';;
+	GIMBLE*)                _x='ADL|HP Chromebook x360 14c-cd0'; device="gimble" ;;
 	GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
 	GLK360*)                _x='GLK|Acer Chromebook Spin 311';;
 	GLK*)                   _x='GLK|Acer Chromebook 311';;
