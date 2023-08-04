@@ -736,21 +736,27 @@ else
 
 	else
 		# no shellball available, offer to use recovery image
-		echo_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
-		echo_yellow "Would you like to use one from a ChromeOS recovery image?\n
-This will be a 2GB+ download and take a bit of time depending on your connection"
-		read -ep  "Download and extract firmware from a recovery image? [y/N] "
+		echo -e ""
+		read -rep  "Do you have a ChromeOS Recovery Image on USB? [y/N] "
 		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
-			echo_yellow "Sit tight, this will take some time as recovery images are 2GB+"
-			$CURL -LO https://raw.githubusercontent.com/coreboot/coreboot/master/util/chromeos/crosfirmware.sh
-			if ! bash crosfirmware.sh ${boardName,,} ; then
-				exit_red "Downloading/extracting from the recovery image failed"
+			echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
+			read -ep "and press [Enter] to continue. "
+			list_usb_devices
+			[ $? -eq 0 ] || { exit_red "No USB devices available to read from."; return 1; }
+			read -ep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
+			[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
+			usb_device="${usb_devs[${usb_dev_index}-1]}"
+			echo -e ""
+			if ! extract_shellball_from_recovery_usb ${boardName,,} $usb_device ; then
+				exit_red "Error: failed to extract firmware from ChromeOS recovery USB"
 				return 1
 			fi
 			mv coreboot-Google_* /tmp/stock-firmware.rom
+			# set a semi-legit HWID
+			${gbbutilitycmd} --set --hwid="${boardName^^} ABC-123-XYZ-456" /tmp/stock-firmware.rom > /dev/null
 			echo_yellow "Stock firmware successfully extracted from ChromeOS recovery image"
 		else
-			exit_red "No stock firmware available to restore"
+			echo_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
 			return 1
 		fi
 	fi
@@ -777,14 +783,51 @@ fi
 
 #all good
 echo_green "Stock firmware successfully restored."
-echo_green "After rebooting, you will need to restore ChromeOS using the ChromeOS recovery media,
-then re-run this script to reset the Firmware Boot Flags (GBB Flags) to factory default."
+echo_green "After rebooting, you will need to restore ChromeOS using a
+ChromeOS recovery USB, then re-run this script to reset the
+Firmware Boot Flags (GBB Flags) to factory default."
 read -ep "Press [Enter] to return to the main menu."
 #set vars to indicate new firmware type
 isStock=true
 isFullRom=false
 isUEFI=false
 firmwareType="Stock ChromeOS (pending reboot)"
+}
+
+######################################
+# Extract firmware from recovery usb #
+######################################
+function extract_shellball_from_recovery_usb()
+{
+	_board=$1
+	_debugfs=${2}3
+	_shellball=chromeos-firmwareupdate-$_board
+	_unpacked=$(mktemp -d)
+
+	echo_yellow "Extracting firmware from recovery USB"
+	printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_shellball\nquit" | debugfs $_debugfs >/dev/null 2>&1
+
+	if ! sh $_shellball --unpack $_unpacked >/dev/null 2>&1; then
+		sh $_shellball --sb_extract $_unpacked >/dev/null 2>&1
+	fi
+
+	if [ -d $_unpacked/models/ ]; then
+		_version=$(cat $_unpacked/VERSION | grep -m 1 -e Model.*$_board -A5 |
+			grep "BIOS (RW) version:" | cut -f2 -d: | tr -d \ )
+		if [ "$_version" == "" ]; then
+			_version=$(cat $_unpacked/VERSION | grep -m 1 -e Model.*$_board -A5 |
+				grep "BIOS version:" | cut -f2 -d: | tr -d \ )
+		fi
+		_bios_image=$(grep "IMAGE_MAIN" $_unpacked/models/$_board/setvars.sh |
+			cut -f2 -d\")
+	else
+		_version=$(cat $_unpacked/VERSION | grep BIOS\ version: |
+			cut -f2 -d: | tr -d \ )
+		_bios_image=bios.bin
+	fi
+	cp $_unpacked/$_bios_image coreboot-$_version.bin
+	rm -rf "$_unpacked"
+	rm $_shellball
 }
 
 
