@@ -465,9 +465,12 @@ if [ $? -ne 0 ]; then
 	return 1;
 fi
 
+# firmware date/version
+fwVer=$(dmidecode -s bios-version)
+fwDate=$(dmidecode -s bios-release-date)
+
 # check firmware type
-${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-if grep "RW_VPD" /tmp/layout >/dev/null 2>&1; then
+if [[ "$fwVer" = "Google_"* ]]; then
   # stock firmware
   isStock=true
   firmwareType="Stock ChromeOS"
@@ -492,9 +495,6 @@ else
 		firmwareType="Full ROM / Legacy"
 	fi
 fi
-# firmware date/version
-fwVer=$(dmidecode -s bios-version)
-fwDate=$(dmidecode -s bios-release-date)
 
 #check WP status
 
