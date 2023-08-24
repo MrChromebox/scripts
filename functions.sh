@@ -731,7 +731,7 @@ case "${_hwid}" in
 	PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630'  ; device="nami";;
 	PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
 	PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
-	PASARA*)                _x='JSL|Gateway Chromebook 15' ;;
+	PASARA*)                _x='JSL|Gateway Chromebook 15' ; device=pasara;;
 	PEPPY*)                 _x='HSW|Acer C720/C720P Chromebook' ;;
 	PHASER360*)             _x='GLK|Lenovo 300e/500e Chromebook 2nd Gen' ;;
 	PHASER*)                _x='GLK|Lenovo 100e Chromebook 2nd Gen' ;;
