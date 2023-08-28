@@ -128,7 +128,7 @@ export coreboot_uefi_robo="coreboot_edk2-robo-mrchromebox_20230721.rom"
 export coreboot_uefi_robo360="coreboot_edk2-robo360-mrchromebox_20230721.rom"
 export coreboot_uefi_sand="coreboot_edk2-sand-mrchromebox_20230721.rom"
 export coreboot_uefi_santa="coreboot_edk2-santa-mrchromebox_20230721.rom"
-export coreboot_uefi_snappy="coreboot_edk2-snappy-mrchromebox_20230721.rom"
+export coreboot_uefi_snappy="coreboot_edk2-snappy-mrchromebox_20230828.rom"
 export coreboot_uefi_whitetip="coreboot_edk2-whitetip-mrchromebox_20230721.rom"
 
 #GeminiLake
