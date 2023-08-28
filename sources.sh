@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-08-23]"
+export script_date="[2023-08-28]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -232,6 +232,7 @@ export coreboot_uefi_kracko360="coreboot_edk2-kracko360-mrchromebox_20230721.rom
 export coreboot_uefi_lantis="coreboot_edk2-lantis-mrchromebox_20230721.rom"
 export coreboot_uefi_madoo="coreboot_edk2-madoo-mrchromebox_20230721.rom"
 export coreboot_uefi_maglia="coreboot_edk2-maglia-mrchromebox_20230721.rom"
+export coreboot_uefi_magma="coreboot_edk2-magma-mrchromebox_20230828.rom"
 export coreboot_uefi_magolor="coreboot_edk2-magolor-mrchromebox_20230721.rom"
 export coreboot_uefi_magpie="coreboot_edk2-magpie-mrchromebox_20230721.rom"
 export coreboot_uefi_pasara="coreboot_edk2-pasara-mrchromebox_20230823.rom"
