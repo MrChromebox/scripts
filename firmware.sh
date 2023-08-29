@@ -57,6 +57,8 @@ elif [ "$isGlk" = true ]; then
 	rwlegacy_file=$rwl_altfw_glk
 elif [ "$isAdl" = true ]; then
 	rwlegacy_file=$rwl_altfw_adl
+elif [ "$isAdlN" = true ]; then
+	rwlegacy_file=$rwl_altfw_adl_n
 elif [ "$isMdn" = true ]; then
 	rwlegacy_file=$rwl_altfw_mdn
 else

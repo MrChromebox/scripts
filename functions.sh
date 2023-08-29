@@ -917,10 +917,13 @@ esac
 	|| "$isKbl" = true || "$isStr" = true || "$isWhl" = true \
 	|| "$isGlk" = true || "$isCml" = true || "$isPco" = true \
 	|| "$isJsl" = true || "$isTgl" = true || "$isAdl" = true \
-	|| "$isCzn" = true || "$isMdn" = true ]] || isUnsupported=true
+	|| "$isCzn" = true || "$isMdn" = true || "$isAdlN" = true ]] || isUnsupported=true
 [[ "$isHswBox" = true || "$isBdwBox" = true || "${kbl_boxes[@]}" =~ "$device" \
 	|| "$device" = "ninja" || "$device" = "buddy" ]] && hasLAN=true
-[[ "$isKbl" = true || "$isApl" = true || "$isGlk" = true ]] && hasCR50=true
+[[ "$isApl" = true || "$isKbl" = true || "$isStr" = true || "$isWhl" = true \
+	|| "$isGlk" = true || "$isCml" = true || "$isPco" = true \
+	|| "$isJsl" = true || "$isTgl" = true || "$isAdl" = true \
+	|| "$isCzn" = true || "$isMdn" = true || "$isAdlN" = true ]] && hasCR50=true
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
 [[ "${eol_devices[@]}" =~ "$device" ]] && isEOL=true || isEOL=false
 
