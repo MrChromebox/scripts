@@ -714,7 +714,7 @@ case "${_hwid}" in
 	MAGNETO-SGGB*)          _x='JSL|Packard Bell Chromebook 314' ;;
 	MAGOLOR*)               _x='JSL|Acer Chromebook Spin 511 [R753T]' ;;
 	MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
-	MARKARTH*)              _x='MDN|TBD Skyrim Chromebook'; device="markarth" ;;
+	MARKARTH*)              _x='MDN|Acer Chromebook Plus 514'; device="markarth" ;;
 	METAKNIGHT*)            _x='JSL|NEC Chromebook Y3' ;;
 	MITHRAX-HKVS*)          _x='ADL|ASUS Chromebook CX34 Flip (CX3401)' ; device="mithrax" ;;
 	MITHRAX-ISVS*)          _x='ADL|Asus Chromebook Vibe CX34 Flip (CX3401)' ; device="mithrax" ;;
