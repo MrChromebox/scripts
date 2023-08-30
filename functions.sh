@@ -103,7 +103,7 @@ tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'mithrax' \
 	 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'volmar' 'zavala')
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
-	 'pujjo' 'pujjoflex' 'pujjoteen' 'xivu' 'xivu360' 'yaviks' 'yavikso')
+	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
 
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
 	"${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
@@ -756,9 +756,9 @@ case "${_hwid}" in
 	PIRIKA-NPXS*)           _x='JSL|Axioo Chromebook P14' ; device="pirika" ;;
 	PIRIKA-XAJY*)           _x='JSL|Gateway Chromebook 14' ; device="pirika" ;;
 	PRIMUS*)                _x='ADL|Lenovo ThinkPad C14 Gen 1 Chromebook'; device="primus" ;;
-	PUJJOFLEX*)             _x='ADN|TBD'; device="pujjoflex" ;;
+	PUJJOFLEX*)             _x='ADN|Lenovo IdeaPad Flex 3i Chromebook'; device="pujjoflex" ;;
 	PUJJOTEEN*-CZPM*)       _x='ADN|Lenovo 14e Chromebook Gen 3'; device="pujjoteen" ;;
-	PUJJOTEEN*-KCBW*)       _x='ADN|Lenovo Slim 3i Chromebook 14'; device="pujjoteen" ;;
+	PUJJOTEEN*-KCBW*)       _x='ADN|Lenovo Ideapad Slim 3i Chromebook'; device="pujjoteen15w" ;;
 	PUJJO-DCCV*)            _x='ADN|Lenovo Flex 3i Chromebook 12"'; device="pujjo" ;;
 	PUJJO-KTLR*)            _x='ADN|Lenovo 500e Yoga Chromebook Gen 4'; device="pujjo" ;;
 	PYRO*)                  _x='APL|Lenovo Thinkpad 11e/Yoga Chromebook (G4)' ;;
