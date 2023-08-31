@@ -101,7 +101,8 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'mithrax' \
-	 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'volmar' 'zavala')
+	 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'volmar' 'zavala' \
+	 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
 	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
 
@@ -643,6 +644,7 @@ case "${_hwid}" in
 	GARG360*)               _x='GLK|CTL Chromebook NL71T/TW/TWB';;
 	GARG*)                  _x='GLK|CTL Chromebook NL71/CT/LTE';;
 	GIMBLE*)                _x='ADL|HP Chromebook x360 14c-cd0'; device="gimble" ;;
+	GLADIOS*)               _x='ADL|HP Chromebox Enterprise G4'; device="gladios" ;;
 	GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
 	GLK360*)                _x='GLK|Acer Chromebook Spin 311';;
 	GLK*)                   _x='GLK|Acer Chromebook 311';;
@@ -663,12 +665,14 @@ case "${_hwid}" in
 	KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
 	KENCH*)                 _x='KBL|HP Chromebox G2' ; device="fizz";;
 	KINDRED*)               _x='CML|Acer Chromebook 712 (C871)' ;;
+	KINOX*)                 _x='ADL|Lenovo ThinkCentre M60q Chromebox'; device="kinox" ;;
 	KIP*)                   _x='BYT|HP Chromebook 11 G3/G4, 14 G4' ;;
 	KLED*)                  _x='CML|Acer Chromebook Spin 713 (CP713-2W)' ;;
 	KOHAKU*)                _x='CML|Samsung Galaxy Chromebook' ;;
 	KRACKO360-BLXA*)        _x='JSL|CTL Chromebook NL72T' ;;
 	KRACKO360*)             _x='JSL|LG Chromebook 11TC50Q/11TQ50Q' ;;
 	KRACKO*)                _x='JSL|CTL Chromebook NL72' ;;
+	KULDAX*)                _x='ADL|ASUS Chromebox 5 [CN67]'; device="kuldax" ;;
 	LANDIA*)                _x='JSL|HP Chromebook x360 14a' ;;
 	LANDRID*)               _x='JSL|HP Chromebook 15a' ;;
 	LANTIS*)                _x='JSL|HP Chromebook 14a' ;;
@@ -703,6 +707,7 @@ case "${_hwid}" in
 	LINDAR-LCDF*)           _x='TGL|Lenovo Slim 5 Chromebook' ; device="lindar";;
 	LINDAR*)                _x='TGL|Lenovo Slim 5/5i/Flex 5i Chromebook' ; device="lindar";;
 	LINK*)                  _x='IVB|Google Chromebook Pixel 2013' ;;
+	LISBON*)                _x='ADL|CTL Chromebox CBx3'; device="lisbon" ;;
 	LULU*)                  _x='BDW|Dell Chromebook 13 (7310)' ;;
 	MADOO*)                 _x='JSL|HP Chromebook x360 14b' ;;
 	MAGISTER*)              _x='JSL|Acer Chromebook Spin 314' ;;
@@ -722,6 +727,7 @@ case "${_hwid}" in
 	MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
 	MEEP*)                  _x='GLK|HP Chromebook x360 11 G2 EE' ;;
 	MIMROCK*)               _x='GLK|HP Chromebook 11 G7 EE' ;;
+	MOLI*)                  _x='ADL|Acer Chromebox CXI5'; device="moli" ;;
 	MONROE*)                _x='HSW|LG Chromebase' ;;
 	MORPHIUS*)              _x='PCO|Lenovo ThinkPad C13 Yoga Chromebook' ;;
 	NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
