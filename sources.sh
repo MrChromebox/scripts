@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-08-29]"
+export script_date="[2023-09-07]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -281,6 +281,7 @@ export rwl_altfw_tgl="rwl_altfw_tgl-mrchromebox_20210827.bin"
 export rwl_altfw_adl="rwl_altfw_adl-mrchromebox_20230509.bin"
 export rwl_altfw_adl_n="rwl_altfw_adl_n-mrchromebox_20230829.bin"
 export rwl_altfw_mdn="rwl_altfw_mdn-mrchromebox_20230727.bin"
+export rwl_altfw_czn="rwl_altfw_czn-mrchromebox_20230907.bin"
 
 #hsw/bdw headless VBIOS
 export hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"
