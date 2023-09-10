@@ -72,7 +72,7 @@ snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
 	'electro' 'epaulette' 'lava' 'nasher' 'nasher360' 'pyro' 'rabbid'  'reef' \
 	'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
-kbl_boxes=('bleemo' 'excelsior' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
+kbl_boxes=('bleemo' 'endeavour' 'excelsior' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
 	'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
@@ -102,7 +102,7 @@ tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'mithrax' \
 	 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'volmar' 'zavala' \
-	 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
+	'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
 	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
 
@@ -576,6 +576,7 @@ case "${_hwid}" in
 	CHRONICLER*)            _x='TGL|FMV Chromebook 14F' ;;
 	CLAPPER*)               _x='BYT|Lenovo N20/N20P Chromebook' ;;
 	COLLIS*)                _x='TGL|AAsus Chromebook Flip CX3' ;;
+	CONSTITUTION*)          _x='ADL|Google Meet Series Two' ; device="constitution" ;;
 	COPANO*)                _x='TGL|Asus Chromebook Flip CX5 (CX5400)' ;;
 	CORAL*)                 _x='APL|Incorrectly identified APL Chromebook' ;;
 	CRAASKBOWL-GSKT*)       _x='ADN|Acer Chromebook Spin 511'; device="craaskbowl" ;;
@@ -609,6 +610,7 @@ case "${_hwid}" in
 	ELDRID*)                _x='TGL|HP Chromebook x360 14c' ;;
 	ELECTRO*)               _x='APL|Acer Chromebook Spin 11 (R751T)' ;;
 	ELEMI*)                 _x='TGL|HP Pro c640 G2 Chromebook' ;;
+	ENDEAVOUR*)             _x='KBL|Google Meet Series One' ; device="endeavour";;
 	ENGUARDE_???-???-??A*)  _x='BYT|CTL N6 Education Chromebook' ;;
 	ENGUARDE_???-???-??B*)  _x='BYT|M&A Chromebook' ;;
 	ENGUARDE_???-???-??C*)  _x='BYT|Senkatel C1101 Chromebook' ;;
