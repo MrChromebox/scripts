@@ -11,9 +11,7 @@ function flash_rwlegacy()
 #set working dir
 cd /tmp
 
-echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS / AltFw)"
-
-# set dev mode legacy boot flag
+# set dev mode legacy boot / AltFw flags
 if [ "${isChromeOS}" = true ]; then
 	crossystem dev_boot_legacy=1 > /dev/null 2>&1
 	crossystem dev_boot_altfw=1 > /dev/null 2>&1
@@ -37,8 +35,6 @@ elif [ "$isApl" = true ]; then
 	rwlegacy_file=$seabios_apl
 elif [ "$kbl_use_rwl18" = true ]; then
 	rwlegacy_file=$seabios_kbl_18
-elif [ "$isStr" = true ]; then
-	rwlegacy_file=$rwl_altfw_stoney
 elif [ "$isKbl" = true ]; then
 	rwlegacy_file=$seabios_kbl
 elif [ "$isWhl" = true ]; then
@@ -49,8 +45,6 @@ elif [ "$isCmlBox" = true ]; then
 	rwlegacy_file=$rwl_altfw_cml
 elif [ "$isJsl" = true ]; then
 	rwlegacy_file=$rwl_altfw_jsl
-elif [ "$isPco" = true ]; then
-	rwlegacy_file=$rwl_altfw_pco
 elif [ "$isTgl" = true ]; then
 	rwlegacy_file=$rwl_altfw_tgl
 elif [ "$isGlk" = true ]; then
@@ -59,14 +53,26 @@ elif [ "$isAdl" = true ]; then
 	rwlegacy_file=$rwl_altfw_adl
 elif [ "$isAdlN" = true ]; then
 	rwlegacy_file=$rwl_altfw_adl_n
-elif [ "$isMdn" = true ]; then
-	rwlegacy_file=$rwl_altfw_mdn
+elif [ "$isStr" = true ]; then
+	rwlegacy_file=$rwl_altfw_stoney
+elif [ "$isPco" = true ]; then
+	rwlegacy_file=$rwl_altfw_pco
 elif [ "$isCzn" = true ]; then
 	rwlegacy_file=$rwl_altfw_czn
+elif [ "$isMdn" = true ]; then
+	rwlegacy_file=$rwl_altfw_mdn
 else
 	echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
+	echo_red "If your device is listed as supported on https://mrchromebox.tech/#devices,\n
+then email MrChromebox@gmail.com  and include a screenshot of the main menu."
 	read -ep "Press enter to return to the main menu"
 	return 1
+fi
+
+if [[ "$rwlegacy_file" = *"altfw"* ]]; then
+	echo_green "\nInstall/Update RW_LEGACY Firmware (AltFw / edk2)"
+else
+	echo_green "\nInstall/Update RW_LEGACY Firmware (Legacy BIOS / SeaBIOS)"
 fi
 
 
@@ -166,9 +172,9 @@ fi
 
 
 #############################
-# Install coreboot Firmware #
+# Install Full ROM Firmware #
 #############################
-function flash_coreboot()
+function flash_full_rom()
 {
 
 fwTypeStr=""
@@ -1422,7 +1428,7 @@ function stock_menu() {
 			;;
 
 		2)  if [[  "$unlockMenu" = true || "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then
-				flash_coreboot
+				flash_full_rom
 			fi
 			menu_fwupdate
 			;;
@@ -1538,7 +1544,7 @@ function uefi_menu() {
 	case $opt in
 
 		1)  if [[ "$hasUEFIoption" = true ]]; then
-				flash_coreboot
+				flash_full_rom
 			fi
 			uefi_menu
 			;;
