@@ -250,6 +250,17 @@ OS; ${currOS} will no longer be bootable. See https://mrchromebox.tech/#faq"
 	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 fi
 
+# PCO boot device notice
+if [[ "$isPCO" = true && ! -d /sys/firmware/efi ]]; then
+	echo_yellow "
+NOTE: Booting from eMMC on AMD Picasso-based devices does not currently work --
+only NVMe, SD and USB. If you have a device with eMMC storage you will not be
+able to boot from it after installing the UEFI Full ROM firmware."
+	REPLY=""
+	read -ep "Press Y to continue or any other key to abort. "
+	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
+fi
+
 #determine correct file / URL
 firmware_source=${fullrom_source}
 if [[ "$hasUEFIoption" = true || "$hasLegacyOption" = true ]]; then

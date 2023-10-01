@@ -59,6 +59,7 @@ hasCR50=false
 kbl_use_rwl18=false
 useAltfwStd=false
 
+snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
 hsw_books=('falco' 'leon' 'monroe' 'peppy' 'wolf')
 bdw_boxes=('guado' 'rikku' 'tidus')
@@ -68,7 +69,6 @@ baytrail=('banjo' 'candy' 'clapper' 'enguarde' 'glimmer' 'gnawty' 'heli' \
 braswell=('banon' 'celes' 'cyan' 'edgar' 'kefka' 'reks' 'relm' \
 	'setzer' 'terra' 'ultima' 'wizpig')
 skylake=('asuka' 'caroline' 'cave' 'chell' 'lars' 'lili' 'sentry')
-snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
 	'electro' 'epaulette' 'lava' 'nasher' 'nasher360' 'pyro' 'rabbid'  'reef' \
 	'robo' 'robo360' 'sand' 'santa' 'snappy' 'whitetip')
@@ -77,22 +77,16 @@ kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
 	'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
 kbl_rwl_18=('atlas' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
-purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
-		'librem_mini' 'librem_mini_v2' 'librem_14');
 glk=('ampton' 'apel' 'apele' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
 	'bobba360' 'casta' 'dood' 'droid' 'dorp' 'fleex' 'foob' 'foob360' 'garg' \
 	'garg360' 'garfour' 'glk' 'glk360' 'grabbiter' 'laser' 'laser14' 'lick' \
 	'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
 	'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
-str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 whl=('arcada' 'sarien')
-cml_boxes=('dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
+cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
 		   'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
-pco=('berknip' 'dirinboz' 'ezkinil' 'morphius' 'woomax' 'vilboz')
-czn=('dewatt' 'guybrush' 'nipperkin')
-mdn=('crystaldrift' 'frostflow' 'markarth' 'skyrim' 'whiterun')
 jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' \
 	 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
 	 'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' \
@@ -106,10 +100,19 @@ adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' '
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
 	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
 
+str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
+pco=('berknip' 'dirinboz' 'ezkinil' 'gumboz' 'jelboz360' 'morphius' 'vilboz' 'woomax')
+czn=('dewatt' 'guybrush' 'nipperkin')
+mdn=('crystaldrift' 'frostflow' 'markarth' 'skyrim' 'whiterun')
+
+purism=('librem13v1' 'librem13v2' 'librem13v4' 'librem15v2' 'librem15v3' 'librem15v4' \
+		'librem_mini' 'librem_mini_v2' 'librem_14');
+
 UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
 	"${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" \
 	"${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}" "${cml[@]}" \
-	"${glk[@]}" "${apl[@]}" "${tgl[@]}" "${jsl[@]}"  "${adl[@]}"))
+	"${glk[@]}" "${apl[@]}" "${tgl[@]}" "${jsl[@]}" "${adl[@]}" "${adl_n[@]}" \
+	${pco[@]}" "${czn[@]}" "${mdn[@]}" ))
 shellballs=($(printf "%s " \
 	"${skylake[@]}" 'atlas' 'eve' 'nautilus' 'nocturne' 'pantheon' 'sona' 'soraka' \
 	'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
@@ -529,6 +532,7 @@ case "${_hwid}" in
 	AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
 	AKEMI*)                 _x='CML|Lenovo Ideapad Flex 5 Chromebook' ;;
 	ALEENA*)                _x='STR|Acer Chromebook 315' ;;
+	AMBASSADOR*)            _x='CML|CTL Meet Compute System GQE15C'; device="ambassador";;
 	AMPTON*)                _x='GLK|Asus Chromebook Flip C214/C234' ;;
 	ANAHERA*)               _x='ADL|HP Elite c640 14 inch G3 Chromebook'; device="anahera" ;;
 	APELE*)                 _x='GLK|Asus Chromebook CX1101CMA' ; device="apel";;
@@ -653,10 +657,12 @@ case "${_hwid}" in
 	GNAWTY*)                _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)' ;;
 	GRABBITER*)             _x='GLK|Dell Chromebook 3100 2-in-1';;
 	GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
+	GUMBOZ*)                _x='PCO|HP Chromebook x360 14a' ;;
 	GUYBRUSH*)              _x='CZN|Guybrush Baseboard Chromebook'; device="guybrush" ;;
 	HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
 	HELI*)                  _x='BYT|Haier Chromebook G2' ;;
 	JAX*)                   _x='KBL|AOpen Chromebox Commercial 2' ; device="fizz";;
+	JELBOZ360*)             _x='PCO|ASUS Chromebook Flip CM1 (CM1400)'; device="jelboz360" ;;
 	JINLON*)                _x='CML|HP Elite c1030 Chromebook / HP Chromebook x360 13c';;
 	JOXERO*)                _x='ADN|TBD'; device="joxero" ;;
 	JOXER*)                 _x='ADN|TBD'; device="joxer" ;;
