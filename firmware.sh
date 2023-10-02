@@ -668,7 +668,8 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 	mkdir /tmp/usb > /dev/null 2>&1
 	mount "${usb_device}" /tmp/usb > /dev/null 2>&1
 	if [ $? -ne 0 ]; then
-		mount "${usb_device}1" /tmp/usb
+		partition_selection $usb_device
+		mount "${usb_device}${usb_dev_partition_index}" /tmp/usb
 	fi
 	if [ $? -ne 0 ]; then
 		echo_red "USB device failed to mount; cannot proceed."
@@ -899,7 +900,8 @@ usb_device="${usb_devs[${usb_dev_index}-1]}"
 mkdir /tmp/usb > /dev/null 2>&1
 mount "${usb_device}" /tmp/usb > /dev/null 2>&1
 if [ $? != 0 ]; then
-	mount "${usb_device}1" /tmp/usb
+	partition_selection $usb_device
+	mount "${usb_device}${usb_dev_partition_index}" /tmp/usb
 fi
 if [ $? -ne 0 ]; then
 	backup_fail "USB backup device failed to mount; cannot proceed."
@@ -1601,4 +1603,26 @@ function uefi_menu() {
 			uefi_menu;
 			;;
 	esac
+}
+
+function partition_selection() {
+	num_usb_partitions=0;
+	for i in $1*;
+	do
+		num_usb_partitions=$((num_usb_partitions+1));
+	done;
+	num_usb_partitions=$((num_usb_partitions-1));
+	num_usb_partition=1  
+	for i in $1*; 
+	do 
+	if [[ ${i} =~ [0-9]+$ ]]; 
+	then 
+		echo -n "Partition ${BASH_REMATCH[0]} size: ";
+		lsblk --noheadings -l -o SIZE $1|tail -n $num_usb_partitions|sed -n ${num_usb_partition}p;
+		echo "";
+		num_usb_partition=$((num_usb_partition+1));
+	fi; 
+	done
+	read -ep "Enter the number for the device partition in the USB drive: " usb_dev_partition_index
+	return $usb_dev_partition_index
 }
