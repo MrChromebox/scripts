@@ -422,6 +422,7 @@ fi
 cleanup
 
 #get required tools
+echo -e "\nDownloading required tools..."
 
 if ! get_cbfstool; then
 	echo_red "Unable to download cbfstool utility; cannot continue"
@@ -504,6 +505,7 @@ else
 fi
 
 #check WP status
+echo -e "\nChecking WP state..."
 
 #save SW WP state
 ${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
@@ -513,6 +515,30 @@ ${flashromcmd} --wp-disable > /dev/null 2>&1
 [[ $? -ne 0 && $swWp = "enabled" ]] && wpEnabled=true
 #restore previous SW WP state
 [[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
+
+# disable SW WP and reboot if needed
+if [[ "$isChromeOS" = true &&  "${swWp}" = "enabled" ]]; then
+	# prompt user to disable swWP and reboot
+	echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
+If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
+Would you like to disable sofware WP and reboot your device?"
+	read -ep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
+	if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
+		echo -e "\nDisabling software WP..."
+		if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
+			exit_red "Error disabling software write-protect."; return 1
+		fi
+		echo -e "\nClearing the WP range(s)..."
+		if ! ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1; then
+			# use new command format as of commit 99b9550
+			if ! ${flashromcmd} --wp-range 0,0 > /dev/null 2>&1; then
+				exit_red "Error clearing software write-protect range."; return 1
+			fi
+		fi
+		echo_green "\nSoftware WP disabled, rebooting in 5s"
+		reboot
+	fi
+fi
 
 #get full device info
 if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
