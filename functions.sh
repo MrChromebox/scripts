@@ -508,7 +508,7 @@ fi
 echo -e "\nChecking WP state..."
 
 #save SW WP state
-${flashromcmd} --wp-status 2>&1 | grep enabled >/dev/null
+${flashromcmd} --wp-status 2>&1 | grep -i -e "enabled" -e "protection mode: hardware" >/dev/null
 [[ $? -eq 0 ]] && swWp="enabled" || swWp="disabled"
 #test disabling SW WP to see if HW WP enabled
 ${flashromcmd} --wp-disable > /dev/null 2>&1
