@@ -537,6 +537,8 @@ Would you like to disable sofware WP and reboot your device?"
 		fi
 		echo_green "\nSoftware WP disabled, rebooting in 5s"
 		reboot
+		# ensure we don't show the main menu while the system processes the reboot signal
+		die
 	fi
 fi
 
