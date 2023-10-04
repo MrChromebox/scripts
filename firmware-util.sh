@@ -26,6 +26,10 @@ else
 	cd /tmp
 fi
 
+# clear screen / show banner
+printf "\ec"
+echo -e "\nMrChromebox Firmware Utility Script starting up"
+
 #check for cmd line param, expired CrOS certs
 if ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
 	export CURL="curl -k"
