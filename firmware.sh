@@ -65,7 +65,7 @@ else
 	echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
 	echo_red "If your device is listed as supported on https://mrchromebox.tech/#devices,\n
 then email MrChromebox@gmail.com  and include a screenshot of the main menu."
-	read -ep "Press enter to return to the main menu"
+	read -rep "Press enter to return to the main menu"
 	return 1
 fi
 
@@ -77,97 +77,50 @@ fi
 
 
 preferUSB=false
-useHeadless=false
 if [[ -z "$1" && "$rwlegacy_file" != *"altfw"* ]]; then
 	echo -e ""
 	#USB boot priority
 	echo_yellow "Default to booting from USB?"
-	read -ep "If N, always boot from internal storage unless selected from boot menu. [y/N] "
+	read -rep "If N, always boot from internal storage unless selected from boot menu. [y/N] "
 	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && preferUSB=true
 	echo -e ""
-	#headless?
-	if [[ "$rwlegacy_file" = "$seabios_hswbdw_box" && "$device" != "monroe" ]]; then
-		echo_yellow "Install \"headless\" firmware?"
-		read -ep "This is only needed for servers running without a connected display. [y/N] "
-		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && useHeadless=true
-		echo -e ""
-	fi
 fi
 
-#download SeaBIOS update
+#download RW_LEGACY update
 echo_yellow "\nDownloading RW_LEGACY firmware update\n(${rwlegacy_file})"
-$CURL -sLO ${rwlegacy_source}${rwlegacy_file}.md5
-$CURL -sLO ${rwlegacy_source}${rwlegacy_file}
+$CURL -sLO "${rwlegacy_source}${rwlegacy_file}.md5"
+$CURL -sLO "${rwlegacy_source}${rwlegacy_file}"
 #verify checksum on downloaded file
-md5sum -c ${rwlegacy_file}.md5 --quiet 2> /dev/null
-[[ $? -ne 0 ]] && { exit_red "RW_LEGACY download checksum fail; download corrupted, cannot flash"; return 1; }
+if ! md5sum -c "${rwlegacy_file}.md5" --quiet 2> /dev/null; then
+	exit_red "RW_LEGACY download checksum fail; download corrupted, cannot flash"
+	return 1
+fi
 
 #preferUSB?
 if [ "$preferUSB" = true  ]; then
-	#swanky special case
-	if [[ "$device" = "swanky" ]]; then
-		$CURL -sLo bootorder "${cbfs_source}bootorder.usb2"
-	else
-		$CURL -sLo bootorder "${cbfs_source}bootorder.usb"
-	fi
-	if [ $? -ne 0 ]; then
+	if ! $CURL -sLo bootorder "${cbfs_source}bootorder.usb"; then
 		echo_red "Unable to download bootorder file; boot order cannot be changed."
 	else
-		${cbfstoolcmd} ${rwlegacy_file} remove -n bootorder > /dev/null 2>&1
-		${cbfstoolcmd} ${rwlegacy_file} add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
-	fi
-fi
-#useHeadless?
-if [ "$useHeadless" = true  ]; then
-	$CURL -sLO "${cbfs_source}${hswbdw_headless_vbios}"
-	if [ $? -ne 0 ]; then
-		echo_red "Unable to download headless VGA BIOS; headless firmware cannot be installed."
-	else
-		${cbfstoolcmd} ${rwlegacy_file} remove -n pci8086,0406.rom > /dev/null 2>&1
-		rc0=$?
-		${cbfstoolcmd} ${rwlegacy_file} add -f ${hswbdw_headless_vbios} -n pci8086,0406.rom -t optionrom > /dev/null 2>&1
-		rc1=$?
-		if [[ "$rc0" -ne 0 || "$rc1" -ne 0 ]]; then
-			echo_red "Warning: error installing headless VGA BIOS"
-		else
-			echo_yellow "Headless VGA BIOS installed"
-		fi
+		${cbfstoolcmd} "${rwlegacy_file}" remove -n bootorder > /dev/null 2>&1
+		${cbfstoolcmd} "${rwlegacy_file}" add -n bootorder -f /tmp/bootorder -t raw > /dev/null 2>&1
 	fi
 fi
 
-#handle NINJA VGABIOS
-if [[ "$device" = "ninja" ]]; then
-	#extract vbios from stock BOOT_STUB, inject into RWL
-	 ${cbfstoolcmd} bios.bin extract -r BOOT_STUB -n pci8086,0f31.rom -f vgabios.bin > /dev/null 2>&1
-	 rc0=$?
-	 ${cbfstoolcmd} ${rwlegacy_file} remove -n pci8086,0f31.rom > /dev/null 2>&1
-	 rc1=$?
-	 ${cbfstoolcmd} ${rwlegacy_file} add -f vgabios.bin -n pci8086,0f31.rom -t optionrom > /dev/null 2>&1
-	 rc2=$?
-	 if [[ "$rc0" -ne 0 || "$rc1" -ne 0 || "$rc2" -ne 0 ]]; then
-			echo_red "Warning: error installing VGA BIOS"
-		else
-			echo_yellow "VGA BIOS installed"
-		fi
-fi
-
-#flash updated legacy BIOS
+#flash updated RW_LEGACY firmware
 echo_yellow "Installing RW_LEGACY firmware"
-${flashromcmd} -w -i RW_LEGACY:${rwlegacy_file} -o /tmp/flashrom.log > /dev/null 2>&1
-if [ $? -ne 0 ]; then
+if ! ${flashromcmd} -w -i RW_LEGACY:${rwlegacy_file} -o /tmp/flashrom.log > /dev/null 2>&1; then
 	cat /tmp/flashrom.log
 	echo_red "An error occurred flashing the RW_LEGACY firmware."
 else
-  echo_green "RW_LEGACY firmware successfully installed/updated."
-  # update firmware type
-  firmwareType="Stock ChromeOS w/RW_LEGACY"
-  #Prevent from trying to boot stock ChromeOS install
-  rm -rf /tmp/boot/syslinux > /dev/null 2>&1
+	echo_green "RW_LEGACY firmware successfully installed/updated."
+	# update firmware type
+	firmwareType="Stock ChromeOS w/RW_LEGACY"
+	#Prevent from trying to boot stock ChromeOS install
+	rm -rf /tmp/boot/syslinux > /dev/null 2>&1
 fi
 
-if [ -z "$1" ]; then
-	read -ep "Press [Enter] to return to the main menu."
-fi
+read -rep "Press [Enter] to return to the main menu."
+
 }
 
 
