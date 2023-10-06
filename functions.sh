@@ -51,7 +51,6 @@ isUEFI=false
 hasRwLegacy=false
 unlockMenu=false
 hasUEFIoption=false
-hasLegacyOption=false
 hasShellball=false
 wpEnabled=false
 hasLAN=false
@@ -974,7 +973,6 @@ esac
 if [[ "$deviceCpuType" = "(unrecognized)" ]] ; then
   isUnsupported=true
   hasUEFIoption=false
-  hasLegacyOption=false
 fi
 
 return 0

@@ -59,7 +59,6 @@ cd /tmp
 #do setup stuff
 prelim_setup
 [[ $? -ne 0 ]] && exit 1
-hasLegacyOption=false
 
 #show menu
 uefi_menu
