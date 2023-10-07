@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 
+# shellcheck disable=SC2164
 
 #misc globals
 usb_devs=""
@@ -15,9 +16,6 @@ flashrom_programmer="-p internal"
 cbfstoolcmd=""
 gbbutilitycmd=""
 preferUSB=false
-useHeadless=false
-addPXE=false
-pxeDefault=false
 isHswBox=false
 isBdwBox=false
 isHswBook=false
@@ -150,7 +148,7 @@ echo -e '\e[0m'
 function exit_red()
 {
 	echo_red "$@"
-	read -ep "Press [Enter] to return to the main menu."
+	read -rep "Press [Enter] to return to the main menu."
 }
 
 function die()
@@ -195,54 +193,53 @@ function list_usb_devices()
 ################
 function get_cbfstool()
 {
-if [ ! -f ${cbfstoolcmd} ]; then
-	working_dir=$(pwd)
-	if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
-		cd /tmp
-	else
-		#have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
-		rootdev=$(rootdev -d -s)
-		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
-		[[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
-				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
-		boot_mounted=$(mount | grep "${rootdev}""${part_num}")
-		if [ "${boot_mounted}" = "" ]; then
-			#mount boot
-			mkdir /tmp/boot >/dev/null 2>&1
-			mount "$(rootdev -d -s)""${part_num}" /tmp/boot
-			if [ $? -ne 0 ]; then
-				echo_red "Error mounting boot partition; cannot proceed."
-				return 1
+	if [ ! -f ${cbfstoolcmd} ]; then
+		working_dir=$(pwd)
+		if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
+			cd /tmp
+		else
+			#have to use partition 12 on rootdev due to noexec restrictions
+			rootdev=$(rootdev -d -s)
+			[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+			part_num="${part_pfx}12"
+			boot_mounted=$(mount | grep "${rootdev}""${part_num}")
+			if [ "${boot_mounted}" = "" ]; then
+				#mount boot
+				mkdir /tmp/boot >/dev/null 2>&1
+				mount "$(rootdev -d -s)""${part_num}" /tmp/boot
+				if [ $? -ne 0 ]; then
+					echo_red "Error mounting boot partition; cannot proceed."
+					return 1
+				fi
 			fi
+			# clear recovery logs which use valuable space
+			rm -rf /tmp/boot/recovery* 2>/dev/null
+			#create util dir
+			mkdir /tmp/boot/util 2>/dev/null
+			cd /tmp/boot/util
 		fi
-		# clear recovery logs which use valuable space
-		rm -rf /tmp/boot/recovery* 2>/dev/null
-		#create util dir
-		mkdir /tmp/boot/util 2>/dev/null
-		cd /tmp/boot/util
-	fi
 
-	#echo_yellow "Downloading cbfstool utility"
-	$CURL -sLO "${util_source}cbfstool.tar.gz"
-	if [ $? -ne 0 ]; then
-		echo_red "Error downloading cbfstool; cannot proceed."
+		#echo_yellow "Downloading cbfstool utility"
+		$CURL -sLO "${util_source}cbfstool.tar.gz"
+		if [ $? -ne 0 ]; then
+			echo_red "Error downloading cbfstool; cannot proceed."
+			#restore working dir
+			cd ${working_dir}
+			return 1
+		fi
+		tar -zxf cbfstool.tar.gz --no-same-owner
+		if [ $? -ne 0 ]; then
+			echo_red "Error extracting cbfstool; cannot proceed."
+			#restore working dir
+			cd ${working_dir}
+			return 1
+		fi
+		#set +x
+		chmod +x cbfstool
 		#restore working dir
 		cd ${working_dir}
-		return 1
 	fi
-	tar -zxf cbfstool.tar.gz --no-same-owner
-	if [ $? -ne 0 ]; then
-		echo_red "Error extracting cbfstool; cannot proceed."
-		#restore working dir
-		cd ${working_dir}
-		return 1
-	fi
-	#set +x
-	chmod +x cbfstool
-	#restore working dir
-	cd ${working_dir}
-fi
-return 0
+	return 0
 }
 
 
@@ -251,61 +248,62 @@ return 0
 ################
 function get_flashrom()
 {
-if [ ! -f ${flashromcmd} ]; then
-	working_dir=`pwd`
- 
-	if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
-		cd /tmp
-	else
-		#have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
-		rootdev=$(rootdev -d -s)
-		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
-		[[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
-				&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
-		boot_mounted=$(mount | grep "${rootdev}""${part_num}")
-		if [ "${boot_mounted}" = "" ]; then
-			#mount boot
-			mkdir /tmp/boot >/dev/null 2>&1
-			mount "$(rootdev -d -s)""${part_num}" /tmp/boot
-			if [ $? -ne 0 ]; then
-				echo_red "Error mounting boot partition; cannot proceed."
-				return 1
+	if [ ! -f "${flashromcmd}" ]; then
+		working_dir=$(pwd)
+	
+		if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
+			cd /tmp
+		else
+			#have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
+			rootdev=$(rootdev -d -s)
+			[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+			[[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
+					&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
+			boot_mounted=$(mount | grep "${rootdev}""${part_num}")
+			if [ "${boot_mounted}" = "" ]; then
+				#mount boot
+				mkdir /tmp/boot >/dev/null 2>&1
+				mount "$(rootdev -d -s)""${part_num}" /tmp/boot
+				if [ $? -ne 0 ]; then
+					echo_red "Error mounting boot partition; cannot proceed."
+					return 1
+				fi
 			fi
+			# clear recovery logs which use valuable space
+			rm -rf /tmp/boot/recovery* 2>/dev/null
+			#create util dir
+			mkdir /tmp/boot/util 2>/dev/null
+			cd /tmp/boot/util
 		fi
-		# clear recovery logs which use valuable space
-		rm -rf /tmp/boot/recovery* 2>/dev/null
-		#create util dir
-		mkdir /tmp/boot/util 2>/dev/null
-		cd /tmp/boot/util
-	fi
 
-	if [[ "$isChromeOS" = true ]]; then
-		#needed to avoid dependencies not found on older ChromeOS
-		$CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
-	else
-		$CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_cros_libpci37_20230206.tar.gz"
-	fi
-	if [ $? -ne 0 ]; then
-		echo_red "Error downloading flashrom; cannot proceed."
+		if [[ "$isChromeOS" = true ]]; then
+			#needed to avoid dependencies not found on older ChromeOS
+			$CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
+		else
+			$CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_cros_libpci37_20231014.tar.gz"
+		fi
+		if [[ $? -ne 0 ]]; then
+			echo_red "Error downloading flashrom; cannot proceed."
+			#restore working dir
+			cd "${working_dir}"
+			return 1
+		fi
+		
+		if ! tar -zxf flashrom.tar.gz --no-same-owner; then
+			echo_red "Error extracting flashrom; cannot proceed."
+			#restore working dir
+			cd "${working_dir}"
+			return 1
+		fi
+		#set +x
+		chmod +x flashrom
+
 		#restore working dir
-		cd ${working_dir}
-		return 1
+		cd "${working_dir}"
 	fi
-	tar -zxf flashrom.tar.gz --no-same-owner
-	if [ $? -ne 0 ]; then
-		echo_red "Error extracting flashrom; cannot proceed."
-		#restore working dir
-		cd ${working_dir}
-		return 1
-	fi
-	#set +x
-	chmod +x flashrom
-	#restore working dir
-	cd ${working_dir}
-fi
-# append programmer type
-flashromcmd="${flashromcmd} ${flashrom_programmer}"
-return 0
+	# append programmer type
+	flashromcmd="${flashromcmd} ${flashrom_programmer}"
+	return 0
 }
 
 
@@ -314,30 +312,30 @@ return 0
 ###################
 function get_gbb_utility()
 {
-if [ ! -f ${gbbutilitycmd} ]; then
-	working_dir=`pwd`
-	cd /tmp
+	if [ ! -f ${gbbutilitycmd} ]; then
+		working_dir=$(pwd)
+		cd /tmp
 
-	$CURL -sLO "${util_source}gbb_utility.tar.gz"
-	if [ $? -ne 0 ]; then
-		echo_red "Error downloading gbb_utility; cannot proceed."
+		$CURL -sLO "${util_source}gbb_utility.tar.gz"
+		if [ $? -ne 0 ]; then
+			echo_red "Error downloading gbb_utility; cannot proceed."
+			#restore working dir
+			cd ${working_dir}
+			return 1
+		fi
+		tar -zxf gbb_utility.tar.gz
+		if [ $? -ne 0 ]; then
+			echo_red "Error extracting gbb_utility; cannot proceed."
+			#restore working dir
+			cd ${working_dir}
+			return 1
+		fi
+		#set +x
+		chmod +x gbb_utility
 		#restore working dir
 		cd ${working_dir}
-		return 1
 	fi
-	tar -zxf gbb_utility.tar.gz
-	if [ $? -ne 0 ]; then
-		echo_red "Error extracting gbb_utility; cannot proceed."
-		#restore working dir
-		cd ${working_dir}
-		return 1
-	fi
-	#set +x
-	chmod +x gbb_utility
-	#restore working dir
-	cd ${working_dir}
-fi
-return 0
+	return 0
 }
 
 
@@ -383,16 +381,13 @@ fi
 
 #check if running under ChromeOS / ChromiumOS
 if [ -f /etc/lsb-release ]; then
-	cat /etc/lsb-release | grep "Chrome OS" > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
+	if ! grep -q "Chrome OS" /etc/lsb-release; then
 		isChromeOS=false
 	fi
-	cat /etc/lsb-release | grep "neverware" > /dev/null 2>&1
-	if [ $? -eq 0 ]; then
+	if grep -q "neverware" /etc/lsb-release; then
 		isCloudready=true
 	fi
-	cat /etc/lsb-release | grep "Chromium OS" > /dev/null 2>&1
-	if [ $? -eq 0 ]; then
+	if grep -q "Chromium OS" /etc/lsb-release; then
 		isChromiumOS=true
 	fi
 else
@@ -406,8 +401,9 @@ if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
 	#set cmds
 	#check if we need to use a newer flashrom which supports output to log file (-o)
 	flashromcmd=$(which flashrom)
-	${flashromcmd} -V -o /dev/null > /dev/null 2>&1
-	[[ $? -ne 0 || -d /sys/firmware/efi ]] && flashromcmd=/tmp/boot/util/flashrom  
+	if ! ${flashromcmd} -V -o /dev/null > /dev/null 2>&1 || [[ -d /sys/firmware/efi ]]; then
+		flashromcmd=/tmp/boot/util/flashrom
+	fi
 	cbfstoolcmd=/tmp/boot/util/cbfstool
 	gbbutilitycmd=$(which gbb_utility)
 else
@@ -445,7 +441,7 @@ rmmod spi_intel_platform >/dev/null 2>&1
 
 #get device firmware info
 echo -e "\nGetting device/system info..."
-if cat /proc/cpuinfo | grep -q -i Intel; then
+if grep -q -i Intel /proc/cpuinfo; then
 	#try reading only BIOS region
 	if ${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
 		flashrom_params="--ifd -i bios"
@@ -459,16 +455,15 @@ else
 fi
 
 if [ $? -ne 0 ]; then
-	echo_red "\nUnable to read current firmware; cannot continue:"
+	echo_red "\nFlashrom is unable to read current firmware; cannot continue:"
 	if [[ "$isChromeOS" = "false" ]]; then
 		if [ -f /tmp/flashrom.log ]; then
 			cat /tmp/flashrom.log
 			echo ""
 		fi
-	else
-		echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu)."
-		echo_red "See https://www.flashrom.org/FAQ for more info."
 	fi
+	echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
+	echo_red "See https://www.flashrom.org/FAQ for more info."
 	return 1;
 fi
 
@@ -521,7 +516,7 @@ if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled
 	echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
 If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
 Would you like to disable sofware WP and reboot your device?"
-	read -ep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
+	read -rep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
 	if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
 		echo -e "\nDisabling software WP..."
 		if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
@@ -548,7 +543,7 @@ if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
 	_hwid=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g' | sed 's/ /_/g')
 	boardName=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g'| awk 'NR==1{print $1}' | cut -f 1 -d'-')
 	device=${boardName,,}
-elif echo $firmwareType | grep -e "Stock" -e "LEGACY"; then
+elif echo "$firmwareType" | grep -e "Stock" -e "LEGACY"; then
 	# Stock + RW_LEGACY: read HWID from GBB
 	_hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed -E 's/X86 ?//g' | cut -f 2 -d' ')
 	boardName=${_hwid^^}
