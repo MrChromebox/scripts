@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-10-01]"
+export script_date="[2023-10-07]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -190,7 +190,7 @@ export coreboot_uefi_chronicler="coreboot_edk2-chronicler-mrchromebox_20230930.r
 export coreboot_uefi_collis="coreboot_edk2-collis-mrchromebox_20230930.rom"
 export coreboot_uefi_copano="coreboot_edk2-copano-mrchromebox_20230930.rom"
 export coreboot_uefi_delbin="coreboot_edk2-delbin-mrchromebox_20230930.rom"
-export coreboot_uefi_drobit="coreboot_edk2-drobit-mrchromebox_20230930.rom"
+export coreboot_uefi_drobit="coreboot_edk2-drobit-mrchromebox_20231007.rom"
 export coreboot_uefi_eldrid="coreboot_edk2-eldrid-mrchromebox_20230930.rom"
 export coreboot_uefi_elemi="coreboot_edk2-elemi-mrchromebox_20230930.rom"
 export coreboot_uefi_lillipup="coreboot_edk2-lillipup-mrchromebox_20230930.rom"
@@ -299,12 +299,12 @@ export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20231001.rom"
 export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20231001.rom"
 
 #Cezanne
-export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20230930.rom"
+export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20231007.rom"
 export coreboot_uefi_nipperkin="coreboot_edk2-nipperkin-mrchromebox_20230930.rom"
 
 #Mendocino
 export coreboot_uefi_crystaldrift="coreboot_edk2-crystaldrift-mrchromebox_20230930.rom"
-export coreboot_uefi_frostflow="coreboot_edk2-frostflow-mrchromebox_20230930.rom"
+export coreboot_uefi_frostflow="coreboot_edk2-frostflow-mrchromebox_20231007.rom"
 export coreboot_uefi_markarth="coreboot_edk2-markarth-mrchromebox_20230930.rom"
 export coreboot_uefi_skyrim="coreboot_edk2-skyrim-mrchromebox_20230930.rom"
 export coreboot_uefi_whiterun="coreboot_edk2-whiterun-mrchromebox_20230930.rom"
