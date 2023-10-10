@@ -765,6 +765,7 @@ case "${_hwid}" in
 	MOLI*)                  _x='ADL|Acer Chromebox CXI5'; device="moli" ;;
 	MONROE*)                _x='HSW|LG Chromebase' ;;
 	MORPHIUS*)              _x='PCO|Lenovo ThinkPad C13 Yoga Chromebook' ;;
+	NAMI*)                  _x='KBL|NAMI Chromebook (multi)' ; device="nami";;
 	NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
 	NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ;;
 	NASHER*)                _x='APL|Dell Chromebook 11 5190' ;;
