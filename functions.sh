@@ -550,6 +550,7 @@ elif echo $firmwareType | grep -e "Stock" -e "LEGACY"; then
 	# Stock + RW_LEGACY: read HWID from GBB
 	_hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed -E 's/X86 ?//g' | cut -f 2 -d' ')
 	boardName=${_hwid^^}
+ 	device=${boardName,,}
 else
 	_hwid=${device^^}
 	boardName=${device^^}
