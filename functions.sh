@@ -516,7 +516,7 @@ ${flashromcmd} --wp-disable > /dev/null 2>&1
 [[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
 
 # disable SW WP and reboot if needed
-if [[ "$isChromeOS" = true &&  "${swWp}" = "enabled" ]]; then
+if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled" ]]; then
 	# prompt user to disable swWP and reboot
 	echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
 If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
