@@ -525,13 +525,15 @@ Would you like to disable sofware WP and reboot your device?"
 	if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
 		echo -e "\nDisabling software WP..."
 		if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
-			exit_red "Error disabling software write-protect."; return 1
+			exit_red "\nError disabling software write-protect -- hardware WP is still enabled."; return 1
 		fi
 		echo -e "\nClearing the WP range(s)..."
 		if ! ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1; then
 			# use new command format as of commit 99b9550
 			if ! ${flashromcmd} --wp-range 0,0 > /dev/null 2>&1; then
-				exit_red "Error clearing software write-protect range."; return 1
+   				#re-run to output error
+       				${flashromcmd} --wp-range 0,0
+				exit_red "\nError clearing software write-protect range."; return 1
 			fi
 		fi
 		echo_green "\nSoftware WP disabled, rebooting in 5s"
