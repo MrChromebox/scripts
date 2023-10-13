@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-10-07]"
+export script_date="[2023-10-13]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -294,7 +294,7 @@ export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20231001.rom"
 export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20231001.rom"
 export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20231001.rom"
 export coreboot_uefi_jelboz360="coreboot_edk2-jelboz360-mrchromebox_20231001.rom"
-export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20231001.rom"
+export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20231013.rom"
 export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20231001.rom"
 export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20231001.rom"
 
