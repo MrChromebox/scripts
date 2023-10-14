@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 
-# shellcheck disable=SC2154,SC2086
+# shellcheck disable=SC2154,SC2086,SC2059
 
 ###################
 # flash RW_LEGACY #
@@ -459,155 +459,60 @@ other than the latest UEFI Full ROM firmware release."
 	# ensure hardware write protect disabled
 	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot restore stock firmware."; return 1; }
 
-	firmware_file=""
+	# default file to download to
+	firmware_file="/tmp/stock-firmware.rom"
 
-	read -rep "Do you have a firmware backup file on USB? [y/N] "
-	if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
-		read -rep "
-	Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
-		list_usb_devices
-		[ $? -eq 0 ] || { exit_red "No USB devices available to read firmware backup."; return 1; }
-		read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
-		[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
-		usb_device="${usb_devs[${usb_dev_index}-1]}"
-		mkdir /tmp/usb > /dev/null 2>&1
-		mount "${usb_device}" /tmp/usb > /dev/null 2>&1
-		if [ $? -ne 0 ]; then
-			mount "${usb_device}1" /tmp/usb
-		fi
-		if [ $? -ne 0 ]; then
-			echo_red "USB device failed to mount; cannot proceed."
-			read -rep "Press [Enter] to return to the main menu."
-			umount /tmp/usb > /dev/null 2>&1
-			return
-		fi
-		#select file from USB device
-		echo_yellow "\n(Potential) Firmware Files on USB:"
-		ls  /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null
-		if [ $? -ne 0 ]; then
-			echo_red "No firmware files found on USB device."
-			read -rep "Press [Enter] to return to the main menu."
-			umount /tmp/usb > /dev/null 2>&1
-			return
-		fi
-		echo -e ""
-		read -rep "Enter the firmware filename:  " firmware_file
-		firmware_file=/tmp/usb/${firmware_file}
-		if [ ! -f ${firmware_file} ]; then
-			echo_red "Invalid filename entered; unable to restore stock firmware."
-			read -rep "Press [Enter] to return to the main menu."
-			umount /tmp/usb > /dev/null 2>&1
-			return
-		fi
-		#text spacing
-		echo -e ""
+	echo -e ""
+	echo_yellow "Please select an option below for restoring the stock firmware:"
+	echo -e "1) Restore using a shellball image (downloaded) [if available]"
+	echo -e "2) Restore using a firmware backup on USB"
+	echo -e "3) Restore using a ChromeOS Recovery USB"
+	echo -e "Q) Quit and return to main menu"
+	echo -e ""
+	while :
+	do
+		read -rep "? " opt
+		case $opt in
 
-	else
-		firmware_file="/tmp/stock-firmware.rom"
-
-		if [[ "$hasShellball" = true ]]; then
-			#download firmware extracted from recovery image
-			echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
-
-			if [ "${boardName^^}" = "PANTHER" ]; then
-				echo -e "Which device do you have?\n"
-				echo "1) Asus CN60 [PANTHER]"
-				echo "2) HP CB1 [ZAKO]"
-				echo "3) Dell 3010 [TRICKY]"
-				echo "4) Acer CXI [MCCLOUD]"
-				echo "5) LG Chromebase [MONROE]"
-				echo ""
-				read -rep "? " fw_num
-				if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
-					exit_red "Invalid input - cancelling"
-					return 1
+			1)  if [[ "$hasShellball" = "true" ]]; then
+					restore_fw_from_shellball || return 1;
+					break;
+				else
+					echo -e "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}'
+at this time. Please select another option from the menu.\n";
 				fi
-				#confirm menu selection
-				echo -e ""
-				read -rep "Confirm selection number ${fw_num} [y/N] "
-				[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
+				;;
 
-				#download firmware file
-				echo -e ""
-				echo_yellow "Downloading recovery image firmware file"
-				case "$fw_num" in
-					1) _device="panther";
-						;;
-					2) _device="zako";
-						;;
-					3) _device="tricky";
-						;;
-					4) _device="mccloud";
-						;;
-					5) _device="monroe";
-						;;
-				esac
-			else
-				#confirm device detection
-				echo_yellow "Confirm system details:"
-				echo -e "Device: ${deviceDesc}"
-				echo -e "Board Name: ${boardName^^}"
-				echo -e ""
-				read -rep "? [y/N] "
-				if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
-					exit_red "Device detection failed; unable to restoring stock firmware"
-					return 1
-				fi
-				echo -e ""
-				_device=${boardName,,}
-			fi
+			2)  restore_fw_from_usb || return 1;
+				break;
+				;;
+			3)  restore_fw_from_recovery || return 1;
+				break;
+				;;
+			Q|q) opt="Q";
+				break;
+				;;
+		esac
+	done
+	[[ "$opt" = "Q" ]] && return
 
-			#download shellball ROM
-			echo_yellow "Downloading shellball.${_device}.bin"
-			$CURL -sLo ${firmware_file} ${shellball_source}shellball.${_device}.bin;
-			[[ $? -ne 0 ]] && { exit_red "Error downloading; unable to restore stock firmware."; return 1; }
-
-		else
-			# no shellball available, offer to use recovery image
-			echo -e ""
-			read -rep  "Do you have a ChromeOS Recovery Image on USB? [y/N] "
-			if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
-				echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
-				read -rep "and press [Enter] to continue. "
-				list_usb_devices
-				[ $? -eq 0 ] || { exit_red "No USB devices available to read from."; return 1; }
-				read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
-				[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
-				usb_device="${usb_devs[${usb_dev_index}-1]}"
-				echo -e ""
-				if ! extract_shellball_from_recovery_usb ${boardName,,} $usb_device ; then
-					exit_red "Error: failed to extract firmware from ChromeOS recovery USB"
-					return 1
-				fi
-				mv coreboot-Google_* ${firmware_file}
-				# set a semi-legit HWID in case we don't have a backup below
-				${gbbutilitycmd} --set --hwid="${boardName^^} ABC-123-XYZ-456" ${firmware_file} > /dev/null
-				echo_yellow "Stock firmware successfully extracted from ChromeOS recovery image"
-			else
-				echo_red "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}' at this time."
-				return 1
-			fi
+	#extract VPD from current firmware if present
+	if extract_vpd /tmp/bios.bin ; then
+		#merge with shellball/recovery image firmware
+		if [ -f /tmp/vpd.bin ]; then
+			echo_yellow "Merging VPD into recovery image firmware"
+			${cbfstoolcmd} ${firmware_file} write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1
 		fi
+	fi
 
-		#extract VPD from current firmware if present
-		if extract_vpd /tmp/bios.bin ; then
-			#merge with shellball/recovery image firmware
-			if [ -f /tmp/vpd.bin ]; then
-				echo_yellow "Merging VPD into recovery image firmware"
-				${cbfstoolcmd} ${firmware_file} write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1
-			fi
+	#extract hwid from current firmware if present
+	if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt > /dev/null 2>&1; then
+		#merge with shellball/recovery image firmware
+		hwid="$(cat /tmp/hwid.txt 2>/dev/null)"
+		if [[ "$hwid" != "" ]]; then
+			echo_yellow "Injecting HWID into recovery image firmware"
+			${gbbutilitycmd} ${firmware_file} --set --hwid="$hwid" > /dev/null 2>&1
 		fi
-
-		#extract hwid from current firmware if present
-		if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt > /dev/null 2>&1; then
-			#merge with shellball/recovery image firmware
-			hwid="$(cat /tmp/hwid.txt 2>/dev/null)"
-			if [[ "$hwid" != "" ]]; then
-				echo_yellow "Injecting HWID into recovery image firmware"
-				${gbbutilitycmd} ${firmware_file} --set --hwid="$hwid" > /dev/null 2>&1
-			fi
-		fi
-		
 	fi
 
 	#flash stock firmware
@@ -631,6 +536,127 @@ other than the latest UEFI Full ROM firmware release."
 	firmwareType="Stock ChromeOS (pending reboot)"
 }
 
+function restore_fw_from_usb()
+{
+	read -rep "
+	Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
+		
+		list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
+		read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
+		[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
+		usb_device="${usb_devs[${usb_dev_index}-1]}"
+		mkdir /tmp/usb > /dev/null 2>&1
+		mount "${usb_device}" /tmp/usb > /dev/null 2>&1
+		if [ $? -ne 0 ]; then
+			mount "${usb_device}1" /tmp/usb
+		fi
+		if [ $? -ne 0 ]; then
+			echo_red "USB device failed to mount; cannot proceed."
+			read -rep "Press [Enter] to return to the main menu."
+			umount /tmp/usb > /dev/null 2>&1
+			return
+		fi
+		#select file from USB device
+		echo_yellow "\n(Potential) Firmware Files on USB:"
+		if ! ls  /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
+			echo_red "No firmware files found on USB device."
+			read -rep "Press [Enter] to return to the main menu."
+			umount /tmp/usb > /dev/null 2>&1
+			return 1
+		fi
+		echo -e ""
+		read -rep "Enter the firmware filename:  " firmware_file
+		firmware_file=/tmp/usb/${firmware_file}
+		if [ ! -f ${firmware_file} ]; then
+			echo_red "Invalid filename entered; unable to restore stock firmware."
+			read -rep "Press [Enter] to return to the main menu."
+			umount /tmp/usb > /dev/null 2>&1
+			return 1
+		fi
+		#text spacing
+		echo -e ""
+}
+
+function restore_fw_from_shellball()
+{
+	#download firmware extracted from recovery image
+	echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
+
+	if [ "${boardName^^}" = "PANTHER" ]; then
+		echo -e "Which device do you have?\n"
+		echo "1) Asus CN60 [PANTHER]"
+		echo "2) HP CB1 [ZAKO]"
+		echo "3) Dell 3010 [TRICKY]"
+		echo "4) Acer CXI [MCCLOUD]"
+		echo "5) LG Chromebase [MONROE]"
+		echo ""
+		read -rep "? " fw_num
+		if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
+			exit_red "Invalid input - cancelling"
+			return 1
+		fi
+		#confirm menu selection
+		echo -e ""
+		read -rep "Confirm selection number ${fw_num} [y/N] "
+		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
+
+		#download firmware file
+		echo -e ""
+		case "$fw_num" in
+			1) _device="panther";
+				;;
+			2) _device="zako";
+				;;
+			3) _device="tricky";
+				;;
+			4) _device="mccloud";
+				;;
+			5) _device="monroe";
+				;;
+		esac
+	else
+		#confirm device detection
+		echo_yellow "Confirm system details:"
+		echo -e "Device: ${deviceDesc}"
+		echo -e "Board Name: ${boardName^^}"
+		echo -e ""
+		read -rep "? [y/N] "
+		if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
+			exit_red "Device detection failed; unable to restoring stock firmware"
+			return 1
+		fi
+		echo -e ""
+		_device=${boardName,,}
+	fi
+
+	#download shellball ROM
+	echo_yellow "Downloading shellball.${_device}.bin"
+	if ! $CURL -sLo ${firmware_file} ${shellball_source}shellball.${_device}.bin; then
+		exit_red "Error downloading; unable to restore stock firmware."
+		return 1
+	fi
+}
+
+function restore_fw_from_recovery()
+{
+	echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
+	read -rep "and press [Enter] to continue. "
+	
+	list_usb_devices || { exit_red "No USB devices available to read from."; return 1; }
+	read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
+	[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
+	usb_device="${usb_devs[${usb_dev_index}-1]}"
+	echo -e ""
+	if ! extract_shellball_from_recovery_usb ${boardName,,} $usb_device ; then
+		exit_red "Error: failed to extract firmware from ChromeOS recovery USB"
+		return 1
+	fi
+	mv coreboot-Google_* ${firmware_file}
+	# set a semi-legit HWID in case we don't have a backup below
+	${gbbutilitycmd} --set --hwid="${boardName^^} ABC-123-XYZ-456" ${firmware_file} > /dev/null
+	echo_yellow "Stock firmware successfully extracted from ChromeOS recovery image"
+}
+
 ######################################
 # Extract firmware from recovery usb #
 ######################################
@@ -642,7 +668,7 @@ function extract_shellball_from_recovery_usb()
 	_unpacked=$(mktemp -d)
 
 	echo_yellow "Extracting firmware from recovery USB"
-	printf '%s' "cd /usr/sbin\ndump chromeos-firmwareupdate $_shellball\nquit" | debugfs $_debugfs >/dev/null 2>&1
+	printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_shellball\nquit" | debugfs $_debugfs >/dev/null 2>&1
 
 	if ! sh $_shellball --unpack $_unpacked >/dev/null 2>&1; then
 		sh $_shellball --sb_extract $_unpacked >/dev/null 2>&1
