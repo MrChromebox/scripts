@@ -705,7 +705,7 @@ function extract_vpd()
 	#check params
 	[[ -z "$1" ]] && { exit_red "Error: extract_vpd(): missing function parameter"; return 1; }
 
-	firmware_file="$1"
+	local firmware_file="$1"
 
 	#try FMAP extraction
 	if ! ${cbfstoolcmd} ${firmware_file} read -r RO_VPD -f /tmp/vpd.bin >/dev/null 2>&1 ; then
