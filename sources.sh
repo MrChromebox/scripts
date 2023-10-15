@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-10-13]"
+export script_date="[2023-10-15]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -281,12 +281,12 @@ export coreboot_uefi_yavikso="coreboot_edk2-yavikso-mrchromebox_20230930.rom"
 ### AMD ###
 
 #Stoneyridge
-export coreboot_uefi_aleena="coreboot_edk2-aleena-mrchromebox_20230930.rom"
-export coreboot_uefi_barla="coreboot_edk2-barla-mrchromebox_20230930.rom"
-export coreboot_uefi_careena="coreboot_edk2-careena-mrchromebox_20230930.rom"
-export coreboot_uefi_kasumi="coreboot_edk2-kasumi-mrchromebox_20230930.rom"
-export coreboot_uefi_liara="coreboot_edk2-liara-mrchromebox_20230930.rom"
-export coreboot_uefi_treeya="coreboot_edk2-treeya-mrchromebox_20230930.rom"
+export coreboot_uefi_aleena="coreboot_edk2-aleena-mrchromebox_20231015.rom"
+export coreboot_uefi_barla="coreboot_edk2-barla-mrchromebox_20231015.rom"
+export coreboot_uefi_careena="coreboot_edk2-careena-mrchromebox_20231015.rom"
+export coreboot_uefi_kasumi="coreboot_edk2-kasumi-mrchromebox_20231015.rom"
+export coreboot_uefi_liara="coreboot_edk2-liara-mrchromebox_20231015.rom"
+export coreboot_uefi_treeya="coreboot_edk2-treeya-mrchromebox_20231015.rom"
 
 #Picasso
 export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20231001.rom"
