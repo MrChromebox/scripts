@@ -253,7 +253,7 @@ Please select the number for the correct option from the list below:"
 
 	#extract device HWID
 	if [[ "$isStock" = "true" ]]; then
-		${gbbutilitycmd} /tmp/bios.bin --get --hwid > /tmp/hwid.txt >/dev/null 2>&1
+		${gbbutilitycmd} /tmp/bios.bin --get --hwid > /tmp/hwid.txt 2>/dev/null
 	else
 		${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt >/dev/null 2>&1
 	fi
