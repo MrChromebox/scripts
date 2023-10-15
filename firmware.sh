@@ -533,8 +533,8 @@ at this time. Please select another option from the menu.\n";
 	#all good
 	echo_green "Stock firmware successfully restored."
 	echo_green "After rebooting, you will need to restore ChromeOS using a
-	ChromeOS recovery USB, then re-run this script to reset the
-	Firmware Boot Flags (GBB Flags) to factory default."
+ChromeOS recovery USB, then re-run this script to reset the
+Firmware Boot Flags (GBB Flags) to factory default."
 	read -rep "Press [Enter] to return to the main menu."
 	#set vars to indicate new firmware type
 	isStock=true
