@@ -33,6 +33,7 @@ isStr=false
 isWhl=false
 isCml=false
 isCmlBox=false
+isCmlBook=false
 isPco=false
 isCzn=false
 isMdn=false
@@ -950,6 +951,7 @@ esac
 [[ "${adl[@]}" =~ "$device" ]] && isAdl=true
 [[ "${adl_n[@]}" =~ "$device" ]] && isAdlN=true
 [[ "${cml_boxes[@]}" =~ "$device" ]] && isCmlBox=true
+[[ "${cml_books[@]}" =~ "$device" ]] && isCmlBook=true
 [[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
