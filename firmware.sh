@@ -442,8 +442,8 @@ function restore_stock_firmware()
 {
 	echo_green "\nRestore Stock Firmware"
 	echo_yellow "Standard disclaimer: flashing the firmware has the potential to
-	brick your device, requiring relatively inexpensive hardware and some
-	technical knowledge to recover.  You have been warned."
+brick your device, requiring relatively inexpensive hardware and some
+technical knowledge to recover.  You have been warned."
 
 	read -rep "Do you wish to continue? [y/N] "
 	[[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
@@ -546,7 +546,7 @@ Firmware Boot Flags (GBB Flags) to factory default."
 function restore_fw_from_usb()
 {
 	read -rep "
-	Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
+Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
 		
 		list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
 		read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
