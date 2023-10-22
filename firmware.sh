@@ -253,7 +253,7 @@ Please select the number for the correct option from the list below:"
 
 	#extract device HWID
 	if [[ "$isStock" = "true" ]]; then
-		${gbbutilitycmd} /tmp/bios.bin --get --hwid > /tmp/hwid.txt 2>/dev/null
+		${gbbutilitycmd} /tmp/bios.bin --get --hwid | sed 's/[^ ]* //' > /tmp/hwid.txt 2>/dev/null
 	else
 		${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt >/dev/null 2>&1
 	fi
@@ -515,7 +515,7 @@ at this time. Please select another option from the menu.\n";
 	#extract hwid from current firmware if present
 	if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt > /dev/null 2>&1; then
 		#merge with shellball/recovery image firmware
-		hwid="$(cat /tmp/hwid.txt 2>/dev/null)"
+		hwid="$(sed 's/^hardware_id: //' /tmp/hwid.txt 2>/dev/null)"
 		if [[ "$hwid" != "" ]]; then
 			echo_yellow "Injecting HWID into recovery image firmware"
 			${gbbutilitycmd} ${firmware_file} --set --hwid="$hwid" > /dev/null 2>&1
