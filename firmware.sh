@@ -476,10 +476,12 @@ other than the latest UEFI Full ROM firmware release."
 	echo -e "3) Restore using a ChromeOS Recovery USB"
 	echo -e "Q) Quit and return to main menu"
 	echo -e ""
+
+	restore_option=-1
 	while :
 	do
-		read -rep "? " opt
-		case $opt in
+		read -rep "? " restore_option
+		case $restore_option in
 
 			1)  if [[ "$hasShellball" = "true" ]]; then
 					restore_fw_from_shellball || return 1;
@@ -496,29 +498,31 @@ at this time. Please select another option from the menu.\n";
 			3)  restore_fw_from_recovery || return 1;
 				break;
 				;;
-			Q|q) opt="Q";
+			Q|q) restore_option="Q";
 				break;
 				;;
 		esac
 	done
-	[[ "$opt" = "Q" ]] && return
+	[[ "$restore_option" = "Q" ]] && return
 
-	#extract VPD from current firmware if present
-	if extract_vpd /tmp/bios.bin ; then
-		#merge with shellball/recovery image firmware
-		if [ -f /tmp/vpd.bin ]; then
-			echo_yellow "Merging VPD into recovery image firmware"
-			${cbfstoolcmd} ${firmware_file} write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1
+	if [[ $restore_option -ne 2 ]]; then 
+		#extract VPD from current firmware if present
+		if extract_vpd /tmp/bios.bin ; then
+			#merge with shellball/recovery image firmware
+			if [ -f /tmp/vpd.bin ]; then
+				echo_yellow "Merging VPD into shellball/recovery image firmware"
+				${cbfstoolcmd} ${firmware_file} write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1
+			fi
 		fi
-	fi
 
-	#extract hwid from current firmware if present
-	if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt > /dev/null 2>&1; then
-		#merge with shellball/recovery image firmware
-		hwid="$(sed 's/^hardware_id: //' /tmp/hwid.txt 2>/dev/null)"
-		if [[ "$hwid" != "" ]]; then
-			echo_yellow "Injecting HWID into recovery image firmware"
-			${gbbutilitycmd} ${firmware_file} --set --hwid="$hwid" > /dev/null 2>&1
+		#extract hwid from current firmware if present
+		if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt > /dev/null 2>&1; then
+			#merge with shellball/recovery image firmware
+			hwid="$(sed 's/^hardware_id: //' /tmp/hwid.txt 2>/dev/null)"
+			if [[ "$hwid" != "" ]]; then
+				echo_yellow "Injecting HWID into shellball/recovery image firmware"
+				${gbbutilitycmd} ${firmware_file} --set --hwid="$hwid" > /dev/null 2>&1
+			fi
 		fi
 	fi
 
