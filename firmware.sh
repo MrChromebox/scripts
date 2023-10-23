@@ -852,7 +852,7 @@ MrChromebox is not going to help you fix it. This won't let
 you run a different/newer version of ChromeOS.
 Proceed at your own risk."
 
-	read -rep "Really channge your HWID? [y/N] " confirm
+	read -rep "Really change your HWID? [y/N] " confirm
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
 
 	read -rep "This is serious. Are you really sure? [y/N] " confirm
