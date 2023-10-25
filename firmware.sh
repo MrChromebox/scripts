@@ -536,6 +536,9 @@ at this time. Please select another option from the menu.\n";
 
 	#re-enable software WP to prevent recovery issues
 	echo_yellow "Re-enabling software write-protect"
+	if ! ${flashromcmd} --wp-region WP_RO > /dev/null 2>&1; then
+		echo_red "Error setting software write-protect region; you may need to perform ChromeOS recovery with the battery disconnected."
+	fi
 	if ! ${flashromcmd} --wp-enable > /dev/null 2>&1; then
 		echo_red "Error re-enabling software write-protect; you may need to perform ChromeOS recovery with the battery disconnected."
 	fi
