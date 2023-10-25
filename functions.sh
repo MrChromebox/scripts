@@ -749,8 +749,8 @@ case "${_hwid}" in
 	MAGLIA*)                _x='JSL|Acer Chromebook Spin 512' ;;
 	MAGLITH*)               _x='JSL|Acer Chromebook 511' ;;
 	MAGMA*)                 _x='JSL|Acer Chromebook 315' ;;
-	MAGNETO-BWYB*)          _x='JSL|Acer Chromebook 314' ;;
-	MAGNETO-SGGB*)          _x='JSL|Packard Bell Chromebook 314' ;;
+	MAGNETO-BWYB*)          _x='JSL|Acer Chromebook 314' ; device="magneto" ;;
+	MAGNETO-SGGB*)          _x='JSL|Packard Bell Chromebook 314' ; device="magneto" ;;
 	MAGOLOR*)               _x='JSL|Acer Chromebook Spin 511 [R753T]' ;;
 	MAGPIE*)                _x='JSL|Acer Chromebook 317 [CB317-1H]' ;;
 	MARKARTH*)              _x='MDN|Acer Chromebook Plus 514'; device="markarth" ;;
