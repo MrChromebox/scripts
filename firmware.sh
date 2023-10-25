@@ -534,6 +534,12 @@ at this time. Please select another option from the menu.\n";
 		exit_red "An error occurred restoring the stock firmware. DO NOT REBOOT!"; return 1
 	fi
 
+	#re-enable software WP to prevent recovery issues
+	echo_yellow "Re-enabling software write-protect"
+	if ! ${flashromcmd} --wp-enable > /dev/null 2>&1; then
+		echo_red "Error re-enabling software write-protect; you may need to perform ChromeOS recovery with the battery disconnected."
+	fi
+
 	#all good
 	echo_green "Stock firmware successfully restored."
 	echo_green "After rebooting, you will need to restore ChromeOS using a
