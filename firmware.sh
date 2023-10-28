@@ -526,6 +526,9 @@ at this time. Please select another option from the menu.\n";
 		fi
 	fi
 
+	#clear GBB flags before flashing
+	${gbbutilitycmd} ${firmware_file} --set --flags=0x0 > /dev/null 2>&1
+
 	#flash stock firmware
 	echo_yellow "Restoring stock firmware"
 	# only verify part of flash we write
@@ -536,18 +539,16 @@ at this time. Please select another option from the menu.\n";
 
 	#re-enable software WP to prevent recovery issues
 	echo_yellow "Re-enabling software write-protect"
-	if ! ${flashromcmd} --wp-region WP_RO > /dev/null 2>&1; then
-		echo_red "Error setting software write-protect region; you may need to perform ChromeOS recovery with the battery disconnected."
-	fi
+	${flashromcmd} --wp-region WP_RO --fmap > /dev/null 2>&1
 	if ! ${flashromcmd} --wp-enable > /dev/null 2>&1; then
-		echo_red "Error re-enabling software write-protect; you may need to perform ChromeOS recovery with the battery disconnected."
+		echo_red "Warning: unable to re-enable software write-protect;
+you may need to perform ChromeOS recovery with the battery disconnected."
 	fi
 
 	#all good
 	echo_green "Stock firmware successfully restored."
-	echo_green "After rebooting, you will need to restore ChromeOS using a
-ChromeOS recovery USB, then re-run this script to reset the
-Firmware Boot Flags (GBB Flags) to factory default."
+	echo_green "After rebooting, you need to restore ChromeOS using ChromeOS Recovery media.
+See: https://google.com/chromeos/recovery for more info."
 	read -rep "Press [Enter] to return to the main menu."
 	#set vars to indicate new firmware type
 	isStock=true
