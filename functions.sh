@@ -828,7 +828,7 @@ case "${_hwid}" in
 	SAND*)                  _x='APL|Acer Chromebook 15 (CB515-1HT)' ;;
 	SANTA*)                 _x='APL|Acer Chromebook 11 (CB311-8H)' ;;
 	SARIEN*)                _x='WHL|Dell Latitude 5400' ;;
-	SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ;;
+	SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ; device='sasuke';;
 	SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
 	SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;
 	SHYVANA*)               _x='KBL|Asus Chromebook Flip C433/C434' ;;
