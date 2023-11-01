@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-10-29]"
+export script_date="[2023-11-01]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -169,21 +169,21 @@ export coreboot_uefi_vortininja="coreboot_edk2-vortininja-mrchromebox_20231029.r
 
 #CometLake
 export coreboot_uefi_akemi="coreboot_edk2-akemi-mrchromebox_20231029.rom"
-export coreboot_uefi_ambassador="coreboot_edk2-ambassador-mrchromebox_20231029.rom"
+export coreboot_uefi_ambassador="coreboot_edk2-ambassador-mrchromebox_20231101.rom"
 export coreboot_uefi_dragonair="coreboot_edk2-dragonair-mrchromebox_20231029.rom"
 export coreboot_uefi_drallion="coreboot_edk2-drallion-mrchromebox_20231029.rom"
 export coreboot_uefi_dratini="coreboot_edk2-dratini-mrchromebox_20231029.rom"
-export coreboot_uefi_duffy="coreboot_edk2-duffy-mrchromebox_20231029.rom"
-export coreboot_uefi_faffy="coreboot_edk2-faffy-mrchromebox_20231029.rom"
+export coreboot_uefi_duffy="coreboot_edk2-duffy-mrchromebox_20231101.rom"
+export coreboot_uefi_faffy="coreboot_edk2-faffy-mrchromebox_20231101.rom"
 export coreboot_uefi_helios="coreboot_edk2-helios-mrchromebox_20231029.rom"
 export coreboot_uefi_jinlon="coreboot_edk2-jinlon-mrchromebox_20231029.rom"
-export coreboot_uefi_kaisa="coreboot_edk2-kaisa-mrchromebox_20231029.rom"
+export coreboot_uefi_kaisa="coreboot_edk2-kaisa-mrchromebox_20231101.rom"
 export coreboot_uefi_kindred="coreboot_edk2-kindred-mrchromebox_20231029.rom"
 export coreboot_uefi_kled="coreboot_edk2-kled-mrchromebox_20231029.rom"
 export coreboot_uefi_kohaku="coreboot_edk2-kohaku-mrchromebox_20231029.rom"
 export coreboot_uefi_nightfury="coreboot_edk2-nightfury-mrchromebox_20231029.rom"
-export coreboot_uefi_noibat="coreboot_edk2-noibat-mrchromebox_20231029.rom"
-export coreboot_uefi_wyvern="coreboot_edk2-wyvern-mrchromebox_20231029.rom"
+export coreboot_uefi_noibat="coreboot_edk2-noibat-mrchromebox_20231101.rom"
+export coreboot_uefi_wyvern="coreboot_edk2-wyvern-mrchromebox_20231101.rom"
 
 #Tigerlake
 export coreboot_uefi_chronicler="coreboot_edk2-chronicler-mrchromebox_20231029.rom"
