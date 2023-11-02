@@ -98,6 +98,7 @@ export coreboot_uefi_sentry="coreboot_edk2-sentry-mrchromebox_20231029.rom"
 
 #KabyLake
 export coreboot_uefi_atlas="coreboot_edk2-atlas-mrchromebox_20231029.rom"
+export coreboot_uefi_endeavour="coreboot_edk2-endeavour-mrchromebox_20231029.rom"
 export coreboot_uefi_eve="coreboot_edk2-eve-mrchromebox_20231029.rom"
 export coreboot_uefi_fizz="coreboot_edk2-fizz-mrchromebox_20231029.rom"
 export coreboot_uefi_karma="coreboot_edk2-karma-mrchromebox_20231029.rom"
