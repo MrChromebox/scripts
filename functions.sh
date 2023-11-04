@@ -576,7 +576,7 @@ case "${_hwid}" in
 	BANSHEE*)               _x='ADL|Framework Chromebook' ;;
 	BARD*)                  _x='KBL|Acer Chromebook 715 (CB715)' ; device="nami";;
 	BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ;;
-	BERKNIP*)               _x='PCO|HP Pro c645 Chromebook Enterprise' ;;
+	BERKNIP*)               _x='PCO|HP Pro c645 Chromebook Enterprise' ; device='berknip' ;;
 	BLACKTIP*)              _x='APL|White Label Chrombook' ; device="blacktip";;
 	BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
 	BEETLEY*)               _x='JSL|Lenovo Flex 3i/3i-15 Chromebook' ;;
@@ -621,7 +621,7 @@ case "${_hwid}" in
 	CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
 	DELBIN*)                _x='TGL|ASUS Chromebook Flip CX55/CX5500/C536' ;;
 	DEWATT*)                _x='CZN|Acer Chromebook Spin 514'; device="dewatt" ;;
-	DIRINBOZ*)              _x='PCO|HP Chromebook 14a' ;;
+	DIRINBOZ*)              _x='PCO|HP Chromebook 14a' ; device='dirinboz' ;;
 	DOOD*)                  _x='GLK|NEC Chromebook Y2';;
 	DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
 	DORP*)                  _x='GLK|HP Chromebook 14 G6';;
@@ -656,7 +656,7 @@ case "${_hwid}" in
 	EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
 	EVE*)                   _x='KBL|Google Pixelbook' ;;
 	EXCELSIOR-URAR*)        _x='KBL|Asus Google Meet kit (KBL)'; device="fizz" ;;
-	EZKINIL*)               _x='PCO|Acer Chromebook Spin 514' ;;
+	EZKINIL*)               _x='PCO|Acer Chromebook Spin 514' ; device='ezkinil' ;;
 	FAFFY*)                 _x='CML|ASUS Fanless Chromebox' ;;
 	FALCO*)                 _x='HSW|HP Chromebook 14' ;;
 	FELWINTER*)             _x='ADL|ASUS Chromebook Flip CX5(CX5601)'; device="felwinter" ;;
@@ -683,7 +683,7 @@ case "${_hwid}" in
 	GNAWTY*)                _x='BYT|Acer Chromebook 11 (CB3-111/131,C730/C730E/C735)' ;;
 	GRABBITER*)             _x='GLK|Dell Chromebook 3100 2-in-1';;
 	GUADO*)                 _x='BDW|ASUS Chromebox 2 / CN62' ;;
-	GUMBOZ*)                _x='PCO|HP Chromebook x360 14a' ;;
+	GUMBOZ*)                _x='PCO|HP Chromebook x360 14a' ; device='gumboz' ;;
 	GUYBRUSH*)              _x='CZN|Guybrush Baseboard Chromebook'; device="guybrush" ;;
 	HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
 	HELI*)                  _x='BYT|Haier Chromebook G2' ;;
@@ -763,7 +763,7 @@ case "${_hwid}" in
 	MIMROCK*)               _x='GLK|HP Chromebook 11 G7 EE' ;;
 	MOLI*)                  _x='ADL|Acer Chromebox CXI5'; device="moli" ;;
 	MONROE*)                _x='HSW|LG Chromebase' ;;
-	MORPHIUS*)              _x='PCO|Lenovo ThinkPad C13 Yoga Chromebook' ;;
+	MORPHIUS*)              _x='PCO|Lenovo ThinkPad C13 Yoga Chromebook'; device='morphius'  ;;
 	NAMI*)                  _x='KBL|NAMI Chromebook (multi)' ; device="nami";;
 	NAUTILUS*)              _x='KBL|Samsung Chromebook Plus V2' ;;
 	NASHER360*)             _x='APL|Dell Chromebook 11 2-in-1 5190' ;;
@@ -884,7 +884,7 @@ case "${_hwid}" in
 	WIZPIG_???-???-??I*)    _x='BSW|Multilaser M11C Chromebook' ;;
 	WIZPIG*)                _x='BSW|(unknown WIZPIG)' ;;
 	WOLF*)                  _x='HSW|Dell Chromebook 11' ;;
-	WOOMAX*)                _x='PCO|ASUS Chromebook Flip CM5' ;;
+	WOOMAX*)                _x='PCO|ASUS Chromebook Flip CM5' ; device='woomax' ;;
 	WUKONG_???-???-???-??C*) _x='KBL|ViewSonic NMP660 Chromebox' ; device="fizz";;
 	WUKONG*)                _x='KBL|CTL Chromebox CBx1' ; device="fizz";;
 	WYVERN*)                _x='CML|CTL Chromebox CBx2' ;;
