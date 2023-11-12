@@ -563,8 +563,13 @@ function restore_fw_from_usb()
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
 		
 		list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
-		read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
-		[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
+		usb_dev_index=""
+		while [[ "$usb_dev_index" = "" && $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; do
+			read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
+			if [[ "$usb_dev_index" = "" || $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; then
+				echo -e "Error: Invalid option selected; enter a number from the list above."
+			fi
+		done
 		usb_device="${usb_devs[${usb_dev_index}-1]}"
 		mkdir /tmp/usb > /dev/null 2>&1
 		mount "${usb_device}" /tmp/usb > /dev/null 2>&1
@@ -664,8 +669,13 @@ function restore_fw_from_recovery()
 	read -rep "and press [Enter] to continue. "
 	
 	list_usb_devices || { exit_red "No USB devices available to read from."; return 1; }
-	read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
-	[ $usb_dev_index -gt 0 ] && [ $usb_dev_index  -le $num_usb_devs ] || { exit_red "Error: Invalid option selected."; return 1; }
+	usb_dev_index=""
+	while [[ "$usb_dev_index" = "" && $usb_dev_index -le 0 && ! $usb_dev_index -gt $num_usb_devs ]]; do
+		read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
+		if [[ "$usb_dev_index" = "" || $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; then
+			echo -e "Error: Invalid option selected; enter a number from the list above."
+		fi
+	done
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
 	echo -e ""
 	if ! extract_shellball_from_recovery_usb ${boardName,,} $usb_device ; then
@@ -748,11 +758,13 @@ USB/SD devices are connected. "
 		return 1
 	fi
 
-	read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-	if [ $usb_dev_index -le 0 ] || [ $usb_dev_index  -gt $num_usb_devs ]; then
-		backup_fail "Error: Invalid option selected."
-		return 1
-	fi
+	usb_dev_index=""
+	while [[ "$usb_dev_index" = "" && $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; do
+		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
+		if [[ "$usb_dev_index" = "" || $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; then
+			echo -e "Error: Invalid option selected; enter a number from the list above."
+		fi
+	done
 
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
 	mkdir /tmp/usb > /dev/null 2>&1
