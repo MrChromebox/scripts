@@ -564,9 +564,9 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 		
 		list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
 		usb_dev_index=""
-		while [[ "$usb_dev_index" = "" && $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; do
+		while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
 			read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
-			if [[ "$usb_dev_index" = "" || $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; then
+			if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
 				echo -e "Error: Invalid option selected; enter a number from the list above."
 			fi
 		done
@@ -670,9 +670,9 @@ function restore_fw_from_recovery()
 	
 	list_usb_devices || { exit_red "No USB devices available to read from."; return 1; }
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" && $usb_dev_index -le 0 && ! $usb_dev_index -gt $num_usb_devs ]]; do
+	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && ! $usb_dev_index -gt $num_usb_devs) ]]; do
 		read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; then
+		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
@@ -759,9 +759,9 @@ USB/SD devices are connected. "
 	fi
 
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" && $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; do
+	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
 		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || $usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs ]]; then
+		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
