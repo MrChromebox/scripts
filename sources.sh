@@ -171,6 +171,7 @@ export coreboot_uefi_vortininja="coreboot_edk2-vortininja-mrchromebox_20231029.r
 #CometLake
 export coreboot_uefi_akemi="coreboot_edk2-akemi-mrchromebox_20231029.rom"
 export coreboot_uefi_ambassador="coreboot_edk2-ambassador-mrchromebox_20231101.rom"
+export coreboot_uefi_dooly="coreboot_edk2-dooly-mrchromebox_20231101.rom"
 export coreboot_uefi_dragonair="coreboot_edk2-dragonair-mrchromebox_20231029.rom"
 export coreboot_uefi_drallion="coreboot_edk2-drallion-mrchromebox_20231029.rom"
 export coreboot_uefi_dratini="coreboot_edk2-dratini-mrchromebox_20231029.rom"
