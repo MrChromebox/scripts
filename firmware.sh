@@ -1286,7 +1286,9 @@ function uefi_menu() {
 			;;
 
 		[dD])  if [[  "${device^^}" = "EVE" ]]; then
-				downgrade_touchpad_fw
+				echo -e "This function is currently broken / not available"
+				read -rep "Press Enter to continue"
+				#downgrade_touchpad_fw
 			fi
 			uefi_menu
 			;;
