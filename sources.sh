@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2023-11-26]"
+export script_date="[2023-11-27]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -93,7 +93,7 @@ export coreboot_uefi_asuka="coreboot_edk2-asuka-mrchromebox_20231029.rom"
 export coreboot_uefi_caroline="coreboot_edk2-caroline-mrchromebox_20231029.rom"
 export coreboot_uefi_cave="coreboot_edk2-cave-mrchromebox_20231029.rom"
 export coreboot_uefi_chell="coreboot_edk2-chell-mrchromebox_20231029.rom"
-export coreboot_uefi_lars="coreboot_edk2-lars-mrchromebox_20231029.rom"
+export coreboot_uefi_lars="coreboot_edk2-lars-mrchromebox_20231127.rom"
 export coreboot_uefi_sentry="coreboot_edk2-sentry-mrchromebox_20231029.rom"
 
 #KabyLake
