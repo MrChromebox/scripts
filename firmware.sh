@@ -422,10 +422,21 @@ the touchpad firmware, otherwise the touchpad will not work."
 				if ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
 					echo_green "Touchpad firmware successfully downgraded."
 					echo_yellow "Please reboot your Pixelbook now."
-				else 
-					echo_red "Error flashing touchpad firmware:"
-					cat /tmp/flashrom.log
-					echo_yellow "\nThis function sometimes doesn't work under Linux, in which case it is\nrecommended to try under ChromiumOS."
+				else
+					# try with older eve flashrom
+					(
+						cd /tmp/boot/util
+						$CURL -sLO "${util_source}flashrom_eve_tp"
+						chmod +x flashrom_eve_tp
+					)
+					if /tmp/boot/util/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
+						echo_green "Touchpad firmware successfully downgraded."
+						echo_yellow "Please reboot your Pixelbook now."
+					else
+						echo_red "Error flashing touchpad firmware:"
+						cat /tmp/flashrom.log
+						echo_yellow "\nThis function sometimes doesn't work under Linux, in which case it is\nrecommended to try under ChromiumOS."
+					fi
 				fi
 			else
 				echo_red "Touchpad firmware download checksum fail; download corrupted, cannot flash."
