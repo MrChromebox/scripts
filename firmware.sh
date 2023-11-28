@@ -396,33 +396,11 @@ booting from the internal storage device fails."
 	read -rep "Press [Enter] to return to the main menu."
 }
 
-# helper function for touchpad downgrade below
-region_data_str_to_dec() {
-  local region_str="$1"
-  local data_name="$2"
-  local data_hex
-
-  # The format looks like:
-  # area_offset="0x00000000" area_size="0x00040000" area_name="EC_RO"
-  # area_flags_raw="0x05" area_flags="static,ro"
-  data_hex=$(echo "${region_str}" | \
-             sed -n "s/.*${data_name}=\"\(0x\S\+\)\".*/\1/p")
-
-  # The number is in hexadecimal format, we need to convert it to decimal.
-  printf "%d" "${data_hex}"
-}
-
 #########################
 # Downgrade Touchpad FW #
 #########################
 function downgrade_touchpad_fw()
 {
-	local fw_str
-	local fw_offset
-	local fw_size
-	local tmp_file
-	local fw_name="EC_RW"
-
 	# offer to downgrade touchpad firmware on EVE
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo_green "\nDowngrade Touchpad Firmware"
@@ -441,37 +419,13 @@ the touchpad firmware, otherwise the touchpad will not work."
 			if sha1sum -c ${touchpad_eve_fw}.sha1 --quiet > /dev/null 2>&1; then
 				# flash TP firmware
 				echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
-
-				# Decode ${touchpad_eve_fw} to get the offset and size
-				fw_str=$(fmap_decode "${touchpad_eve_fw}" | grep "area_name=\"${fw_name}\"")
-				fw_offset=$(region_data_str_to_dec "${fw_str}" "area_offset")
-				fw_size=$(region_data_str_to_dec "${fw_str}" "area_size")
-
-				echo_yellow "TP FW ${fw_name}: offset=${fw_offset} size=${fw_size}"
-				if [ -z "${fw_offset}" ] || [ -z "${fw_size}" ]; then
-					die "Unable to derive the offset and size for FW ${fw_name}"
-				fi
-
-				# Extract the region from ${touchpad_eve_fw} to $tmp_file
-				if ! tmp_file=$(mktemp); then
-					die "Unable to create temporary file for flashing FW ${fw_name}"
-				fi
-				if ! dd if="${touchpad_eve_fw}" of="${tmp_file}" bs=1 \
-						count="${fw_size}" skip="${fw_offset}" 2>/dev/null; then
-					rm "${tmp_file}"
-					die "Unable to extract the FW ${fw_name} from ${touchpad_eve_fw}"
-				fi
-
-				# Erase and flash the region
-				ectool --name=cros_tp reboot_ec RO > /tmp/ectool_touchpad.log 2>&1
-				ectool --name=cros_tp rwsig action abort >> /tmp/ectool_touchpad.log 2>&1
-				if ectool --name=cros_tp flashwrite "${fw_offset}" "${tmp_file}" >> /tmp/ectool_touchpad.log 2>&1; then
-					ectool --name=cros_tp reboot_ec RW >/dev/null 2>&1
+				if ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
 					echo_green "Touchpad firmware successfully downgraded."
 					echo_yellow "Please reboot your Pixelbook now."
 				else 
 					echo_red "Error flashing touchpad firmware:"
-					cat /tmp/ectool_touchpad.log
+					cat /tmp/flashrom.log
+					echo_yellow "\nThis function sometimes doesn't work under Linux, in which case it is\nrecommended to try under ChromiumOS."
 				fi
 			else
 				echo_red "Touchpad firmware download checksum fail; download corrupted, cannot flash."
