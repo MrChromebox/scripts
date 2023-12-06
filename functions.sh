@@ -350,6 +350,9 @@ function prelim_setup()
 # Must run as root
 [ "$(whoami)" = "root" ] || die "You need to run this script as root; use 'sudo bash <script name>'"
 
+# Can't run from a VM/container
+[[ "$(cat /etc/hostname 2>/dev/null)" = "penguin" ]] && die "This script cannot be run from a ChromeOS Linux container; you must use a VT2 terminal as directed per https://mrchromebox.tech/#fwscript"
+
 #must be x86_64
 [ "$(uname -m)"  = 'x86_64' ] \
 	|| die "This script only supports 64-bit OS on Intel-based devices; ARM devices are not supported."
