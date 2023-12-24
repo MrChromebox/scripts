@@ -298,6 +298,7 @@ export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20231223.rom"
 export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20231223.rom"
 export coreboot_uefi_jelboz360="coreboot_edk2-jelboz360-mrchromebox_20231223.rom"
 export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20231223.rom"
+export coreboot_uefi_morphius_tp="coreboot_edk2-morphius_tp-mrchromebox_20231223.rom"
 export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20231223.rom"
 export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20231223.rom"
 

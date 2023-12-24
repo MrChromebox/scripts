@@ -248,6 +248,26 @@ Please select the number for the correct option from the list below:"
 		done
 	fi
 
+	#morhpius special case (trackpoint option)
+	if [ "$device" = "morphius" ]; then
+		echo -e ""
+		echo_yellow "Enable Trackpoint device?"
+		echo -e "The trackpoint has issues with the current Windows drivers, so
+if you plan to run Windows, choose the DISABLE option.
+If running Linux, then choose ENABLE.
+
+Enable (E) or disable (D) the Trackpoint?
+"
+		REPLY=""
+		while [[ "$REPLY" != "D" && "$REPLY" != "d" && "$REPLY" != "E" && "$REPLY" != "e"  ]]
+		do
+			read -rep "Enter 'D' for Disabled, 'E' for Enabled: "
+			if [[ "$REPLY" = "E" || "$REPLY" = "e" ]]; then
+				coreboot_file=${coreboot_uefi_morphius_tp}
+			fi
+		done
+	fi
+
 	#extract device serial if present in cbfs
 	${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/null 2>&1
 
