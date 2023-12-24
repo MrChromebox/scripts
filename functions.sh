@@ -73,7 +73,7 @@ apl=('astronaut' 'babymega' 'babytiger' 'blacktip' 'blue' 'bruce' 'coral' \
 kbl_boxes=('bleemo' 'endeavour' 'excelsior' 'fizz' 'jax' 'kench' 'sion' 'teemo' 'wukong')
 kbl_rwl_20=('akali' 'bard' 'ekko' 'eve' 'nami' 'nautilus' \
 	'pantheon' 'sona' 'soraka' 'syndra' 'vayne')
-kbl_rwl_18=('atlas' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
+kbl_rwl_18=('atlas' 'endeavour' 'karma' 'leona' 'nocturne' 'rammus' 'shyvana')
 kbl=($(printf "%s " "${kbl_boxes[@]}" "${kbl_rwl_20[@]}" "${kbl_rwl_18[@]}"))
 glk=('ampton' 'apel' 'apele' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' 'bobba' \
 	'bobba360' 'casta' 'dood' 'droid' 'dorp' 'fleex' 'foob' 'foob360' 'garg' \
