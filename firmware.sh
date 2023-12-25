@@ -444,12 +444,13 @@ the touchpad firmware, otherwise the touchpad will not work."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 					# try with older eve flashrom
+					[[ "$isChromeOS" == "true" ]] && tpPath="/tmp/boot/util" || tpPath="/tmp"
 					(
-						cd /tmp/boot/util
+						cd $tpPath
 						$CURL -sLO "${util_source}flashrom_eve_tp"
 						chmod +x flashrom_eve_tp
 					)
-					if /tmp/boot/util/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
+					if $tpPath/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
 						echo_green "Touchpad firmware successfully downgraded."
 						echo_yellow "Please reboot your Pixelbook now."
 					else
