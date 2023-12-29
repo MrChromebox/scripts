@@ -81,7 +81,7 @@ glk=('ampton' 'apel' 'apele' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' '
 	'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
 	'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
 whl=('arcada' 'sarien')
-cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'kaisa' 'noibat' 'puff' 'wyvern')
+cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'genesis' 'kaisa' 'noibat' 'puff' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
 		   'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
@@ -678,6 +678,7 @@ case "${_hwid}" in
 	GARFOUR*)               _x='GLK|CTL Chromebook NL81/NL81T';;
 	GARG360*)               _x='GLK|CTL Chromebook NL71T/TW/TWB';;
 	GARG*)                  _x='GLK|CTL Chromebook NL71/CT/LTE';;
+	GENESIS*)               _x='CML|Google Meet Series One' ; device="genesis";;
 	GIMBLE*)                _x='ADL|HP Chromebook x360 14c-cd0'; device="gimble" ;;
 	GLADIOS*)               _x='ADL|HP Chromebox Enterprise G4'; device="gladios" ;;
 	GLIMMER*)               _x='BYT|Lenovo ThinkPad 11e/Yoga Chromebook' ;;
