@@ -593,22 +593,9 @@ function restore_fw_from_usb()
 {
 	read -rep "
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
-		
+
 		list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
-		usb_dev_index=""
-		while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
-			read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
-			if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
-				echo -e "Error: Invalid option selected; enter a number from the list above."
-			fi
-		done
-		usb_device="${usb_devs[${usb_dev_index}-1]}"
-		mkdir /tmp/usb > /dev/null 2>&1
-		mount "${usb_device}" /tmp/usb > /dev/null 2>&1
-		if [ $? -ne 0 ]; then
-			mount "${usb_device}1" /tmp/usb
-		fi
-		if [ $? -ne 0 ]; then
+		if ! mount_usb_device; then
 			echo_red "USB device failed to mount; cannot proceed."
 			read -rep "Press [Enter] to return to the main menu."
 			umount /tmp/usb > /dev/null 2>&1
@@ -789,23 +776,11 @@ USB/SD devices are connected. "
 		backup_fail "No USB devices available to store firmware backup."
 		return 1
 	fi
-
-	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
-		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
-			echo -e "Error: Invalid option selected; enter a number from the list above."
-		fi
-	done
-
-	usb_device="${usb_devs[${usb_dev_index}-1]}"
-	mkdir /tmp/usb > /dev/null 2>&1
-	if ! mount "${usb_device}" /tmp/usb > /dev/null 2>&1; then
-		if ! mount "${usb_device}1" /tmp/usb > /dev/null 2>&1; then
-			backup_fail "USB backup device failed to mount; cannot proceed."
-			return 1
-		fi
+	if ! mount_usb_device; then
+		backup_fail "USB backup device failed to mount; cannot proceed."
+		return 1
 	fi
+
 	backupname="stock-firmware-${boardName}-$(date +%Y%m%d).rom"
 	echo_yellow "\nSaving firmware backup as ${backupname}"
 	if ! cp /tmp/bios.bin /tmp/usb/${backupname}; then

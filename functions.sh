@@ -188,6 +188,25 @@ function list_usb_devices()
 	return 0
 }
 
+##########################################
+# Mount the found USB device on /tmp/usb #
+##########################################
+function mount_usb_device()
+{
+	usb_dev_index=""
+	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
+		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+			echo -e "Error: Invalid option selected; enter a number from the list above."
+		fi
+	done
+
+	usb_device="${usb_devs[${usb_dev_index}-1]}"
+	mkdir /tmp/usb > /dev/null 2>&1
+	mount "${usb_device}" /tmp/usb > /dev/null 2>&1 ||
+		mount "${usb_device}1" /tmp/usb > /dev/null 2>&1
+}
+
 
 ################
 # Get cbfstool #
