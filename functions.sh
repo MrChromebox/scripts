@@ -204,7 +204,8 @@ function mount_usb_device()
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
 	mkdir /tmp/usb > /dev/null 2>&1
 	mount "${usb_device}" /tmp/usb > /dev/null 2>&1 ||
-		mount "${usb_device}1" /tmp/usb > /dev/null 2>&1
+		mount "${usb_device}1" /tmp/usb > /dev/null 2>&1 ||
+		{ mounted="$(df -x devtmpfs "${usb_device}" || df -x devtmpfs "${usb_device}1")" 2>/dev/null && mount --bind "${mounted}" /tmp/usb > /dev/null 2>&1; }
 }
 
 
