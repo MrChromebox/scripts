@@ -13,6 +13,7 @@
 
 #where the stuff is
 script_url="https://raw.githubusercontent.com/MrChromebox/scripts/master/"
+scriptdir="$(realpath "$(dirname "$0")")"
 
 #ensure output of system tools in en-us for parsing
 export LC_ALL=C
@@ -30,8 +31,35 @@ fi
 printf "\ec"
 echo -e "\nMrChromebox Firmware Utility Script starting up"
 
+if [ "$1" = '-n' ]; then
+	# Emulate curl by copying files from the directory with the script, or log the URLs to download & fail.
+	# Intended for no-network (=> no-OOBE on ChromeOS) and reproduction scenarios.
+	# Logs the curl cmdlines to stdout (for script(1) use) and to ./curls;
+	# this means that you can use a reusable medium on the chromebook and do
+	#   mount /dev/sda /media
+	#   bash /media/firmware-utl.sh -n
+	#   umount /media
+	# on the target machine, then `sh curls` on a trusted network-connected machine,
+	# and repeat this twice to get all the artifacts for your system.
+	curl() {
+		{ printf '%q ' curl "$@"; echo; } | tee -a "$scriptdir/curls"
+		OPTIND=1
+		curl_file=
+		while getopts sLOo: curl_flag; do
+			case "$curl_flag" in
+				[sLO])	;;
+				o)	curl_file="$OPTARG" ;;
+				*)	echo "unknown curl flag -$curl_flag" >&2; return 1 ;;
+			esac
+		done
+		shift "$((OPTIND - 1))"
+		[ -n "$curl_file" ] || curl_file="${1##*/}"
+		[ -s "$scriptdir/$curl_file" ] && cp -v "$scriptdir/$curl_file" .
+	}
+	export CURL=curl
+
 #check for cmd line param, expired CrOS certs
-if ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
+elif ! curl -sLo /dev/null https://mrchromebox.tech/index.html || [[ "$1" = "-k" ]]; then
 	export CURL="curl -k"
 else
 	export CURL="curl"
