@@ -742,7 +742,9 @@ function extract_shellball_from_recovery_usb()
 		if [ "$_version" = "" ]; then
 			_version=$(cat $_unpacked/VERSION | grep -m 1 -e Model.*$_board -A5 | grep "BIOS version:" | cut -f2 -d: | tr -d \ )
 		fi
-		_bios_image=$(grep "IMAGE_MAIN" $_unpacked/models/$_board/setvars.sh | cut -f2 -d\")
+  		if ! _bios_image=$(grep "IMAGE_MAIN" $_unpacked/models/$_board/setvars.sh | cut -f2 -d\"); then
+    			exit_red "Error: failed to find a shellball image for $_board on this recovery USB"; return 1
+       		fi
 	else
 		_version=$(cat $_unpacked/VERSION | grep BIOS\ version: | cut -f2 -d: | tr -d \ )
 		_bios_image=bios.bin
