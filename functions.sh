@@ -93,7 +93,7 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'mithrax' \
-	 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'volmar' 'zavala' \
+	 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'volmar' 'zavala' \
 	'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
 	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
@@ -810,6 +810,7 @@ case "${_hwid}" in
 	QUAWKS*)                _x='BYT|ASUS Chromebook C300' ;;
 	RABBID*)                _x='APL|ASUS Chromebook C423' ;;
 	RAMMUS*)                _x='KBL|Asus Chromebook C425/C433/C434' ;;
+	REDRIX4ES*)             _x='ADL|HP Elite Dragonfly Chromebook Ent'; device="redrix4es" ;;
 	REDRIX*)                _x='ADL|HP Elite Dragonfly Chromebook'; device="redrix" ;;
 	REEF_???-C*)            _x='APL|ASUS Chromebook C213NA' ;;
 	REEF*)                  _x='APL|Acer Chromebook Spin 11 (R751T)' ; device="electro";;
