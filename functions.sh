@@ -628,7 +628,7 @@ case "${_hwid}" in
 	DOOD*)                  _x='GLK|NEC Chromebook Y2';;
 	DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
 	DORP*)                  _x='GLK|HP Chromebook 14 G6';;
-	DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ;;
+	DRAGONAIR*)             _x='CML|HP Chromebook x360 14c' ; device="dragonair";;
 	DRALLION*)              _x='CML|Dell Latitude 7410 Chromebook Enterprise' ; device="drallion";;
 	DRATINI*)               _x='CML|HP Pro c640 Chromebook' ;;
 	DRAWCIA*)               _x='JSL|HP Chromebook x360 11 G4 EE' ;;
