@@ -122,7 +122,7 @@ MrChromebox does not provide any support for running Windows."
 		# update firmware type
 		firmwareType="Stock ChromeOS w/RW_LEGACY"
 		#Prevent from trying to boot stock ChromeOS install
-		rm -rf /tmp/boot/syslinux > /dev/null 2>&1
+		[[ "$boot_mounted" = true ]] && rm -rf /tmp/boot/syslinux > /dev/null 2>&1
 	fi
 
 	read -rep "Press [Enter] to return to the main menu."
@@ -381,7 +381,7 @@ and you need to recover using an external EEPROM programmer. [Y/n] "
 		echo_green "Full ROM firmware successfully installed/updated."
 
 		#Prevent from trying to boot stock ChromeOS install
-		if [[ "$isStock" = true && "$isChromeOS" = true ]]; then
+		if [[ "$isStock" = true && "$isChromeOS" = true && "$boot_mounted" = true ]]; then
 			rm -rf /tmp/boot/efi > /dev/null 2>&1
 			rm -rf /tmp/boot/syslinux > /dev/null 2>&1
 		fi
@@ -444,7 +444,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 					# try with older eve flashrom
-					[[ "$isChromeOS" == "true" ]] && tpPath="/tmp/boot/util" || tpPath="/tmp"
+					[[ "$isChromeOS" == "true" ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
 					(
 						cd $tpPath
 						$CURL -sLO "${util_source}flashrom_eve_tp"

@@ -196,29 +196,8 @@ function get_cbfstool()
 {
 	if [ ! -f ${cbfstoolcmd} ]; then
 		working_dir=$(pwd)
-		if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
-			cd /tmp
-		else
-			#have to use partition 12 on rootdev due to noexec restrictions
-			rootdev=$(rootdev -d -s)
-			[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
-			part_num="${part_pfx}12"
-			boot_mounted=$(mount | grep "${rootdev}""${part_num}")
-			if [ "${boot_mounted}" = "" ]; then
-				#mount boot
-				mkdir /tmp/boot >/dev/null 2>&1
-				mount "$(rootdev -d -s)""${part_num}" /tmp/boot
-				if [ $? -ne 0 ]; then
-					echo_red "Error mounting boot partition; cannot proceed."
-					return 1
-				fi
-			fi
-			# clear recovery logs which use valuable space
-			rm -rf /tmp/boot/recovery* 2>/dev/null
-			#create util dir
-			mkdir /tmp/boot/util 2>/dev/null
-			cd /tmp/boot/util
-		fi
+
+		cd $(dirname ${cbfstoolcmd})
 
 		#echo_yellow "Downloading cbfstool utility"
 		$CURL -sLO "${util_source}cbfstool.tar.gz"
@@ -252,30 +231,7 @@ function get_flashrom()
 	if [ ! -f "${flashromcmd}" ]; then
 		working_dir=$(pwd)
 	
-		if [[ "$isChromeOS" = false && "$isChromiumOS" = false ]]; then
-			cd /tmp
-		else
-			#have to use partition 12 (27 for cloudready) on rootdev due to noexec restrictions
-			rootdev=$(rootdev -d -s)
-			[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
-			[[ "$isCloudready" = "true" && -b ${rootdev}${part_pfx}27 ]] \
-					&& part_num="${part_pfx}27" || part_num="${part_pfx}12"
-			boot_mounted=$(mount | grep "${rootdev}""${part_num}")
-			if [ "${boot_mounted}" = "" ]; then
-				#mount boot
-				mkdir /tmp/boot >/dev/null 2>&1
-				mount "$(rootdev -d -s)""${part_num}" /tmp/boot
-				if [ $? -ne 0 ]; then
-					echo_red "Error mounting boot partition; cannot proceed."
-					return 1
-				fi
-			fi
-			# clear recovery logs which use valuable space
-			rm -rf /tmp/boot/recovery* 2>/dev/null
-			#create util dir
-			mkdir /tmp/boot/util 2>/dev/null
-			cd /tmp/boot/util
-		fi
+		cd $(dirname ${flashromcmd})
 
 		if [[ "$isChromeOS" = true ]]; then
 			#needed to avoid dependencies not found on older ChromeOS
@@ -315,7 +271,8 @@ function get_gbb_utility()
 {
 	if [ ! -f ${gbbutilitycmd} ]; then
 		working_dir=$(pwd)
-		cd /tmp
+
+		cd $(dirname ${gbbutilitycmd})
 
 		$CURL -sLO "${util_source}gbb_utility.tar.gz"
 		if [ $? -ne 0 ]; then
@@ -402,13 +359,25 @@ fi
 if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
 	#disable power mgmt
 	initctl stop powerd > /dev/null 2>&1
+	# try to mount p12 as /tmp/boot
+	rootdev=$(rootdev -d -s)
+	[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx=""
+	part_num="${part_pfx}12"
+	export boot_mounted=$(mount | grep "${rootdev}""${part_num}")
+	if [ "${boot_mounted}" = "" ]; then
+		#mount boot
+		mkdir /tmp/boot >/dev/null 2>&1
+		mount "$(rootdev -d -s)""${part_num}" /tmp/boot >/dev/null 2>&1 && boot_mounted=true
+	else
+		boot_mounted=true
+	fi
 	#set cmds
 	#check if we need to use a newer flashrom which supports output to log file (-o)
 	flashromcmd=$(which flashrom)
 	if ! ${flashromcmd} -V -o /dev/null > /dev/null 2>&1 || [[ -d /sys/firmware/efi ]]; then
-		flashromcmd=/tmp/boot/util/flashrom
+		flashromcmd=/usr/local/bin/flashrom
 	fi
-	cbfstoolcmd=/tmp/boot/util/cbfstool
+	cbfstoolcmd=/usr/local/bin/cbfstool
 	gbbutilitycmd=$(which gbb_utility)
 else
 	#set cmds
@@ -991,16 +960,5 @@ return 0
 function cleanup()
 {
 #remove temp files, unmount temp stuff
-if [ -d /tmp/boot/util ]; then
-	rm -rf /tmp/boot/util > /dev/null 2>&1
-fi
 umount /tmp/boot > /dev/null 2>&1
-umount /tmp/Storage > /dev/null 2>&1
-umount /tmp/System > /dev/null 2>&1
-umount /tmp/urfs/proc > /dev/null 2>&1
-umount /tmp/urfs/dev/pts > /dev/null 2>&1
-umount /tmp/urfs/dev > /dev/null 2>&1
-umount /tmp/urfs/sys > /dev/null 2>&1
-umount /tmp/urfs > /dev/null 2>&1
-umount /tmp/usb > /dev/null 2>&1
 }
