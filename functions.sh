@@ -93,7 +93,7 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'mithrax' \
-	 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'volmar' 'zavala' \
+	 'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'volmar' 'zavala' \
 	'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
 	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
@@ -750,6 +750,7 @@ case "${_hwid}" in
 	NOCTURNE*)              _x='KBL|Google Pixel Slate' ;;
 	NOIBAT*)                _x='CML|HP Chromebox G3' ;;
 	NOSPIKE*)               _x='GLK|ASUS Chromebook C424';;
+	OMNIGUL*)               _x='ADL|Acer Chromebook Plus 515 [CB515-2H]'; device="omnigul" ;;
 	ORCO*)                  _x='BYT|Lenovo Ideapad 100S Chromebook' ;;
 	ORBATRIX*)              _x='GLK|Dell Chromebook 3400';;
 	OSIRIS*)                _x='ADL|Acer Chromebook 516 GE [CBG516-1H]'; device="osiris" ;;

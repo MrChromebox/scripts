@@ -251,6 +251,7 @@ export coreboot_uefi_felwinter="coreboot_edk2-felwinter-mrchromebox_20240120.rom
 export coreboot_uefi_gimble="coreboot_edk2-gimble-mrchromebox_20240120.rom"
 export coreboot_uefi_kano="coreboot_edk2-kano-mrchromebox_20240120.rom"
 export coreboot_uefi_mithrax="coreboot_edk2-mithrax-mrchromebox_20240120.rom"
+export coreboot_uefi_omnigul="coreboot_edk2-omnigul-mrchromebox_20240203.rom"
 export coreboot_uefi_osiris="coreboot_edk2-osiris-mrchromebox_20240120.rom"
 export coreboot_uefi_primus="coreboot_edk2-primus-mrchromebox_20240120.rom"
 export coreboot_uefi_redrix="coreboot_edk2-redrix-mrchromebox_20240120.rom"
