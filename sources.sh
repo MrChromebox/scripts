@@ -228,6 +228,7 @@ export coreboot_uefi_kracko360="coreboot_edk2-kracko360-mrchromebox_20240120.rom
 export coreboot_uefi_landrid="coreboot_edk2-landrid-mrchromebox_20240120.rom"
 export coreboot_uefi_lantis="coreboot_edk2-lantis-mrchromebox_20240120.rom"
 export coreboot_uefi_madoo="coreboot_edk2-madoo-mrchromebox_20240120.rom"
+export coreboot_uefi_magister="coreboot_edk2-magister-mrchromebox_20240205.rom"
 export coreboot_uefi_maglia="coreboot_edk2-maglia-mrchromebox_20240120.rom"
 export coreboot_uefi_maglith="coreboot_edk2-maglith-mrchromebox_20240131.rom"
 export coreboot_uefi_magma="coreboot_edk2-magma-mrchromebox_20240120.rom"
