@@ -769,6 +769,7 @@ function extract_vpd()
 	if ! ${cbfstoolcmd} ${firmware_file} read -r RO_VPD -f /tmp/vpd.bin >/dev/null 2>&1 ; then
 		#try CBFS extraction
 		if ! ${cbfstoolcmd} ${firmware_file} extract -n vpd.bin -f /tmp/vpd.bin >/dev/null 2>&1 ; then
+			echo_yellow "No VPD found in current firmware"
 			return 1
 		fi
 	fi
