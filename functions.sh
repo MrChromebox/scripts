@@ -93,7 +93,7 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
-	 'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'volmar' 'zavala' \
+	 'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'vell' 'volmar' 'zavala' \
 	'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
 adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
 	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
@@ -838,6 +838,7 @@ case "${_hwid}" in
 	TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
 	ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
 	VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
+	VELL*)                  _x='ADL|HP Dragonfly Pro Chromebook'; device="vell" ;;
 	VILBOZ360*)             _x='PCO|Lenovo 300e Chromebook Gen 3'; device="vilboz" ;;
 	VILBOZ14*)              _x='PCO|Lenovo 14e Chromebook Gen 2'; device="vilboz" ;;
 	VILBOZ*)                _x='PCO|Lenovo 100e Chromebook Gen 3'; device="vilboz" ;;
