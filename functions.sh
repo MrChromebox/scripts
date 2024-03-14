@@ -337,6 +337,7 @@ device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/
 if [[ $? -ne 0 || "${device}" = "" ]]; then
 	echo_red "Unable to determine Chromebox/book model; cannot continue."
 	echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,\nonly Intel-based devices are supported at this time."
+        echo_red "Please note that WSL (Windows Subsystem for Linux) is not supported at the moment, and probably won't be.
 	return 1
 fi
 
