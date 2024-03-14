@@ -628,6 +628,7 @@ case "${_hwid}" in
 	EPAULETTE*)             _x='APL|UNK Acer Chromebook ' ;;
 	EVE*)                   _x='KBL|Google Pixelbook' ;;
 	EXCELSIOR-URAR*)        _x='KBL|Asus Google Meet kit (KBL)'; device="fizz" ;;
+	EXCELSIOR-OOLH*)        _x='KBL|CTL Google Meet kit (KBL)'; device="fizz" ;;
 	EZKINIL*)               _x='PCO|Acer Chromebook Spin 514' ; device='ezkinil' ;;
 	FAFFY*)                 _x='CML|ASUS Fanless Chromebox' ;;
 	FALCO*)                 _x='HSW|HP Chromebook 14' ;;
