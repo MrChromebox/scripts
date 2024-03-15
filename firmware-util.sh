@@ -32,7 +32,9 @@ echo -e "\nMrChromebox Firmware Utility Script starting up"
 
 # check for unsupported kernel (WSL)
 if [[ $(grep -i Microsoft /proc/version) ]]; then
-echo "You are running this script on WSL, which is NOT supported and never will be."
+echo "
+
+You are running this script on WSL, which is NOT supported and never will be."
 echo "Please create a Linux Live USB and run this script from there."
 echo "If this is a false positive, please manually delete this detection from the file."
 exit 1
