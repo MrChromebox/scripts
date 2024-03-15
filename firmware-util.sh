@@ -31,11 +31,11 @@ printf "\ec"
 echo -e "\nMrChromebox Firmware Utility Script starting up"
 
 # check for unsupported kernel (WSL)
-kernel=$(uname -r)
-if [[ $kernel == *"WSL"* ]]; then
-  echo_red "You are using an unsupported kernel (WSL). WSL is currently not supported and NEVER will. Boot from a Live Linux USB and run this script from there."
-  echo_red "If this seems to be in error, make a issue request on MrChromeboxes scripts repository."
-  exit 1
+if [[ $(grep -i Microsoft /proc/version) ]]; then
+echo_red "You are running this script on WSL, which is NOT supported and never will be."
+echo_red "Please create a Linux Live USB and run this script from there."
+echo_red "If this is a false positive, please manually delete this detection from the file."
+exit 1
 fi
 
 #check for cmd line param, expired CrOS certs
