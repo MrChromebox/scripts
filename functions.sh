@@ -89,7 +89,7 @@ jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' 
 	 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
 	 'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' \
 	 'maglet' 'maglia' 'maglith' 'magma' 'magneto' 'magolor' 'magpie' 'metaknight' 'pasara' \
-	 'pirette' 'pirika' 'sasuke' 'storo' 'storo360')
+	 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
@@ -806,6 +806,7 @@ case "${_hwid}" in
 	SAND*)                  _x='APL|Acer Chromebook 15 (CB515-1HT)' ;;
 	SANTA*)                 _x='APL|Acer Chromebook 11 (CB311-8H)' ;;
 	SARIEN*)                _x='WHL|Dell Latitude 5400' ;;
+	SASUKETTE*)             _x='JSL|Samsung Galaxy Chromebook Go 11' ; device='sasukette';;
 	SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ; device='sasuke';;
 	SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
 	SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;

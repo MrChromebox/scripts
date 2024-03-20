@@ -242,6 +242,7 @@ export coreboot_uefi_pasara="coreboot_edk2-pasara-mrchromebox_20240223.rom"
 export coreboot_uefi_pirette="coreboot_edk2-pirette-mrchromebox_20240223.rom"
 export coreboot_uefi_pirika="coreboot_edk2-pirika-mrchromebox_20240223.rom"
 export coreboot_uefi_sasuke="coreboot_edk2-sasuke-mrchromebox_20240223.rom"
+export coreboot_uefi_sasukette="coreboot_edk2-sasukette-mrchromebox_20240320.rom"
 export coreboot_uefi_storo="coreboot_edk2-storo-mrchromebox_20240223.rom"
 export coreboot_uefi_storo360="coreboot_edk2-storo360-mrchromebox_20240223.rom"
 
