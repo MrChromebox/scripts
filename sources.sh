@@ -314,7 +314,7 @@ export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20240223.rom"
 
 #Cezanne
 export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20240223.rom"
-export coreboot_uefi_nipperkin="coreboot_edk2-nipperkin-mrchromebox_20240321.rom"
+export coreboot_uefi_nipperkin="coreboot_edk2-nipperkin-mrchromebox_20240401.rom"
 
 #Mendocino
 export coreboot_uefi_crystaldrift="coreboot_edk2-crystaldrift-mrchromebox_20240223.rom"
