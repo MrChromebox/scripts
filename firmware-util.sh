@@ -11,6 +11,9 @@
 # as long as proper attribution is given.
 #
 
+#path to directory where script is saved
+script_dir="$(dirname $(readlink -f $0))"
+
 #where the stuff is
 script_url="https://raw.githubusercontent.com/MrChromebox/scripts/master/"
 
@@ -37,31 +40,59 @@ else
 	export CURL="curl"
 fi
 
-#get support scripts
-echo -e "\nDownloading supporting files..."
-rm -rf firmware.sh >/dev/null 2>&1
-rm -rf functions.sh >/dev/null 2>&1
-rm -rf sources.sh >/dev/null 2>&1
-$CURL -sLO ${script_url}firmware.sh
-rc0=$?
-$CURL -sLO ${script_url}functions.sh
-rc1=$?
-$CURL -sLO ${script_url}sources.sh
-rc2=$?
-if [[ $rc0 -ne 0 || $rc1 -ne 0 || $rc2 -ne 0 ]]; then
-	echo -e "Error downloading one or more required files; cannot continue"
-	exit 1
+if [ ! -d "$script_dir/.git" ] || ! grep -qF 'mrchromebox-scripts.git' "$script_dir/.git/config"; then
+    script_dir="."
+
+    #get support scripts
+    echo -e "\nDownloading supporting files..."
+    rm -rf firmware.sh >/dev/null 2>&1
+    rm -rf functions.sh >/dev/null 2>&1
+    rm -rf sources.sh >/dev/null 2>&1
+    $CURL -sLO ${script_url}firmware.sh
+    rc0=$?
+    $CURL -sLO ${script_url}functions.sh
+    rc1=$?
+    $CURL -sLO ${script_url}sources.sh
+    rc2=$?
+    if [[ $rc0 -ne 0 || $rc1 -ne 0 || $rc2 -ne 0 ]]; then
+	    echo -e "Error downloading one or more required files; cannot continue"
+	    exit 1
+    fi
 fi
 
-source ./sources.sh
-source ./firmware.sh
-source ./functions.sh
+source $script_dir/sources.sh
+source $script_dir/firmware.sh
+source $script_dir/functions.sh
 
 #set working dir
 cd /tmp
 
 #do setup stuff
-prelim_setup || exit 1
+prelim_setup
+prelim_setup_result="$?"
+
+#saving setup state for troubleshooting
+diagnostic_report_save
+troubleshooting_msg=(
+    " * diagnosics report has been saved to /tmp/mrchromebox_diag.txt"
+    " * go to https://forum.chrultrabook.com/ for help"
+)
+if [ "$prelim_setup_result" -ne 0 ]; then
+    IFS=$'\n'
+    echo "MrChromebox Firmware Utility setup was unsuccessful" > /dev/stderr
+    echo "${troubleshooting_msg[*]}" > /dev/stderr
+    exit 1
+fi
 
 #show menu
+
+trap 'check_unsupported' EXIT
+function check_unsupported() {
+    if [ "$isUnsupported" = true ]; then
+        IFS=$'\n'
+        echo "MrChromebox Firmware Utility didn't recognize your device" > /dev/stderr
+        echo "${troubleshooting_msg[*]}" > /dev/stderr
+    fi
+}
+
 menu_fwupdate

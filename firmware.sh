@@ -135,9 +135,9 @@ MrChromebox does not provide any support for running Windows."
 function flash_full_rom()
 {
 	echo_green "\nInstall/Update UEFI Full ROM Firmware"
-	echo_yellow "IMPORTANT: flashing the firmware has the potential to brick your device, 
-requiring relatively inexpensive hardware and some technical knowledge to 
-recover.Not all boards can be tested prior to release, and even then slight 
+	echo_yellow "IMPORTANT: flashing the firmware has the potential to brick your device,
+requiring relatively inexpensive hardware and some technical knowledge to
+recover.Not all boards can be tested prior to release, and even then slight
 differences in hardware can lead to unforseen failures.
 If you don't have the ability to recover from a bad flash, you're taking a risk.
 
@@ -156,9 +156,9 @@ You have been warned."
 
 	#special warning for CR50 devices
 	if [[ "$isStock" = true && "$hasCR50" = true ]]; then
-	echo_yellow "NOTICE: flashing your Chromebook is serious business. 
+	echo_yellow "NOTICE: flashing your Chromebook is serious business.
 To ensure recovery in case something goes wrong when flashing,
-be sure to set the ccd capability 'FlashAP Always' using your 
+be sure to set the ccd capability 'FlashAP Always' using your
 USB-C debug cable, otherwise recovery will involve disassembling
 your device (which is very difficult in some cases)."
 
@@ -220,7 +220,7 @@ an Asus C425 (LEONA) or Asus C433/C434 (SHYVANA)?
 	if [ "$device" = "coral" ]; then
 		echo -e ""
 		echo_yellow "Unable to determine correct Chromebook model"
-		echo -e "Because of your current firmware, I'm unable to determine the exact mode of your Chromebook.  
+		echo -e "Because of your current firmware, I'm unable to determine the exact mode of your Chromebook.
 Please select the number for the correct option from the list below:"
 
 		coral_boards=(
@@ -300,7 +300,7 @@ and you need to recover using an external EEPROM programmer. [Y/n] "
 	$CURL -sLO "${firmware_source}${coreboot_file}.sha1"
 
 	#verify checksum on downloaded file
-	if ! sha1sum -c "${coreboot_file}.sha1" --quiet > /dev/null 2>&1; then 
+	if ! sha1sum -c "${coreboot_file}.sha1" --quiet > /dev/null 2>&1; then
 		exit_red "Firmware download checksum fail; download corrupted, cannot flash."; return 1
 	fi
 
@@ -405,8 +405,8 @@ Select the D option from the main main in order to do so."
 		if [[ "$isUEFI" = true && "$useUEFI" = true ]]; then
 			echo_yellow "IMPORTANT:\n
 This update uses a new format to store UEFI NVRAM data, and
-will reset your BootOrder and boot entries. You may need to 
-manually Boot From File and reinstall your bootloader if 
+will reset your BootOrder and boot entries. You may need to
+manually Boot From File and reinstall your bootloader if
 booting from the internal storage device fails."
 		fi
 		firmwareType="Full ROM / UEFI (pending reboot)"
@@ -424,7 +424,7 @@ function downgrade_touchpad_fw()
 	# offer to downgrade touchpad firmware on EVE
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo_green "\nDowngrade Touchpad Firmware"
-		echo_yellow "If you plan to run Windows on your Pixelbook, it is necessary to downgrade 
+		echo_yellow "If you plan to run Windows on your Pixelbook, it is necessary to downgrade
 the touchpad firmware, otherwise the touchpad will not work."
 		echo_yellow "You should do this after flashing the UEFI firmware, but before rebooting."
 		read -rep "Do you wish to downgrade the touchpad firmware now? [y/N] "
@@ -537,7 +537,7 @@ at this time. Please select another option from the menu.\n";
 	done
 	[[ "$restore_option" = "Q" ]] && return
 
-	if [[ $restore_option -ne 2 ]]; then 
+	if [[ $restore_option -ne 2 ]]; then
 		#extract VPD from current firmware if present
 		if extract_vpd /tmp/bios.bin ; then
 			#merge with shellball/recovery image firmware
@@ -593,7 +593,7 @@ function restore_fw_from_usb()
 {
 	read -rep "
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
-		
+
 		list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
 		usb_dev_index=""
 		while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
@@ -699,7 +699,7 @@ function restore_fw_from_recovery()
 {
 	echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
 	read -rep "and press [Enter] to continue. "
-	
+
 	list_usb_devices || { exit_red "No USB devices available to read from."; return 1; }
 	usb_dev_index=""
 	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && ! $usb_dev_index -gt $num_usb_devs) ]]; do
@@ -868,7 +868,7 @@ You can always override the default using [CTRL+D] or
 	done
 	[[ $n -eq 6 ]] && return
 	echo_yellow "\nSetting boot options..."
-	
+
 	#disable software write-protect
 	if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
 		exit_red "Error disabling software write-protect; unable to set GBB flags."; return 1
@@ -907,7 +907,7 @@ function set_hwid()
 		echo_yellow "Current HWID is $_hwid"
 	fi
 
-	echo_yellow "Are you sure you know what you're doing here? 
+	echo_yellow "Are you sure you know what you're doing here?
 Changing this is not normally needed, and if you mess it up,
 MrChromebox is not going to help you fix it. This won't let
 you run a different/newer version of ChromeOS.
@@ -928,7 +928,7 @@ Proceed at your own risk."
 		if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
 			exit_red "Error disabling software write-protect; unable to set HWID."; return 1
 		fi
-		if ! ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then 
+		if ! ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
 			exit_red "\nError reading firmware (non-stock?); unable to set HWID."; return 1
 		fi
 		if ! ${gbbutilitycmd} --set --hwid="${hwid}" /tmp/gbb.temp > /dev/null 2>&1; then
@@ -937,7 +937,7 @@ Proceed at your own risk."
 		if ! ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
 			exit_red "\nError writing back firmware; unable to set HWID."; return 1
 		fi
-		
+
 		echo_green "Hardware ID successfully set."
 	fi
 	read -rep "Press [Enter] to return to the main menu."
@@ -976,7 +976,7 @@ function remove_bitmaps()
 		if ! ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
 			exit_red "\nError writing back firmware; unable to remove bitmaps."; return 1
 		fi
-		
+
 		echo_green "ChromeOS bitmaps successfully removed."
 	fi
 	read -rep "Press [Enter] to return to the main menu."
@@ -1003,9 +1003,9 @@ function restore_bitmaps()
 			exit_red "Error disabling software write-protect; unable to restore bitmaps."; return 1
 		fi
 		#download shellball
-		if ! $CURL -sLo /tmp/shellball.rom ${shellball_source}shellball.${device}.bin; then 
+		if ! $CURL -sLo /tmp/shellball.rom ${shellball_source}shellball.${device}.bin; then
 			exit_red "Error downloading shellball; unable to restore bitmaps."; return 1
-		fi 
+		fi
 		#extract GBB region, bitmaps
 		if ! ${cbfstoolcmd} /tmp/shellball.rom read -r GBB -f gbb.new >/dev/null 2>&1; then
 			exit_red "Error extracting GBB region from shellball; unable to restore bitmaps."; return 1
@@ -1096,7 +1096,7 @@ function show_header() {
 }
 
 function stock_menu() {
-	
+
 	show_header
 
 	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false \
@@ -1135,7 +1135,7 @@ function stock_menu() {
 	echo -e "${MENU}*********************************************************${NORMAL}"
 	echo -e "${ENTER_LINE}Select a numeric menu option or${NORMAL}"
 	echo -e "${nvram}${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
-	
+
 	read -re opt
 	case $opt in
 
@@ -1145,7 +1145,7 @@ function stock_menu() {
 			elif [[ "$isEOL" = "true" ]]; then
 				echo_red "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life"
 				read -rep "Press enter to return to the main menu"
-			fi 
+			fi
 			menu_fwupdate
 			;;
 
@@ -1233,7 +1233,7 @@ function stock_menu() {
 }
 
 function uefi_menu() {
-	
+
 	show_header
 
 	if [[ "$hasUEFIoption" = true ]]; then

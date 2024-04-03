@@ -230,7 +230,7 @@ function get_flashrom()
 {
 	if [ ! -f "${flashromcmd}" ]; then
 		working_dir=$(pwd)
-	
+
 		cd $(dirname ${flashromcmd})
 
 		if [[ "$isChromeOS" = true ]]; then
@@ -245,7 +245,7 @@ function get_flashrom()
 			cd "${working_dir}"
 			return 1
 		fi
-		
+
 		if ! tar -zxf flashrom.tar.gz --no-same-owner; then
 			echo_red "Error extracting flashrom; cannot proceed."
 			#restore working dir
@@ -296,6 +296,30 @@ function get_gbb_utility()
 	return 0
 }
 
+##################################################
+# Diagnostic report for troubleshooting purposes #
+##################################################
+
+function diagnostic_report_save() {
+    (
+        echo "mrchromebox firmware-util diagnostic report"
+        date
+        echo
+        for key in ${!diagnostic_report_data[@]}; do
+            echo "[$key]"
+            echo "${diagnostic_report_data[$key]}"
+            echo
+        done
+    ) > /tmp/mrchromebox_diag.txt
+}
+
+function diagnostic_report_set() {
+    declare -gA diagnostic_report_data
+    local key="$1"
+    shift
+    diagnostic_report_data[$key]="$*"
+}
+
 
 ################
 # Prelim Setup #
@@ -334,6 +358,8 @@ fi
 
 #get device name
 device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}')
+diagnostic_report_set device "$device"
+
 if [[ $? -ne 0 || "${device}" = "" ]]; then
 	echo_red "Unable to determine Chromebox/book model; cannot continue."
 	echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,\nonly Intel-based devices are supported at this time."
@@ -343,6 +369,7 @@ fi
 
 #check if running under ChromeOS / ChromiumOS
 if [ -f /etc/lsb-release ]; then
+    diagnostic_report_set lsb-release "$(cat /etc/lsb-release)"
 	if ! grep -q "Chrome OS" /etc/lsb-release; then
 		isChromeOS=false
 	fi
@@ -445,6 +472,9 @@ fi
 fwVer=$(dmidecode -s bios-version)
 fwDate=$(dmidecode -s bios-release-date)
 
+diagnostic_report_set fwVer "$fwVer"
+diagnostic_report_set fwDate "$fwDate"
+
 # check firmware type
 if [[ "$fwVer" = "Google_"* ]]; then
   # stock firmware
@@ -472,6 +502,8 @@ else
 	fi
 fi
 
+diagnostic_report_set firmwareType "$firmwareType"
+
 #check WP status
 echo -e "\nChecking WP state..."
 
@@ -483,6 +515,9 @@ ${flashromcmd} --wp-disable > /dev/null 2>&1
 [[ $? -ne 0 && $swWp = "enabled" ]] && wpEnabled=true
 #restore previous SW WP state
 [[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
+
+diagnostic_report_set wpEnabled "$wpEnabled"
+diagnostic_report_set swWp "$swWp"
 
 # disable SW WP and reboot if needed
 if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled" ]]; then
@@ -512,6 +547,8 @@ Would you like to disable sofware WP and reboot your device?"
 	fi
 fi
 
+diagnostic_report_set firmwareType "$firmwareType"
+
 #get full device info
 if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
 	_hwid=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g' | sed 's/ /_/g')
@@ -526,6 +563,8 @@ else
 	_hwid=${device^^}
 	boardName=${device^^}
 fi
+
+diagnostic_report_set _hwid "$_hwid"
 
 case "${_hwid}" in
 	AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
@@ -775,7 +814,7 @@ case "${_hwid}" in
 	PIRIKA-XAJY*)           _x='JSL|Gateway Chromebook 14' ; device="pirika" ;;
 	PRIMUS*)                _x='ADL|Lenovo ThinkPad C14 Gen 1 Chromebook'; device="primus" ;;
 	PUJJOFLEX*)             _x='ADN|Lenovo IdeaPad Flex 3i Chromebook'; device="pujjoflex" ;;
-	PUJJOTEEN*-CZPM* | PUJJOTEEN*-JQLW*)
+	PUJJOTEEN | PUJJOTEEN*-CZPM* | PUJJOTEEN*-JQLW*)
 	                        _x='ADN|Lenovo 14e Chromebook Gen 3'; device="pujjoteen" ;;
 	PUJJOTEEN*-KCBW* | PUJJOTEEN15W)
 	                        _x='ADN|Lenovo Ideapad Slim 3i Chromebook'; device="pujjoteen15w" ;;
@@ -877,11 +916,16 @@ case "${_hwid}" in
 	YUNA*)                  _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ; device="auron_yuna";;
 	ZAKO*)                  _x='HSW|HP Chromebox CB1' ;;
 	ZAVALA*)                _x='ADL|Acer Chromebook Vero 712'; device="zavala" ;;
-	*)                      _x='UNK|ERROR: unknown or unidentifiable device' ;; 
+	*)                      _x='UNK|ERROR: unknown or unidentifiable device' ;;
 esac
+
+diagnostic_report_set device "$device"
 
 deviceCpuType=$(echo $_x | cut -d\| -f1)
 deviceDesc=$(echo $_x | cut -d\| -f2-)
+
+diagnostic_report_set deviceCpuType.id "$deviceCpuType"
+diagnostic_report_set deviceDesc "$deviceDesc"
 
 ## CPU family, Processor core, other distinguishing characteristic
 case "$deviceCpuType" in
@@ -907,6 +951,8 @@ CZN) deviceCpuType="AMD Cezanne" ;;
 MDN) deviceCpuType="AMD Mendocino" ;;
 *)   deviceCpuType="(unrecognized)" ;;
 esac
+
+diagnostic_report_set deviceCpuType.Name "$deviceCpuType"
 
 [[ "${hsw_boxes[@]}" =~ "$device" ]] && isHswBox=true
 [[ "${hsw_books[@]}" =~ "$device" ]] && isHswBook=true
@@ -951,12 +997,16 @@ esac
 [[ "$device" = "rammus" || "$isGlk" = true ]] && useAltfwStd=true
 [[ "${eol_devices[@]}" =~ "$device" ]] && isEOL=true || isEOL=false
 
+diagnostic_report_set hasUEFIoption "$hasUEFIoption"
+
 # set unsupported if the script fails to identify the platform
 # force all menu options disabled
 if [[ "$deviceCpuType" = "(unrecognized)" ]] ; then
   isUnsupported=true
   hasUEFIoption=false
 fi
+
+diagnostic_report_set isUnsupported "$isUnsupported"
 
 return 0
 }
