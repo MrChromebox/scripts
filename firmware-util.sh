@@ -40,7 +40,7 @@ else
 	export CURL="curl"
 fi
 
-if [ ! -d "$script_dir/.git" ] || ! grep -qF 'mrchromebox-scripts.git' "$script_dir/.git/config"; then
+if [ ! -d "$script_dir/.git" ]; then
     script_dir="."
 
     #get support scripts
