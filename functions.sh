@@ -230,7 +230,7 @@ function get_flashrom()
 {
 	if [ ! -f "${flashromcmd}" ]; then
 		working_dir=$(pwd)
-	
+
 		cd $(dirname ${flashromcmd})
 
 		if [[ "$isChromeOS" = true ]]; then
@@ -245,7 +245,7 @@ function get_flashrom()
 			cd "${working_dir}"
 			return 1
 		fi
-		
+
 		if ! tar -zxf flashrom.tar.gz --no-same-owner; then
 			echo_red "Error extracting flashrom; cannot proceed."
 			#restore working dir
@@ -877,7 +877,7 @@ case "${_hwid}" in
 	YUNA*)                  _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ; device="auron_yuna";;
 	ZAKO*)                  _x='HSW|HP Chromebox CB1' ;;
 	ZAVALA*)                _x='ADL|Acer Chromebook Vero 712'; device="zavala" ;;
-	*)                      _x='UNK|ERROR: unknown or unidentifiable device' ;; 
+	*)                      _x='UNK|ERROR: unknown or unidentifiable device' ;;
 esac
 
 deviceCpuType=$(echo $_x | cut -d\| -f1)

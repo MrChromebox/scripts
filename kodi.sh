@@ -18,7 +18,7 @@ If N, the latest stable version of LibreELEC 8.0 ($LE_version_stable) based on K
 			#LE_url=${LE_url_official}
 		fi
 		echo -e "\n"
-	fi	
+	fi
 }
 
 
@@ -86,7 +86,7 @@ exit_red "\nLibreELEC installation media creation failed; retry with different U
 ##########################
 # Install LE (dual boot) #
 ##########################
-function chrLibreELEC() 
+function chrLibreELEC()
 {
 echo_green "\nLibreELEC / Dual Boot Install"
 
@@ -101,10 +101,10 @@ rec_libreelec_size=$(($max_libreelec_size - 1))
 # If KERN-C and ROOT-C are one, we partition, otherwise assume they're what they need to be...
 if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 	echo_green "Stage 1: Repartitioning the internal HDD"
-	
+
 	# prevent user from booting into legacy until install complete
 	crossystem dev_boot_usb=0 dev_boot_legacy=0 > /dev/null 2>&1
-	
+
 	while :
 	do
 		echo "Enter the size in GB you want to reserve for LibreELEC Storage."
@@ -140,7 +140,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 
 	#Do the real work
 
-	echo_yellow "\n\nModifying partition table to make room for LibreELEC." 
+	echo_yellow "\n\nModifying partition table to make room for LibreELEC."
 	umount -f /mnt/stateful_partition > /dev/null 2>&1
 
 	# stateful first
@@ -189,7 +189,7 @@ mkfs.ext4 -v -m0 -O ^has_journal -L ROOT-C ${target_rootfs} > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to format LE partition(s); reboot and try again"
 fi
- 
+
 #mount partitions
 if [ ! -d /tmp/System ]
 then
@@ -215,7 +215,7 @@ echo_yellow "Updating bootloader"
 
 #get/extract syslinux
 tar_file="${util_source}${syslinux_version}.tar.bz2"
-$CURL -sLo /tmp/Storage/syslinux.tar.bz2 $tar_file 
+$CURL -sLo /tmp/Storage/syslinux.tar.bz2 $tar_file
 if [ $? -ne 0 ]; then
 	LE_install_error "Failed to download syslinux; check your Internet connection and try again"
 fi
@@ -307,7 +307,7 @@ read -ep "Press [Enter] to return to the main menu."
 ###################################
 # Install GaOS/Ubuntu (dual boot) #
 ###################################
-function chrx() 
+function chrx()
 {
 echo_green "\nUbuntu / Dual Boot Install"
 echo_green "Now using reynhout's chrx script - www.chrx.org"
@@ -322,12 +322,12 @@ max_ubuntu_size=$(($state_size/1024/1024/2))
 rec_ubuntu_size=$(($max_ubuntu_size - 1))
 # If KERN-C and ROOT-C are one, we partition, otherwise assume they're what they need to be...
 if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
-	
+
 	#update legacy BIOS
 	flash_rwlegacy skip_prompt > /dev/null
-	
+
 	echo_green "Stage 1: Repartitioning the internal HDD"
-	
+
 	while :
 	do
 		echo "Enter the size in GB you want to reserve for Ubuntu."
@@ -363,7 +363,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 
 	#Do the real work
 
-	echo_green "\n\nModifying partition table to make room for Ubuntu." 
+	echo_green "\n\nModifying partition table to make room for Ubuntu."
 
 	umount -f /mnt/stateful_partition > /dev/null 2>&1
 
@@ -375,7 +375,7 @@ if [ "$ckern_size" =  "1" -o "$croot_size" = "1" ]; then
 
 	# finally rootc
 	cgpt add -i 7 -b $rootc_start -s $rootc_size -l ROOT-C ${target_disk}
-	
+
 	echo_green "Stage 1 complete; after reboot, press CTRL-D and ChromeOS will \"repair\" itself."
 	echo_yellow "Afterwards, you must re-download/re-run this script to complete Ubuntu setup."
 	read -ep "Press [Enter] to reboot and continue..."
@@ -395,7 +395,7 @@ ubuntu_version="latest"
 validPackages=('<galliumos>' '<ubuntu>' '<kubuntu>' '<lubuntu>' '<xubuntu>' '<edubuntu>');
 echo -e "\nEnter the Ubuntu (or Ubuntu-derivative) to install.  Valid options are `echo ${validPackages[*]}`.
 If no (valid) option is entered, 'galliumos' will be used."
-read -ep "" ubuntu_package	
+read -ep "" ubuntu_package
 
 packageValid=$(echo ${validPackages[*]} | grep "<$ubuntu_package>")
 if [[ "$ubuntu_package" = "" || "$packageValid" = "" ]]; then
@@ -406,9 +406,9 @@ fi
 useBeta=""
 if [ "$ubuntu_package" != "galliumos" ]; then
 	validVersions=('<lts>' '<latest>' '<dev>' '<15.10>' '<15.04>' '<14.10>' '<14.04>');
-	echo -e "\nEnter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`. 
+	echo -e "\nEnter the Ubuntu version to install. Valid options are `echo ${validVersions[*]}`.
 If no (valid) version is entered, 'latest' will be used."
-	read -ep "" ubuntu_version	
+	read -ep "" ubuntu_version
 
 	versionValid=$(echo ${validVersions[*]} | grep "<$ubuntu_version>")
 	if [[ "$ubuntu_version" = "" || "$versionValid" = "" ]]; then
@@ -448,7 +448,7 @@ reboot;
 ####################
 # Install LE (USB) #
 ####################
-function LibreELEC_USB() 
+function LibreELEC_USB()
 {
 echo_green "\nLibreELEC / USB Install"
 
@@ -487,7 +487,7 @@ if [ $? -ne 0 ]; then
 	LE_install_error "Failed to format LE partition(s); reboot and try again"
 fi
 e2label $LE_Storage Storage > /dev/null 2>&1
- 
+
 #mount partitions
 if [ ! -d /tmp/System ]; then
   mkdir /tmp/System
@@ -564,7 +564,7 @@ rm -rf /tmp/Storage/*
 if [ "$isChromeOS" = true ]; then
 	flash_rwlegacy skip_prompt #> /dev/null
 fi
-	
+
 echo_green "LibreELEC USB Installation Complete"
 read -ep "Press [Enter] to return to the main menu."
 }
@@ -622,12 +622,12 @@ function menu_kodi() {
 	echo -e "${MENU}**${NUMBER}  7)${MENU} Create LibreELEC Install Media ${NORMAL}"
 	echo -e "${MENU}******************************************************${NORMAL}"
 	echo -e "${RED_TEXT}R${NORMAL} to reboot ${NORMAL} ${RED_TEXT}P${NORMAL} to poweroff ${NORMAL} ${RED_TEXT}Q${NORMAL} to quit ${NORMAL}"
-	
+
 	read opt
-	
+
 	while [ opt != '' ]
 		do
-		if [[ $opt = "q" ]]; then 
+		if [[ $opt = "q" ]]; then
 				exit;
 		else
 			if [ "$isChromeOS" = true ]; then
@@ -649,38 +649,38 @@ function menu_kodi() {
 						menu_kodi;
 						;;
 					5)	clear;
-						flash_rwlegacy;	
+						flash_rwlegacy;
 						menu_kodi;
 						;;
 					*)
 						;;
 				esac
 			fi
-			
+
 			case $opt in
-				
+
 			6)	clear;
 				if [[ "$hasUEFIoption" = true ]]; then
 					flash_coreboot useUEFI;
 				fi
 				menu_kodi;
-				;;		
+				;;
 			7) 	clear;
 				create_le_install_media;
 				menu_kodi;
-				;;				
+				;;
 			[rR])  echo -e "\nRebooting...\n";
 				cleanup;
 				reboot;
 				exit;
 				;;
-				
+
 			[pP])  echo -e "\nPowering off...\n";
 				cleanup;
 				poweroff;
 				exit;
 				;;
-				
+
 			[qQ])  cleanup;
 				exit;
 				;;
