@@ -192,9 +192,6 @@ able to boot from it after installing the UEFI Full ROM firmware."
 	#determine correct file / URL
 	firmware_source=${fullrom_source}
 	eval coreboot_file="$`echo "coreboot_uefi_${device}"`"
-	if [[ "$coreboot_file" = "" ]]; then
-		exit_red "The script does not currently have a firmware file for your device (${device^^}); cannot continue."; return 1
-	fi
 
 	#rammus special case (upgrade from older UEFI firmware)
 	if [ "$device" = "rammus" ]; then
@@ -266,6 +263,11 @@ Enable (E) or disable (D) the Trackpoint?
 				coreboot_file=${coreboot_uefi_morphius_tp}
 			fi
 		done
+	fi
+
+	# ensure we have a file to flash
+	if [[ "$coreboot_file" = "" ]]; then
+		exit_red "The script does not currently have a firmware file for your device (${device^^}); cannot continue."; return 1
 	fi
 
 	#extract device serial if present in cbfs
