@@ -367,6 +367,9 @@ if [[ $? -ne 0 || "${device}" = "" ]]; then
 	return 1
 fi
 
+#start with a known good state
+cleanup
+
 #check if running under ChromeOS / ChromiumOS
 if [ -f /etc/lsb-release ]; then
     diagnostic_report_set lsb-release "$(cat /etc/lsb-release)"
@@ -413,9 +416,6 @@ else
 	cbfstoolcmd=/tmp/cbfstool
 	gbbutilitycmd=/tmp/gbb_utility
 fi
-
-#start with a known good state
-cleanup
 
 #get required tools
 echo -e "\nDownloading required tools..."
