@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-04-14]"
+export script_date="[2024-04-15]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -302,26 +302,26 @@ export coreboot_uefi_liara="coreboot_edk2-liara-mrchromebox_20240223.rom"
 export coreboot_uefi_treeya="coreboot_edk2-treeya-mrchromebox_20240223.rom"
 
 #Picasso
-export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20240223.rom"
-export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20240223.rom"
-export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20240223.rom"
-export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20240223.rom"
-export coreboot_uefi_jelboz360="coreboot_edk2-jelboz360-mrchromebox_20240223.rom"
-export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20240223.rom"
-export coreboot_uefi_morphius_tp="coreboot_edk2-morphius_tp-mrchromebox_20240122.rom"
-export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20240223.rom"
-export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20240223.rom"
+export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20240415.rom"
+export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20240415.rom"
+export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20240415.rom"
+export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20240415.rom"
+export coreboot_uefi_jelboz360="coreboot_edk2-jelboz360-mrchromebox_20240415.rom"
+export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20240415.rom"
+export coreboot_uefi_morphius_tp="coreboot_edk2-morphius_tp-mrchromebox_20240415.rom"
+export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20240415.rom"
+export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20240415.rom"
 
 #Cezanne
-export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20240223.rom"
-export coreboot_uefi_nipperkin="coreboot_edk2-nipperkin-mrchromebox_20240401.rom"
+export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20240415.rom"
+export coreboot_uefi_nipperkin="coreboot_edk2-nipperkin-mrchromebox_20240415.rom"
 
 #Mendocino
-export coreboot_uefi_crystaldrift="coreboot_edk2-crystaldrift-mrchromebox_20240223.rom"
-export coreboot_uefi_frostflow="coreboot_edk2-frostflow-mrchromebox_20240223.rom"
-export coreboot_uefi_markarth="coreboot_edk2-markarth-mrchromebox_20240223.rom"
-export coreboot_uefi_skyrim="coreboot_edk2-skyrim-mrchromebox_20240223.rom"
-export coreboot_uefi_whiterun="coreboot_edk2-whiterun-mrchromebox_20240223.rom"
+export coreboot_uefi_crystaldrift="coreboot_edk2-crystaldrift-mrchromebox_20240415.rom"
+export coreboot_uefi_frostflow="coreboot_edk2-frostflow-mrchromebox_20240415.rom"
+export coreboot_uefi_markarth="coreboot_edk2-markarth-mrchromebox_20240415.rom"
+export coreboot_uefi_skyrim="coreboot_edk2-skyrim-mrchromebox_20240415.rom"
+export coreboot_uefi_whiterun="coreboot_edk2-whiterun-mrchromebox_20240415.rom"
 
 
 #RW_LEGACY payloads
