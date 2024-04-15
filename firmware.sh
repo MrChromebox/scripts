@@ -245,26 +245,6 @@ Please select the number for the correct option from the list below:"
 		done
 	fi
 
-	#morhpius special case (trackpoint option)
-	if [ "$device" = "morphius" ]; then
-		echo -e ""
-		echo_yellow "Enable Trackpoint device?"
-		echo -e "The trackpoint has issues with the current Windows drivers, so
-if you plan to run Windows, choose the DISABLE option.
-If running Linux, then choose ENABLE.
-
-Enable (E) or disable (D) the Trackpoint?
-"
-		REPLY=""
-		while [[ "$REPLY" != "D" && "$REPLY" != "d" && "$REPLY" != "E" && "$REPLY" != "e"  ]]
-		do
-			read -rep "Enter 'D' for Disabled, 'E' for Enabled: "
-			if [[ "$REPLY" = "E" || "$REPLY" = "e" ]]; then
-				coreboot_file=${coreboot_uefi_morphius_tp}
-			fi
-		done
-	fi
-
 	# ensure we have a file to flash
 	if [[ "$coreboot_file" = "" ]]; then
 		exit_red "The script does not currently have a firmware file for your device (${device^^}); cannot continue."; return 1
