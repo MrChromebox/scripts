@@ -820,6 +820,7 @@ case "${_hwid}" in
 	                        _x='ADN|Lenovo Ideapad Slim 3i Chromebook'; device="pujjoteen15w" ;;
 	PUJJO-DCCV*)            _x='ADN|Lenovo Flex 3i Chromebook 12"'; device="pujjo" ;;
 	PUJJO-KTLR*)            _x='ADN|Lenovo 500e Yoga Chromebook Gen 4'; device="pujjo" ;;
+	PUJJO*)                 _x='ADN|Lenovo 500e Yoga/Flex 3i Chromebook'; device="pujjo" ;;
 	PYRO*)                  _x='APL|Lenovo Thinkpad 11e/Yoga Chromebook (G4)' ;;
 	QUAWKS*)                _x='BYT|ASUS Chromebook C300' ;;
 	RABBID*)                _x='APL|ASUS Chromebook C423' ;;
