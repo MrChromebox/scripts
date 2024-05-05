@@ -12,7 +12,7 @@ isChromiumOS=false
 isCloudready=false
 flashromcmd=""
 flashrom_params=""
-flashrom_programmer="-p internal"
+flashrom_programmer="-p internal:boardmismatch=force"
 cbfstoolcmd=""
 gbbutilitycmd=""
 preferUSB=false
