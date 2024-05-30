@@ -814,9 +814,9 @@ case "${_hwid}" in
 	PIRIKA-XAJY*)           _x='JSL|Gateway Chromebook 14' ; device="pirika" ;;
 	PRIMUS*)                _x='ADL|Lenovo ThinkPad C14 Gen 1 Chromebook'; device="primus" ;;
 	PUJJOFLEX*)             _x='ADN|Lenovo IdeaPad Flex 3i Chromebook'; device="pujjoflex" ;;
-	PUJJOTEEN | PUJJOTEEN*-CZPM* | PUJJOTEEN*-JQLW*)
+	PUJJOTEEN | PUJJOTEEN*-CZPM*)
 	                        _x='ADN|Lenovo 14e Chromebook Gen 3'; device="pujjoteen" ;;
-	PUJJOTEEN*-KCBW* | PUJJOTEEN15W)
+	PUJJOTEEN*-KCBW* | PUJJOTEEN*-JQLW* | PUJJOTEEN15W)
 	                        _x='ADN|Lenovo Ideapad Slim 3i Chromebook'; device="pujjoteen15w" ;;
 	PUJJO-DCCV*)            _x='ADN|Lenovo Flex 3i Chromebook 12"'; device="pujjo" ;;
 	PUJJO-KTLR*)            _x='ADN|Lenovo 500e Yoga Chromebook Gen 4'; device="pujjo" ;;
