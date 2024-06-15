@@ -85,11 +85,11 @@ cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'genesis' 'kaisa' 'noibat' 'puff
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
 		   'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
-jsl=('beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'bugzzy' 'cret' 'cret360' \
-	 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
+jsl=('beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'boxy' 'bugzzy' 'cret' 'cret360' \
+	 'dexi' 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
 	 'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' \
 	 'maglet' 'maglia' 'maglith' 'magma' 'magneto' 'magolor' 'magpie' 'metaknight' 'pasara' \
-	 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360')
+	 'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360' 'taranza')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
 	 'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
@@ -589,6 +589,10 @@ case "${_hwid}" in
 	BANSHEE*)               _x='ADL|Framework Chromebook' ;;
 	BARD*)                  _x='KBL|Acer Chromebook 715 (CB715)' ; device="nami";;
 	BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ;;
+	BEADRIX-GPPJ*)          _x='JSL|DINATECH Gen1 Chromebook  SG20JL1C'; device=beadrix;;
+	BEADRIX-RIJZ*)          _x='JSL|Multilaser Chromebook M11C-PC919'; device=beadrix;;
+	BEADRIX-XYBG*)          _x='JSL|Allied Chromebook 11 N5100E'; device=beadrix;;
+	BEADRIX*)               _x='JSL|Beadrix JSL Chromebook'; device=beadrix;;
 	BERKNIP*)               _x='PCO|HP Pro c645 Chromebook Enterprise' ; device='berknip' ;;
 	BLACKTIP*)              _x='APL|White Label Chrombook' ; device="blacktip";;
 	BLEEMO*)                _x='KBL|Asus Chromebox 3 / CN65 (Core i7)' ; device="fizz";;
@@ -605,6 +609,7 @@ case "${_hwid}" in
 	BOOKEM*)                _x='JSL|Lenovo 100e Chromebook Gen 3' ;;
 	BOTENFLEX*)             _x='JSL|Lenovo Flex 3i/3i-11 Chromebook' ;;
 	BOTEN*)                 _x='JSL|Lenovo 500e Chromebook Gen 3' ;;
+	BOXY*)                  _x='JSL|Lenovo Chromebox Micro'; device=boxy;;
 	BRUCE*)                 _x='APL|Acer Chromebook Spin 15 [CP315]' ;;
 	BUDDY*)                 _x='BDW|Acer Chromebase 24' ;;
 	BUGZZY*)                _x='JSL|Samsung Galaxy Chromebook 2 360' ;;
@@ -634,6 +639,7 @@ case "${_hwid}" in
 	CYAN*)                  _x='BSW|Acer Chromebook R11 (C738T)' ;;
 	DELBIN*)                _x='TGL|ASUS Chromebook Flip CX55/CX5500/C536' ;;
 	DEWATT*)                _x='CZN|Acer Chromebook Spin 514'; device="dewatt" ;;
+	DEXI*)                  _x='JSL|AOPEN Chromebox Mini 2'; device=dexi;;
 	DIRINBOZ*)              _x='PCO|HP Chromebook 14a' ; device='dirinboz' ;;
 	DOOD*)                  _x='GLK|NEC Chromebook Y2';;
 	DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
@@ -803,6 +809,12 @@ case "${_hwid}" in
 	PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
 	PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
 	PASARA*)                _x='JSL|Gateway Chromebook 15' ; device=pasara;;
+	PEEZER-EUBP*)           _x='JSL|Multilaser Chromebook M11C-PC924'; device=peezer;;
+	PEEZER-FYEL*)           _x='JSL|CTL Chromebook PX11EG'; device=peezer;;
+	PEEZER-LXVK*)           _x='JSL|Acer Chromebook 311(CO731)'; device=peezer;;
+	PEEZER-PKZD*)           _x='JSL|Edxis E-Lite Chromebook 11'; device=peezer;;
+	PEEZER-UGDD*)           _x='JSL|CA11J2'; device=peezer;;
+	PEEZER*)                _x='JSL|Peezer JSL Chromebook'; device=peezer;;
 	PEPPY*)                 _x='HSW|Acer C720/C720P Chromebook' ;;
 	PHASER360*)             _x='GLK|Lenovo 300e/500e Chromebook 2nd Gen' ;;
 	PHASER*)                _x='GLK|Lenovo 100e Chromebook 2nd Gen' ;;
@@ -810,10 +822,11 @@ case "${_hwid}" in
 	PIRETTE-NGVJ*)          _x='JSL|SPC Chromebook Z1 Mini' ; device="pirette" ;;
 	PIRETTE-RVKU*)          _x='JSL|CTL Chromebook PX11E' ; device="pirette" ;;
 	PIRETTE-UBKE*)          _x='JSL|Zyrex Chromebook M432-2' ; device="pirette" ;;
-	PIRETTE*)               _x='JSL|White Label Pirette Chromebook' ; device="pirette" ;;
+	PIRETTE*)               _x='JSL|Pirette JSL Chromebook' ; device="pirette" ;;
 	PIRIKA-BMAD*)           _x='JSL|CTL Chromebook PX14E/PX14EX/PX14EXT' ; device="pirika" ;;
 	PIRIKA-NPXS*)           _x='JSL|Axioo Chromebook P14' ; device="pirika" ;;
 	PIRIKA-XAJY*)           _x='JSL|Gateway Chromebook 14' ; device="pirika" ;;
+	PIRIKA*)                _x='JSL|Pirika JSL Chromebook' ; device="pirika" ;;
 	PRIMUS*)                _x='ADL|Lenovo ThinkPad C14 Gen 1 Chromebook'; device="primus" ;;
 	PUJJOFLEX*)             _x='ADN|Lenovo IdeaPad Flex 3i Chromebook'; device="pujjoflex" ;;
 	PUJJOTEEN | PUJJOTEEN*-CZPM*)
@@ -875,6 +888,7 @@ case "${_hwid}" in
 	SYNDRA*)                _x='KBL|HP Chromebook 15 G1' ; device="nami";;
 	TAEKO*)                 _x='ADL|Lenovo Lenovo Flex 5i Chromebook 14"'; device="taeko" ;;
 	TANIKS*)                _x='ADL|Lenovo IdeaPad Gaming Chromebook 16'; device="taniks" ;;
+	TARANZA-RPOG*)          _x='JSL|ASUS Fanless Chromebox CF40'; device=taranza;;
 	TEEMO*)                 _x='KBL|Asus Chromebox 3 / CN65' ; device="fizz";;
 	TERRA_???-???-???-A*)   _x='BSW|ASUS Chromebook C202SA' ;;
 	TERRA_???-???-???-B*)   _x='BSW|ASUS Chromebook C300SA/C301SA' ;;
@@ -906,7 +920,7 @@ case "${_hwid}" in
 	WIZPIG_???-???-??G*)    _x='BSW|Prowise ProLine Chromebook' ;;
 	WIZPIG_???-???-??H*)    _x='BSW|PCMerge Chromebook PCM-116T-432B' ;;
 	WIZPIG_???-???-??I*)    _x='BSW|Multilaser M11C Chromebook' ;;
-	WIZPIG*)                _x='BSW|(unknown WIZPIG)' ;;
+	WIZPIG*)                _x='BSW|Wizpig BSW Chromebook' ;;
 	WOLF*)                  _x='HSW|Dell Chromebook 11' ;;
 	WOOMAX*)                _x='PCO|ASUS Chromebook Flip CM5' ; device='woomax' ;;
 	WUKONG_???-???-???-??C*) _x='KBL|ViewSonic NMP660 Chromebox' ; device="fizz";;
