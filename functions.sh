@@ -95,8 +95,10 @@ tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
 	 'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'vell' 'volmar' 'zavala' \
 	'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
-adl_n=('craask' 'craaskbowl' 'craaskvin' 'craasneto' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' \
-	 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' 'xivu' 'xivu360' 'yaviks' 'yavikso')
+adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskvin' 'craasneto' \
+	 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
+	 'quandiso' 'quandiso360' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
+	 'yavikso' 'yavilla' 'yavillay')
 
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 pco=('berknip' 'dirinboz' 'ezkinil' 'gumboz' 'jelboz360' 'morphius' 'vilboz' 'woomax')
@@ -574,6 +576,8 @@ case "${_hwid}" in
 	AMBASSADOR*)            _x='CML|CTL Meet Compute System GQE15C'; device="ambassador";;
 	AMPTON*)                _x='GLK|Asus Chromebook Flip C214/C234' ;;
 	ANAHERA*)               _x='ADL|HP Elite c640 14 inch G3 Chromebook'; device="anahera" ;;
+	ANRAGGAR360*)           _x='ADN|ASUS Chromebook CR12 flip'; device="anraggar360" ;;
+	ANRAGGAR*)              _x='ADN|ASUS Chromebook CR12'; device="anraggar" ;;
 	APELE*)                 _x='GLK|Asus Chromebook CX1101CMA' ; device="apel";;
 	APEL*)                  _x='GLK|Asus Chromebook Flip C204' ;;
 	ARCADA*)                _x='WHL|Dell Latitude 5300' ; device="sarien";;
@@ -627,8 +631,11 @@ case "${_hwid}" in
 	CONSTITUTION*)          _x='ADL|Google Meet Series Two' ; device="constitution" ;;
 	COPANO*)                _x='TGL|Asus Chromebook Flip CX5 (CX5400)' ;;
 	CORAL*)                 _x='APL|Incorrectly identified APL Chromebook' ;;
+	CRAASKANA*)             _x='ADN|Acer Chromebook 311'; device="craaskana" ;;
 	CRAASKBOWL*)            _x='ADN|Acer Chromebook Spin 511'; device="craaskbowl" ;;
+	CRAASKINO*)             _x='ADN|Acer Chromebook 315'; device=craaskino;;
 	CRAASKVIN*)             _x='ADN|Acer Chromebook 511'; device="craaskvin" ;;
+	CRAASNETO-KYVC*)        _x='ADN|Acer Chromebook Plus 514'; device=craasneto;;
 	CRAASNETO*)             _x='ADN|Acer Chromebook 314'; device="craasneto" ;;
 	CRAASK*)                _x='ADN|Acer Chromebook Spin 512'; device="craask" ;;
 	CRET360*)               _x='JSL|Dell Chromebook 3110 2-in-1' ;;
@@ -713,7 +720,7 @@ case "${_hwid}" in
 	JELBOZ360*)             _x='PCO|ASUS Chromebook Flip CM1 (CM1400)'; device="jelboz360" ;;
 	JINLON*)                _x='CML|HP Elite c1030 Chromebook / HP Chromebook x360 13c';;
 	JOXERO*)                _x='ADN|TBD'; device="joxero" ;;
-	JOXER*)                 _x='ADN|TBD'; device="joxer" ;;
+	JOXER*)                 _x='ADN|HP Chromebook x360'; device=joxer;;
 	KAISA*)                 _x='CML|Acer Chromebox CXI4' ;;
 	KANO*)                  _x='ADL|Acer Chromebook Spin 714 [CP714-1WN]'; device="kano" ;;
 	KARMA*)                 _x='KBL|Acer Chromebase 24I2' ;;
@@ -837,6 +844,8 @@ case "${_hwid}" in
 	PUJJO-KTLR*)            _x='ADN|Lenovo 500e Yoga Chromebook Gen 4'; device="pujjo" ;;
 	PUJJO*)                 _x='ADN|Lenovo 500e Yoga/Flex 3i Chromebook'; device="pujjo" ;;
 	PYRO*)                  _x='APL|Lenovo Thinkpad 11e/Yoga Chromebook (G4)' ;;
+	QUANDISO360*)           _x='ADN|CTL Chromebook NL73T'; device=quandiso360;;
+	QUANDISO*)              _x='ADN|CTL Chromebook NL73'; device=quandiso;;
 	QUAWKS*)                _x='BYT|ASUS Chromebook C300' ;;
 	RABBID*)                _x='APL|ASUS Chromebook C423' ;;
 	RAMMUS*)                _x='KBL|Asus Chromebook C425/C433/C434' ;;
@@ -897,6 +906,8 @@ case "${_hwid}" in
 	TREEYA360*)             _x='STR|Lenovo 300e Chromebook 2nd Gen AMD' ; device="treeya";;
 	TREEYA*)                _x='STR|Lenovo 100e Chromebook 2nd Gen AMD' ; device="treeya";;
 	TRICKY*)                _x='HSW|Dell Chromebox 3010' ;;
+	ULDREN360*)             _x='ADN|Dell Chromebook 3120 2-in-1'; device=uldren360;;
+	ULDREN*)                _x='ADN|Dell Chromebook 3120'; device=uldren;;
 	ULTIMA*)                _x='BSW|Lenovo ThinkPad 11e/Yoga Chromebook (G3)' ;;
 	VAYNE*)                 _x='KBL|Dell Inspiron Chromebook 14 (7486)'  ; device="nami";;
 	VELL*)                  _x='ADL|HP Dragonfly Pro Chromebook'; device="vell" ;;
@@ -928,8 +939,12 @@ case "${_hwid}" in
 	WYVERN*)                _x='CML|CTL Chromebox CBx2' ;;
 	XIVU360*)               _x='ADN|Asus Chroembook CR11 [CR1102F]'; device="xivu360" ;;
 	XIVU*)                  _x='ADN|Asus Chromebook CR11 [CR1102C]'; device="xivu" ;;
+	YAHIKO*)                _x='ADN|HP Chromebook 14a-nf0xxx'; device=yahiko;;
+	YAVIJO*)                _x='ADN|HP Fortis 14" G11 Chromebook'; device=yavijo;;
 	YAVIKSO*)               _x='ADN|TBD'; device="yavikso" ;;
-	YAVIKS*)                _x='ADN|HP Chromebook 15.6"'; device="yaviks" ;;
+	YAVIKS*)                _x='ADN|HP Chromebook 15.6"'; device=yaviks;;
+	YAVILLA*)               _x='ADN|HP Fortis 11" G10 Chromebook'; device=yavilla;;
+	YAVILLY*)               _x='ADN|HP Fortis x360 11" G5 Chromebook'; device=yavilly;;
 	YUNA*)                  _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ; device="auron_yuna";;
 	ZAKO*)                  _x='HSW|HP Chromebox CB1' ;;
 	ZAVALA*)                _x='ADL|Acer Chromebook Vero 712'; device="zavala" ;;
