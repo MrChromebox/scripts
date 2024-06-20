@@ -847,7 +847,7 @@ case "${_hwid}" in
 	QUANDISO360*)           _x='ADN|CTL Chromebook NL73T'; device=quandiso360;;
 	QUANDISO*)              _x='ADN|CTL Chromebook NL73'; device=quandiso;;
 	QUAWKS*)                _x='BYT|ASUS Chromebook C300' ;;
-	RABBID*)                _x='APL|ASUS Chromebook C423' ;;
+	RABBID*)                _x='APL|ASUS Chromebook C423/CX1400' ;;
 	RAMMUS*)                _x='KBL|Asus Chromebook C425/C433/C434' ;;
 	REDRIX4ES*)             _x='ADL|HP Elite Dragonfly Chromebook Ent'; device="redrix4es" ;;
 	REDRIX*)                _x='ADL|HP Elite Dragonfly Chromebook'; device="redrix" ;;
