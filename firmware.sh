@@ -1046,11 +1046,11 @@ function show_header() {
 	printf "\ec"
 	echo -e "${NORMAL}\n ChromeOS Device Firmware Utility Script ${script_date} ${NORMAL}"
 	echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
-	echo -e "${MENU}*********************************************************${NORMAL}"
-	echo -e "${MENU}**${NUMBER}   Device: ${NORMAL}${deviceDesc} (${boardName^^})"
-	echo -e "${MENU}**${NUMBER} Platform: ${NORMAL}$deviceCpuType"
-	echo -e "${MENU}**${NUMBER}  Fw Type: ${NORMAL}$firmwareType"
-	echo -e "${MENU}**${NUMBER}   Fw Ver: ${NORMAL}$fwVer ($fwDate)"
+	echo -e "${MENU}**${NUMBER}     Device: ${NORMAL}${deviceDesc}"
+	echo -e "${MENU}**${NUMBER} Board Name: ${NORMAL}${boardName^^}"
+	echo -e "${MENU}**${NUMBER}   Platform: ${NORMAL}$deviceCpuType"
+	echo -e "${MENU}**${NUMBER}    Fw Type: ${NORMAL}$firmwareType"
+	echo -e "${MENU}**${NUMBER}     Fw Ver: ${NORMAL}$fwVer ($fwDate)"
 	if [[ $isUEFI = true && $hasUEFIoption = true ]]; then
 		# check if update available
 		curr_yy=$(echo $fwDate | cut -f 3 -d '/')
@@ -1068,10 +1068,10 @@ function show_header() {
 		fi
 	fi
 	if [ "$wpEnabled" = true ]; then
-		echo -e "${MENU}**${NUMBER}    Fw WP: ${RED_TEXT}Enabled${NORMAL}"
+		echo -e "${MENU}**${NUMBER}      Fw WP: ${RED_TEXT}Enabled${NORMAL}"
 		WP_TEXT=${RED_TEXT}
 	else
-		echo -e "${MENU}**${NUMBER}    Fw WP: ${NORMAL}Disabled"
+		echo -e "${MENU}**${NUMBER}      Fw WP: ${NORMAL}Disabled"
 		WP_TEXT=${GREEN_TEXT}
 	fi
 	echo -e "${MENU}*********************************************************${NORMAL}"
