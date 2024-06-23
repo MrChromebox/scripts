@@ -1122,7 +1122,7 @@ function stock_menu() {
 	case $opt in
 
 		1)  if [[ "$unlockMenu" = true || "$isEOL" = false && ("$isChromeOS" = true && "$isCmlBook" = false \
-					|| "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false) ]]; then
+					&& "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false) ]]; then
 				flash_rwlegacy
 			elif [[ "$isEOL" = "true" ]]; then
 				echo_red "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life"
