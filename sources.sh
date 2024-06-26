@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-06-22]"
+export script_date="[2024-06-25]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -179,7 +179,7 @@ export coreboot_uefi_duffy="coreboot_edk2-duffy-mrchromebox_20240615.rom"
 export coreboot_uefi_faffy="coreboot_edk2-faffy-mrchromebox_20240615.rom"
 export coreboot_uefi_genesis="coreboot_edk2-genesis-mrchromebox_20240615.rom"
 export coreboot_uefi_helios="coreboot_edk2-helios-mrchromebox_20240615.rom"
-export coreboot_uefi_jinlon="coreboot_edk2-jinlon-mrchromebox_20240615.rom"
+export coreboot_uefi_jinlon="coreboot_edk2-jinlon-mrchromebox_20240625.rom"
 export coreboot_uefi_kaisa="coreboot_edk2-kaisa-mrchromebox_20240615.rom"
 export coreboot_uefi_kindred="coreboot_edk2-kindred-mrchromebox_20240615.rom"
 export coreboot_uefi_kled="coreboot_edk2-kled-mrchromebox_20240615.rom"
