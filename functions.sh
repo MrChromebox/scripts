@@ -118,8 +118,7 @@ shellballs=($(printf "%s " \
 	'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
 	'dratini' 'rabbid' 'blooglet' 'shyvana' 'leona'))
 eol_devices=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
-		"${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" \
-		"${apl[@]}"))
+		"${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" ))
 
 #menu text output
 NORMAL=$(echo "\033[m")
