@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-07-06]"
+export script_date="[2024-07-10]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -331,11 +331,11 @@ export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20240615.rom"
 export coreboot_uefi_nipperkin="coreboot_edk2-nipperkin-mrchromebox_20240615.rom"
 
 #Mendocino
-export coreboot_uefi_crystaldrift="coreboot_edk2-crystaldrift-mrchromebox_20240415.rom"
-export coreboot_uefi_frostflow="coreboot_edk2-frostflow-mrchromebox_20240415.rom"
-export coreboot_uefi_markarth="coreboot_edk2-markarth-mrchromebox_20240415.rom"
-export coreboot_uefi_skyrim="coreboot_edk2-skyrim-mrchromebox_20240415.rom"
-export coreboot_uefi_whiterun="coreboot_edk2-whiterun-mrchromebox_20240415.rom"
+export coreboot_uefi_crystaldrift="coreboot_edk2-crystaldrift-mrchromebox_20240710.rom"
+export coreboot_uefi_frostflow="coreboot_edk2-frostflow-mrchromebox_20240710.rom"
+export coreboot_uefi_markarth="coreboot_edk2-markarth-mrchromebox_20240710.rom"
+export coreboot_uefi_skyrim="coreboot_edk2-skyrim-mrchromebox_20240710.rom"
+export coreboot_uefi_whiterun="coreboot_edk2-whiterun-mrchromebox_20240710.rom"
 
 
 #RW_LEGACY payloads
