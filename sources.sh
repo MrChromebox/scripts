@@ -14,19 +14,6 @@ export shellball_source="https://www.mrchromebox.tech/files/firmware/shellball/"
 export cbfs_source="https://www.mrchromebox.tech/files/firmware/cbfs/"
 export other_source="https://www.mrchromebox.tech/files/firmware/other/"
 
-#LE sources
-export LE_url_official="http://releases.libreelec.tv/"
-export LE_url=${LE_url_official}
-export chrx_url="https://chrx.org/go"
-
-#LE version
-export LE_version_base="LibreELEC-Generic.x86_64"
-export LE_version_stable="11.0.1"
-export LE_version_latest="11.0.1"
-
-#syslinux version
-export syslinux_version="syslinux-6.04-pre1"
-
 #UEFI Full ROMs
 #SNB/IVB
 export coreboot_uefi_butterfly="coreboot_edk2-butterfly-mrchromebox_20240615.rom"
