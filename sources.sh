@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-07-10]"
+export script_date="[2024-07-12]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -246,16 +246,16 @@ export coreboot_uefi_crota360="coreboot_edk2-crota360-mrchromebox_20240615.rom"
 export coreboot_uefi_felwinter="coreboot_edk2-felwinter-mrchromebox_20240615.rom"
 export coreboot_uefi_gimble="coreboot_edk2-gimble-mrchromebox_20240615.rom"
 export coreboot_uefi_kano="coreboot_edk2-kano-mrchromebox_20240615.rom"
-export coreboot_uefi_marasov="coreboot_edk2-marasov-mrchromebox_20240615.rom"
+export coreboot_uefi_marasov="coreboot_edk2-marasov-mrchromebox_20240712.rom"
 export coreboot_uefi_mithrax="coreboot_edk2-mithrax-mrchromebox_20240615.rom"
-export coreboot_uefi_omnigul="coreboot_edk2-omnigul-mrchromebox_20240615.rom"
+export coreboot_uefi_omnigul="coreboot_edk2-omnigul-mrchromebox_20240712.rom"
 export coreboot_uefi_osiris="coreboot_edk2-osiris-mrchromebox_20240615.rom"
 export coreboot_uefi_primus="coreboot_edk2-primus-mrchromebox_20240615.rom"
 export coreboot_uefi_redrix="coreboot_edk2-redrix-mrchromebox_20240615.rom"
 export coreboot_uefi_redrix4es="coreboot_edk2-redrix4es-mrchromebox_20240615.rom"
 export coreboot_uefi_taeko="coreboot_edk2-taeko-mrchromebox_20240615.rom"
 export coreboot_uefi_taniks="coreboot_edk2-taniks-mrchromebox_20240615.rom"
-export coreboot_uefi_vell="coreboot_edk2-vell-mrchromebox_20240615.rom"
+export coreboot_uefi_vell="coreboot_edk2-vell-mrchromebox_20240712.rom"
 export coreboot_uefi_volmar="coreboot_edk2-volmar-mrchromebox_20240615.rom"
 export coreboot_uefi_zavala="coreboot_edk2-zavala-mrchromebox_20240615.rom"
 #alderlake (brask)
