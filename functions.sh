@@ -338,7 +338,7 @@ function prelim_setup()
 
 #must be x86_64
 [ "$(uname -m)"  = 'x86_64' ] \
-	|| die "This script only supports 64-bit OS on Intel-based devices; ARM devices are not supported."
+	|| die "This script only supports 64-bit OS on x86_64-based devices; ARM devices are not supported."
 
 #check for required tools
 which dmidecode > /dev/null 2>&1
@@ -364,7 +364,7 @@ diagnostic_report_set device "$device"
 
 if [[ $? -ne 0 || "${device}" = "" ]]; then
 	echo_red "Unable to determine Chromebox/book model; cannot continue."
-	echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,\nonly Intel-based devices are supported at this time."
+	echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,\nonly x86_64-based devices are supported at this time."
         echo_red "Please note that WSL (Windows Subsystem for Linux) is not supported and NEVER will. Run this from a Linux Live USB instead."
 	return 1
 fi
