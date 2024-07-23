@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-07-12]"
+export script_date="[2024-07-23]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -18,7 +18,7 @@ export other_source="https://www.mrchromebox.tech/files/firmware/other/"
 #SNB/IVB
 export coreboot_uefi_butterfly="coreboot_edk2-butterfly-mrchromebox_20240615.rom"
 export coreboot_uefi_lumpy="coreboot_edk2-lumpy-mrchromebox_20240615.rom"
-export coreboot_uefi_link="coreboot_edk2-link-mrchromebox_20240615.rom"
+export coreboot_uefi_link="coreboot_edk2-link-mrchromebox_20240723.rom"
 export coreboot_uefi_parrot="coreboot_edk2-parrot-mrchromebox_20240615.rom"
 export coreboot_uefi_stout="coreboot_edk2-stout-mrchromebox_20240615.rom"
 export coreboot_uefi_stumpy="coreboot_edk2-stumpy-mrchromebox_20240615.rom"
