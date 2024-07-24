@@ -466,7 +466,7 @@ if [ $? -ne 0 ]; then
 		fi
 	fi
 	echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,\nor trying running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
-	echo_red "See https://www.flashrom.org/FAQ for more info."
+	echo_red "If you have UEFI SecureBoot enabled, you need to disable it to run the script/update your firmware."
 	return 1;
 fi
 
