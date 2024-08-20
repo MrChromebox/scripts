@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-07-23]"
+export script_date="[2024-08-20]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -260,7 +260,7 @@ export coreboot_uefi_volmar="coreboot_edk2-volmar-mrchromebox_20240615.rom"
 export coreboot_uefi_zavala="coreboot_edk2-zavala-mrchromebox_20240615.rom"
 #alderlake (brask)
 export coreboot_uefi_constitution="coreboot_edk2-constitution-mrchromebox_20240615.rom"
-export coreboot_uefi_kinox="coreboot_edk2-kinox-mrchromebox_20240615.rom"
+export coreboot_uefi_kinox="coreboot_edk2-kinox-mrchromebox_20240820.rom"
 export coreboot_uefi_kuldax="coreboot_edk2-kuldax-mrchromebox_20240615.rom"
 export coreboot_uefi_lisbon="coreboot_edk2-lisbon-mrchromebox_20240615.rom"
 export coreboot_uefi_moli="coreboot_edk2-moli-mrchromebox_20240615.rom"
