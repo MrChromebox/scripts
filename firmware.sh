@@ -1046,6 +1046,7 @@ function show_header() {
 	printf "\ec"
 	echo -e "${NORMAL}\n ChromeOS Device Firmware Utility Script ${script_date} ${NORMAL}"
 	echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
+	echo -e "${MENU}*********************************************************${NORMAL}"
 	echo -e "${MENU}**${NUMBER}     Device: ${NORMAL}${deviceDesc}"
 	echo -e "${MENU}**${NUMBER} Board Name: ${NORMAL}${boardName^^}"
 	echo -e "${MENU}**${NUMBER}   Platform: ${NORMAL}$deviceCpuType"
@@ -1064,7 +1065,7 @@ function show_header() {
 		if [[ ("$firmwareType" != *"pending"*) && (($uefi_yy > $curr_yy) || \
 			("$uefi_yy" = "$curr_yy" && "$uefi_mm" > "$curr_mm") || \
 			("$uefi_yy" = "$curr_yy" && "$uefi_mm" = "$curr_mm" && "$uefi_dd" > "$curr_dd")) ]]; then
-			echo -e "${MENU}**${NORMAL}           ${GREEN_TEXT}Update Available ($uefi_mm/$uefi_dd/$uefi_yy)${NORMAL}"
+			echo -e "${MENU}**${NORMAL}             ${GREEN_TEXT}Update Available ($uefi_mm/$uefi_dd/$uefi_yy)${NORMAL}"
 		fi
 	fi
 	if [ "$wpEnabled" = true ]; then
