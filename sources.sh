@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-09-08]"
+export script_date="[2024-09-10]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -176,19 +176,19 @@ export coreboot_uefi_noibat="coreboot_edk2-noibat-mrchromebox_20240908.rom"
 export coreboot_uefi_wyvern="coreboot_edk2-wyvern-mrchromebox_20240908.rom"
 
 #Tigerlake
-export coreboot_uefi_chronicler="coreboot_edk2-chronicler-mrchromebox_20240908.rom"
-export coreboot_uefi_collis="coreboot_edk2-collis-mrchromebox_20240908.rom"
-export coreboot_uefi_copano="coreboot_edk2-copano-mrchromebox_20240908.rom"
-export coreboot_uefi_delbin="coreboot_edk2-delbin-mrchromebox_20240908.rom"
-export coreboot_uefi_drobit="coreboot_edk2-drobit-mrchromebox_20240908.rom"
-export coreboot_uefi_eldrid="coreboot_edk2-eldrid-mrchromebox_20240908.rom"
-export coreboot_uefi_elemi="coreboot_edk2-elemi-mrchromebox_20240908.rom"
-export coreboot_uefi_lillipup="coreboot_edk2-lillipup-mrchromebox_20240908.rom"
-export coreboot_uefi_lindar="coreboot_edk2-lindar-mrchromebox_20240908.rom"
-export coreboot_uefi_voema="coreboot_edk2-voema-mrchromebox_20240908.rom"
-export coreboot_uefi_volet="coreboot_edk2-volet-mrchromebox_20240908.rom"
-export coreboot_uefi_volta="coreboot_edk2-volta-mrchromebox_20240908.rom"
-export coreboot_uefi_voxel="coreboot_edk2-voxel-mrchromebox_20240908.rom"
+export coreboot_uefi_chronicler="coreboot_edk2-chronicler-mrchromebox_20240910.rom"
+export coreboot_uefi_collis="coreboot_edk2-collis-mrchromebox_20240910.rom"
+export coreboot_uefi_copano="coreboot_edk2-copano-mrchromebox_20240910.rom"
+export coreboot_uefi_delbin="coreboot_edk2-delbin-mrchromebox_20240910.rom"
+export coreboot_uefi_drobit="coreboot_edk2-drobit-mrchromebox_20240910.rom"
+export coreboot_uefi_eldrid="coreboot_edk2-eldrid-mrchromebox_20240910.rom"
+export coreboot_uefi_elemi="coreboot_edk2-elemi-mrchromebox_20240910.rom"
+export coreboot_uefi_lillipup="coreboot_edk2-lillipup-mrchromebox_20240910.rom"
+export coreboot_uefi_lindar="coreboot_edk2-lindar-mrchromebox_20240910.rom"
+export coreboot_uefi_voema="coreboot_edk2-voema-mrchromebox_20240910.rom"
+export coreboot_uefi_volet="coreboot_edk2-volet-mrchromebox_20240910.rom"
+export coreboot_uefi_volta="coreboot_edk2-volta-mrchromebox_20240910.rom"
+export coreboot_uefi_voxel="coreboot_edk2-voxel-mrchromebox_20240910.rom"
 
 #Jasperlake
 export coreboot_uefi_beadrix="coreboot_edk2-beadrix-mrchromebox_20240908.rom"
