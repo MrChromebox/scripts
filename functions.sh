@@ -360,7 +360,7 @@ fi
 
 #get device name
 device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}')
-diagnostic_report_set device "$device"
+diagnostic_report_set dmidecode.device "$device"
 
 if [[ $? -ne 0 || "${device}" = "" ]]; then
 	echo_red "Unable to determine Chromebox/book model; cannot continue."
@@ -551,22 +551,25 @@ fi
 
 diagnostic_report_set firmwareType "$firmwareType"
 
-#get full device info
-if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
-	_hwid=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g' | sed 's/ /_/g')
-	boardName=$(crossystem hwid | sed 's/X86//g' | sed 's/ *$//g'| awk 'NR==1{print $1}' | cut -f 1 -d'-')
-	device=${boardName,,}
-elif echo "$firmwareType" | grep -e "Stock" -e "LEGACY"; then
-	# Stock + RW_LEGACY: read HWID from GBB
-	_hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed -E 's/X86 ?//g' | cut -f 2 -d' ')
-	boardName=${_hwid^^}
- 	device=${boardName,,}
+# Get/set HWID, boardname, device
+if echo "$firmwareType" | grep -e "Stock"; then
+        if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
+                # Stock ChromeOS
+                _hwid=$(crossystem hwid)
+        else
+        	# Stock + RW_LEGACY: read HWID from GBB
+        	_hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed -E 's/hardware_id: //g')
+        fi
+        _hwid=$(echo "$_hwid" | sed -E 's/X86//g' | sed -E 's/ *$//g' | sed -E 's/ /_/g')
+        boardName=$(echo "${_hwid^^}" | cut -f1 -d '-' | cut -f1 -d '_')
+        device=${boardName,,}
 else
-	_hwid=${device^^}
-	boardName=${device^^}
+        _hwid=${device^^}
+        boardName=${device^^}
 fi
 
 diagnostic_report_set _hwid "$_hwid"
+diagnostic_report_set boardName "$boardName"
 
 case "${_hwid}" in
 	AKALI*)                 _x='KBL|Acer Chromebook 13 / Spin 13' ; device="nami";;
