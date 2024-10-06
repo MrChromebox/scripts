@@ -278,12 +278,16 @@ and you need to recover using an external EEPROM programmer. [Y/n] "
     #download firmware file
     cd /tmp || { exit_red "Error changing to tmp dir; cannot proceed"; return 1; }
     echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
-    $CURL -sLO "${firmware_source}${coreboot_file}"
-    $CURL -sLO "${firmware_source}${coreboot_file}.sha1"
+    if ! $CURL -sLO "${firmware_source}${coreboot_file}"; then
+        exit_red "Firmware download failed; cannot flash. curl error code $?"; return 1
+    fi
+    if ! $CURL -sLO "${firmware_source}${coreboot_file}.sha1"; then
+        exit_red "Firmware checksum download failed; cannot flash."; return 1
+    fi
 
     #verify checksum on downloaded file
     if ! sha1sum -c "${coreboot_file}.sha1" --quiet > /dev/null 2>&1; then
-        exit_red "Firmware download checksum fail; download corrupted, cannot flash."; return 1
+        exit_red "Firmware image checksum verification failed; download corrupted, cannot flash."; return 1
     fi
 
     #persist serial number?
