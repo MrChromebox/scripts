@@ -50,7 +50,6 @@ isUEFI=false
 hasRwLegacy=false
 unlockMenu=false
 hasUEFIoption=false
-hasShellball=false
 wpEnabled=false
 hasLAN=false
 hasCR50=false
@@ -113,10 +112,6 @@ UEFI_ROMS=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" 
     "${skylake[@]}" "${kbl[@]}" "${purism[@]}" "${str[@]}" "${cml[@]}" \
     "${glk[@]}" "${apl[@]}" "${tgl[@]}" "${jsl[@]}" "${adl[@]}" "${adl_n[@]}" \
     "${pco[@]}" "${czn[@]}" "${mdn[@]}" ))
-shellballs=($(printf "%s " \
-    "${skylake[@]}" 'atlas' 'eve' 'nautilus' 'nocturne' 'pantheon' 'sona' 'soraka' \
-    'teemo' 'sion' 'vayne' 'careena' 'liara' 'akemi' 'kohaku' 'barla' 'babytiger' \
-    'dratini' 'rabbid' 'blooglet' 'shyvana' 'leona'))
 eol_devices=($(printf "%s " "${hsw_boxes[@]}" "${hsw_books[@]}" "${bdw_boxes[@]}" \
         "${bdw_books[@]}" "${baytrail[@]}" "${snb_ivb[@]}" "${braswell[@]}" "${skylake[@]}" ))
 
@@ -1014,7 +1009,6 @@ diagnostic_report_set deviceCpuType.Name "$deviceCpuType"
 [[ "${adl_n[@]}" =~ "$device" ]] && isAdlN=true
 [[ "${cml_boxes[@]}" =~ "$device" ]] && isCmlBox=true
 [[ "${cml_books[@]}" =~ "$device" ]] && isCmlBook=true
-[[ "${shellballs[@]}" =~ "${boardName,,}" ]] && hasShellball=true
 [[ "${UEFI_ROMS[@]}" =~ "$device" ]] && hasUEFIoption=true
 [[ "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true \
     || "$isSkl" = true || "$isSnbIvb" = true || "$isApl" = true \

@@ -262,7 +262,7 @@ Please select the number for the correct option from the list below:"
 
     # create backup if existing firmware is stock
     if [[ "$isStock" = "true" ]]; then
-        if [[ "$hasShellball" = "false" && "$isEOL" = "false" ]]; then
+        if [[ "$isEOL" = "false" ]]; then
             REPLY=y
         else
             echo_yellow "\nCreate a backup copy of your stock firmware?"
@@ -489,9 +489,8 @@ other than the latest UEFI Full ROM firmware release."
 
     echo -e ""
     echo_yellow "Please select an option below for restoring the stock firmware:"
-    echo -e "1) Restore using a shellball image (downloaded) [if available]"
-    echo -e "2) Restore using a firmware backup on USB"
-    echo -e "3) Restore using a ChromeOS Recovery USB"
+    echo -e "1) Restore using a firmware backup on USB"
+    echo -e "2) Restore using a ChromeOS Recovery USB"
     echo -e "Q) Quit and return to main menu"
     echo -e ""
 
@@ -501,19 +500,10 @@ other than the latest UEFI Full ROM firmware release."
         read -rep "? " restore_option
         case $restore_option in
 
-            1)  if [[ "$hasShellball" = "true" ]]; then
-                    restore_fw_from_shellball || return 1;
-                    break;
-                else
-                    echo -e "\nUnfortunately I don't have a stock firmware available to download for '${boardName^^}'
-at this time. Please select another option from the menu.\n";
-                fi
-                ;;
-
-            2)  restore_fw_from_usb || return 1;
+            1)  restore_fw_from_usb || return 1;
                 break;
                 ;;
-            3)  restore_fw_from_recovery || return 1;
+            2)  restore_fw_from_recovery || return 1;
                 break;
                 ;;
             Q|q) restore_option="Q";
@@ -523,22 +513,22 @@ at this time. Please select another option from the menu.\n";
     done
     [[ "$restore_option" = "Q" ]] && return
 
-    if [[ $restore_option -ne 2 ]]; then
+    if [[ $restore_option -eq 2 ]]; then
         #extract VPD from current firmware if present
         if extract_vpd /tmp/bios.bin ; then
-            #merge with shellball/recovery image firmware
+            #merge with recovery image firmware
             if [ -f /tmp/vpd.bin ]; then
-                echo_yellow "Merging VPD into shellball/recovery image firmware"
+                echo_yellow "Merging VPD into recovery image firmware"
                 ${cbfstoolcmd} ${firmware_file} write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1
             fi
         fi
 
         #extract hwid from current firmware if present
         if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt > /dev/null 2>&1; then
-            #merge with shellball/recovery image firmware
+            #merge with recovery image firmware
             hwid="$(sed 's/^hardware_id: //' /tmp/hwid.txt 2>/dev/null)"
             if [[ "$hwid" != "" ]]; then
-                echo_yellow "Injecting HWID into shellball/recovery image firmware"
+                echo_yellow "Injecting HWID into recovery image firmware"
                 ${gbbutilitycmd} ${firmware_file} --set --hwid="$hwid" > /dev/null 2>&1
             fi
         fi
@@ -621,66 +611,6 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
         echo -e ""
 }
 
-function restore_fw_from_shellball()
-{
-    #download firmware extracted from recovery image
-    echo_yellow "\nThat's ok, I'll download a shellball firmware for you."
-
-    if [ "${boardName^^}" = "PANTHER" ]; then
-        echo -e "Which device do you have?\n"
-        echo "1) Asus CN60 [PANTHER]"
-        echo "2) HP CB1 [ZAKO]"
-        echo "3) Dell 3010 [TRICKY]"
-        echo "4) Acer CXI [MCCLOUD]"
-        echo "5) LG Chromebase [MONROE]"
-        echo ""
-        read -rep "? " fw_num
-        if [[ $fw_num -lt 1 ||  $fw_num -gt 5 ]]; then
-            exit_red "Invalid input - cancelling"
-            return 1
-        fi
-        #confirm menu selection
-        echo -e ""
-        read -rep "Confirm selection number ${fw_num} [y/N] "
-        [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || { exit_red "User cancelled restoring stock firmware"; return; }
-
-        #download firmware file
-        echo -e ""
-        case "$fw_num" in
-            1) _device="panther";
-                ;;
-            2) _device="zako";
-                ;;
-            3) _device="tricky";
-                ;;
-            4) _device="mccloud";
-                ;;
-            5) _device="monroe";
-                ;;
-        esac
-    else
-        #confirm device detection
-        echo_yellow "Confirm system details:"
-        echo -e "Device: ${deviceDesc}"
-        echo -e "Board Name: ${boardName^^}"
-        echo -e ""
-        read -rep "? [y/N] "
-        if [[ "$REPLY" != "y" && "$REPLY" != "Y" ]]; then
-            exit_red "Device detection failed; unable to restoring stock firmware"
-            return 1
-        fi
-        echo -e ""
-        _device=${boardName,,}
-    fi
-
-    #download shellball ROM
-    echo_yellow "Downloading shellball.${_device}.bin"
-    if ! $CURL -sLo ${firmware_file} ${shellball_source}shellball.${_device}.bin; then
-        exit_red "Error downloading; unable to restore stock firmware."
-        return 1
-    fi
-}
-
 function restore_fw_from_recovery()
 {
     echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
@@ -696,7 +626,7 @@ function restore_fw_from_recovery()
     done
     usb_device="${usb_devs[${usb_dev_index}-1]}"
     echo -e ""
-    if ! extract_shellball_from_recovery_usb ${boardName,,} $usb_device ; then
+    if ! extract_firmware_from_recovery_usb ${boardName,,} $usb_device ; then
         exit_red "Error: failed to extract firmware from ChromeOS recovery USB"
         return 1
     fi
@@ -709,18 +639,18 @@ function restore_fw_from_recovery()
 ######################################
 # Extract firmware from recovery usb #
 ######################################
-function extract_shellball_from_recovery_usb()
+function extract_firmware_from_recovery_usb()
 {
     _board=$1
     _debugfs=${2}3
-    _shellball=chromeos-firmwareupdate-$_board
+    _firmware=chromeos-firmwareupdate-$_board
     _unpacked=$(mktemp -d)
 
     echo_yellow "Extracting firmware from recovery USB"
-    printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_shellball\nquit" | debugfs $_debugfs >/dev/null 2>&1
+    printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_firmware\nquit" | debugfs $_debugfs >/dev/null 2>&1
 
-    if ! sh $_shellball --unpack $_unpacked >/dev/null 2>&1; then
-        sh $_shellball --sb_extract $_unpacked >/dev/null 2>&1
+    if ! sh $_firmware --unpack $_unpacked >/dev/null 2>&1; then
+        sh $_firmware --sb_extract $_unpacked >/dev/null 2>&1
     fi
 
     if [ -d $_unpacked/models/ ]; then
@@ -729,7 +659,7 @@ function extract_shellball_from_recovery_usb()
             _version=$(cat $_unpacked/VERSION | grep -m 1 -e Model.*$_board -A5 | grep "BIOS version:" | cut -f2 -d: | tr -d \ )
         fi
           if ! _bios_image=$(grep "IMAGE_MAIN" $_unpacked/models/$_board/setvars.sh | cut -f2 -d\"); then
-                exit_red "Error: failed to find a shellball image for $_board on this recovery USB"; return 1
+                exit_red "Error: failed to find a firmware image for $_board on this recovery USB"; return 1
                fi
     else
         _version=$(cat $_unpacked/VERSION | grep BIOS\ version: | cut -f2 -d: | tr -d \ )
@@ -737,7 +667,7 @@ function extract_shellball_from_recovery_usb()
     fi
     cp $_unpacked/$_bios_image coreboot-$_version.bin
     rm -rf "$_unpacked"
-    rm $_shellball
+    rm $_firmware
 }
 
 
@@ -929,91 +859,6 @@ Proceed at your own risk."
     read -rep "Press [Enter] to return to the main menu."
 }
 
-
-##################
-# Remove Bitmaps #
-##################
-function remove_bitmaps()
-{
-    # remove bitmaps from GBB using gbb_utility
-
-    # ensure hardware write protect disabled
-    [[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot remove bitmaps."; return 1; }
-
-    echo_green "\nRemove ChromeOS Boot Screen Bitmaps"
-
-    read -rep "Confirm removing ChromeOS bitmaps? [y/N] " confirm
-    if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
-        echo_yellow "\nRemoving bitmaps..."
-        #disable software write-protect
-        if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
-            exit_red "Error disabling software write-protect; unable to remove bitmaps."; return 1
-        fi
-        #read GBB region
-        if ! ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
-            exit_red "\nError reading firmware (non-stock?); unable to remove bitmaps."; return 1
-        fi
-        touch /tmp/null-images > /dev/null 2>&1
-        #set bitmaps to null
-        if ! ${gbbutilitycmd} --set --bmpfv=/tmp/null-images /tmp/gbb.temp > /dev/null 2>&1; then
-            exit_red "\nError removing bitmaps."; return 1
-        fi
-        #flash back to board
-        if ! ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
-            exit_red "\nError writing back firmware; unable to remove bitmaps."; return 1
-        fi
-
-        echo_green "ChromeOS bitmaps successfully removed."
-    fi
-    read -rep "Press [Enter] to return to the main menu."
-}
-
-
-##################
-# Restore Bitmaps #
-##################
-function restore_bitmaps()
-{
-    # restore bitmaps from GBB using gbb_utility
-
-    # ensure hardware write protect disabled
-    [[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot restore bitmaps."; return 1; }
-
-    echo_green "\nRestore ChromeOS Boot Screen Bitmaps"
-
-    read -rep "Confirm restoring ChromeOS bitmaps? [y/N] " confirm
-    if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
-        echo_yellow "\nRestoring bitmaps..."
-        #disable software write-protect
-        if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
-            exit_red "Error disabling software write-protect; unable to restore bitmaps."; return 1
-        fi
-        #download shellball
-        if ! $CURL -sLo /tmp/shellball.rom ${shellball_source}shellball.${device}.bin; then
-            exit_red "Error downloading shellball; unable to restore bitmaps."; return 1
-        fi
-        #extract GBB region, bitmaps
-        if ! ${cbfstoolcmd} /tmp/shellball.rom read -r GBB -f gbb.new >/dev/null 2>&1; then
-            exit_red "Error extracting GBB region from shellball; unable to restore bitmaps."; return 1
-        fi
-        if ! ${flashromcmd} -r -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
-            exit_red "\nError reading firmware (non-stock?); unable to restore bitmaps."; return 1
-        fi
-        #inject bitmaps into GBB
-        if ! ${gbbutilitycmd} --get --bmpfv=/tmp/bmpfv /tmp/gbb.new > /dev/null && \
-                ${gbbutilitycmd} --set --bmpfv=/tmp/bmpfv /tmp/gbb.temp > /dev/null; then
-            exit_red "\nError restoring bitmaps."; return 1
-        fi
-        #flash back to device
-        if ! ${flashromcmd} -w -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
-            exit_red "\nError writing back firmware; unable to restore bitmaps."; return 1
-        fi
-
-        echo_green "ChromeOS bitmaps successfully restored."
-    fi
-    read -rep "Press [Enter] to return to the main menu."
-}
-
 ###############
 # Clear NVRAM #
 ###############
@@ -1108,13 +953,8 @@ function stock_menu() {
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 3)${GRAY_TEXT} Set Boot Options (GBB flags)${NORMAL}"
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 4)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
     fi
-    if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-        ("$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true )) ]]; then
-        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 5)${MENU} Remove ChromeOS Bitmaps ${NORMAL}"
-        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 6)${MENU} Restore ChromeOS Bitmaps ${NORMAL}"
-    fi
     if [[ "$unlockMenu" = true || ( "$isChromeOS" = false  && "$isFullRom" = true ) ]]; then
-        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 7)${MENU} Restore Stock Firmware (full) ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 5)${MENU} Restore Stock Firmware (full) ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
@@ -1162,21 +1002,7 @@ function stock_menu() {
             menu_fwupdate
             ;;
 
-        5)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-                    ( "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true ) )  ]]; then
-                remove_bitmaps
-            fi
-            menu_fwupdate
-            ;;
-
-        6)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && \
-                    ( "$isHsw" = true || "$isBdw" = true || "$isByt" = true || "$isBsw" = true ) )  ]]; then
-                restore_bitmaps
-            fi
-            menu_fwupdate
-            ;;
-
-        7)  if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
+        5)  if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
                     && "$isFullRom" = true ]]; then
                 restore_stock_firmware
             fi
