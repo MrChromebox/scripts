@@ -234,7 +234,7 @@ function get_flashrom()
             #needed to avoid dependencies not found on older ChromeOS
             $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
         else
-            $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_ups_libpci37_20240418.tar.gz"
+            $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_ups_libpci37_20241114.tar.gz"
         fi
         if [[ $? -ne 0 ]]; then
             echo_red "Error downloading flashrom; cannot proceed."
