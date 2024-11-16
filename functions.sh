@@ -55,6 +55,7 @@ hasLAN=false
 hasCR50=false
 kbl_use_rwl18=false
 useAltfwStd=false
+isMusl=false
 
 snb_ivb=('butterfly' 'link' 'lumpy' 'parrot' 'stout' 'stumpy')
 hsw_boxes=('mccloud' 'panther' 'tricky' 'zako')
@@ -197,7 +198,13 @@ function get_cbfstool()
         cd $(dirname ${cbfstoolcmd})
 
         #echo_yellow "Downloading cbfstool utility"
-        $CURL -sLO "${util_source}cbfstool.tar.gz"
+        util_file=""
+        if [[ "$isMusl" = true ]]; then
+            util_file="cbfstool-musl.tar.gz"
+        else
+            util_file="cbfstool.tar.gz"
+        fi
+        $CURL -sLo "cbfstool.tar.gz" "${util_source}${util_file}"
         if [ $? -ne 0 ]; then
             echo_red "Error downloading cbfstool; cannot proceed."
             #restore working dir
@@ -230,13 +237,19 @@ function get_flashrom()
 
         cd $(dirname ${flashromcmd})
 
+        util_file=""
         if [[ "$isChromeOS" = true ]]; then
             #needed to avoid dependencies not found on older ChromeOS
-            $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_old.tar.gz"
+            util_file="flashrom_old.tar.gz"
         else
-            $CURL -sLo "flashrom.tar.gz" "${util_source}flashrom_ups_int_20241115.tar.gz"
             flashrom_programmer="${flashrom_programmer} --use-first-chip"
+            if [[ "$isMusl" = true ]]; then
+                util_file="flashrom-musl.tar.gz"
+            else
+                util_file="flashrom_ups_int_20241115.tar.gz"
+            fi
         fi
+        $CURL -sLo "flashrom.tar.gz" "${util_source}${util_file}"
         if [[ $? -ne 0 ]]; then
             echo_red "Error downloading flashrom; cannot proceed."
             #restore working dir
@@ -272,7 +285,13 @@ function get_gbb_utility()
 
         cd $(dirname ${gbbutilitycmd})
 
-        $CURL -sLO "${util_source}gbb_utility.tar.gz"
+        util_file=""
+        if [[ "$isMusl" = true ]]; then
+            util_file="gbb_utility-musl.tar.gz"
+        else
+            util_file="gbb_utility.tar.gz"
+        fi
+        $CURL -sLo "gbb_utility.tar.gz" "${util_source}${util_file}"
         if [ $? -ne 0 ]; then
             echo_red "Error downloading gbb_utility; cannot proceed."
             #restore working dir
@@ -413,6 +432,11 @@ else
     flashromcmd=/tmp/flashrom
     cbfstoolcmd=/tmp/cbfstool
     gbbutilitycmd=/tmp/gbb_utility
+fi
+
+#check if running on a musl system
+if ldd /bin/sh | grep -q musl; then
+    isMusl=true
 fi
 
 #get required tools
