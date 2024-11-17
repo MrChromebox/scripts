@@ -97,7 +97,7 @@ MrChromebox does not provide any support for running Windows."
     $CURL -sLO "${rwlegacy_source}${rwlegacy_file}.md5"
     $CURL -sLO "${rwlegacy_source}${rwlegacy_file}"
     #verify checksum on downloaded file
-    if ! md5sum -c "${rwlegacy_file}.md5" --quiet 2> /dev/null; then
+    if ! md5sum -c "${rwlegacy_file}.md5" > /dev/null 2>&1; then
         exit_red "RW_LEGACY download checksum fail; download corrupted, cannot flash"
         return 1
     fi
@@ -286,7 +286,7 @@ and you need to recover using an external EEPROM programmer. [Y/n] "
     fi
 
     #verify checksum on downloaded file
-    if ! sha1sum -c "${coreboot_file}.sha1" --quiet > /dev/null 2>&1; then
+    if ! sha1sum -c "${coreboot_file}.sha1" > /dev/null 2>&1; then
         exit_red "Firmware image checksum verification failed; download corrupted, cannot flash."; return 1
     fi
 
@@ -422,7 +422,7 @@ the touchpad firmware, otherwise the touchpad will not work."
             $CURL -s -LO "${other_source}${touchpad_eve_fw}"
             $CURL -s -LO "${other_source}${touchpad_eve_fw}.sha1"
             #verify checksum on downloaded file
-            if sha1sum -c ${touchpad_eve_fw}.sha1 --quiet > /dev/null 2>&1; then
+            if sha1sum -c ${touchpad_eve_fw}.sha1 > /dev/null 2>&1; then
                 # flash TP firmware
                 echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
                 if ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
