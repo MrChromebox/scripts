@@ -435,7 +435,7 @@ else
 fi
 
 #check if running on a musl system
-if ldd /bin/sh | grep -q musl; then
+if ldd /bin/sh 2>/dev/null | grep -q musl; then
     isMusl=true
 fi
 
