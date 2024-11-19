@@ -580,8 +580,8 @@ if echo "$firmwareType" | grep -e "Stock"; then
             # Stock + RW_LEGACY: read HWID from GBB
             _hwid=$($gbbutilitycmd --get --hwid /tmp/bios.bin | sed -E 's/hardware_id: //g')
         fi
-        _hwid=$(echo "$_hwid" | sed -E 's/X86//g' | sed -E 's/ *$//g' | sed -E 's/ /_/g')
-        boardName=$(echo "${_hwid^^}" | cut -f1 -d '-' | cut -f1 -d '_')
+        _hwid=$(echo "$_hwid" | sed -E 's/X86//g' | sed -E 's/ *$//g')
+        boardName=$(echo "${_hwid^^}" | cut -f1 -d '-' | cut -f1 -d ' ')
         device=${boardName,,}
 else
         _hwid=${device^^}
