@@ -453,6 +453,57 @@ the touchpad firmware, otherwise the touchpad will not work."
     fi
 }
 
+#######################
+# Upgrade Touchpad FW #
+#######################
+function upgrade_touchpad_fw()
+{
+    # offer to upgrade touchpad firmware on EVE
+    if [[ "${device^^}" = "EVE" ]]; then
+        echo_green "\nUpgrade Touchpad Firmware"
+        echo_yellow "If you plan to restore ChromeOS on your Pixelbook, it is necessary to upgrade
+the touchpad firmware, otherwise the touchpad will not work."
+        echo_yellow "You should do this after restoring the stock firmware, but before rebooting."
+        read -rep "Do you wish to upgrade the touchpad firmware now? [y/N] "
+        if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
+            # ensure firmware write protect disabled
+            [[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot upgrade touchpad firmware."; return 1; }
+            # download TP firmware
+            echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw_stock})"
+            $CURL -s -LO "${other_source}${touchpad_eve_fw_stock}"
+            $CURL -s -LO "${other_source}${touchpad_eve_fw_stock}.sha1"
+            #verify checksum on downloaded file
+            if sha1sum -c ${touchpad_eve_fw_stock}.sha1 > /dev/null 2>&1; then
+                # flash TP firmware
+                echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
+                if ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log >/dev/null 2>&1; then
+                    echo_green "Touchpad firmware successfully upgraded."
+                    echo_yellow "Please reboot your Pixelbook now."
+                else
+                    # try with older eve flashrom
+                    [[ "$isChromeOS" == "true" ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
+                    (
+                        cd $tpPath
+                        $CURL -sLO "${util_source}flashrom_eve_tp"
+                        chmod +x flashrom_eve_tp
+                    )
+                    if $tpPath/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log >/dev/null 2>&1; then
+                        echo_green "Touchpad firmware successfully upgraded."
+                        echo_yellow "Please reboot your Pixelbook now."
+                    else
+                        echo_red "Error flashing touchpad firmware:"
+                        cat /tmp/flashrom.log
+                        echo_yellow "\nThis function sometimes doesn't work under Linux, in which case it is\nrecommended to try under ChromeOS."
+                    fi
+                fi
+            else
+                echo_red "Touchpad firmware download checksum fail; download corrupted, cannot flash."
+            fi
+        fi
+        read -rep "Press [Enter] to return to the main menu."
+    fi
+}
+
 ##########################
 # Restore Stock Firmware #
 ##########################
@@ -950,6 +1001,7 @@ function stock_menu() {
     fi
     if [[ "${device^^}" = "EVE" ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 3)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
@@ -989,6 +1041,12 @@ function stock_menu() {
 
         [dD])  if [[ "${device^^}" = "EVE" ]]; then
                 downgrade_touchpad_fw
+            fi
+            menu_fwupdate
+            ;;
+
+        [uU])  if [[ "${device^^}" = "EVE" ]]; then
+                upgrade_touchpad_fw
             fi
             menu_fwupdate
             ;;
@@ -1066,6 +1124,7 @@ function uefi_menu() {
     fi
     if [[ "${device^^}" = "EVE" ]]; then
         echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
     fi
     if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
@@ -1097,6 +1156,13 @@ function uefi_menu() {
             fi
             uefi_menu
             ;;
+
+        [uU])  if [[  "${device^^}" = "EVE" ]]; then
+                upgrade_touchpad_fw
+            fi
+            uefi_menu
+            ;;
+
 
         [rR])  echo -e "\nRebooting...\n";
             cleanup

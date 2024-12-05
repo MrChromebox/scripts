@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-11-01]"
+export script_date="[2024-12-05]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -366,3 +366,4 @@ export coreboot_uefi_librem_14="coreboot_edk2-librem_14-mrchromebox_20240914.rom
 
 # other
 export touchpad_eve_fw="rose_v1.1.8546-ee1861e9e.bin"
+export touchpad_eve_fw_stock="rose_v2.0.653-dfd8046c6.bin"
