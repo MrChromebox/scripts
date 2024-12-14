@@ -242,11 +242,11 @@ function get_flashrom()
             #needed to avoid dependencies not found on older ChromeOS
             util_file="flashrom_old.tar.gz"
         else
+            flashrom_programmer="${flashrom_programmer} --use-first-chip"
             if [[ "$isMusl" = true ]]; then
                 util_file="flashrom-musl.tar.gz"
-                flashrom_programmer="${flashrom_programmer} --use-first-chip"
             else
-                util_file="flashrom_ups_libpci37_20240418.tar.gz"
+                util_file="flashrom_ups_int_20241214.tar.gz"
             fi
         fi
         $CURL -sLo "flashrom.tar.gz" "${util_source}${util_file}"
