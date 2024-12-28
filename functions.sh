@@ -15,6 +15,7 @@ flashrom_params=""
 flashrom_programmer="-p internal:boardmismatch=force"
 cbfstoolcmd=""
 gbbutilitycmd=""
+ectoolcmd=""
 preferUSB=false
 isHswBox=false
 isBdwBox=false
@@ -307,6 +308,41 @@ function get_gbb_utility()
         fi
         #set +x
         chmod +x gbb_utility
+        #restore working dir
+        cd ${working_dir}
+    fi
+    return 0
+}
+
+##############
+# Get ectool #
+##############
+function get_ectool()
+{
+    # Regardless if running under ChromeOS or Linux, can put ectool
+    # in same place as cbfstool
+    ectoolcmd="$(dirname $cbfstoolcmd)/ectool"
+    if [ ! -f ${ectoolcmd} ]; then
+        working_dir=$(pwd)
+
+        cd $(dirname ${ectoolcmd})
+
+        $CURL -sLO "${util_source}ectool.tar.gz"
+        if [ $? -ne 0 ]; then
+            echo_red "Error downloading ectool; cannot proceed."
+            #restore working dir
+            cd ${working_dir}
+            return 1
+        fi
+        tar -zxf ectool.tar.gz
+        if [ $? -ne 0 ]; then
+            echo_red "Error extracting ectool; cannot proceed."
+            #restore working dir
+            cd ${working_dir}
+            return 1
+        fi
+        #set +x
+        chmod +x ectool
         #restore working dir
         cd ${working_dir}
     fi
