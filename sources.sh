@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2024-12-05]"
+export script_date="[2025-01-05]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -240,8 +240,8 @@ export coreboot_uefi_taranza="coreboot_edk2-taranza-mrchromebox_20240914.rom"
 #alderlake (brya)
 export coreboot_uefi_anahera="coreboot_edk2-anahera-mrchromebox_20240914.rom"
 export coreboot_uefi_banshee="coreboot_edk2-banshee-mrchromebox_20240914.rom"
-export coreboot_uefi_crota="coreboot_edk2-crota-mrchromebox_20240914.rom"
-export coreboot_uefi_crota360="coreboot_edk2-crota360-mrchromebox_20240914.rom"
+export coreboot_uefi_crota="coreboot_edk2-crota-mrchromebox_20250105.rom"
+export coreboot_uefi_crota360="coreboot_edk2-crota360-mrchromebox_20250105.rom"
 export coreboot_uefi_felwinter="coreboot_edk2-felwinter-mrchromebox_20240914.rom"
 export coreboot_uefi_gimble="coreboot_edk2-gimble-mrchromebox_20240914.rom"
 export coreboot_uefi_kano="coreboot_edk2-kano-mrchromebox_20240914.rom"
