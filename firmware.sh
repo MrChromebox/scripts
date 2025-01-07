@@ -768,9 +768,13 @@ function extract_firmware_from_recovery_usb()
         if [ "$_version" = "" ]; then
             _version=$(cat $_unpacked/VERSION | grep -m 1 -e Model.*$_board -A5 | grep "BIOS version:" | cut -f2 -d: | tr -d \ )
         fi
-          if ! _bios_image=$(grep "IMAGE_MAIN" $_unpacked/models/$_board/setvars.sh | cut -f2 -d\"); then
-                exit_red "Error: failed to find a firmware image for $_board on this recovery USB"; return 1
-               fi
+        if [ -f $_unpacked/models/$_board/setvars.sh ]; then
+            _bios_image=$(grep "IMAGE_MAIN" $_unpacked/models/$_board/setvars.sh | cut -f2 -d'"')
+        else
+            # special case for REEF, others?
+            _version=$(grep -m1 "host" "$_unpacked/manifest.json" | cut -f12 -d'"')
+            _bios_image=$(grep -m1 "image" "$_unpacked/manifest.json" | cut -f4 -d'"')
+        fi
     elif [ -f "$_unpacked/manifest.json" ]; then
         _version=$(grep -m1 -A1 "$_board" "$_unpacked/manifest.json" | grep "host" | cut -f12 -d'"')
         _bios_image=$(grep -m1 -A3 "$_board" "$_unpacked/manifest.json" | grep "image" | cut -f4 -d'"')
