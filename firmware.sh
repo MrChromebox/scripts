@@ -737,7 +737,7 @@ function restore_fw_from_recovery()
     usb_device="${usb_devs[${usb_dev_index}-1]}"
     echo -e ""
     if ! extract_firmware_from_recovery_usb ${boardName,,} $usb_device ; then
-        exit_red "Error: failed to extract firmware from ChromeOS recovery USB"
+        exit_red "Error: failed to extract firmware for ${boardName^^} from this ChromeOS recovery USB"
         return 1
     fi
     mv coreboot-Google_* ${firmware_file}
@@ -779,11 +779,17 @@ function extract_firmware_from_recovery_usb()
         _version=$(grep -m1 -A1 "$_board" "$_unpacked/manifest.json" | grep "host" | cut -f12 -d'"')
         _bios_image=$(grep -m1 -A3 "$_board" "$_unpacked/manifest.json" | grep "image" | cut -f4 -d'"')
     else
-        _version=$(cat $_unpacked/VERSION | grep BIOS\ version: | cut -f2 -d: | tr -d \ )
-        _bios_image=bios.bin
+        if [ -f $_unpacked/VERSION ]; then
+            _version=$(cat $_unpacked/VERSION | grep BIOS\ version: | cut -f2 -d: | tr -d \ )
+            _bios_image=bios.bin
+        else
+            echo_red "Recovery image missing VERSION file. Shellball directory Contents:"
+            ls -lart $_unpacked
+            return 1
+        fi
     fi
     if ! cp $_unpacked/$_bios_image coreboot-$_version.bin; then
-        exit_red "Error: failed to extract firmware image for $_board using this recovery USB"; return 1
+        return 1
     fi
     rm -rf "$_unpacked"
     rm $_firmware
