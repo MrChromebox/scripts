@@ -736,6 +736,7 @@ function restore_fw_from_recovery()
     done
     usb_device="${usb_devs[${usb_dev_index}-1]}"
     echo -e ""
+    echo_yellow "Using USB device: $usb_device"
     if ! extract_firmware_from_recovery_usb ${boardName,,} $usb_device ; then
         exit_red "Error: failed to extract firmware for ${boardName^^} from this ChromeOS recovery USB"
         return 1
@@ -756,11 +757,24 @@ function extract_firmware_from_recovery_usb()
     _firmware=chromeos-firmwareupdate-$_board
     _unpacked=$(mktemp -d)
 
+    if [[ "$1" = "" || "$2" = "" ]]; then
+        echo_red "Invalid or missing function parameters: [$@]"
+        return 1
+    fi
+
     echo_yellow "Extracting firmware from recovery USB"
     printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_firmware\nquit" | debugfs $_debugfs >/dev/null 2>&1
 
+    if [ ! -f $_firmware ]; then
+        echo_red "Failed to copy file 'chromeos-firmwareupdate' from Recovery USB"
+        return 1
+    fi
+
     if ! sh $_firmware --unpack $_unpacked >/dev/null 2>&1; then
-        sh $_firmware --sb_extract $_unpacked >/dev/null 2>&1
+        if ! sh $_firmware --sb_extract $_unpacked >/dev/null 2>&1; then
+            echo_red "Failed to extract shellball from  'chromeos-firmwareupdate'"
+            return 1
+        fi
     fi
 
     if [ -d $_unpacked/models/ ]; then
