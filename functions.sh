@@ -96,7 +96,7 @@ tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
      'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'vell' 'volmar' 'zavala' \
     'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
-adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskvin' 'craasneto' \
+adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
      'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
      'quandiso' 'quandiso360' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
      'yavikso' 'yavilla' 'yavillay')
@@ -692,6 +692,7 @@ case "${_hwid}" in
     CRAASKANA*)             _x='ADN|Acer Chromebook 311' ;;
     CRAASKBOWL*)            _x='ADN|Acer Chromebook Spin 511' ;;
     CRAASKINO*)             _x='ADN|Acer Chromebook 315' ;;
+    CRAASKOV*)              _x='ADN|Acer Chromebook 312' ;;
     CRAASKVIN*)             _x='ADN|Acer Chromebook 511' ;;
     CRAASNETO-KYVC*)        _x='ADN|Acer Chromebook Plus 514' ;;
     CRAASNETO*)             _x='ADN|Acer Chromebook 314' ;;
