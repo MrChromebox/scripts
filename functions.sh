@@ -89,8 +89,8 @@ cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
 jsl=('beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'boxy' 'bugzzy' 'cret' 'cret360' \
      'dexi' 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
      'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' \
-     'maglet' 'maglia' 'maglith' 'magma' 'magneto' 'magolor' 'magpie' 'metaknight' 'pasara' \
-     'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360' 'taranza')
+     'maglet' 'maglia' 'maglith' 'magma' 'magneto' 'magolor' 'magpie' 'metaknight' 'palutena' \
+     'pasara' 'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360' 'taranza')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
      'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
@@ -872,6 +872,8 @@ case "${_hwid}" in
     OSIRIS*)                _x='ADL|Acer Chromebook 516 GE [CBG516-1H]' ;;
     PAINE*)                 _x='BDW|Acer Chromebook 11 (C740)' ; device="auron_paine";;
     PANTHEON*)              _x='KBL|Lenovo Yoga Chromebook C630'  ; device="nami";;
+    PALUTENA-YVYF*)         _x='JSL|Acer Chromebook 314' ;;
+    PALUTENA-TQFG*)         _x='JSL|Gateway Chromebook 314' ;;
     PANTHER*)               _x='HSW|ASUS Chromebox CN60' ;;
     PARROT*)                _x='SNB|Acer C7/C710 Chromebook' ;;
     PASARA*)                _x='JSL|Gateway Chromebook 15' ;;
