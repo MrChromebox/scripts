@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2025-01-05]"
+export script_date="[2025-02-27]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -334,8 +334,8 @@ export seabios_baytrail="seabios-byt-mrchromebox_20180912.bin"
 export seabios_braswell="seabios-bsw-mrchromebox_20180912.bin"
 export seabios_skylake="seabios-skl-mrchromebox_20180912.bin"
 export seabios_apl="seabios-apl-mrchromebox_20180912.bin"
-export seabios_kbl="seabios-kbl-mrchromebox_20200223.bin"
-export seabios_kbl_18="seabios-kbl_18-mrchromebox_20200223.bin"
+export seabios_kbl="seabios-kbl-mrchromebox_20250227.bin"
+export seabios_kbl_18="seabios-kbl_18-mrchromebox_20250227.bin"
 export rwl_altfw_stoney="rwl_altfw_stoney-mrchromebox_20200107.bin"
 export rwl_altfw_whl="rwl_altfw_whl-mrchromebox_20201017.bin"
 export rwl_altfw_cml="rwl_altfw_cml-mrchromebox_20210415.bin"
