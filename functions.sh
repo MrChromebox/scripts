@@ -692,7 +692,7 @@ case "${_hwid}" in
     CRAASKANA*)             _x='ADN|Acer Chromebook 311' ;;
     CRAASKBOWL*)            _x='ADN|Acer Chromebook Spin 511' ;;
     CRAASKINO*)             _x='ADN|Acer Chromebook 315' ;;
-    CRAASKOV*)              _x='ADN|Acer Chromebook 312' ;;
+    CRAASKOV*)              _x='ADN|Acer Chromebook Spin 312 (CP312-1H, CP312-1HN)' ;;
     CRAASKVIN*)             _x='ADN|Acer Chromebook 511' ;;
     CRAASNETO-KYVC*)        _x='ADN|Acer Chromebook Plus 514' ;;
     CRAASNETO*)             _x='ADN|Acer Chromebook 314' ;;
