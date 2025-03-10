@@ -52,6 +52,8 @@ function flash_rwlegacy()
         rwlegacy_file=$rwl_altfw_adl
     elif [ "$isAdlN" = true ]; then
         rwlegacy_file=$rwl_altfw_adl_n
+    elif [ "$isMtl" = true ]; then
+        rwlegacy_file=$rwl_altfw_mtl
     elif [ "$isStr" = true ]; then
         rwlegacy_file=$rwl_altfw_stoney
     elif [ "$isPco" = true ]; then

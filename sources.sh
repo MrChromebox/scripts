@@ -346,6 +346,7 @@ export rwl_altfw_pco="rwl_altfw_pco-mrchromebox_20240412.bin"
 export rwl_altfw_tgl="rwl_altfw_tgl-mrchromebox_20240729.bin"
 export rwl_altfw_adl="rwl_altfw_adl-mrchromebox_20240417.bin"
 export rwl_altfw_adl_n="rwl_altfw_adl_n-mrchromebox_20230829.bin"
+export rwl_altfw_mtl="rwl_altfw_mtl-mrchromebox_20250307.bin"
 export rwl_altfw_mdn="rwl_altfw_mdn-mrchromebox_20230727.bin"
 export rwl_altfw_czn="rwl_altfw_czn-mrchromebox_20230907.bin"
 
