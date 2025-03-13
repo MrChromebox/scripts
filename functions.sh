@@ -41,6 +41,7 @@ isMdn=false
 isJsl=false
 isTgl=false
 isAdl=false
+isAdl_2=false
 isAdlN=false
 isMtl=false
 isUnsupported=false
@@ -97,6 +98,7 @@ tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup
 adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
      'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'vell' 'volmar' 'zavala' \
     'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
+adl_2=('banshee' 'omnigul')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
      'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
      'quandiso' 'quandiso360' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
@@ -1074,6 +1076,7 @@ diagnostic_report_set deviceCpuType.Name "$deviceCpuType"
 [[ "${jsl[@]}" =~ "$device" ]] && isJsl=true
 [[ "${tgl[@]}" =~ "$device" ]] && isTgl=true
 [[ "${adl[@]}" =~ "$device" ]] && isAdl=true
+[[ "${adl_2[@]}" =~ "$device" ]] && isAdl_2=true
 [[ "${adl_n[@]}" =~ "$device" ]] && isAdlN=true
 [[ "${mtl[@]}" =~ "$device" ]] && isMtl=true
 [[ "${cml_boxes[@]}" =~ "$device" ]] && isCmlBox=true

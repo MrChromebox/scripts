@@ -48,6 +48,8 @@ function flash_rwlegacy()
         rwlegacy_file=$rwl_altfw_tgl
     elif [ "$isGlk" = true ]; then
         rwlegacy_file=$rwl_altfw_glk
+    elif [ "$isAdl_2" = true ]; then
+        rwlegacy_file=$rwl_altfw_adl_2
     elif [ "$isAdl" = true ]; then
         rwlegacy_file=$rwl_altfw_adl
     elif [ "$isAdlN" = true ]; then
