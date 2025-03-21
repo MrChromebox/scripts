@@ -118,7 +118,8 @@ MrChromebox does not provide any support for running Windows."
 
     #flash updated RW_LEGACY firmware
     echo_yellow "Installing RW_LEGACY firmware"
-    if ! ${flashromcmd} -w -i RW_LEGACY:${rwlegacy_file} -o /tmp/flashrom.log > /dev/null 2>&1; then
+    [[ "$isChromeOS" = false ]] && FMAP="--fmap"
+    if ! ${flashromcmd} -w $FMAP -i RW_LEGACY:${rwlegacy_file} -o /tmp/flashrom.log > /dev/null 2>&1; then
         cat /tmp/flashrom.log
         echo_red "An error occurred flashing the RW_LEGACY firmware."
     else
