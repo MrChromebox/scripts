@@ -260,6 +260,7 @@ export coreboot_uefi_volmar="coreboot_edk2-volmar-mrchromebox_20240914.rom"
 export coreboot_uefi_zavala="coreboot_edk2-zavala-mrchromebox_20240914.rom"
 #alderlake (brask)
 export coreboot_uefi_constitution="coreboot_edk2-constitution-mrchromebox_20240914.rom"
+export coreboot_uefi_intrepid="coreboot_edk2-intrepid-mrchromebox_20250324.rom"
 export coreboot_uefi_kinox="coreboot_edk2-kinox-mrchromebox_20240914.rom"
 export coreboot_uefi_kuldax="coreboot_edk2-kuldax-mrchromebox_20240914.rom"
 export coreboot_uefi_lisbon="coreboot_edk2-lisbon-mrchromebox_20240914.rom"

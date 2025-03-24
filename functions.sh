@@ -95,9 +95,9 @@ jsl=('beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'boxy' 'bugzzy' 
      'pasara' 'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360' 'taranza')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
      'voema' 'volet' 'volta' 'voxel')
-adl=('anahera' 'brya' 'banshee' 'kano' 'crota' 'crota360' 'felwinter' 'gimble' 'marasov' 'mithrax' \
+adl=('anahera' 'brya' 'banshee' 'crota' 'crota360' 'felwinter' 'gimble' 'kano' 'marasov' 'mithrax' \
      'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'vell' 'volmar' 'zavala' \
-    'constitution' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
+    'constitution' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'moli')
 adl_2=('banshee' 'omnigul')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
      'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
@@ -779,6 +779,7 @@ case "${_hwid}" in
     GUYBRUSH*)              _x='CZN|Guybrush Baseboard Chromebook' ;;
     HELIOS*)                _x='CML|ASUS Chromebook Flip C436FA' ;;
     HELI*)                  _x='BYT|Haier Chromebook G2' ;;
+    INTREPID*)              _x='ADL|CTL Meet Compute System GQE20C' ;;
     JAX*)                   _x='KBL|AOpen Chromebox Commercial 2' ; device="fizz";;
     JELBOZ360*)             _x='PCO|ASUS Chromebook Flip CM1 (CM1400)' ;;
     JINLON*)                _x='CML|HP Elite c1030 Chromebook / HP Chromebook x360 13c' ;;
