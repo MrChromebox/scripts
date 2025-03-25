@@ -940,7 +940,8 @@ You can always override the default using [CTRL+D] or
     if ! ${gbbutilitycmd} --set --flags="${_flags}" /tmp/gbb.temp > /dev/null; then
         exit_red "\nError setting boot options."; return 1
     fi
-    if ! ${flashromcmd} -w $FMAP -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
+    if ! ${flashromcmd} -w $FMAP -i GBB:/tmp/gbb.temp -o /tmp/flashrom.log > /dev/null 2>&1; then
+        cat /tmp/flashrom.log
         exit_red "\nError writing back firmware; unable to set boot options."; return 1
     fi
 
@@ -996,7 +997,8 @@ Proceed at your own risk."
         if ! ${gbbutilitycmd} --set --hwid="${hwid}" /tmp/gbb.temp > /dev/null 2>&1; then
             exit_red "\nError setting HWID."; return 1
         fi
-        if ! ${flashromcmd} -w $FMAP -i GBB:/tmp/gbb.temp > /dev/null 2>&1; then
+        if ! ${flashromcmd} -w $FMAP -i GBB:/tmp/gbb.temp -o /tmp/flashrom.log > /dev/null 2>&1; then
+            cat /tmp/flashrom.log
             exit_red "\nError writing back firmware; unable to set HWID."; return 1
         fi
 
