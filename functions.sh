@@ -274,6 +274,12 @@ function get_flashrom()
         #restore working dir
         cd "${working_dir}"
     fi
+    #check if flashrom supports --noverify-all
+    if ${flashromcmd} -h | grep -q "noverify-all" ; then
+        export noverify="-N"
+    else
+        export noverify="-n"
+    fi
     # append programmer type
     flashromcmd="${flashromcmd} ${flashrom_programmer}"
     return 0
