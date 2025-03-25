@@ -95,9 +95,9 @@ jsl=('beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'boxy' 'bugzzy' 
      'pasara' 'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360' 'taranza')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
      'voema' 'volet' 'volta' 'voxel')
-adl=('anahera' 'brya' 'banshee' 'crota' 'crota360' 'felwinter' 'gimble' 'kano' 'marasov' 'mithrax' \
-     'omnigul' 'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'vell' 'volmar' 'zavala' \
-    'constitution' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'moli')
+adl=('anahera' 'aurash' 'brya' 'banshee' 'constitution' 'crota' 'crota360' 'dochi' 'felwinter' 'gimble' \
+     'gladios' 'intrepid' 'kano' 'kinox' 'kuldax' 'lisbon' 'marasov' 'mithrax' 'moli' 'omnigul' 'omniknight' \
+     'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'tarlo' 'vell' 'volmar' 'zavala')
 adl_2=('banshee' 'omnigul')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
      'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
@@ -646,6 +646,7 @@ case "${_hwid}" in
     ASTRONAUT*)             _x='APL|Acer Chromebook 11 (C732*)' ;;
     ASUKA*)                 _x='SKL|Dell Chromebook 13 (3380)' ;;
     ATLAS*)                 _x='KBL|Google Pixelbook Go' ;;
+    AURASH*)                _x='ADL|AOpen Chromebox Commercial 3' ;;
     AURON_PAINE*)           _x='BDW|Acer Chromebook 11 (C740)' ;;
     AURON_YUNA*)            _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
     BABYMEGA*)              _x='APL|Asus Chromebook C223NA' ;;
@@ -711,6 +712,7 @@ case "${_hwid}" in
     DEWATT*)                _x='CZN|Acer Chromebook Spin 514' ;;
     DEXI*)                  _x='JSL|AOPEN Chromebox Mini 2' ;;
     DIRINBOZ*)              _x='PCO|HP Chromebook 14a' ;;
+    DOCHI*)                 _x='ADL|Acer Chromebook Plus Spin 514 [CP514-4HN]' ;;
     DOOD*)                  _x='GLK|NEC Chromebook Y2';;
     DOOLY*)                 _x='CML|HP Chromebase 21.5' ;;
     DORP*)                  _x='GLK|HP Chromebook 14 G6';;
@@ -872,6 +874,7 @@ case "${_hwid}" in
     NOIBAT*)                _x='CML|HP Chromebox G3' ;;
     NOSPIKE*)               _x='GLK|ASUS Chromebook C424';;
     OMNIGUL*)               _x='ADL|Acer Chromebook Plus 515 [CB515-2H]' ;;
+    OMNIKNIGHT*)            _x='ADL|Acer Chromebook Plus Enterprise 515' ;;
     ORCO*)                  _x='BYT|Lenovo Ideapad 100S Chromebook' ;;
     ORBATRIX*)              _x='GLK|Dell Chromebook 3400';;
     OSIRIS*)                _x='ADL|Acer Chromebook 516 GE [CBG516-1H]' ;;
@@ -965,6 +968,7 @@ case "${_hwid}" in
     TAEKO*)                 _x='ADL|Lenovo Lenovo Flex 5i Chromebook 14"' ;;
     TANIKS*)                _x='ADL|Lenovo IdeaPad Gaming Chromebook 16' ;;
     TARANZA-RPOG*)          _x='JSL|ASUS Fanless Chromebox CF40' ;;
+    TARLO*)                 _x='ADL|Lenovo 5i Chromebook 16\"' ;;
     TEEMO*)                 _x='KBL|Asus Chromebox 3 / CN65' ; device="fizz";;
     TERRA_???-???-???-A*)   _x='BSW|ASUS Chromebook C202SA' ;;
     TERRA_???-???-???-B*)   _x='BSW|ASUS Chromebook C300SA/C301SA' ;;
