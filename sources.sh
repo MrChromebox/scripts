@@ -293,7 +293,7 @@ export coreboot_uefi_yavijo="coreboot_edk2-yavijo-mrchromebox_20240914.rom"
 export coreboot_uefi_yaviks="coreboot_edk2-yaviks-mrchromebox_20240914.rom"
 export coreboot_uefi_yavikso="coreboot_edk2-yavikso-mrchromebox_20240914.rom"
 export coreboot_uefi_yavilla="coreboot_edk2-yavilla-mrchromebox_20240914.rom"
-export coreboot_uefi_yavilly="coreboot_edk2-yavily-mrchromebox_20240914.rom"
+export coreboot_uefi_yavilly="coreboot_edk2-yavilly-mrchromebox_20240914.rom"
 
 ### AMD ###
 
