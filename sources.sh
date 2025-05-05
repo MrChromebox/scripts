@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2025-05-01]"
+export script_date="[2025-05-05]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -280,7 +280,7 @@ export coreboot_uefi_joxer="coreboot_edk2-joxer-mrchromebox_20250427.rom"
 export coreboot_uefi_nereid="coreboot_edk2-nereid-mrchromebox_20250427.rom"
 export coreboot_uefi_nivviks="coreboot_edk2-nivviks-mrchromebox_20250427.rom"
 export coreboot_uefi_pujjo="coreboot_edk2-pujjo-mrchromebox_20250427.rom"
-export coreboot_uefi_pujjo1e="coreboot_edk2-pujjo1e-mrchromebox_20250427.rom"
+export coreboot_uefi_pujjo1e="coreboot_edk2-pujjo1e-mrchromebox_20250505.rom"
 export coreboot_uefi_pujjoflex="coreboot_edk2-pujjoflex-mrchromebox_20250427.rom"
 export coreboot_uefi_pujjoteen="coreboot_edk2-pujjoteen-mrchromebox_20250427.rom"
 export coreboot_uefi_pujjoteen15w="coreboot_edk2-pujjoteen15w-mrchromebox_20250427.rom"
@@ -292,7 +292,7 @@ export coreboot_uefi_xivu="coreboot_edk2-xivu-mrchromebox_20250427.rom"
 export coreboot_uefi_xivu360="coreboot_edk2-xivu360-mrchromebox_20250427.rom"
 export coreboot_uefi_yahiko="coreboot_edk2-yahiko-mrchromebox_20250427.rom"
 export coreboot_uefi_yavijo="coreboot_edk2-yavijo-mrchromebox_20250427.rom"
-export coreboot_uefi_yaviks="coreboot_edk2-yaviks-mrchromebox_20250427.rom"
+export coreboot_uefi_yaviks="coreboot_edk2-yaviks-mrchromebox_20250505.rom"
 export coreboot_uefi_yavikso="coreboot_edk2-yavikso-mrchromebox_20250427.rom"
 export coreboot_uefi_yavilla="coreboot_edk2-yavilla-mrchromebox_20250427.rom"
 export coreboot_uefi_yavilly="coreboot_edk2-yavilly-mrchromebox_20250427.rom"
