@@ -1183,7 +1183,7 @@ function stock_menu() {
             exit;
             ;;
 
-        [U])  if [ "$unlockMenu" = false ]; then
+        [lL])  if [ "$unlockMenu" = false ]; then
                 echo_yellow "\nAre you sure you wish to unlock all menu functions?"
                 read -rep "Only do this if you really know what you are doing... [y/N]? "
                 [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] && unlockMenu=true
