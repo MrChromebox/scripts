@@ -84,7 +84,7 @@ glk=('ampton' 'apel' 'apele' 'bloog' 'blooglet' 'blooguard' 'blorb' 'bluebird' '
     'meep' 'mimrock' 'nospike' 'octopus' 'orbatrix' 'phaser' 'phaser360' \
     'phaser360s' 'sparky' 'sparky360' 'vorticon' 'vortininja')
 whl=('arcada' 'sarien')
-cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'genesis' 'kaisa' 'noibat' 'puff' 'wyvern')
+cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'genesis' 'kaisa' 'moonbuggy' 'noibat' 'puff' 'scout' 'wyvern')
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
            'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
@@ -858,6 +858,7 @@ case "${_hwid}" in
     METAKNIGHT*)            _x='JSL|NEC Chromebook Y3' ;;
     MITHRAX-ISVS*)          _x='ADL|Asus Chromebook Vibe CX34 Flip (CX3401)' ;;
     MITHRAX*)               _x='ADL|ASUS Chromebook CX34 Flip (CX3401)' ;;
+    MOONBUGGY*)             _x='CML|Avocor Series One Board 65' ;;
     LUMPY*)                 _x='SNB|Samsung Chromebook Series 5 550' ;;
     MARASOV*)               _x='ADL|ASUS Chromebook CX34' ;;
     MCCLOUD*)               _x='HSW|Acer Chromebox CXI' ;;
@@ -950,6 +951,7 @@ case "${_hwid}" in
     SARIEN*)                _x='WHL|Dell Latitude 5400' ;;
     SASUKETTE*)             _x='JSL|Samsung Galaxy Chromebook Go 11' ;;
     SASUKE*)                _x='JSL|Samsung Galaxy Chromebook Go' ;;
+    SCOUT*)                 _x='CML|Avocor Series One Desk 27' ;;
     SCREEBO*)               _x='MTL|ASUS ExpertBook CX54 Chromebook Plus (CX5403)' ;;
     SENTRY*)                _x='SKL|Lenovo Thinkpad 13 Chromebook' ;;
     SETZER*)                _x='BSW|HP Chromebook 11 G5' ;;

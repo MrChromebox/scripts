@@ -170,8 +170,10 @@ export coreboot_uefi_kaisa="coreboot_edk2-kaisa-mrchromebox_20250502.rom"
 export coreboot_uefi_kindred="coreboot_edk2-kindred-mrchromebox_20250427.rom"
 export coreboot_uefi_kled="coreboot_edk2-kled-mrchromebox_20250427.rom"
 export coreboot_uefi_kohaku="coreboot_edk2-kohaku-mrchromebox_20250427.rom"
+export coreboot_uefi_moonbuggy="coreboot_edk2-moonbuggy-mrchromebox_20250521.rom"
 export coreboot_uefi_nightfury="coreboot_edk2-nightfury-mrchromebox_20250427.rom"
 export coreboot_uefi_noibat="coreboot_edk2-noibat-mrchromebox_20250502.rom"
+export coreboot_uefi_scout="coreboot_edk2-scout-mrchromebox_20250521.rom"
 export coreboot_uefi_wyvern="coreboot_edk2-wyvern-mrchromebox_20250502.rom"
 
 #Tigerlake
