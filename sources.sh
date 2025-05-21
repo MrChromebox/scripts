@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2025-05-05]"
+export script_date="[2025-05-21]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -129,12 +129,12 @@ export coreboot_uefi_bluebird="coreboot_edk2-bluebird-mrchromebox_20250430.rom"
 export coreboot_uefi_bobba="coreboot_edk2-bobba-mrchromebox_20250430.rom"
 export coreboot_uefi_bobba360="coreboot_edk2-bobba360-mrchromebox_20250430.rom"
 export coreboot_uefi_casta="coreboot_edk2-casta-mrchromebox_20250430.rom"
-export coreboot_uefi_dood="coreboot_edk2-dood-mrchromebox_20250430.rom"
+export coreboot_uefi_dood="coreboot_edk2-dood-mrchromebox_20250521.rom"
 export coreboot_uefi_dorp="coreboot_edk2-dorp-mrchromebox_20250430.rom"
 export coreboot_uefi_droid="coreboot_edk2-droid-mrchromebox_20250430.rom"
 export coreboot_uefi_fleex="coreboot_edk2-fleex-mrchromebox_20250430.rom"
-export coreboot_uefi_foob="coreboot_edk2-foob-mrchromebox_20250430.rom"
-export coreboot_uefi_foob360="coreboot_edk2-foob360-mrchromebox_20250430.rom"
+export coreboot_uefi_foob="coreboot_edk2-foob-mrchromebox_20250521.rom"
+export coreboot_uefi_foob360="coreboot_edk2-foob360-mrchromebox_20250521.rom"
 export coreboot_uefi_garfour="coreboot_edk2-garfour-mrchromebox_20250430.rom"
 export coreboot_uefi_garg="coreboot_edk2-garg-mrchromebox_20250430.rom"
 export coreboot_uefi_garg360="coreboot_edk2-garg360-mrchromebox_20250430.rom"
