@@ -357,7 +357,7 @@ export rwl_altfw_mtl="rwl_altfw_mtl-mrchromebox_20250307.bin"
 #RWL - AMD
 export rwl_altfw_stoney="rwl_altfw_stoney-mrchromebox_20200107.bin"
 export rwl_altfw_pco="rwl_altfw_pco-mrchromebox_20240412.bin"
-export rwl_altfw_mdn="rwl_altfw_mdn-mrchromebox_20230727.bin"
+export rwl_altfw_mdn="rwl_altfw_mdn-mrchromebox_20250522.bin"
 export rwl_altfw_czn="rwl_altfw_czn-mrchromebox_20230907.bin"
 
 #hsw/bdw headless VBIOS
