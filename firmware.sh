@@ -32,10 +32,29 @@ function flash_rwlegacy()
         rwlegacy_file=$seabios_skylake
     elif [ "$isApl" = true ]; then
         rwlegacy_file=$seabios_apl
-    elif [ "$kbl_use_rwl18" = true ]; then
-        rwlegacy_file=$seabios_kbl_18
     elif [ "$isKbl" = true ]; then
-        rwlegacy_file=$seabios_kbl
+        # prompt for SeaBIOS/edk2 selection
+        echo -e ""
+        echo_yellow "Firmware Type Selection"
+        echo -e "Your device has the option of two RW_LEGACY firmware types."
+        REPLY=""
+        while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "U" && "$REPLY" != "u"  ]]
+        do
+            read -rep "Enter 'L' for Legacy BIOS (SeaBIOS), 'U' for UEFI (edk2/Tianocore): "
+            if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+                if [ "$kbl_use_rwl18" = true ]; then
+                    rwlegacy_file=$rwl_altfw_kbl_18
+                else
+                    rwlegacy_file=$rwl_altfw_kbl
+                fi
+            else
+                if [ "$kbl_use_rwl18" = true ]; then
+                    rwlegacy_file=$seabios_kbl_18
+                else
+                    rwlegacy_file=$seabios_kbl
+                fi
+            fi
+        done
     elif [ "$isWhl" = true ]; then
         rwlegacy_file=$rwl_altfw_whl
     elif [ "$device" = "drallion" ]; then
