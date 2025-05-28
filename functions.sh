@@ -100,8 +100,8 @@ adl=('anahera' 'aurash' 'brya' 'banshee' 'constitution' 'crota' 'crota360' 'doch
      'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'tarlo' 'vell' 'volmar' 'zavala')
 adl_2=('aurash' 'banshee' 'constitution' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'marasov' 'moli' 'omnigul')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
-     'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
-     'quandiso' 'quandiso360' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
+     'craaswell' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
+     'quandiso' 'quandiso360' 'riven' 'rudriks' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
      'yavikso' 'yavilla' 'yavilly')
 mtl=('rex' 'screebo')
 
@@ -707,6 +707,7 @@ case "${_hwid}" in
     CRAASKVIN*)             _x='ADN|Acer Chromebook 511' ;;
     CRAASNETO-KYVC*)        _x='ADN|Acer Chromebook Plus 514' ;;
     CRAASNETO*)             _x='ADN|Acer Chromebook 314' ;;
+    CRAASWELL*)             _x='ADN|Acer Chromebook Spin 314' ;;
     CRAASK*)                _x='ADN|Acer Chromebook Spin 512' ;;
     CRET360*)               _x='JSL|Dell Chromebook 3110 2-in-1' ;;
     CRET*)                  _x='JSL|Dell Chromebook 3110' ;;
@@ -943,8 +944,10 @@ case "${_hwid}" in
     RELM_???-Z*)            _x='BSW|Quanta OEM Chromebook' ;;
     RELM*)                  _x='BSW|(unknown RELM)' ;;
     RIKKU*)                 _x='BDW|Acer Chromebox CXI2' ;;
+    RIVEN*)                 _x='ADN|Acer Chromebook Spin 511' ;;
     ROBO360*)               _x='APL|Lenovo 500e Chromebook' ;;
     ROBO*)                  _x='APL|Lenovo 100e Chromebook' ;;
+    RUDRIKS*)               _x='ADN|Acer Chromebook Spin 512' ;;
     SAMUS*)                 _x='BDW|Google Chromebook Pixel 2015' ;;
     SAND*)                  _x='APL|Acer Chromebook 15 (CB515-1HT)' ;;
     SANTA*)                 _x='APL|Acer Chromebook 11 (CB311-8H)' ;;
