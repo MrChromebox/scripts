@@ -103,7 +103,7 @@ adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'c
      'craaswell' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
      'quandiso' 'quandiso360' 'riven' 'rudriks' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
      'yavikso' 'yavilla' 'yavilly')
-mtl=('rex' 'screebo')
+mtl=('karis' 'rex' 'screebo')
 
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
 pco=('berknip' 'dirinboz' 'ezkinil' 'gumboz' 'jelboz360' 'morphius' 'vilboz' 'woomax')
@@ -796,6 +796,7 @@ case "${_hwid}" in
     JOXER*)                 _x='ADN|HP Chromebook x360' ;;
     KAISA*)                 _x='CML|Acer Chromebox CXI4' ;;
     KANO*)                  _x='ADL|Acer Chromebook Spin 714 [CP714-1WN]' ;;
+    KARIS*)                 _x='MTL|Acer Chromebook Plus Spin 714' ;;
     KARMA*)                 _x='KBL|Acer Chromebase 24I2' ;;
     KASUMI*)                _x='STR|Acer Chromebook 311' ; device="kasumi";;
     KEFKA*)                 _x='BSW|Dell Chromebook 11 (3180,3189)' ;;
