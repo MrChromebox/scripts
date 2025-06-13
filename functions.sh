@@ -100,9 +100,9 @@ adl=('anahera' 'aurash' 'brya' 'banshee' 'constitution' 'crota' 'crota360' 'doch
      'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'tarlo' 'vell' 'volmar' 'zavala')
 adl_2=('aurash' 'banshee' 'constitution' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'marasov' 'moli' 'omnigul')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
-     'craaswell' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoflex' 'pujjoteen' 'pujjoteen15w' \
-     'quandiso' 'quandiso360' 'riven' 'rudriks' 'uldren' 'uldren360' 'xivu' 'xivu360' 'yahiko' 'yavijo' 'yaviks' \
-     'yavikso' 'yavilla' 'yavilly')
+     'craaswell' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoga' 'pujjogatwin' 'pujjoflex' \
+     'pujjoteen' 'pujjoteen15w' 'quandiso' 'quandiso360' 'riven' 'rudriks' 'uldren' 'uldren360' 'xivu' 'xivu360' \
+     'yahiko' 'yavijo' 'yaviks' 'yavikso' 'yavilla' 'yavilly')
 mtl=('karis' 'rex' 'screebo')
 
 str=('aleena' 'barla' 'careena' 'grunt' 'kasumi' 'liara' 'treeya' 'treeya360')
@@ -921,7 +921,9 @@ case "${_hwid}" in
     PUJJO-DCCV*)            _x='ADN|Lenovo Flex 3i Chromebook 12"' ;;
     PUJJO-KTLR*)            _x='ADN|Lenovo 500e Yoga Chromebook Gen 4' ;;
     PUJJO1E*)               _x='ADN|Lenovo 100e Chromebook Gen 4 (Intel)' ;;
-    PUJJO*)                 _x='ADN|Lenovo 500e Yoga/Flex 3i Chromebook' ;;
+    PUJJOGATWIN*)           _x='TWN|Lenovo 500e Chromebook Gen 4s' ;;
+    PUJJOGA*)               _x='ADN|Lenovo 500e Chromebook Gen 4s' ;;
+    PUJJO)                  _x='ADN|Lenovo 500e Yoga/Flex 3i Chromebook' ;;
     PYRO*)                  _x='APL|Lenovo Thinkpad 11e/Yoga Chromebook (G4)' ;;
     QUANDISO360*)           _x='ADN|CTL Chromebook NL73T' ;;
     QUANDISO*)              _x='ADN|CTL Chromebook NL73' ;;
@@ -1061,6 +1063,7 @@ JSL) deviceCpuType="Intel JasperLake" ;;
 TGL) deviceCpuType="Intel TigerLake" ;;
 ADL) deviceCpuType="Intel AlderLake/RaptorLake-U/P" ;;
 ADN) deviceCpuType="Intel AlderLake-N" ;;
+TWN) deviceCpuType="Intel Twinlake" ;;
 MTL) deviceCpuType="Intel Meteorlake" ;;
 STR) deviceCpuType="AMD StoneyRidge" ;;
 PCO) deviceCpuType="AMD Picasso" ;;
