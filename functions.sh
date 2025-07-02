@@ -98,7 +98,7 @@ tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup
 adl=('anahera' 'aurash' 'brya' 'banshee' 'constitution' 'crota' 'crota360' 'dochi' 'felwinter' 'gimble' \
      'gladios' 'intrepid' 'kano' 'kinox' 'kuldax' 'lisbon' 'marasov' 'mithrax' 'moli' 'omnigul' 'omniknight' \
      'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'tarlo' 'vell' 'volmar' 'zavala')
-adl_2=('aurash' 'banshee' 'constitution' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'marasov' 'moli' 'omnigul')
+adl_2=('aurash' 'banshee' 'constitution' 'gimble' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'marasov' 'moli' 'omnigul')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' 'craasneto' \
      'craaswell' 'joxer' 'joxero' 'nereid' 'nirwin' 'nivviks' 'pujjo1e' 'pujjo' 'pujjoga' 'pujjogatwin' 'pujjoflex' \
      'pujjoteen' 'pujjoteen15w' 'quandiso' 'quandiso360' 'riven' 'rudriks' 'uldren' 'uldren360' 'xivu' 'xivu360' \
