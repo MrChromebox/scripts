@@ -1093,7 +1093,7 @@ function stock_menu() {
     show_header
 
     if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false \
-            && "$isCmlBook" = false && "$isEOL" = false ) ]]; then
+            && ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
@@ -1131,8 +1131,8 @@ function stock_menu() {
     read -re opt
     case $opt in
 
-        1)  if [[ "$unlockMenu" = true || "$isEOL" = false && ("$isCmlBook" = false \
-                    && "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false) ]]; then
+        1)  if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false \
+                      && ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
                 flash_rwlegacy
             elif [[ "$isEOL" = "true" ]]; then
                 echo_red "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life"
