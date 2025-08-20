@@ -88,11 +88,12 @@ cml_boxes=('ambassador' 'dooly' 'duffy' 'faffy' 'genesis' 'kaisa' 'moonbuggy' 'n
 cml_books=('akemi' 'dragonair' 'drallion' 'dratini' 'hatch' 'helios' 'jinlon' 'kindred' 'kled' \
            'kohaku' 'nightfury')
 cml=($(printf "%s " "${cml_boxes[@]}" "${cml_books[@]}"))
-jsl=('beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'boxy' 'bugzzy' 'cret' 'cret360' \
-     'dexi' 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' 'galith360' 'gallop' 'galnat' 'galnat360' \
-     'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' 'landrid' 'lantis' 'madoo' 'magister' \
-     'maglet' 'maglia' 'maglith' 'magma' 'magneto' 'magolor' 'magpie' 'metaknight' 'palutena' \
-     'pasara' 'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' 'storo' 'storo360' 'taranza')
+jsl=('awadoron' 'awasuki' 'beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenflex' 'boxy' \
+     'bugzzy' 'cret' 'cret360' 'dexi' 'dita' 'drawcia' 'drawlat' 'drawman' 'drawper' 'galith' \
+     'galith360' 'gallop' 'galnat' 'galnat360' 'galtic' 'galtic360' 'kracko' 'kracko360' 'landia' \
+     'landrid' 'lantis' 'madoo' 'magister' 'maglet' 'maglia' 'maglith' 'magma' 'magneto' 'magolor' \
+     'magpie' 'metaknight' 'palutena' 'pasara' 'peezer' 'pirette' 'pirika' 'sasuke' 'sasukette' \
+     'storo' 'storo360' 'taranza')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
      'voema' 'volet' 'volta' 'voxel')
 adl=('anahera' 'aurash' 'brya' 'banshee' 'constitution' 'crota' 'crota360' 'dochi' 'felwinter' 'gimble' \
