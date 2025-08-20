@@ -96,9 +96,11 @@ jsl=('awadoron' 'awasuki' 'beadrix' 'beetley' 'blipper' 'bookem' 'boten' 'botenf
      'storo' 'storo360' 'taranza')
 tgl=('chronicler' 'collis' 'copano' 'delbin' 'drobit' 'eldrid' 'elemi' 'lillipup' 'lindar' \
      'voema' 'volet' 'volta' 'voxel')
-adl=('anahera' 'aurash' 'brya' 'banshee' 'constitution' 'crota' 'crota360' 'dochi' 'felwinter' 'gimble' \
-     'gladios' 'intrepid' 'kano' 'kinox' 'kuldax' 'lisbon' 'marasov' 'mithrax' 'moli' 'omnigul' 'omniknight' \
-     'osiris' 'primus' 'redrix' 'redrix4es' 'taeko' 'taniks' 'tarlo' 'vell' 'volmar' 'zavala')
+adl_brya=('anahera' 'banshee' 'crota' 'crota360' 'dochi' 'felwinter' 'gimble' 'kano' 'marasov' \
+         'mithrax' 'omnigul' 'omniknight' 'osiris' 'primus' 'redrix' 'taeko' 'taniks' 'tarlo' \
+         'vell' 'volmar' 'xol' 'zavala')
+adl_brask=('aurash' 'bujia' 'gladios' 'kinox' 'kuldax' 'lisbon' 'moli')
+adl=($(printf "%s " "${adl_brya[@]}" "${adl_brask[@]}"))
 adl_2=('aurash' 'banshee' 'constitution' 'gimble' 'gladios' 'intrepid' 'kinox' 'kuldax' 'lisbon' 'marasov' 'moli' 'omnigul' 'redrix')
 adl_n=('anraggar' 'anraggar360' 'craask' 'craaskana' 'craaskbowl' 'craaskino' 'craaskov' 'craaskvin' \
        'craasneto' 'craaswell' 'domika' 'domilly' 'domiso' 'gallida360' 'gana' 'glassway' 'gothrax' \
