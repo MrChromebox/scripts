@@ -660,6 +660,8 @@ case "${_hwid}" in
     AURASH*)                _x='ADL|AOpen Chromebox Commercial 3' ;;
     AURON_PAINE*)           _x='BDW|Acer Chromebook 11 (C740)' ;;
     AURON_YUNA*)            _x='BDW|Acer Chromebook 15 (CB5-571, C910)' ;;
+    AWADORON-UKVH*)         _x='JSL|ASUS CX1505CKA/CB1505CKA';;
+    AWASUKI-AJPW*)          _x='JSL|ASUS CX1405CKA/CB1405CKA';;
     BABYMEGA*)              _x='APL|Asus Chromebook C223NA' ;;
     BABYTIGER*)             _x='APL|Asus Chromebook C523NA' ;;
     BANJO*)                 _x='BYT|Acer Chromebook 15 (CB3-531)' ;;
@@ -667,9 +669,11 @@ case "${_hwid}" in
     BANSHEE*)               _x='ADL|Framework Chromebook' ;;
     BARD*)                  _x='KBL|Acer Chromebook 715 (CB715)' ; device="nami";;
     BARLA*)                 _x='STR|HP Chromebook 11A G6 EE' ;;
-    BEADRIX-GPPJ*)          _x='JSL|DINATECH Gen1 Chromebook  SG20JL1C' ;;
-    BEADRIX-RIJZ*)          _x='JSL|Multilaser Chromebook M11C-PC919' ;;
-    BEADRIX-XYBG*)          _x='JSL|Allied Chromebook 11 N5100E' ;;
+    BEADRIX-GPPJ*)          _x='JSL|DINATECH Gen1 Chromebook  SG20JL1C';;
+    BEADRIX-RIJZ*)          _x='JSL|Multilaser Chromebook M11C-PC919';;
+    BEADRIX-ULGS*)          _x='JSL|Evolve III Chromebook 11 E1';;
+    BEADRIX-XEER*)          _x='JSL|Positivo Chromebook N2320';;
+    BEADRIX-XYBG*)          _x='JSL|Allied Chromebook 11 N5100EO-864180 ';;
     BEADRIX*)               _x='JSL|Beadrix JSL Chromebook' ;;
     BERKNIP*)               _x='PCO|HP Pro c645 Chromebook Enterprise' ;;
     BLACKTIP*)              _x='APL|White Label Chrombook' ; device="blacktip";;
@@ -724,6 +728,8 @@ case "${_hwid}" in
     DEWATT*)                _x='CZN|Acer Chromebook Spin 514' ;;
     DEXI*)                  _x='JSL|AOPEN Chromebox Mini 2' ;;
     DIRINBOZ*)              _x='PCO|HP Chromebook 14a' ;;
+    DITA-AZYL*)             _x='JSL|AOPEN Chromebox P1 ';;
+    DITA-*)                 _x='JSL|Acer Chromebox Mini CXM1 ';;
     DOCHI*)                 _x='ADL|Acer Chromebook Plus Spin 514 [CP514-4HN]' ;;
     DOMIKA*)                _x='ADN|HP Fortis G1i 11 Chromebook' ;;
     DOMILLY*)               _x='ADN|HP Fortis Flip G1i 11 Chromebook' ;;
