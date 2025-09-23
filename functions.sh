@@ -948,7 +948,7 @@ case "${_hwid}" in
     PIRIKA*)                _x='JSL|Pirika JSL Chromebook' ;;
     PRIMUS*)                _x='ADL|Lenovo ThinkPad C14 Gen 1 Chromebook' ;;
     PUJJOFLEX*)             _x='ADN|Lenovo IdeaPad Flex 3i Chromebook' ;;
-    PUJJOTEEN | PUJJOTEEN*-CZPM*)
+    PUJJOTEEN | PUJJOTEEN*-CZPM* | PUJJOTEEN-JQII*)
                             _x='ADN|Lenovo 14e Chromebook Gen 3' ;;
     PUJJOTEEN*-KCBW* | PUJJOTEEN*-JQLW* | PUJJOTEEN15W)
                             _x='ADN|Lenovo Ideapad Slim 3i Chromebook' ; device="pujjoteen15w" ;;
