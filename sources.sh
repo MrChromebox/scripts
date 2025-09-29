@@ -380,7 +380,7 @@ export rwl_altfw_glk="rwl_altfw_glk-mrchromebox_20230110.bin"
 export rwl_altfw_jsl="rwl_altfw_jsl-mrchromebox_20211115.bin"
 export rwl_altfw_tgl="rwl_altfw_tgl-mrchromebox_20240729.bin"
 export rwl_altfw_adl="rwl_altfw_adl-mrchromebox_20250329.bin"
-export rwl_altfw_adl_2="rwl_altfw_adl_2-mrchromebox_20250329.bin"
+export rwl_altfw_adl_fixed="rwl_altfw_adl_2-mrchromebox_20250329.bin"
 export rwl_altfw_adl_n="rwl_altfw_adl_n-mrchromebox_20250313.bin"
 export rwl_altfw_mtl="rwl_altfw_mtl-mrchromebox_20250307.bin"
 
