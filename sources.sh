@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2025-05-21]"
+export script_date="[2025-10-02]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
