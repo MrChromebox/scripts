@@ -3,6 +3,9 @@
 
 # shellcheck disable=SC2154,SC2086,SC2059
 
+# Variables used only in this file
+usb_device=""
+
 ###################
 # flash RW_LEGACY #
 ###################
@@ -42,13 +45,13 @@ function flash_rwlegacy()
 		do
 			read -rep "Enter 'L' for Legacy BIOS (SeaBIOS), 'U' for UEFI (edk2/Tianocore): "
 			if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
-				if [ "$kbl_use_rwl18" = true ]; then
+				if [ "$kbl_rwl18" = true ]; then
 				rwlegacy_file=$rwl_altfw_kbl_18
 				else
 				rwlegacy_file=$rwl_altfw_kbl
 				fi
 			else
-				if [ "$kbl_use_rwl18" = true ]; then
+				if [ "$kbl_rwl18" = true ]; then
 				rwlegacy_file=$seabios_kbl_18
 				else
 				rwlegacy_file=$seabios_kbl
@@ -103,7 +106,7 @@ MrChromebox does not provide any support for running Windows."
 	read -rep "Press Y to continue or any other key to return to the main menu. "
 	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 
-	preferUSB=false
+	local preferUSB=false
 	if [[ "$rwlegacy_file" != *"altfw"* ]]; then
 		echo -e ""
 		#USB boot priority
@@ -1030,7 +1033,7 @@ function show_header() {
 	echo -e "${MENU}*********************************************************${NORMAL}"
 	echo -e "${MENU}**${NUMBER}     Device: ${NORMAL}${deviceDesc}"
 	echo -e "${MENU}**${NUMBER} Board Name: ${NORMAL}${boardName^^}"
-	echo -e "${MENU}**${NUMBER}   Platform: ${NORMAL}$deviceCpuType"
+	echo -e "${MENU}**${NUMBER}   Platform: ${NORMAL}$deviceCpuTypeName"
 	echo -e "${MENU}**${NUMBER}    Fw Type: ${NORMAL}$firmwareType"
 	echo -e "${MENU}**${NUMBER}     Fw Ver: ${NORMAL}$fwVer ($fwDate)"
 	if [[ $isUEFI = true && $hasUEFIoption = true ]]; then
@@ -1063,7 +1066,7 @@ function stock_menu() {
 
 	show_header
 
-	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false \
+	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isStock" = true && "$isUnsupported" = false \
 			&& ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
 	else
@@ -1072,7 +1075,7 @@ function stock_menu() {
 	if [[ "$unlockMenu" = true || "$hasUEFIoption" = true ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Install/Update UEFI (Full ROM) Firmware ${NORMAL}"
 	else
-		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update UEFI (Full ROM) 	Firmware${NORMAL}"
+		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Install/Update UEFI (Full ROM) Firmware${NORMAL}"
 	fi
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
@@ -1081,7 +1084,7 @@ function stock_menu() {
 	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} T)${MENU} Set Touchpad Type in SSFC ${NORMAL}"
 	fi
-	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false ) ]]; then
+	if [[ "$unlockMenu" = true || ("$isFullRom" = false && "$isStock" = true) ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 3)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Set Hardware ID (HWID) ${NORMAL}"
 	else
@@ -1101,7 +1104,7 @@ function stock_menu() {
 	read -re opt
 	case $opt in
 
-	1)	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isBootStub" = false && "$isUnsupported" = false \
+	1)	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isStock" = true && "$isUnsupported" = false \
 				&& ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
 			flash_rwlegacy
 		elif [[ "$isEOL" = "true" ]]; then
@@ -1136,14 +1139,14 @@ function stock_menu() {
 		;;
 
 	3)	if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
-				&& "$isFullRom" = false && "$isBootStub" = false ]]; then
+				&& "$isFullRom" = false && "$isStock" = true ]]; then
 			set_boot_options
 		fi
 		menu_fwupdate
 		;;
 
 	4)	if [[ "$unlockMenu" = true || "$isChromeOS" = true || "$isUnsupported" = false \
-				&& "$isFullRom" = false && "$isBootStub" = false ]]; then
+				&& "$isFullRom" = false && "$isStock" = true ]]; then
 			set_hwid
 		fi
 		menu_fwupdate
@@ -1193,16 +1196,19 @@ function stock_menu() {
 	esac
 }
 
+
+unlockMenu=false
+
 function uefi_menu() {
 
 	show_header
 
-	if [[ "$hasUEFIoption" = true ]]; then
+	if [[ "$hasUEFIoption" = true && "$isUnsupported" = false ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 1)${MENU} Install/Update UEFI (Full ROM) Firmware ${NORMAL}"
 	else
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update UEFI (Full ROM) Firmware${NORMAL}"
 	fi
-	if [[ "$isChromeOS" = false  && "$isFullRom" = true ]]; then
+	if [[ "$isChromeOS" = false  && "$isFullRom" = true && "$isUnsupported" = false ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 2)${MENU} Restore Stock Firmware ${NORMAL}"
 	else
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Restore Stock ChromeOS Firmware ${NORMAL}"
@@ -1214,7 +1220,7 @@ function uefi_menu() {
 	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} T)${MENU} Set Touchpad Type in SSFC ${NORMAL}"
 	fi
-	if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
+	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
 	fi
 	echo -e "${MENU}*********************************************************${NORMAL}"
@@ -1224,7 +1230,7 @@ function uefi_menu() {
 	read -re opt
 	case $opt in
 
-	1)	if [[ "$hasUEFIoption" = true ]]; then
+	1)	if [[ "$hasUEFIoption" = true && "$isUnsupported" = false ]]; then
 			flash_full_rom
 		fi
 		uefi_menu
@@ -1272,7 +1278,7 @@ function uefi_menu() {
 	exit;
 	;;
 
-	[cC])	if [[ "$isUEFI" = true ]]; then
+	[cC])	if [[ "$isUEFI" = true && "$isUnsupported" = false ]]; then
 			clear_nvram
 		fi
 		uefi_menu
