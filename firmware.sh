@@ -6,6 +6,22 @@
 # Variables used only in this file
 usb_device=""
 
+#######################
+# Download Files List #
+#######################
+function download_files() {
+	local -n files_ref=$1
+	local base_url="$2"
+	
+	# Download all files in the array
+	for file in "${files_ref[@]}"; do
+		if ! $CURL -sLO "${base_url}${file}"; then
+			echo_red "Error downloading ${file}; cannot continue"
+			return 1
+		fi
+	done
+}
+
 ###################
 # flash RW_LEGACY #
 ###################
@@ -131,8 +147,12 @@ MrChromebox does not provide any support for running Windows."
 
 	#download RW_LEGACY update
 	echo_yellow "\nDownloading RW_LEGACY firmware update\n(${rwlegacy_file})"
-	$CURL -sLO "${rwlegacy_source}${rwlegacy_file}.md5"
-	$CURL -sLO "${rwlegacy_source}${rwlegacy_file}"
+	
+	rwlegacy_files=(
+		"${rwlegacy_file}.md5"
+		"${rwlegacy_file}"
+	)
+	download_files rwlegacy_files "${rwlegacy_source}" || return 1
 
 	#verify checksum on downloaded file
 	if ! md5sum -c "${rwlegacy_file}.md5" > /dev/null 2>&1; then
@@ -172,6 +192,9 @@ MrChromebox does not provide any support for running Windows."
 #############################
 function flash_full_rom()
 {
+	# ensure hardware write protect disabled
+	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
+
 	echo_green "\nInstall/Update UEFI Full ROM Firmware"
 	echo_yellow "IMPORTANT: flashing the firmware has the potential to brick your device,
 requiring relatively inexpensive hardware and some technical knowledge to
@@ -189,9 +212,6 @@ to run ChromeOS."
 
 	#spacing
 	echo -e ""
-
-	# ensure hardware write protect disabled
-	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
 	#special warning for CR50 devices
 	if [[ "$isStock" = true && "$hasCR50" = true ]]; then
@@ -315,12 +335,12 @@ and you need to recover using an external EEPROM programmer. [Y/n]
 	#download firmware file
 	cd /tmp || { exit_red "Error changing to tmp dir; cannot proceed"; return 1; }
 	echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
-	if ! $CURL -sLO "${firmware_source}${coreboot_file}"; then
-		exit_red "Firmware download failed; cannot flash. curl error code $?"; return 1
-	fi
-	if ! $CURL -sLO "${firmware_source}${coreboot_file}.sha1"; then
-		exit_red "Firmware checksum download failed; cannot flash."; return 1
-	fi
+	
+	fullrom_files=(
+		"${coreboot_file}"
+		"${coreboot_file}.sha1"
+	)
+	download_files fullrom_files "${firmware_source}" || return 1
 
 	#verify checksum on downloaded file
 	if ! sha1sum -c "${coreboot_file}.sha1" > /dev/null 2>&1; then
@@ -509,8 +529,13 @@ the touchpad firmware, otherwise the touchpad will not work."
 			[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot downgrade touchpad firmware."; return 1; }
 			# download TP firmware
 			echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw})"
-			$CURL -s -LO "${other_source}${touchpad_eve_fw}"
-			$CURL -s -LO "${other_source}${touchpad_eve_fw}.sha1"
+			
+			touchpad_downgrade_files=(
+				"${touchpad_eve_fw}"
+				"${touchpad_eve_fw}.sha1"
+			)
+			download_files touchpad_downgrade_files "${other_source}" || return 1
+
 			#verify checksum on downloaded file
 			if sha1sum -c ${touchpad_eve_fw}.sha1 > /dev/null 2>&1; then
 				# flash TP firmware
@@ -523,10 +548,16 @@ the touchpad firmware, otherwise the touchpad will not work."
 					[[ "$isChromeOS" == "true" ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
 					(
 						cd $tpPath
-						$CURL -sLO "${util_source}flashrom_eve_tp"
-						chmod +x flashrom_eve_tp
+						flashrom_eve_files=(
+							"${flashrom_eve_tp}"
+							"${flashrom_eve_tp}.sha1"
+						)
+						download_files flashrom_eve_files "${util_source}" || return 1
+						sha1sum -c ${flashrom_eve_tp}.sha1 > /dev/null 2>&1 || \
+							{ echo_red "Flashrom Eve TP checksum fail; download corrupted, cannot flash."; return 1; }
+						chmod +x ${flashrom_eve_tp}
 					)
-					if $tpPath/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
+					if $tpPath/${flashrom_eve_tp} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log >/dev/null 2>&1; then
 						echo_green "Touchpad firmware successfully downgraded."
 						echo_yellow "Please reboot your Pixelbook now."
 					else
@@ -562,8 +593,17 @@ the touchpad firmware, otherwise the touchpad will not work."
 			[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot upgrade touchpad firmware."; return 1; }
 			# download TP firmware
 			echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw_stock})"
-			$CURL -s -LO "${other_source}${touchpad_eve_fw_stock}"
-			$CURL -s -LO "${other_source}${touchpad_eve_fw_stock}.sha1"
+			
+			# Array of touchpad upgrade files to download
+			touchpad_upgrade_files=(
+				"${touchpad_eve_fw_stock}"
+				"${touchpad_eve_fw_stock}.sha1"
+			)
+			
+			# Download touchpad upgrade files
+			if ! download_files touchpad_upgrade_files "${other_source}"; then
+				return 1
+			fi
 			#verify checksum on downloaded file
 			if sha1sum -c ${touchpad_eve_fw_stock}.sha1 > /dev/null 2>&1; then
 				# flash TP firmware
@@ -576,7 +616,10 @@ the touchpad firmware, otherwise the touchpad will not work."
 				[[ "$isChromeOS" == "true" ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
 				(
 					cd $tpPath
-					$CURL -sLO "${util_source}flashrom_eve_tp"
+					if ! $CURL -sLO "${util_source}flashrom_eve_tp"; then
+						echo_red "Error downloading flashrom_eve_tp; cannot continue"
+						exit 1
+					fi
 					chmod +x flashrom_eve_tp
 				)
 				if $tpPath/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log >/dev/null 2>&1; then

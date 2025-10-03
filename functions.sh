@@ -3,12 +3,20 @@
 
 # shellcheck disable=SC2164,SC2155
 
-#misc globals
-export usb_devs=""
-export num_usb_devs=0
+########################################
+# Global Variables and Configuration  #
+########################################
 
+# USB device handling
+export usb_devs=""
+export usb_device_count=0
+
+# System detection
 export isChromeOS=true
 isChromiumOS=false
+isMusl=false
+
+# Firmware tool paths
 export flashromcmd=""
 export flashrom_params=""
 export flashrom_programmer="-p internal:boardmismatch=force"
@@ -16,15 +24,14 @@ export cbfstoolcmd=""
 export gbbutilitycmd=""
 export ectoolcmd=""
 
+# Firmware state
 export firmwareType=""
 export isStock=true
 export isFullRom=false
 export isUEFI=false
 export wpEnabled=false
 
-isMusl=false
-
-#menu text output
+# Terminal color codes for UI
 NORMAL=$(echo "\033[m")
 MENU=$(echo "\033[36m") #Blue
 NUMBER=$(echo "\033[33m") #yellow
@@ -34,55 +41,61 @@ GRAY_TEXT=$(echo "\033[1;30m")
 GREEN_TEXT=$(echo "\033[1;32m")
 ENTER_LINE=$(echo "\033[33m")
 
-function echo_red()
-{
+########################################
+# Utility Functions                    #
+########################################
+
+# Print text in red color
+function echo_red() {
 	echo -e "\E[0;31m$1"
 	echo -e '\e[0m'
 }
 
-function echo_green()
-{
+# Print text in green color
+function echo_green() {
 	echo -e "\E[0;32m$1"
 	echo -e '\e[0m'
 }
 
-function echo_yellow()
-{
+# Print text in yellow color
+function echo_yellow() {
 	echo -e "\E[1;33m$1"
 	echo -e '\e[0m'
 }
-function exit_red()
-{
+# Print error message and wait for user input
+function exit_red() {
 	echo_red "$@"
 	read -rep "Press [Enter] to return to the main menu."
 }
 
-function die()
-{
+# Print error message and exit script
+function die() {
 	echo_red "$@"
 	exit 1
 }
 
-####################
-# list USB devices #
-####################
-function list_usb_devices()
-{
+########################################
+# Device Detection Functions           #
+########################################
+
+# List all available USB devices with vendor/model info
+function list_usb_devices() {
 	stat -c %N /sys/block/sd* 2>/dev/null | grep usb | cut -f1 -d ' ' \
 		| sed "s/[']//g;s|/sys/block|/dev|" > /tmp/usb_block_devices
-	eval usb_devs="($(cat  /tmp/usb_block_devices))"
-	[ "$usb_devs" != "" ] || return 1
+	mapfile -t usb_devs < /tmp/usb_block_devices
+	[ ${#usb_devs[@]} -gt 0 ] || return 1
 	
 	echo -e "\nDevices available:\n"
-	num_usb_devs=0
+	usb_device_count=0
 	for dev in "${usb_devs[@]}"
 	do
-		((num_usb_devs+=1))
-		vendor=$(udevadm info --query=all --name=${dev#"/dev/"} | grep -E "ID_VENDOR=" | awk -F"=" '{print 
-		$2}')
-		model=$(udevadm info --query=all --name=${dev#"/dev/"} | grep -E "ID_MODEL=" | awk -F"=" '{print $2}')
+		((usb_device_count+=1))
+	# Get device info once and parse it
+	dev_info=$(udevadm info --query=all --name="${dev#/dev/}")
+	vendor=$(echo "$dev_info" | grep "ID_VENDOR=" | cut -d'=' -f2)
+	model=$(echo "$dev_info" | grep "ID_MODEL=" | cut -d'=' -f2)
 		sz=$(fdisk -l 2> /dev/null | grep "Disk ${dev}" | awk '{print $3}')
-		echo -n "$num_usb_devs)"
+		echo -n "$usb_device_count)"
 		if [ -n "${vendor}" ]; then
 			echo -n " ${vendor}"
 		fi
@@ -94,76 +107,64 @@ function list_usb_devices()
 	echo -e ""
 }
 
-################
-# Get cbfstool #
-################
-function get_cbfstool()
-{
+########################################
+# Tool Management Functions            #
+########################################
+
+# Download and setup cbfstool utility if not present
+function get_cbfstool() {
 	if [ ! -f "${cbfstoolcmd}" ]; then
-		working_dir=$(pwd)
-		cd "$(dirname "${cbfstoolcmd}")"
-		#echo_yellow "Downloading cbfstool utility"
-		util_file=""
-		if [[ "$isMusl" = true ]]; then
-			util_file="cbfstool-musl.tar.gz"
-		else
-			util_file="cbfstool.tar.gz"
-		fi
-		if ! ${CURL} -sLo "cbfstool.tar.gz" "${util_source}${util_file}"; then
-			echo_red "Error downloading cbfstool; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		if ! tar -zxf cbfstool.tar.gz --no-same-owner; then
-			echo_red "Error extracting cbfstool; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		#set +x
-		chmod +x cbfstool
-		#restore working dir
-		cd "${working_dir}"
+		(
+			cd "$(dirname "${cbfstoolcmd}")"
+			#echo_yellow "Downloading cbfstool utility"
+			util_file=""
+			if [[ "$isMusl" = true ]]; then
+				util_file="cbfstool-musl.tar.gz"
+			else
+				util_file="cbfstool.tar.gz"
+			fi
+			if ! ${CURL} -sLo "cbfstool.tar.gz" "${util_source}${util_file}"; then
+				echo_red "Error downloading cbfstool; cannot proceed."
+				return 1
+			fi
+			if ! tar -zxf cbfstool.tar.gz --no-same-owner; then
+				echo_red "Error extracting cbfstool; cannot proceed."
+				return 1
+			fi
+			#set +x
+			chmod +x cbfstool
+		) || return 1
 	fi
 }
 
-################
-# Get flashrom #
-################
-function get_flashrom()
-{
+# Download and setup flashrom utility if not present
+function get_flashrom() {
 	if [ ! -f "${flashromcmd}" ]; then
-		working_dir=$(pwd)
-		cd "$(dirname "${flashromcmd}")"
-		util_file=""
-		if [[ "$isChromeOS" = true ]]; then
-			#needed to avoid dependencies not found on older ChromeOS
-			util_file="flashrom_old.tar.gz"
-		else
-			flashrom_programmer="${flashrom_programmer} --use-first-chip"
-			if [[ "$isMusl" = true ]]; then
-				util_file="flashrom-musl.tar.gz"
+		(
+			cd "$(dirname "${flashromcmd}")"
+			util_file=""
+			if [[ "$isChromeOS" = true ]]; then
+				#needed to avoid dependencies not found on older ChromeOS
+				util_file="flashrom_old.tar.gz"
 			else
-				util_file="flashrom_ups_int_20241214.tar.gz"
+				flashrom_programmer="${flashrom_programmer} --use-first-chip"
+				if [[ "$isMusl" = true ]]; then
+					util_file="flashrom-musl.tar.gz"
+				else
+					util_file="flashrom_ups_int_20241214.tar.gz"
+				fi
 			fi
-		fi
-		if ! ${CURL} -sLo "flashrom.tar.gz" "${util_source}${util_file}"; then
-			echo_red "Error downloading flashrom; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		if ! tar -zxf flashrom.tar.gz --no-same-owner; then
-			echo_red "Error extracting flashrom; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		#set +x
-		chmod +x flashrom
-		#restore working dir
-		cd "${working_dir}"
+			if ! ${CURL} -sLo "flashrom.tar.gz" "${util_source}${util_file}"; then
+				echo_red "Error downloading flashrom; cannot proceed."
+				return 1
+			fi
+			if ! tar -zxf flashrom.tar.gz --no-same-owner; then
+				echo_red "Error extracting flashrom; cannot proceed."
+				return 1
+			fi
+			#set +x
+			chmod +x flashrom
+		) || return 1
 	fi
 	#check if flashrom supports --noverify-all
 	if ${flashromcmd} -h | grep -q "noverify-all" ; then
@@ -176,75 +177,61 @@ function get_flashrom()
 
 }
 
-###################
-# Get gbb_utility #
-###################
-function get_gbb_utility()
-{
+# Download and setup gbb_utility if not present
+function get_gbb_utility() {
 	if [ ! -f "${gbbutilitycmd}" ]; then
-		working_dir=$(pwd)
-		cd "$(dirname "${gbbutilitycmd}")"
-		util_file=""
-		if [[ "$isMusl" = true ]]; then
-			util_file="gbb_utility-musl.tar.gz"
-		else
-		util_file="gbb_utility.tar.gz"
-		fi
-		if ! ${CURL} -sLo "gbb_utility.tar.gz" "${util_source}${util_file}"; then
-			echo_red "Error downloading gbb_utility; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		if ! tar -zxf gbb_utility.tar.gz; then
-			echo_red "Error extracting gbb_utility; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		#set +x
-		chmod +x gbb_utility
-		#restore working dir
-		cd "${working_dir}"
+		(
+			cd "$(dirname "${gbbutilitycmd}")"
+			util_file=""
+			if [[ "$isMusl" = true ]]; then
+				util_file="gbb_utility-musl.tar.gz"
+			else
+			util_file="gbb_utility.tar.gz"
+			fi
+			if ! ${CURL} -sLo "gbb_utility.tar.gz" "${util_source}${util_file}"; then
+				echo_red "Error downloading gbb_utility; cannot proceed."
+				return 1
+			fi
+			if ! tar -zxf gbb_utility.tar.gz; then
+				echo_red "Error extracting gbb_utility; cannot proceed."
+				return 1
+			fi
+			#set +x
+			chmod +x gbb_utility
+		) || return 1
 	fi
 }
 
-##############
-# Get ectool #
-##############
-function get_ectool()
-{
+# Download and setup ectool utility if not present
+function get_ectool() {
 	# Regardless if running under ChromeOS or Linux, can put ectool
 	# in same place as cbfstool
 	ectoolcmd="$(dirname "${cbfstoolcmd}")/ectool"
 	if [ ! -f "${ectoolcmd}" ]; then
-		working_dir=$(pwd)
-		cd "$(dirname "${ectoolcmd}")"
-		if ! ${CURL} -sLO "${util_source}ectool.tar.gz"; then
-			echo_red "Error downloading ectool; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		if ! tar -zxf ectool.tar.gz; then
-			echo_red "Error extracting ectool; cannot proceed."
-			#restore working dir
-			cd "${working_dir}"
-			return 1
-		fi
-		#set +x
-		chmod +x ectool
-		#restore working dir
-		cd "${working_dir}"
+		(
+			cd "$(dirname "${ectoolcmd}")"
+			if ! ${CURL} -sLO "${util_source}ectool.tar.gz"; then
+				echo_red "Error downloading ectool; cannot proceed."
+				return 1
+			fi
+			if ! tar -zxf ectool.tar.gz; then
+				echo_red "Error extracting ectool; cannot proceed."
+				return 1
+			fi
+			#set +x
+			chmod +x ectool
+		) || return 1
 	fi
 	return 0
 }
 
-##################################################
-# Diagnostic report for troubleshooting purposes #
-##################################################
-function diagnostic_report_save()
-{
+########################################
+# Diagnostic Report Functions          #
+########################################
+
+# Save diagnostic report for troubleshooting
+# Save diagnostic report to temporary file
+function diagnostic_report_save() {
 	(
 		echo "mrchromebox firmware-util diagnostic report"
 		date
@@ -257,6 +244,7 @@ function diagnostic_report_save()
 	) > /tmp/mrchromebox_diag.txt
 }
 
+# Set diagnostic report data for given key
 function diagnostic_report_set() {
 	declare -gA diagnostic_report_data
 	local key="$1"
@@ -264,17 +252,19 @@ function diagnostic_report_set() {
 	diagnostic_report_data[$key]="$*"
 }
 
-################
-# Prelim Setup #
-################
+########################################
+# Main Setup and Initialization        #
+########################################
+
+# Perform preliminary setup and validation
 function prelim_setup()
 {
 	# Must run as root
 	[ "$(whoami)" = "root" ] || die "You need to run this script with sudo; use 'sudo bash <script name>'"
 	
 	# Can't run from a VM/container
-	[[ "$(cat /etc/hostname 2>/dev/null)" = "penguin" ]] && die "This script cannot be run from a ChromeOS 
-	Linux container; you must use a VT2 terminal as directed per https://mrchromebox.tech/#fwscript"
+	[[ "$(cat /etc/hostname 2>/dev/null)" = "penguin" ]] && die "This script cannot be run from a ChromeOS Linux container;
+you must use a VT2 terminal as directed per https://mrchromebox.tech/#fwscript"
 	
 	#must be x86_64
 	[ "$(uname -m)"  = 'x86_64' ] \
@@ -328,7 +318,13 @@ Run this from a Linux Live USB instead."
 		initctl stop powerd > /dev/null 2>&1
 		# try to mount p12 as /tmp/boot
 		rootdev=$(rootdev -d -s)
-		[[ "${rootdev}" =~ "mmcblk" || "${rootdev}" =~ "nvme" ]] && part_pfx="p" || part_pfx="" part_num="${part_pfx}12"
+		# Determine partition prefix based on device type
+		if [[ "${rootdev}" =~ (mmcblk|nvme) ]]; then
+			part_pfx="p"
+		else
+			part_pfx=""
+		fi
+		part_num="${part_pfx}12"
 		export boot_mounted=$(mount | grep "${rootdev}""${part_num}")
 		if [ "${boot_mounted}" = "" ]; then
 			#mount boot
@@ -405,6 +401,11 @@ the script/update your firmware."
 	
 	# firmware date/version
 	fwVer=$(dmidecode -s bios-version)
+	fwVer="${fwVer#"${fwVer%%[![:space:]]*}"}"  # Remove leading whitespace
+	fwVer="${fwVer%"${fwVer##*[![:space:]]}"}"  # Remove trailing whitespace
+	fwVendor=$(dmidecode -s bios-vendor)
+	# Workaround for ChromeOS devices booting Linux via RWL showing no BIOS version
+	[[ -z "$fwVer" && "$fwVendor" = "coreboot" ]] && fwVer="Google_Unknown"
 	fwDate=$(dmidecode -s bios-release-date)
 	diagnostic_report_set fwVer "$fwVer"
 	diagnostic_report_set fwDate "$fwDate"
@@ -458,10 +459,12 @@ the script/update your firmware."
 If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
 Would you like to disable sofware WP and reboot your device?"
 		read -rep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
-		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
+		# Validate user input
+		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 			echo -e "\nDisabling software WP..."
 			if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
-				exit_red "\nError disabling software write-protect -- hardware WP is still enabled."; return 1
+				exit_red "\nError disabling software write-protect -- hardware WP is still enabled."
+				return 1
 			fi
 			echo -e "\nClearing the WP range(s)..."
 			if ! ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1; then
@@ -469,7 +472,8 @@ Would you like to disable sofware WP and reboot your device?"
 				if ! ${flashromcmd} --wp-range 0,0 > /dev/null 2>&1; then
 					#re-run to output error
 					${flashromcmd} --wp-range 0,0
-					exit_red "\nError clearing software write-protect range."; return 1
+					exit_red "\nError clearing software write-protect range."
+					return 1
 				fi
 			fi
 			echo_green "\nSoftware WP disabled, rebooting in 5s"
@@ -527,11 +531,13 @@ Would you like to disable sofware WP and reboot your device?"
 	diagnostic_report_set isUnsupported "$isUnsupported"
 }
 
-###########
-# Cleanup #
-###########
+########################################
+# Cleanup Function                     #
+########################################
+
+# Clean up temporary files and mounts
 function cleanup()
 {
-	#remove temp files, unmount temp stuff
+	# unmount p12 if mounted
 	umount /tmp/boot > /dev/null 2>&1
 }

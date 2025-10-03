@@ -409,5 +409,6 @@ export coreboot_uefi_librem_mini_v2="coreboot_edk2-librem_mini_v2-mrchromebox_20
 export coreboot_uefi_librem_14="coreboot_edk2-librem_14-mrchromebox_20250427.rom"
 
 # other
+export flashrom_eve_tp="flashrom_eve_tp"
 export touchpad_eve_fw="rose_v1.1.8546-ee1861e9e.bin"
 export touchpad_eve_fw_stock="rose_v2.0.653-dfd8046c6.bin"
