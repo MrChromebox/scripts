@@ -34,7 +34,20 @@ function flash_rwlegacy()
 	elif [ "$isSkl" = true ]; then
 		rwlegacy_file=$seabios_skylake
 	elif [ "$isApl" = true ]; then
-		rwlegacy_file=$seabios_apl
+		# prompt for SeaBIOS/edk2 selection
+		echo -e ""
+		echo_yellow "Firmware Type Selection"
+		echo -e "Your device has the option of two RW_LEGACY firmware types."
+		REPLY=""
+		while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "U" && "$REPLY" != "u"  ]]
+		do
+			read -rep "Enter 'L' for Legacy BIOS (SeaBIOS), 'U' for UEFI (edk2/Tianocore): "
+			if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+				rwlegacy_file=$rwl_altfw_apl
+			else
+				rwlegacy_file=$seabios_apl
+			fi
+		done
 	elif [ "$isKbl" = true ]; then
 		# prompt for SeaBIOS/edk2 selection
 		echo -e ""
