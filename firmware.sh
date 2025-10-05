@@ -641,6 +641,255 @@ recommended to try under ChromeOS."
 }
 
 ##########################
+# Flash Custom Firmware #
+########################
+function flash_custom_firmware()
+{
+	# ensure hardware write protect disabled
+	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash custom firmware."; return 1; }
+
+	echo_green "\nFlash Custom Firmware Image"
+	echo_yellow "IMPORTANT: flashing custom firmware has the potential to brick your device,
+requiring relatively inexpensive hardware and some technical knowledge to
+recover. Make sure you have a backup of your current firmware before proceeding.
+If you don't have the ability to recover from a bad flash, you're taking a risk.
+
+You have been warned."
+
+	read -rep "Do you wish to continue? [y/N] "
+	[[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
+
+	echo -e ""
+	echo_yellow "Please select firmware source:"
+	echo -e "1) Flash from local filesystem"
+	echo -e "2) Flash from USB device"
+	echo -e "Q) Quit and return to main menu"
+	echo -e ""
+	flash_option=-1
+	while :
+	do
+		read -rep "? " flash_option
+		case $flash_option in
+		1)  flash_firmware_from_local || return 1;
+			break;
+			;;
+		2)  flash_firmware_from_usb || return 1;
+			break;
+			;;
+		Q|q) flash_option="Q";
+			break;
+			;;
+		esac
+	done
+	[[ "$flash_option" = "Q" ]] && return
+}
+
+function flash_firmware_from_local()
+{
+	echo_yellow "\nFlashing firmware from local filesystem"
+	read -rep "Enter the full path to the custom firmware file: " firmware_path
+	
+	local hasError=false
+	if [ -z "$firmware_path" ]; then
+		echo_red "No firmware path provided"
+		hasError=true
+	fi
+	
+	if [ ! -f "$firmware_path" ]; then
+		echo_red "Firmware file not found: $firmware_path"
+		hasError=true
+	fi
+	
+	# Copy firmware to /tmp for processing
+	cp "$firmware_path" /tmp/custom-firmware.rom || {
+		echo_red "Failed to copy firmware file to /tmp"
+		hasError=true
+	}
+	if $hasError; then
+		read -rep "Press [Enter] to return to the main menu."
+		return 1
+	fi
+	
+	# Process the custom firmware
+	process_and_flash_custom_firmware "/tmp/custom-firmware.rom"
+}
+
+function flash_firmware_from_usb()
+{
+	read -rep "Connect the USB/SD device which contains the custom firmware and press [Enter] to continue. "
+	list_usb_devices || { exit_red "No USB devices available to read firmware from."; return 1; }
+	usb_dev_index=""
+	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+		read -rep "Enter the number for the device which contains the custom firmware: " usb_dev_index
+		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+			echo -e "Error: Invalid option selected; enter a number from the list above."
+		fi
+	done
+
+	usb_device="${usb_devs[${usb_dev_index}-1]}"
+	mkdir /tmp/usb > /dev/null 2>&1
+	mount "${usb_device}" /tmp/usb > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		mount "${usb_device}1" /tmp/usb
+	fi
+	if [ $? -ne 0 ]; then
+		echo_red "USB device failed to mount; cannot proceed."
+		read -rep "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+		return 1
+	fi
+	
+	# Select file from USB device
+	echo_yellow "\nFirmware Files on USB:"
+	if ! ls /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
+		echo_red "No firmware files found on USB device."
+		read -rep "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+		return 1
+	fi
+	echo -e ""
+	read -rep "Enter the firmware filename: " firmware_file
+	firmware_file="/tmp/usb/${firmware_file}"
+	if [ ! -f "$firmware_file" ]; then
+		echo_red "Invalid filename entered; unable to flash custom firmware."
+		read -rep "Press [Enter] to return to the main menu."
+		umount /tmp/usb > /dev/null 2>&1
+		return 1
+	fi
+	
+	# Copy firmware to /tmp for processing
+	cp "$firmware_file" /tmp/custom-firmware.rom || {
+		echo_red "Failed to copy firmware file to /tmp"
+		umount /tmp/usb > /dev/null 2>&1
+		return 1
+	}
+	
+	# Cleanup USB mount
+	umount /tmp/usb > /dev/null 2>&1
+	rmdir /tmp/usb
+	
+	# Process the custom firmware
+	process_and_flash_custom_firmware "/tmp/custom-firmware.rom"
+}
+
+function process_and_flash_custom_firmware()
+{
+	local custom_firmware_file="$1"
+	
+	# Check if we can read the custom firmware
+	if ! ${cbfstoolcmd} "${custom_firmware_file}" print > /dev/null 2>&1; then
+		echo_yellow "Warning: Unable to read custom firmware with cbfstool. Proceeding anyway."
+	fi
+	
+	# Extract current firmware data to preserve
+	echo_yellow "Extracting device-specific data from current firmware"
+	
+	# Extract serial number if present
+	${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt >/dev/null 2>&1
+	
+	# Extract HWID if present
+	${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt >/dev/null 2>&1
+	
+	# Extract VPD if possible
+	extract_vpd /tmp/bios.bin >/dev/null 2>&1
+	
+	# Extract RW_MRC_CACHE if present
+	${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
+	
+	# Extract SMMSTORE if present
+	${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
+	
+	# Persist serial number if extracted
+	if [ -f /tmp/serial.txt ]; then
+		echo_yellow "Persisting device serial number"
+		${cbfstoolcmd} "${custom_firmware_file}" add -n serial_number -f /tmp/serial.txt -t raw > /dev/null 2>&1
+	fi
+	
+	# Persist HWID if extracted
+	if [ -f /tmp/hwid.txt ]; then
+		echo_yellow "Persisting device HWID"
+		hwid_content=$(cat /tmp/hwid.txt)
+		if [[ "$hwid_content" =~ ^[A-Z0-9]+ ]]; then
+			# Use gbb_utility if it's a proper HWID format
+			${gbbutilitycmd} "${custom_firmware_file}" --set --hwid="$hwid_content" > /dev/null 2>&1
+		else
+			# Use cbfstool for raw HWID data
+			${cbfstoolcmd} "${custom_firmware_file}" add -n hwid -f /tmp/hwid.txt -t raw > /dev/null 2>&1
+		fi
+	fi
+	
+	# Persist VPD if extracted
+	if [ -f /tmp/vpd.bin ]; then
+		echo_yellow "Persisting VPD data"
+		if ! ${cbfstoolcmd} "${custom_firmware_file}" write -r RO_VPD -f /tmp/vpd.bin > /dev/null 2>&1; then
+			${cbfstoolcmd} "${custom_firmware_file}" add -n vpd.bin -f /tmp/vpd.bin -t raw > /dev/null 2>&1
+		fi
+	fi
+	
+	# Persist RW_MRC_CACHE if extracted
+	if [ -f /tmp/mrc.cache ]; then
+		echo_yellow "Persisting RW_MRC_CACHE"
+		${cbfstoolcmd} "${custom_firmware_file}" write -r RW_MRC_CACHE -f /tmp/mrc.cache > /dev/null 2>&1
+	fi
+	
+	# Persist SMMSTORE if extracted
+	if [ -f /tmp/smmstore ]; then
+		echo_yellow "Persisting SMMSTORE"
+		${cbfstoolcmd} "${custom_firmware_file}" write -r SMMSTORE -f /tmp/smmstore > /dev/null 2>&1
+	fi
+	
+	# Disable software write-protect
+	echo_yellow "Disabling software write-protect and clearing the WP range"
+	if ! ${flashromcmd} --wp-disable > /dev/null 2>&1 && [[ "$swWp" = "enabled" ]]; then
+		exit_red "Error disabling software write-protect; unable to flash firmware."; return 1
+	fi
+	
+	# Clear SW WP range
+	if ! ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1; then
+		if ! ${flashromcmd} --wp-range 0,0 > /dev/null 2>&1 && [[ "$swWp" = "enabled" ]]; then
+			exit_red "Error clearing software write-protect range; unable to flash firmware."; return 1
+		fi
+	fi
+	
+	# Flash the custom firmware
+	echo_yellow "Installing custom firmware (may take up to 90s)"
+	rm -f /tmp/flashrom.log
+	
+	# Check if flashrom supports logging to file
+	if ${flashromcmd} -V -o /dev/null > /dev/null 2>&1; then
+		output_params=">/dev/null 2>&1 -o /tmp/flashrom.log"
+		${flashromcmd} ${flashrom_params} ${noverify} -w "${custom_firmware_file}" >/dev/null 2>&1 -o /tmp/flashrom.log
+	else
+		output_params=">/tmp/flashrom.log 2>&1"
+		${flashromcmd} ${flashrom_params} ${noverify} -w "${custom_firmware_file}" >/tmp/flashrom.log 2>&1
+	fi
+	
+	if [ $? -ne 0 ]; then
+		echo_red "Error running cmd: ${flashromcmd} ${flashrom_params} ${noverify} -w ${custom_firmware_file} ${output_params}"
+		if [ -f /tmp/flashrom.log ]; then
+			read -rp "Press enter to view the flashrom log file, then space for next page, q to quit"
+			more /tmp/flashrom.log
+		fi
+		exit_red "An error occurred flashing the custom firmware. DO NOT REBOOT!"; return 1
+	else
+		echo_green "Custom firmware successfully installed/updated."
+		
+		# Update firmware type
+		firmwareType="Custom Firmware (pending reboot)"
+		isStock=false
+		isFullRom=true
+		isUEFI=true
+		
+		echo_yellow "IMPORTANT:
+The first boot after flashing may take substantially
+longer than subsequent boots -- up to 30s or more.
+Be patient and eventually your device will boot :)"
+	fi
+		
+	read -rep "Press [Enter] to return to the main menu."
+}
+
+########################
 # Restore Stock Firmware #
 ##########################
 function restore_stock_firmware()
@@ -820,12 +1069,11 @@ function extract_firmware_from_recovery_usb()
 	_firmware=chromeos-firmwareupdate-$_board
 	_unpacked=$(mktemp -d)
 	if [[ "$1" = "" || "$2" = "" ]]; then
-		echo_red "Invalid or missing function parameters: [$@]"
+		echo_red "Invalid or missing function parameters: [$*]"
 		return 1
 	fi
 	echo_yellow "Extracting firmware from recovery USB"
-	printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_firmware\nquit" | debugfs $_debugfs >/dev/null 
-	2>&1
+	printf "cd /usr/sbin\ndump chromeos-firmwareupdate $_firmware\nquit" | debugfs $_debugfs >/dev/null 2>&1
 	if [ ! -f $_firmware ]; then
 		echo_red "Failed to copy file 'chromeos-firmwareupdate' from Recovery USB"
 		return 1
@@ -891,6 +1139,119 @@ function extract_vpd()
 }
 
 #########################
+# Backup Current Firmware #
+#########################
+function backup_current_firmware()
+{
+	echo_green "\nBackup Current Firmware"
+	echo_yellow "This function allows you to backup the current firmware to either
+a local file or a USB device. This is useful for creating backups
+before flashing custom firmware."
+
+	read -rep "Do you wish to continue? [y/N] "
+	[[ "$REPLY" = "Y" || "$REPLY" = "y" ]] || return
+
+	echo -e ""
+	echo_yellow "Please select backup destination:"
+	echo -e "1) Backup to local filesystem"
+	echo -e "2) Backup to USB device"
+	echo -e "Q) Quit and return to main menu"
+	echo -e ""
+	backup_option=-1
+	while :
+	do
+		read -rep "? " backup_option
+		case $backup_option in
+		1)  backup_firmware_to_local || return 1;
+			break;
+			;;
+		2)  backup_firmware_to_usb || return 1;
+			break;
+			;;
+		Q|q) backup_option="Q";
+			break;
+			;;
+		esac
+	done
+	[[ "$backup_option" = "Q" ]] && return
+}
+
+function backup_firmware_to_local()
+{
+	echo_yellow "\nBacking up firmware to local filesystem"
+	echo -e "Enter the directory path for the backup (e.g., /home/user/backups/)"
+	echo -e "Or just press [Enter] to use the current directory."
+	read -rep "" backup_dir
+	
+	# Default to current directory if empty
+	if [ -z "$backup_dir" ]; then
+		backup_dir=$(pwd)
+	fi
+	
+	# Remove trailing slash if present and normalize path
+	backup_dir="${backup_dir%/}"
+	
+	# Create directory if it doesn't exist
+	if [[ ! -d "$backup_dir" ]]; then
+		echo_yellow "Creating directory: $backup_dir"
+		mkdir -p "$backup_dir" || {
+			echo_red "Failed to create directory: $backup_dir"
+			return 1
+		}
+	fi
+	
+	# Generate backup filename
+	backupname="BACKUP-${boardName}-$fwVer-$(date +%Y.%m.%d).rom"
+	backup_path="$backup_dir/$backupname"
+
+	echo_yellow "Saving firmware backup:\n$backup_path"
+	if ! cp /tmp/bios.bin "$backup_path"; then
+		echo_red "Failure copying firmware to $backup_path"
+		return 1
+	fi
+	echo_green "Firmware backup complete."
+	read -rep "Press [Enter] to return to the main menu."
+}
+
+function backup_firmware_to_usb()
+{
+	echo -e ""
+	read -rep "Connect the USB/SD device to store the firmware backup and press [Enter]
+to continue.  This is non-destructive, but it is best to ensure no other
+USB/SD devices are connected. "
+	if ! list_usb_devices; then
+		backup_fail "No USB devices available to store firmware backup."
+		return 1
+	fi
+	usb_dev_index=""
+	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
+		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+			echo -e "Error: Invalid option selected; enter a number from the list above."
+		fi
+	done
+	usb_device="${usb_devs[${usb_dev_index}-1]}"
+	mkdir /tmp/usb > /dev/null 2>&1
+	if ! mount -o rw "${usb_device}" /tmp/usb > /dev/null 2>&1; then
+		if ! mount -o rw "${usb_device}1" /tmp/usb > /dev/null 2>&1; then
+			backup_fail "USB backup device failed to mount; cannot proceed. Ensure your USB is FAT32-formatted and try again."
+			return 1
+		fi
+	fi
+	backupname="BACKUP-${boardName}-$fwVer-$(date +%Y.%m.%d).rom"
+	echo_yellow "\nSaving firmware backup: ${backupname}"
+	if ! cp /tmp/bios.bin /tmp/usb/${backupname}; then
+		backup_fail "Failure copying firmware to USB; cannot proceed."
+		return 1
+	fi
+	sync
+	umount /tmp/usb > /dev/null 2>&1
+	rmdir /tmp/usb
+	echo_green "Firmware backup complete.\n\nRemove the USB stick and press [Enter] to continue."
+	read -rep ""
+}
+
+#########################
 # Backup stock firmware #
 #########################
 function backup_firmware()
@@ -935,7 +1296,7 @@ function backup_fail()
 {
 	umount /tmp/usb > /dev/null 2>&1
 	rmdir /tmp/usb > /dev/null 2>&1
-	exit_red "\n$@"
+	exit_red "\n$*"
 }
 
 ####################
@@ -1269,6 +1630,10 @@ function uefi_menu() {
 	else
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Restore Stock ChromeOS Firmware ${NORMAL}"
 	fi
+	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
+		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 3)${MENU} Backup Current Firmware ${NORMAL}"
+		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Flash Custom Firmware ${NORMAL}"
+	fi
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
@@ -1298,6 +1663,18 @@ function uefi_menu() {
 		else
 			uefi_menu
 		fi
+		;;
+
+	3)	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
+			backup_current_firmware
+		fi
+		uefi_menu
+		;;
+
+	4)	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
+			flash_custom_firmware
+		fi
+		uefi_menu
 		;;
 
 	[dD])	if [[  "${device^^}" = "EVE" ]]; then
