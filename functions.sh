@@ -147,7 +147,6 @@ function get_flashrom() {
 				#needed to avoid dependencies not found on older ChromeOS
 				util_file="flashrom_old.tar.gz"
 			else
-				flashrom_programmer="${flashrom_programmer} --use-first-chip"
 				if [[ "$isMusl" = true ]]; then
 					util_file="flashrom-musl.tar.gz"
 				else
@@ -173,6 +172,7 @@ function get_flashrom() {
 		export noverify="-n"
 	fi
 	# append programmer type
+	[[ "$isChromeOS" = false ]] && flashrom_programmer="${flashrom_programmer} --use-first-chip"
 	flashromcmd="${flashromcmd} ${flashrom_programmer}"
 
 }
