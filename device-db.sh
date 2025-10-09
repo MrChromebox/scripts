@@ -38,9 +38,11 @@ DEVICE_DB=(
 	["GANDOF*"]="Toshiba Chromebook 2 (2015) CB30/CB35|BDW|||"
 	["GUADO*"]="ASUS Chromebox 2 (CN62)|BDW||isCbox,hasLAN|"
 	["LULU*"]="Dell Chromebook 13 (7310)|BDW|||"
+	["PAINE*"]="Acer Chromebook 11 (C740)|BDW|auron_paine||"
 	["RIKKU*"]="Acer Chromebox CXI2/CXV2|BDW||isCbox,hasLAN|"
 	["SAMUS*"]="Google Chromebook Pixel (2015)|BDW|||"
 	["TIDUS*"]="Lenovo ThinkCentre Chromebox|BDW||isCbox,hasLAN|"
+	["YUNA*"]="Acer Chromebook 15 (CB5-571, C910)|BDW|auron_yuna||"
 
 	# BYT devices (EOL) - Intel BayTrail
 	["BANJO*"]="Acer Chromebook 15 (CB3-531)|BYT|||"
