@@ -361,14 +361,14 @@ export coreboot_uefi_liara="coreboot_edk2-liara-mrchromebox_20251007.rom"
 export coreboot_uefi_treeya="coreboot_edk2-treeya-mrchromebox_20251007.rom"
 
 #Picasso
-export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20251007.rom"
-export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20251007.rom"
-export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20251007.rom"
-export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20251007.rom"
-export coreboot_uefi_jelboz360="coreboot_edk2-jelboz360-mrchromebox_20251007.rom"
-export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20251007.rom"
-export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20251007.rom"
-export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20251007.rom"
+export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20251008.rom"
+export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20251008.rom"
+export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20251008.rom"
+export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20251008.rom"
+export coreboot_uefi_jelboz360="coreboot_edk2-jelboz360-mrchromebox_20251008.rom"
+export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20251008.rom"
+export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20251008.rom"
+export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20251008.rom"
 
 #Cezanne
 export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20251007.rom"
