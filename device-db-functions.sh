@@ -14,13 +14,19 @@ get_db_info() {
 	if [[ -n "${DEVICE_DB["$hwid"]:-}" ]]; then
 		entry="${DEVICE_DB["$hwid"]}"
 	else
-		# Try pattern matching
+		# Try pattern matching - find the longest (most specific) match
+		local best_match=""
+		local best_pattern=""
 		for pattern in "${!DEVICE_DB[@]}"; do
 			if [[ "$hwid" == $pattern ]]; then
-				entry="${DEVICE_DB["$pattern"]}"
-				break
+				# If this pattern is longer than our current best, use it
+				if [[ ${#pattern} -gt ${#best_pattern} ]]; then
+					best_pattern="$pattern"
+					best_match="${DEVICE_DB["$pattern"]}"
+				fi
 			fi
 		done
+		entry="$best_match"
 	fi
 
 	echo "$entry"
