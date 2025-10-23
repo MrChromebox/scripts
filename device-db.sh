@@ -371,7 +371,7 @@ DEVICE_DB=(
 	["TARLO*"]="Lenovo IdeaPad 5i Chromebook 16|ADL|||"
 	["VELL*"]="HP Dragonfly Pro Chromebook|ADL|||"
 	["VOLMAR*"]="Acer Chromebook Vero 514|ADL|||"
-	["XOL*"]="Galaxy Chromebook Plus|ADL|||"
+	["XOL*"]="Galaxy Chromebook Plus|ADL||adl_fixed_rwl|"
 	["ZAVALA*"]="Acer Chromebook Vero 712 (CV872/CV872T)|ADL|||"
 	# Brask baseboard
 	["AURASH*"]="AOpen Chromebox Commercial 3|ADL||isCbox,hasLAN,adl_fixed_rwl|"
