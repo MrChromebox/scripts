@@ -354,6 +354,10 @@ and you need to recover using an external EEPROM programmer. [Y/n]
 	fi
 
 	#persist device HWID?
+	if [ ! -f /tmp/hwid.txt ] || [ ! -s /tmp/hwid.txt ]; then
+		echo_yellow "Creating device HWID from board name"
+		echo "${boardName^^}" > /tmp/hwid.txt
+	fi
 	if [ -f /tmp/hwid.txt ]; then
 		echo_yellow "Persisting device HWID"
 		${cbfstoolcmd} "${coreboot_file}" add -n hwid -f /tmp/hwid.txt -t raw > /dev/null 2>&1
@@ -1411,6 +1415,97 @@ Proceed at your own risk."
 	read -rep "Press [Enter] to return to the main menu."
 }
 
+##########################
+# Set HWID for UEFI ROM #
+##########################
+function set_hwid_uefi()
+{
+	# set HWID using cbfstool for UEFI firmware
+	# ensure hardware write protect disabled
+	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot set HWID."; return 1; }
+
+	echo_green "\nSet Hardware ID (HWID) for UEFI Firmware"
+
+	# Get current HWID if present
+	if ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid_current.txt >/dev/null 2>&1; then
+		_current_hwid=$(cat /tmp/hwid_current.txt 2>/dev/null)
+		if [[ -n "$_current_hwid" ]]; then
+			echo_yellow "Current HWID is: $_current_hwid"
+		fi
+		rm -f /tmp/hwid_current.txt
+	else
+		echo_yellow "No current HWID found in firmware"
+	fi
+
+	echo_yellow "
+WARNING: Changing HWID is not normally needed, and if you mess it up,
+it could result in the wrong firmware being flashed, which will almost
+certainly result in your device being bricked.
+Proceed at your own risk."
+
+	read -rep "Really change your HWID? [y/N] " confirm
+	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
+
+	read -rep "This is serious. Are you really sure? [y/N] " confirm
+	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
+
+	local hwid=""
+	read -rep "Enter a new HWID: " hwid
+	if [[ -z "$hwid" ]]; then
+		exit_red "No HWID entered; operation cancelled."; return 1
+	fi
+
+	echo -e ""
+	read -rep "Confirm changing HWID to '$hwid' [y/N] " confirm
+	if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
+		echo_yellow "\nReading current firmware..."
+		# Read current firmware to ensure we have the latest
+		if ! ${flashromcmd} --fmap -i COREBOOT -r /tmp/bios_mod.bin > /tmp/flashrom.log 2>&1; then
+			cat /tmp/flashrom.log
+			exit_red "\nError reading firmware; unable to set HWID."; return 1
+		fi
+
+		echo_yellow "Modifying firmware..."
+		# Remove old HWID if it exists
+		${cbfstoolcmd} /tmp/bios_mod.bin remove -n hwid > /dev/null 2>&1
+
+		# Create new HWID file
+		echo -n "$hwid" > /tmp/hwid_new.txt
+
+		# Add new HWID to CBFS
+		if ! ${cbfstoolcmd} /tmp/bios_mod.bin add -n hwid -f /tmp/hwid_new.txt -t raw > /dev/null 2>&1; then
+			exit_red "\nError adding HWID to firmware."; return 1
+		fi
+
+		# Disable software write-protect
+		if ! ${flashromcmd} --wp-disable > /dev/null 2>&1 && [[ "$swWp" = "enabled" ]]; then
+			exit_red "Error disabling software write-protect; unable to set HWID."; return 1
+		fi
+
+		# Clear SW WP range
+		if ! ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1; then
+			if ! ${flashromcmd} --wp-range 0,0 > /dev/null 2>&1 && [[ "$swWp" = "enabled" ]]; then
+				exit_red "Error clearing software write-protect range; unable to set HWID."; return 1
+			fi
+		fi
+
+		# Write firmware back
+		echo_yellow "Writing firmware with new HWID..."
+		if ! ${flashromcmd} --fmap -i COREBOOT -w /tmp/bios_mod.bin -N > /tmp/flashrom.log 2>&1; then
+			if [ -f /tmp/flashrom.log ]; then
+				cat /tmp/flashrom.log
+			fi
+			exit_red "\nError writing firmware; HWID not set. DO NOT REBOOT!"; return 1
+		fi
+
+		# Cleanup
+		rm -f /tmp/hwid_new.txt /tmp/bios_mod.bin
+
+		echo_green "Hardware ID successfully set. Reboot for the change to take effect."
+	fi
+	read -rep "Press [Enter] to return to the main menu."
+}
+
 ###############
 # Clear NVRAM #
 ###############
@@ -1634,6 +1729,9 @@ function uefi_menu() {
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 3)${MENU} Backup Current Firmware ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Flash Custom Firmware ${NORMAL}"
 	fi
+	if [[ "$isUEFI" = true ]]; then
+		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 5)${MENU} Set Hardware ID (HWID) ${NORMAL}"
+	fi
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
@@ -1673,6 +1771,12 @@ function uefi_menu() {
 
 	4)	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
 			flash_custom_firmware
+		fi
+		uefi_menu
+		;;
+
+	5)	if [[ "$isUEFI" = true ]]; then
+			set_hwid_uefi
 		fi
 		uefi_menu
 		;;
