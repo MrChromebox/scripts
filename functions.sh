@@ -80,8 +80,13 @@ function die() {
 
 # List all available USB devices with vendor/model info
 function list_usb_devices() {
-	stat -c %N /sys/block/sd* 2>/dev/null | grep usb | cut -f1 -d ' ' \
-		| sed "s/[']//g;s|/sys/block|/dev|" > /tmp/usb_block_devices
+	# Enumerate USB-backed block devices via lsblk TRAN field
+	lsblk -dnpo NAME,TRAN 2>/dev/null | awk '$2=="usb"{print $1}' > /tmp/usb_block_devices
+	# Fallback: none -> try sysfs heuristic (older systems without TRAN)
+	if [ ! -s /tmp/usb_block_devices ]; then
+		stat -c %N /sys/block/sd* 2>/dev/null | grep usb | cut -f1 -d ' ' \
+			| sed "s/[']//g;s|/sys/block|/dev|" > /tmp/usb_block_devices
+	fi
 	mapfile -t usb_devs < /tmp/usb_block_devices
 	[ ${#usb_devs[@]} -gt 0 ] || return 1
 	
@@ -90,19 +95,52 @@ function list_usb_devices() {
 	for dev in "${usb_devs[@]}"
 	do
 		((usb_device_count+=1))
-	# Get device info once and parse it
-	dev_info=$(udevadm info --query=all --name="${dev#/dev/}")
-	vendor=$(echo "$dev_info" | grep "ID_VENDOR=" | cut -d'=' -f2)
-	model=$(echo "$dev_info" | grep "ID_MODEL=" | cut -d'=' -f2)
-		sz=$(fdisk -l 2> /dev/null | grep "Disk ${dev}" | awk '{print $3}')
-		echo -n "$usb_device_count)"
-		if [ -n "${vendor}" ]; then
-			echo -n " ${vendor}"
+	# Resolve base device name for sysfs
+	dev_base=$(basename "${dev}")
+	# Read vendor/model from sysfs (most reliable)
+	vendor=$(sed 's/^ *//;s/ *$//' "/sys/block/${dev_base}/device/vendor" 2>/dev/null)
+	model=$(sed 's/^ *//;s/ *$//' "/sys/block/${dev_base}/device/model" 2>/dev/null)
+	# Fallbacks for vendor/model
+	if [ -z "${vendor}" ] || [ -z "${model}" ]; then
+		# Try lsblk fields
+		[ -z "${vendor}" ] && vendor=$(lsblk -dno VENDOR "${dev}" 2>/dev/null)
+		[ -z "${model}" ] && model=$(lsblk -dno MODEL "${dev}" 2>/dev/null)
+		# Try udevadm properties as last resort
+		if [ -z "${vendor}" ] || [ -z "${model}" ]; then
+			dev_info=$(udevadm info --query=property --name="${dev}" 2>/dev/null)
+			[ -z "${vendor}" ] && vendor=$(echo "$dev_info" | grep "^ID_VENDOR=" | cut -d'=' -f2)
+			[ -z "${model}" ] && model=$(echo "$dev_info" | grep "^ID_MODEL=" | cut -d'=' -f2)
 		fi
+	fi
+	# Normalize whitespace: trim ends and squeeze internal spaces
+	vendor=$(echo -n "${vendor}" | sed 's/^\s\+//;s/\s\+$//' | tr -s ' ')
+	model=$(echo -n "${model}" | sed 's/^\s\+//;s/\s\+$//' | tr -s ' ')
+	# Determine size (bytes -> human GB with 1 decimal)
+	bytes=$(lsblk -dnbo SIZE "${dev}" 2>/dev/null)
+	if [ -z "${bytes}" ]; then
+		sectors=$(cat "/sys/block/${dev_base}/size" 2>/dev/null)
+		if [ -n "${sectors}" ]; then
+			bytes=$((sectors * 512))
+		fi
+	fi
+	if [ -n "${bytes}" ] && [ "${bytes}" -gt 0 ] 2>/dev/null; then
+		# Use awk for floating point division
+		sz=$(awk -v b="${bytes}" 'BEGIN { printf "%.1f GB", b/1024/1024/1024 }')
+	else
+		sz=""
+	fi
+		label=""
+		[ -n "${vendor}" ] && label="${vendor}"
 		if [ -n "${model}" ]; then
-			echo -n " ${model}"
+			if [ -n "${label}" ]; then
+				label="${label} ${model}"
+			else
+				label="${model}"
+			fi
 		fi
-		echo -e " (${sz} GB)"
+		echo -n "$usb_device_count)"
+		[ -n "${label}" ] && echo -n " ${label}"
+		[ -n "${sz}" ] && echo -e " (${sz})" || echo -e ""
 	done
 	echo -e ""
 }
