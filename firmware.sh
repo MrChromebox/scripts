@@ -272,35 +272,6 @@ an Asus C425 (LEONA) or Asus C433/C434 (SHYVANA)?
 		done
 	fi
 
-	#coral special case (variant not correctly identified)
-	if [ "$device" = "coral" ]; then
-		echo -e ""
-		echo_yellow "Unable to determine correct Chromebook model"
-		echo -e "Because of your current firmware, I'm unable to determine the exact mode of your Chromebook.
-Please select the number for the correct option from the list below:"
-		coral_boards=(
-		"ASTRONAUT (Acer Chromebook 11 [C732])"
-		"BABYMEGA (Asus Chromebook C223NA)"
-		"BABYTIGER (Asus Chromebook C523NA)"
-		"BLACKTIP (CTL Chromebook NL7/NL7T)"
-		"BLUE (Acer Chromebook 15 [CB315])"
-		"BRUCE (Acer Chromebook Spin 15 [CP315])"
-		"EPAULETTE (Acer Chromebook 514)"
-		"LAVA (Acer Chromebook Spin 11 [CP311])"
-		"NASHER (Dell Chromebook 11 5190)"
-		"NASHER360 (Dell Chromebook 11 5190 2-in-1)"
-		"RABBID (Asus Chromebook C423)"
-		"ROBO (Lenovo 100e Chromebook)"
-		"ROBO360 (Lenovo 500e Chromebook)"
-		"SANTA (Acer Chromebook 11 [CB311-8H])"
-		"WHITETIP (CTL Chromebook J41/J41T)"
-		)
-		select board in "${coral_boards[@]}"; do
-			board=$(echo ${board,,} | cut -f1 -d ' ')
-			eval coreboot_file=$`echo "coreboot_uefi_${board}"`
-			break;
-		done
-	fi
 	# ensure we have a file to flash
 	if [[ "$coreboot_file" = "" ]]; then
 		exit_red "The script does not currently have a firmware file for your device (${device^^}); cannot continue."; return 1
