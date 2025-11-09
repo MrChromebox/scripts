@@ -237,40 +237,9 @@ OS; ${currOS} will no longer be bootable. See https://mrchromebox.tech/#faq"
 		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 	fi
 
-	# PCO boot device notice
-	if [[ "$isPCO" = true && ! -d /sys/firmware/efi ]]; then
-		echo_yellow "
-NOTE: Booting from eMMC on AMD Picasso-based devices does not currently work --
-only NVMe, SD and USB. If you have a device with eMMC storage you will not be
-able to boot from it after installing the UEFI Full ROM firmware."
-		REPLY=""
-		read -rep "Press Y to continue or any other key to abort. "
-		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
-	fi
-
 	#determine correct file / URL
 	firmware_source=${fullrom_source}
 	eval coreboot_file="$`echo "coreboot_uefi_${device}"`"
-
-	#rammus special case (upgrade from older UEFI firmware)
-	if [ "$device" = "rammus" ]; then
-		echo -e ""
-		echo_yellow "Unable to determine Chromebook model"
-		echo -e "Because of your current firmware, I'm unable to
-determine the exact mode of your Chromebook.  Are you using
-an Asus C425 (LEONA) or Asus C433/C434 (SHYVANA)?
-"
-		REPLY=""
-		while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "S" && "$REPLY" != "s"  ]]
-		do
-			read -rep "Enter 'L' for LEONA, 'S' for SHYVANA: "
-			if [[ "$REPLY" = "S" || "$REPLY" = "s" ]]; then
-				coreboot_file=${coreboot_uefi_shyvana}
-			else
-				coreboot_file=${coreboot_uefi_leona}
-			fi
-		done
-	fi
 
 	# ensure we have a file to flash
 	if [[ "$coreboot_file" = "" ]]; then
