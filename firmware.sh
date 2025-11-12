@@ -397,65 +397,6 @@ booting from the internal storage device fails."
 	read -rep "Press [Enter] to return to the main menu."
 }
 
-#############################
-# Set Touchpad type in SSFC #
-#############################
-function set_touchpad_in_ssfc()
-{
-	echo_green "\nSet Touchpad type in SSFC"
-	echo_yellow "NOTE: This operation only needs to be done once for GALTIC-based devices
-on which you want to run Windows; Linux is not affected either way.
-Setting the touchpad type in SSFC requires hardware WP to be disabled."
-
-	read -rep "Do you wish to continue? [y/N] "
-	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
-
-	# GALTIC boards update SSFC if needed for touchpad type
-	echo -e ""
-	echo_yellow "Checking if touchpad type set in SSFC"
-	echo_yellow "Downloading ectool"
-	if ! get_ectool; then
-		echo_red "Unable to download ectool; cannot continue"
-		read -rep "Press enter to return to the main menu"
-		return 1
-	fi
-	if ! $ectoolcmd cbi get 8 >/dev/null 2>&1; then
-		# SSFC not initialized
-		echo_yellow "Initializing SSFC"
-		if ! $ectoolcmd cbi set 8 0x0 4 1; then
-			echo_red "Unable to initialize SSFC; if HW WP is enabled, please disable and retry"
-			read -rep "Press enter to return to the main menu"
-			return 1
-		fi
-	fi
-	ssfc_val=$($ectoolcmd cbi get 8 | grep -m1 'uint' | cut -f3 -d ' ')
-	echo_yellow "Current SSFC value is $ssfc_val"
-	
-	# TOUCHPAD_OPTION is bits 44-45 in SSFC, so bits 12-13 here
-	if [[ $((ssfc_val & 0x3000)) == 0 ]]; then
-		#touchpad unset, so detect and set it
-		if dmesg | grep "input:" | grep -q "ELAN0000"; then
-			#ELAN0000 touchpad, set bit 12
-			ssfc_val=$((ssfc_val | 0x1000))
-		else
-			#ELAN2712 touchpad, set bit 13
-			ssfc_val=$((ssfc_val | 0x2000))
-		fi
-
-		echo_yellow "Setting new SSFC value $ssfc_val"
-		if ! $ectoolcmd cbi set 8 $ssfc_val 4; then
-			echo_red "Error setting new SSFC value; if HW WP is enabled, please disable and retry"
-			read -rep "Press enter to return to the main menu"
-			return 1
-		fi
-		echo_green "Touchpad type successfully set in SSFC"
-	else
-		echo_yellow "Touchpad type is already set in SSFC; nothing to do"
-	fi
-
-	read -rep "Press [Enter] to return to the main menu."
-}
-
 #########################
 # Downgrade Touchpad FW #
 #########################
@@ -1533,9 +1474,6 @@ function stock_menu() {
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
 	fi
-	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
-		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} T)${MENU} Set Touchpad Type in SSFC ${NORMAL}"
-	fi
 	if [[ "$unlockMenu" = true || ("$isFullRom" = false && "$isStock" = true) ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 3)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Set Hardware ID (HWID) ${NORMAL}"
@@ -1580,12 +1518,6 @@ function stock_menu() {
 
 	[uU])	if [[ "${device^^}" = "EVE" ]]; then
 			upgrade_touchpad_fw
-		fi
-		menu_fwupdate
-		;;
-
-	[tT])	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
-			set_touchpad_in_ssfc
 		fi
 		menu_fwupdate
 		;;
@@ -1676,9 +1608,6 @@ function uefi_menu() {
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
 	fi
-	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
-		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} T)${MENU} Set Touchpad Type in SSFC ${NORMAL}"
-	fi
 	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
 	fi
@@ -1729,12 +1658,6 @@ function uefi_menu() {
 
 	[uU])	if [[  "${device^^}" = "EVE" ]]; then
 			upgrade_touchpad_fw
-		fi
-		uefi_menu
-		;;
-
-	[tT])	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
-			set_touchpad_in_ssfc
 		fi
 		uefi_menu
 		;;
