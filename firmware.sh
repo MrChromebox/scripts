@@ -10,11 +10,15 @@ usb_device=""
 # Download Files List #
 #######################
 function download_files() {
-	local -n files_ref=$1
+	local array_name=$1
 	local base_url="$2"
 	
 	# Download all files in the array
-	for file in "${files_ref[@]}"; do
+	# Use eval for compatibility with older bash versions that don't support nameref (-n)
+	local files
+	eval "files=(\"\${${array_name}[@]}\")"
+	
+	for file in "${files[@]}"; do
 		if ! $CURL -sLO "${base_url}${file}"; then
 			echo_red "Error downloading ${file}; cannot continue"
 			return 1
