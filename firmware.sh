@@ -262,18 +262,19 @@ OS; ${currOS} will no longer be bootable. See https://mrchromebox.tech/#faq"
 
 	# create backup if existing firmware is stock
 	if [[ "$isStock" = "true" ]]; then
-		if [[ "$isEOL" = "false" ]]; then
-			REPLY=y
-		else
-			echo_yellow "\nCreate a backup copy of your stock firmware?"
-			read -erp "This is highly recommended in case you wish to return your device to stock
+		echo_yellow "\nCreate a backup copy of your stock firmware?"
+		echo_yellow "This is highly recommended in case you wish to return your device to stock
 configuration/run ChromeOS, or in the (unlikely) event that things go south
-and you need to recover using an external EEPROM programmer. [Y/n]
-"
+and you need to recover using an external EEPROM programmer."
+		echo_yellow "If you have already created a backup using the menu option, you can skip this."
+		read -erp "Create backup now? [Y/n] "
+		if [[ "$REPLY" = "n" || "$REPLY" = "N" ]]; then
+			echo_yellow "Skipping backup - ensure you have a backup stored safely!"
+		else
+			if ! backup_firmware; then
+				exit_red "Error creating stock firmware backup; cannot continue."; return 1
+			fi
 		fi
-		[[ "$REPLY" = "n" || "$REPLY" = "N" ]] && true || backup_firmware
-		#check that backup succeeded
-		[ $? -ne 0 ] && return 1
 	fi
 
 	#download firmware file
@@ -1485,8 +1486,11 @@ function stock_menu() {
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 3)${GRAY_TEXT} Set Boot Options (GBB flags)${NORMAL}"
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 4)${GRAY_TEXT} Set Hardware ID (HWID) ${NORMAL}"
 	fi
+	if [[ "$unlockMenu" = true || "$isStock" = true ]]; then
+		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 5)${MENU} Backup Current Firmware ${NORMAL}"
+	fi
 	if [[ "$unlockMenu" = true || ( "$isChromeOS" = false  && "$isFullRom" = true ) ]]; then
-		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 5)${MENU} Restore Stock Firmware (full) ${NORMAL}"
+		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 6)${MENU} Restore Stock Firmware (full) ${NORMAL}"
 	fi
 	if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
@@ -1540,7 +1544,13 @@ function stock_menu() {
 		menu_fwupdate
 		;;
 
-	5)	if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
+	5)	if [[ "$unlockMenu" = true || "$isStock" = true ]]; then
+			backup_current_firmware
+		fi
+		menu_fwupdate
+		;;
+
+	6)	if [[ "$unlockMenu" = true || "$isChromeOS" = false && "$isUnsupported" = false \
 				&& "$isFullRom" = true ]]; then
 			restore_stock_firmware
 		fi
