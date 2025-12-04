@@ -309,6 +309,10 @@ you must use a VT2 terminal as directed per https://mrchromebox.tech/#fwscript"
 		|| die "This script only supports 64-bit OS on x86_64-based devices; ARM devices are not supported."
 	
 	#check for required tools
+	if ! command -v which > /dev/null 2>&1; then
+		echo_red "Required package 'which' not found; cannot continue.  Please install and try again."
+		return 1
+	fi
 	if ! which dmidecode > /dev/null 2>&1; then
 		echo_red "Required package 'dmidecode' not found; cannot continue.  Please install and try again."
 		return 1
