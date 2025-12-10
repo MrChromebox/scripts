@@ -40,7 +40,15 @@ else
 	export CURL="curl"
 fi
 
-if [ ! -d "$script_dir/.git" ]; then
+use_local=""
+if [ -d "$script_dir/.git" ]; then
+	# Git repository detected - prompt user for choice
+	echo -e "\nGit repository detected. Use local sources? [y/N]"
+	read -r use_local
+fi
+
+if [[ ! -d "$script_dir/.git"  || "$use_local" =~ ^[Nn]$ || -z "$use_local" ]]; then
+	# No git repository or user chose to download files instead
 	script_dir="."
 
 	# Array of required files to download
@@ -62,7 +70,6 @@ if [ ! -d "$script_dir/.git" ]; then
 			exit 1
 		fi
 	done
-
 fi
 
 source "$script_dir/device-db.sh"
