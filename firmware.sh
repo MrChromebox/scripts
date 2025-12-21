@@ -461,6 +461,109 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 	read -rep "Press [Enter] to return to the main menu."
 }
 
+##############################
+# Set Storage type in FW_CONFIG #
+##############################
+function set_storage_in_fw_config()
+{
+	echo_green "\nSet Storage type in FW_CONFIG"
+	echo_yellow "NOTE: This operation sets the storage type (NVMe or eMMC) in FW_CONFIG (CBI tag 6) for taeko/taniks boards.
+Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
+
+	# Check if this is a taeko or taniks board
+	if [[ "${device^^}" != "TAEKO" && "${device^^}" != "TANIKS" ]]; then
+		echo_red "This function is only for taeko/taniks boards"
+		read -rep "Press enter to return to the main menu"
+		return 1
+	fi
+
+	read -rep "Do you wish to continue? [y/N] "
+	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
+
+	echo -e ""
+	echo_yellow "Checking storage type in FW_CONFIG (CBI tag 6)"
+	echo_yellow "Downloading ectool"
+	if ! get_ectool; then
+		echo_red "Unable to download ectool; cannot continue"
+		read -rep "Press enter to return to the main menu"
+		return 1
+	fi
+	fw_config_val=$($ectoolcmd cbi get 6 | grep -m1 'uint' | cut -f3 -d ' ')
+	if [ -z "$fw_config_val" ]; then
+		echo_red "Unable to read FW_CONFIG; cannot continue"
+		read -rep "Press enter to return to the main menu"
+		return 1
+	fi
+	echo_yellow "Current FW_CONFIG value is $fw_config_val"
+	
+	# BOOT_NVME_MASK is bit 12 in FW_CONFIG (0x1000)
+	# BOOT_EMMC_MASK is bit 13 in FW_CONFIG (0x2000)
+	# These are separate enable/disable bits
+	nvme_bit=$((fw_config_val & 0x1000))
+	emmc_bit=$((fw_config_val & 0x2000))
+	current_storage=""
+	
+	if [[ $nvme_bit != 0 ]]; then
+		current_storage="NVMe"
+	elif [[ $emmc_bit != 0 ]]; then
+		current_storage="eMMC"
+	else
+		current_storage="Not set"
+	fi
+	
+	echo_green "Current storage type: $current_storage"
+	echo -e "Storage type options:"
+	echo -e "  0 = NVMe"
+	echo -e "  1 = eMMC"
+	echo -e ""
+	REPLY=""
+	while [[ "$REPLY" != "0" && "$REPLY" != "1" && "$REPLY" != "q" && "$REPLY" != "Q" ]]
+	do
+		read -rep "Enter storage type to set [0=NVMe, 1=eMMC, q=quit]: "
+		if [[ "$REPLY" != "0" && "$REPLY" != "1" && "$REPLY" != "q" && "$REPLY" != "Q" ]]; then
+			echo_red "Invalid choice. Please enter 0, 1, or q"
+		fi
+	done
+
+	echo -e ""
+	
+	if [[ "$REPLY" = "q" || "$REPLY" = "Q" ]]; then
+		echo_yellow "Quitting without changes"
+		read -rep "Press [Enter] to return to the main menu."
+		return 0
+	fi
+	
+	# Clear both storage bits (bits 12 and 13)
+	fw_config_val=$((fw_config_val & ~0x3000))
+	
+	# Set new storage type
+	if [[ "$REPLY" = "1" ]]; then
+		# Set eMMC enabled (bit 13 = 0x2000)
+		fw_config_val=$((fw_config_val | 0x2000))
+		new_storage="eMMC"
+	else
+		# Set NVMe enabled (bit 12 = 0x1000)
+		fw_config_val=$((fw_config_val | 0x1000))
+		new_storage="NVMe"
+	fi
+	
+	if [[ "$current_storage" = "$new_storage" ]]; then
+		echo_yellow "Storage type is already set to $new_storage; nothing to do"
+		read -rep "Press [Enter] to return to the main menu."
+		return 0
+	fi
+	
+	echo_yellow "Setting storage type to $new_storage (new FW_CONFIG value: $fw_config_val)"
+	if ! $ectoolcmd cbi set 6 $fw_config_val 4; then
+		echo_red "Error setting new FW_CONFIG value; if HW WP is enabled, please disable and retry"
+		read -rep "Press enter to return to the main menu"
+		return 1
+	fi
+	echo_green "Storage type successfully set to $new_storage in FW_CONFIG"
+
+	read -rep "Press [Enter] to return to the main menu."
+}
+
 #########################
 # Downgrade Touchpad FW #
 #########################
@@ -1541,6 +1644,9 @@ function stock_menu() {
 	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} T)${MENU} Set Touchpad Type in SSFC ${NORMAL}"
 	fi
+	if [[ "${device^^}" = "TAEKO" || "${device^^}" = "TANIKS" ]]; then
+		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} S)${MENU} Set Storage Type in FW_CONFIG ${NORMAL}"
+	fi
 	if [[ "$unlockMenu" = true || ("$isFullRom" = false && "$isStock" = true) ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 3)${MENU} Set Boot Options (GBB flags) ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 4)${MENU} Set Hardware ID (HWID) ${NORMAL}"
@@ -1594,6 +1700,12 @@ function stock_menu() {
 
 	[tT])	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
 			set_touchpad_in_ssfc
+		fi
+		menu_fwupdate
+		;;
+
+	[sS])	if [[ "${device^^}" = "TAEKO" || "${device^^}" = "TANIKS" ]]; then
+			set_storage_in_fw_config
 		fi
 		menu_fwupdate
 		;;
@@ -1693,6 +1805,9 @@ function uefi_menu() {
 	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} T)${MENU} Set Touchpad Type in SSFC ${NORMAL}"
 	fi
+	if [[ "${device^^}" = "TAEKO" || "${device^^}" = "TANIKS" ]]; then
+		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} S)${MENU} Set Storage Type in FW_CONFIG ${NORMAL}"
+	fi
 	if [[ "$unlockMenu" = true || ("$isUEFI" = true && "$isUnsupported" = false) ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
 	fi
@@ -1749,6 +1864,12 @@ function uefi_menu() {
 
 	[tT])	if [[ "$isJsl" = true &&  "$device" =~ "gal" ]]; then
 			set_touchpad_in_ssfc
+		fi
+		uefi_menu
+		;;
+
+	[sS])	if [[ "${device^^}" = "TAEKO" || "${device^^}" = "TANIKS" ]]; then
+			set_storage_in_fw_config
 		fi
 		uefi_menu
 		;;
