@@ -1030,6 +1030,12 @@ other than the latest UEFI Full ROM firmware release."
 		fi
 		#all good
 		echo_green "Stock firmware successfully restored."
+		
+		# Optionally reset CR50 NVRAM data if device has CR50
+		if [[ "$hasCR50" = true ]]; then
+			reset_cr50_nvram "$firmware_file"
+		fi
+		
 		echo_green "After rebooting, you need to restore ChromeOS using ChromeOS Recovery media."
 		echo_green "See: https://google.com/chromeos/recovery for more info."
 		read -rep "Press [Enter] to return to the main menu."
@@ -1573,6 +1579,86 @@ function clear_nvram() {
 	#all done
 	echo_green "NVRAM has been cleared."
 	read -rep "Press Enter to continue"
+}
+
+#############################
+# Reset CR50 TPM NVRAM Data #
+#############################
+function reset_cr50_nvram() {
+	local firmware_file="$1"
+	
+	if [[ "$hasCR50" != true ]]; then
+		return 0
+	fi
+
+	echo_yellow "\nResetting CR50 TPM and kernel version data..."
+
+	# Download tpmc tool if needed
+	if ! get_tpmc; then
+		echo_red "Unable to download tpmc utility; cannot reset CR50 NVRAM."
+		return 1
+	fi
+
+	# Reset TPM data in CR50 NVRAM
+	# First verify we can read from 0x1007 before writing
+	if ! ${tpmccmd} read 0x1007 0xa >/dev/null 2>&1; then
+		echo_red "Error: Failed to read from CR50 NVRAM index 0x1007."
+		return 1
+	fi
+	
+	# Write TPM reset command
+	if ! ${tpmccmd} write 0x1007 02 00 01 00 01 00 00 00 00 4f; then
+		echo_red "Error: Failed to reset CR50 TPM data."
+		return 1
+	fi
+	
+	# Reset kernel version data in CR50 NVRAM
+	# First verify we can read from 0x1008 before writing
+	if ! ${tpmccmd} read 0x1008 0xa >/dev/null 2>&1; then
+		echo_red "Error: Failed to read from CR50 NVRAM index 0x1008."
+		return 1
+	fi
+	
+	# Determine which command string to use based on FWID from config file
+	if [[ -n "$firmware_file" && -f "$firmware_file" ]]; then
+		# Extract config file from COREBOOT region
+		if ${cbfstoolcmd} "${firmware_file}" extract -n config -f /tmp/config.txt >/dev/null 2>&1; then
+			# Try to find FWID in the config
+			fwid_line=$(grep -i "FWID" /tmp/config.txt 2>/dev/null | head -1)
+			if [[ -n "$fwid_line" ]]; then
+				# Extract major version (field 2 using . as delimiter)
+				fwid_major=$(echo "$fwid_line" | cut -d'.' -f2)
+				# Clean up any non-numeric characters
+				fwid_major=$(echo "$fwid_major" | tr -cd '0-9')
+				
+				if [[ -n "$fwid_major" ]] && [[ "$fwid_major" -lt 12953 ]] 2>/dev/null; then
+					# v0 secdata_kernel (< 12953)
+					if ! ${tpmccmd} write 0x1008 02 4c 57 52 47 01 00 01 00 00 00 00 55; then
+						echo_red "Error: Failed to reset CR50 kernel version data."
+						return 1
+					fi
+				else
+					# v1 secdata kernel (>= 12953)
+					if ! ${tpmccmd} write 0x1008 10 28 0c 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00; then
+						echo_red "Error: Failed to reset CR50 kernel version data."
+						return 1
+					fi
+				fi
+			else
+				echo_red "Error: Could not find FWID in config file."
+				return 1
+			fi
+		else
+			echo_red "Error: Failed to extract config file from COREBOOT region."
+			return 1
+		fi
+	else
+		echo_red "Error: Firmware file not available for FWID check."
+		return 1
+	fi
+
+	echo_green "\nCR50 NVRAM reset completed."
+	return 0
 }
 
 ########################

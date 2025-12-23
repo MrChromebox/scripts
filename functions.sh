@@ -23,6 +23,7 @@ export flashrom_programmer="-p internal:boardmismatch=force"
 export cbfstoolcmd=""
 export gbbutilitycmd=""
 export ectoolcmd=""
+export tpmccmd=""
 
 # Firmware state
 export firmwareType=""
@@ -258,6 +259,29 @@ function get_ectool() {
 			fi
 			#set +x
 			chmod +x ectool
+		) || return 1
+	fi
+	return 0
+}
+
+# Download and setup tpmc utility if not present
+function get_tpmc() {
+	# Regardless if running under ChromeOS or Linux, can put tpmc
+	# in same place as cbfstool
+	tpmccmd="$(dirname "${cbfstoolcmd}")/tpmc"
+	if [ ! -f "${tpmccmd}" ]; then
+		(
+			cd "$(dirname "${tpmccmd}")"
+			if ! ${CURL} -sLO "${util_source}tpmc.tar.gz"; then
+				echo_red "Error downloading tpmc; cannot proceed."
+				return 1
+			fi
+			if ! tar -zxf tpmc.tar.gz; then
+				echo_red "Error extracting tpmc; cannot proceed."
+				return 1
+			fi
+			#set +x
+			chmod +x tpmc
 		) || return 1
 	fi
 	return 0
