@@ -173,7 +173,7 @@ DEVICE_DB=(
 	# GLK devices - Intel GeminiLake
 	["AMPTON*"]="Asus Chromebook Flip C214/C234|GLK|||"
 	["APEL*"]="Asus Chromebook Flip C204|GLK|ampton||"
-	["APELE*"]="Asus Chromebook CX1101CMA|GLK|apel||"
+	["APELE*"]="Asus Chromebook CX1101CMA|GLK|ampton||"
 	["BLOOG*"]="HP Chromebook x360 12b|GLK|||"
 	["BLOOGLET*"]="HP Chromebook 14a|GLK|bloog||"
 	["BLOOGUARD*"]="HP Chromebook x360 14a/14b|GLK|bloog||"
