@@ -1633,13 +1633,15 @@ function reset_cr50_nvram() {
 				
 				if [[ -n "$fwid_major" ]] && [[ "$fwid_major" -lt 12953 ]] 2>/dev/null; then
 					# v0 secdata_kernel (< 12953)
+					echo_yellow "Using v0 secdata_kernel format (FWID $fwid_major.$fwid_minor)"
 					if ! ${tpmccmd} write 0x1008 02 4c 57 52 47 01 00 01 00 00 00 00 55; then
 						echo_red "Error: Failed to reset CR50 kernel version data."
 						return 1
 					fi
 				else
 					# v1 secdata kernel (>= 12953)
-					if ! ${tpmccmd} write 0x1008 10 28 0c 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00; then
+					echo_yellow "Using v1 secdata_kernel format (FWID $fwid_major.$fwid_minor)"
+					if ! ${tpmccmd} write 0x1008 10 28 0c 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00; then
 						echo_red "Error: Failed to reset CR50 kernel version data."
 						return 1
 					fi
