@@ -1094,6 +1094,10 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 
 function restore_fw_from_recovery()
 {
+	if ! command -v 7z >/dev/null 2>&1; then
+		exit_red "Error: 7z (7zip) is required but not found. Please install it via the 7zip package.";
+		return 1
+	fi
 	echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
 	read -rep "and press [Enter] to continue. "
 	list_usb_devices || { exit_red "No USB devices available to read from."; return 1; }
