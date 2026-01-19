@@ -19,7 +19,7 @@ function download_files() {
 	eval "files=(\"\${${array_name}[@]}\")"
 	
 	for file in "${files[@]}"; do
-		if ! $CURL -sLO "${base_url}${file}"; then
+		if ! $CURL -#LO "${base_url}${file}"; then
 			echo_red "Error downloading ${file}; cannot continue"
 			return 1
 		fi
