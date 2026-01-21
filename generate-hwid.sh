@@ -32,120 +32,101 @@ board=$(printf '%s' "$board" | tr '[:lower:]' '[:upper:]')
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 data_file="$script_dir/database/cros-hwid.json"
 
-node_bin=""
-if command -v node >/dev/null 2>&1; then
-  node_bin="node"
-elif command -v nodejs >/dev/null 2>&1; then
-  node_bin="nodejs"
+py_bin=""
+if command -v python3 >/dev/null 2>&1; then
+  py_bin="python3"
+elif command -v python >/dev/null 2>&1; then
+  py_bin="python"
 else
-  echo "Error: node (or nodejs) is required to run this script." >&2
+  echo "Error: python3 (or python) is required to run this script." >&2
   exit 1
 fi
 
-"$node_bin" - <<'NODE' "$data_file" "$board"
-const fs = require("fs");
-const file = process.argv[2];
-const board = process.argv[3];
-if (!file || !board) {
-  console.error("Usage: generate-hwid.sh --board BOARD");
-  process.exit(1);
-}
-const data = JSON.parse(fs.readFileSync(file, "utf8"));
-const devices = data.devices || {};
+"$py_bin" - "$data_file" "$board" <<'PY'
+import json
+import random
+import sys
 
-function randInt(n) {
-  return Math.floor(Math.random() * n);
-}
+if len(sys.argv) < 3:
+    print("Usage: generate-hwid.sh --board BOARD", file=sys.stderr)
+    sys.exit(1)
 
-function pick(arr) {
-  return arr[randInt(arr.length)];
-}
+db_file = sys.argv[1]
+board = sys.argv[2]
 
-function parseGroups(hwid) {
-  if (!hwid) return [];
-  const parts = String(hwid).split(" ");
-  if (parts.length < 2) return [];
-  return parts.slice(1).join(" ").split("-").filter(Boolean);
-}
+with open(db_file, "r", encoding="utf-8") as fh:
+    data = json.load(fh)
 
-function flattenEntries(map) {
-  const all = [];
-  for (const entries of Object.values(map)) {
-    if (!Array.isArray(entries)) continue;
-    for (const entry of entries) {
-      if (entry && entry.hwid) all.push(entry);
-    }
-  }
-  return all;
-}
+devices = data.get("devices", {})
 
-function charPattern(group) {
-  let hexOnly = true;
-  const pattern = [];
-  for (const ch of group) {
-    if (ch >= "0" && ch <= "9") {
-      pattern.push("D");
-    } else if (ch >= "A" && ch <= "Z") {
-      pattern.push("A");
-    } else {
-      pattern.push("X");
-    }
-    if (!((ch >= "0" && ch <= "9") || (ch >= "A" && ch <= "F"))) {
-      hexOnly = false;
-    }
-  }
-  return { pattern: pattern.join(""), hexOnly };
-}
+def parse_groups(hwid):
+    if not hwid:
+        return []
+    parts = str(hwid).split(" ")
+    if len(parts) < 2:
+        return []
+    return [g for g in "-".join(parts[1:]).split("-") if g]
 
-function genChar(type, hexOnly) {
-  if (type === "D") {
-    return String(randInt(10));
-  }
-  if (type === "A") {
-    const letters = hexOnly ? "ABCDEF" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    return letters[randInt(letters.length)];
-  }
-  const pool = hexOnly
-    ? "0123456789ABCDEF"
-    : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return pool[randInt(pool.length)];
-}
+def flatten_entries(device_map):
+    all_entries = []
+    for entries in device_map.values():
+        if not isinstance(entries, list):
+            continue
+        for entry in entries:
+            if isinstance(entry, dict) and entry.get("hwid"):
+                all_entries.append(entry)
+    return all_entries
 
-function genGroupFromTemplate(group) {
-  const { pattern, hexOnly } = charPattern(group);
-  if (!pattern) return "";
-  let out = "";
-  for (const t of pattern) {
-    out += genChar(t, hexOnly);
-  }
-  return out;
-}
+def char_pattern(group):
+    hex_only = True
+    pattern = []
+    for ch in group:
+        if "0" <= ch <= "9":
+            pattern.append("D")
+        elif "A" <= ch <= "Z":
+            pattern.append("A")
+        else:
+            pattern.append("X")
+        if not (("0" <= ch <= "9") or ("A" <= ch <= "F")):
+            hex_only = False
+    return "".join(pattern), hex_only
 
-const entries = devices[board];
-let pool = entries;
-if (!Array.isArray(pool) || pool.length === 0) {
-  console.error("Board unsupported, trying random");
-  pool = flattenEntries(devices);
-}
+def gen_char(char_type, hex_only):
+    if char_type == "D":
+        return str(random.randrange(10))
+    if char_type == "A":
+        letters = "ABCDEF" if hex_only else "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        return random.choice(letters)
+    pool = "0123456789ABCDEF" if hex_only else "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    return random.choice(pool)
 
-let groups = [];
-if (pool.length > 0) {
-  const template = pick(pool);
-  groups = parseGroups(template.hwid);
-}
+def gen_group_from_template(group):
+    pattern, hex_only = char_pattern(group)
+    if not pattern:
+        return ""
+    return "".join(gen_char(t, hex_only) for t in pattern)
 
-const groupCount = groups.length || 4;
-const prefixLen = Math.min(2, groupCount);
-const outGroups = [];
+entries = devices.get(board)
+pool = entries if isinstance(entries, list) else None
+if not pool:
+    print("Board unsupported, trying random", file=sys.stderr)
+    pool = flatten_entries(devices)
 
-for (let i = 0; i < groupCount; i++) {
-  if (i < prefixLen && groups[i]) {
-    outGroups.push(groups[i]);
-    continue;
-  }
-  const templateGroup = groups[i] || "A0Z";
-  outGroups.push(genGroupFromTemplate(templateGroup));
-}
+groups = []
+if pool:
+    template = random.choice(pool)
+    groups = parse_groups(template.get("hwid"))
 
-console.log(`${board} ${outGroups.join("-")}`);
-NODE
+group_count = len(groups) or 4
+prefix_len = min(2, group_count)
+out_groups = []
+
+for i in range(group_count):
+    if i < prefix_len and i < len(groups) and groups[i]:
+        out_groups.append(groups[i])
+        continue
+    template_group = groups[i] if i < len(groups) and groups[i] else "A0Z"
+    out_groups.append(gen_group_from_template(template_group))
+
+print(f"{board} {'-'.join(out_groups)}")
+PY

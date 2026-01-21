@@ -1461,8 +1461,8 @@ function fixcraft_hwid_lookup_predefined() {
 	local board="$2"
 
 	awk -v board="$board" '
-		$0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in=1; next }
-		in && /"hwid"[[:space:]]*:/ {
+		$0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in_block=1; next }
+		in_block && /"hwid"[[:space:]]*:/ {
 			match($0, /"hwid"[[:space:]]*:[[:space:]]*"[^"]+"/)
 			if (RSTART) {
 				hwid=substr($0, RSTART, RLENGTH)
@@ -1472,7 +1472,7 @@ function fixcraft_hwid_lookup_predefined() {
 				exit
 			}
 		}
-		in && /]/ { exit }
+		in_block && /]/ { exit }
 	' "${db_file}"
 }
 
