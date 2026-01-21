@@ -1422,6 +1422,150 @@ You can always override the default using [CTRL+D] or
 ###################
 # Set Hardware ID #
 ###################
+function fixcraft_hwid_db_path() {
+	local script_dir
+	script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+	echo "${script_dir}/database/cros-hwid.json"
+}
+
+function fixcraft_hwid_download_db() {
+	local url="https://www.fixcraft.jp/database/cros-hwid.json"
+	local out="/tmp/fixcraft-cros-hwid.json"
+
+	if [[ -n "${CURL:-}" ]]; then
+		if ${CURL} -fsSL "${url}" -o "${out}" >/dev/null 2>&1; then
+			echo "${out}"
+			return 0
+		fi
+	fi
+
+	if command -v curl >/dev/null 2>&1; then
+		if curl -fsSL "${url}" -o "${out}" >/dev/null 2>&1; then
+			echo "${out}"
+			return 0
+		fi
+	fi
+
+	if command -v wget >/dev/null 2>&1; then
+		if wget -qO "${out}" "${url}" >/dev/null 2>&1; then
+			echo "${out}"
+			return 0
+		fi
+	fi
+
+	return 1
+}
+
+function fixcraft_hwid_lookup_predefined() {
+	local db_file="$1"
+	local board="$2"
+
+	awk -v board="$board" '
+		$0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in=1; next }
+		in && /"hwid"[[:space:]]*:/ {
+			match($0, /"hwid"[[:space:]]*:[[:space:]]*"[^"]+"/)
+			if (RSTART) {
+				hwid=substr($0, RSTART, RLENGTH)
+				sub(/.*"hwid"[[:space:]]*:[[:space:]]*"/, "", hwid)
+				sub(/"$/, "", hwid)
+				print hwid
+				exit
+			}
+		}
+		in && /]/ { exit }
+	' "${db_file}"
+}
+
+function fixcraft_hwid_generate() {
+	local board="$1"
+	local script_dir
+	script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+	local gen_script="${script_dir}/generate-hwid.sh"
+
+	if [[ ! -x "${gen_script}" ]]; then
+		return 1
+	fi
+
+	"${gen_script}" --board "${board}"
+}
+
+function select_new_hwid() {
+	local current_hwid="$1"
+	local board=""
+	local hwid=""
+	local confirm=""
+
+	if [[ -n "${current_hwid}" ]]; then
+		board=$(echo "${current_hwid^^}" | cut -f1 -d ' ')
+	elif [[ -n "${boardName:-}" ]]; then
+		board="${boardName^^}"
+	elif [[ -n "${device:-}" ]]; then
+		board="${device^^}"
+	fi
+
+	if [[ -z "${board}" ]]; then
+		read -rep "Enter your board name: " board
+		board=$(printf '%s' "${board}" | tr '[:lower:]' '[:upper:]')
+	fi
+	if [[ -z "${board}" ]]; then
+		echo_red "No board name provided; operation cancelled."
+		return 1
+	fi
+
+	read -rep "Do you want to try using a working, pre-defined ID? [y/N] " confirm
+	if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
+		local db_file=""
+		db_file=$(fixcraft_hwid_download_db) || true
+		if [[ -z "${db_file}" ]]; then
+			db_file=$(fixcraft_hwid_db_path)
+		fi
+
+		if [[ -s "${db_file}" ]]; then
+			hwid=$(fixcraft_hwid_lookup_predefined "${db_file}" "${board}")
+		fi
+
+		if [[ -z "${hwid}" ]]; then
+			echo_yellow "looks like your device isnt in the FixCraft Database!"
+			hwid=$(fixcraft_hwid_generate "${board}") || true
+			if [[ -n "${hwid}" ]]; then
+				echo "${hwid}"
+				return 0
+			fi
+		else
+			read -rep "Use pre-defined ID ${hwid}? [y/N] " confirm
+			if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
+				echo "${hwid}"
+				return 0
+			fi
+		fi
+	fi
+
+	while true; do
+		read -rep "Auto-generate for your board or enter manually? [A/M] " confirm
+		if [[ "${confirm}" = "A" || "${confirm}" = "a" ]]; then
+			hwid=$(fixcraft_hwid_generate "${board}") || true
+			if [[ -n "${hwid}" ]]; then
+				echo "${hwid}"
+				return 0
+			fi
+			echo_yellow "Unable to auto-generate HWID; please enter manually."
+		elif [[ "${confirm}" = "M" || "${confirm}" = "m" ]]; then
+			read -rep "Type 'I KNOW WHAT IM DOING' to continue: " confirm
+			if [[ "${confirm}" != "I KNOW WHAT IM DOING" ]]; then
+				echo_red "Confirmation phrase not entered; operation cancelled."
+				return 1
+			fi
+			read -rep "Enter a new HWID (use all caps): " hwid
+			if [[ -z "${hwid}" ]]; then
+				echo_red "No HWID entered; operation cancelled."
+				return 1
+			fi
+			echo "${hwid}"
+			return 0
+		fi
+	done
+}
+
 function set_hwid()
 {
 	# set HWID using gbb_utility
@@ -1448,7 +1592,14 @@ Proceed at your own risk."
 	read -rep "This is serious. Are you really sure? [y/N] " confirm
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
 
-	read -rep "Enter a new HWID (use all caps): " hwid
+	local hwid=""
+	if ! hwid=$(select_new_hwid "${_hwid}"); then
+		return
+	fi
+	if [[ -z "${hwid}" ]]; then
+		exit_red "No HWID selected; operation cancelled."; return 1
+	fi
+
 	echo -e ""
 	read -rep "Confirm changing HWID to $hwid [y/N] " confirm
 	if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
@@ -1508,9 +1659,11 @@ Proceed at your own risk."
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
 
 	local hwid=""
-	read -rep "Enter a new HWID: " hwid
-	if [[ -z "$hwid" ]]; then
-		exit_red "No HWID entered; operation cancelled."; return 1
+	if ! hwid=$(select_new_hwid "${_current_hwid}"); then
+		return
+	fi
+	if [[ -z "${hwid}" ]]; then
+		exit_red "No HWID selected; operation cancelled."; return 1
 	fi
 
 	echo -e ""
