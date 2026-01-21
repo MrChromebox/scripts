@@ -1477,7 +1477,7 @@ function fixcraft_hwid_select_predefined() {
 
 	py_bin=$(fixcraft_find_python) || { echo_yellow "Python not found; skipping pre-defined IDs." >&2; return 3; }
 
-	lines=$("$py_bin" - "$db_file" "$board" <<'PY')
+	lines=$("$py_bin" - "$db_file" "$board" <<'PY'
 import json
 import sys
 
@@ -1520,6 +1520,7 @@ for i, (hwid, valid, allegation) in enumerate(items, 1):
     rec = 1 if (i - 1) == best_idx else 0
     print(f"{i}|{hwid}|{valid}|{allegation}|{rec}")
 PY
+)
 	status=$?
 	if [[ $status -eq 1 ]]; then
 		return 1
