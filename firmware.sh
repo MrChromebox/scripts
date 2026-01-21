@@ -1477,31 +1477,23 @@ function fixcraft_hwid_select_predefined() {
 
 	py_bin=$(fixcraft_find_python) || { echo_yellow "Python not found; skipping pre-defined IDs." >&2; return 3; }
 
-	lines=$("$py_bin" - "$db_file" "$board" <<'PY'
-import json
-import sys
-
+	lines=$("$py_bin" -c 'import json,sys
 if len(sys.argv) < 3:
     sys.exit(3)
-
 db_file = sys.argv[1]
 board = sys.argv[2]
-
 try:
     with open(db_file, "r", encoding="utf-8") as fh:
         data = json.load(fh)
 except Exception:
     sys.exit(3)
-
 entries = data.get("devices", {}).get(board, [])
 items = []
-
 def to_float(val, default):
     try:
         return float(val)
     except Exception:
         return default
-
 for entry in entries:
     if not isinstance(entry, dict):
         continue
@@ -1511,16 +1503,12 @@ for entry in entries:
     valid = to_float(entry.get("confidence_valid", 1.0), 1.0)
     allegation = to_float(entry.get("confidence_allegation", 1.0), 1.0)
     items.append((hwid, valid, allegation))
-
 if not items:
     sys.exit(1)
-
 best_idx = min(range(len(items)), key=lambda i: (items[i][2], -items[i][1], i))
 for i, (hwid, valid, allegation) in enumerate(items, 1):
     rec = 1 if (i - 1) == best_idx else 0
-    print(f"{i}|{hwid}|{valid}|{allegation}|{rec}")
-PY
-)
+    print(f\"{i}|{hwid}|{valid}|{allegation}|{rec}\")' "$db_file" "$board")
 	status=$?
 	if [[ $status -eq 1 ]]; then
 		return 1
