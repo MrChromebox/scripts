@@ -1508,7 +1508,7 @@ if not items:
 best_idx = min(range(len(items)), key=lambda i: (items[i][2], -items[i][1], i))
 for i, (hwid, valid, allegation) in enumerate(items, 1):
     rec = 1 if (i - 1) == best_idx else 0
-    print(f\"{i}|{hwid}|{valid}|{allegation}|{rec}\")' "$db_file" "$board")
+    print("{}|{}|{}|{}|{}".format(i, hwid, valid, allegation, rec))' "$db_file" "$board")
 	status=$?
 	if [[ $status -eq 1 ]]; then
 		return 1
