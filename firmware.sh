@@ -1428,6 +1428,18 @@ function fixcraft_hwid_db_path() {
 	echo "${script_dir}/database/cros-hwid.json"
 }
 
+function fixcraft_find_python() {
+	if command -v python3 >/dev/null 2>&1; then
+		echo "python3"
+		return 0
+	fi
+	if command -v python >/dev/null 2>&1; then
+		echo "python"
+		return 0
+	fi
+	return 1
+}
+
 function fixcraft_hwid_download_db() {
 	local url="https://www.fixcraft.jp/database/cros-hwid.json"
 	local out="/tmp/fixcraft-cros-hwid.json"
@@ -1454,6 +1466,97 @@ function fixcraft_hwid_download_db() {
 	fi
 
 	return 1
+}
+
+function fixcraft_hwid_select_predefined() {
+	local db_file="$1"
+	local board="$2"
+	local py_bin=""
+	local lines=""
+	local status=0
+
+	py_bin=$(fixcraft_find_python) || { echo_yellow "Python not found; skipping pre-defined IDs." >&2; return 3; }
+
+	lines=$("$py_bin" - "$db_file" "$board" <<'PY')
+import json
+import sys
+
+if len(sys.argv) < 3:
+    sys.exit(3)
+
+db_file = sys.argv[1]
+board = sys.argv[2]
+
+try:
+    with open(db_file, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+except Exception:
+    sys.exit(3)
+
+entries = data.get("devices", {}).get(board, [])
+items = []
+
+def to_float(val, default):
+    try:
+        return float(val)
+    except Exception:
+        return default
+
+for entry in entries:
+    if not isinstance(entry, dict):
+        continue
+    hwid = entry.get("hwid")
+    if not hwid:
+        continue
+    valid = to_float(entry.get("confidence_valid", 1.0), 1.0)
+    allegation = to_float(entry.get("confidence_allegation", 1.0), 1.0)
+    items.append((hwid, valid, allegation))
+
+if not items:
+    sys.exit(1)
+
+best_idx = min(range(len(items)), key=lambda i: (items[i][2], -items[i][1], i))
+for i, (hwid, valid, allegation) in enumerate(items, 1):
+    rec = 1 if (i - 1) == best_idx else 0
+    print(f"{i}|{hwid}|{valid}|{allegation}|{rec}")
+PY
+	status=$?
+	if [[ $status -eq 1 ]]; then
+		return 1
+	fi
+	if [[ $status -ne 0 || -z "${lines}" ]]; then
+		echo_yellow "Unable to read FixCraft database; skipping pre-defined IDs." >&2
+		return 3
+	fi
+
+	echo "Pick an HWID:" >&2
+	while IFS='|' read -r idx hwid valid allegation rec; do
+		[[ -z "${idx}" || -z "${hwid}" ]] && continue
+		local label=""
+		if [[ "${rec}" = "1" ]]; then
+			label=" [RECOMMENDED]"
+		fi
+		printf "%s. %s (valid %s, allegation %s)%s\n" "${idx}" "${hwid}" "${valid}" "${allegation}" "${label}" >&2
+	done <<< "${lines}"
+
+	local choice=""
+	local selected=""
+	while true; do
+		read -rep "Select a number (or press Enter to cancel): " choice
+		if [[ -z "${choice}" ]]; then
+			return 2
+		fi
+		if ! [[ "${choice}" =~ ^[0-9]+$ ]]; then
+			echo_yellow "Invalid selection." >&2
+			continue
+		fi
+		selected=$(awk -F'|' -v pick="${choice}" '$1==pick {print $2; exit}' <<< "${lines}")
+		if [[ -n "${selected}" ]]; then
+			echo "${selected}"
+			return 0
+		fi
+		echo_yellow "Invalid selection." >&2
+	done
 }
 
 function fixcraft_hwid_lookup_predefined() {
@@ -1489,6 +1592,23 @@ function fixcraft_hwid_generate() {
 	"${gen_script}" --board "${board}"
 }
 
+function fixcraft_hwid_manual() {
+	local confirm=""
+	local hwid=""
+
+	read -rep "Type 'I KNOW WHAT IM DOING' to continue: " confirm
+	if [[ "${confirm}" != "I KNOW WHAT IM DOING" ]]; then
+		echo_red "Confirmation phrase not entered; operation cancelled." >&2
+		return 1
+	fi
+	read -rep "Enter a new HWID (use all caps): " hwid
+	if [[ -z "${hwid}" ]]; then
+		echo_red "No HWID entered; operation cancelled." >&2
+		return 1
+	fi
+	echo "${hwid}"
+}
+
 function select_new_hwid() {
 	local current_hwid="$1"
 	local board=""
@@ -1515,25 +1635,24 @@ function select_new_hwid() {
 	read -rep "Do you want to try using a working, pre-defined ID? [y/N] " confirm
 	if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
 		local db_file=""
+		local status=0
 		db_file=$(fixcraft_hwid_download_db) || true
 		if [[ -z "${db_file}" ]]; then
 			db_file=$(fixcraft_hwid_db_path)
 		fi
 
 		if [[ -s "${db_file}" ]]; then
-			hwid=$(fixcraft_hwid_lookup_predefined "${db_file}" "${board}")
-		fi
-
-		if [[ -z "${hwid}" ]]; then
-			echo_yellow "looks like your device isnt in the FixCraft Database!"
-			hwid=$(fixcraft_hwid_generate "${board}") || true
+			hwid=$(fixcraft_hwid_select_predefined "${db_file}" "${board}") || status=$?
 			if [[ -n "${hwid}" ]]; then
 				echo "${hwid}"
 				return 0
 			fi
-		else
-			read -rep "Use pre-defined ID ${hwid}? [y/N] " confirm
-			if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
+		fi
+
+		if [[ ${status} -eq 1 ]]; then
+			echo_yellow "looks like your device isnt in the FixCraft Database!" >&2
+			hwid=$(fixcraft_hwid_generate "${board}") || true
+			if [[ -n "${hwid}" ]]; then
 				echo "${hwid}"
 				return 0
 			fi
@@ -1548,18 +1667,16 @@ function select_new_hwid() {
 				echo "${hwid}"
 				return 0
 			fi
-			echo_yellow "Unable to auto-generate HWID; please enter manually."
+			echo_yellow "Unable to auto-generate HWID." >&2
+			read -rep "Enter manually instead? [y/N] " confirm
+			if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
+				hwid=$(fixcraft_hwid_manual) || return 1
+				echo "${hwid}"
+				return 0
+			fi
+			return 1
 		elif [[ "${confirm}" = "M" || "${confirm}" = "m" ]]; then
-			read -rep "Type 'I KNOW WHAT IM DOING' to continue: " confirm
-			if [[ "${confirm}" != "I KNOW WHAT IM DOING" ]]; then
-				echo_red "Confirmation phrase not entered; operation cancelled."
-				return 1
-			fi
-			read -rep "Enter a new HWID (use all caps): " hwid
-			if [[ -z "${hwid}" ]]; then
-				echo_red "No HWID entered; operation cancelled."
-				return 1
-			fi
+			hwid=$(fixcraft_hwid_manual) || return 1
 			echo "${hwid}"
 			return 0
 		fi
