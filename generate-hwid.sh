@@ -32,101 +32,145 @@ board=$(printf '%s' "$board" | tr '[:lower:]' '[:upper:]')
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 data_file="$script_dir/database/cros-hwid.json"
 
-py_bin=""
-if command -v python3 >/dev/null 2>&1; then
-  py_bin="python3"
-elif command -v python >/dev/null 2>&1; then
-  py_bin="python"
-else
-  echo "Error: python3 (or python) is required to run this script." >&2
+if [[ ! -s "${data_file}" ]]; then
+  echo "Error: database file not found: ${data_file}" >&2
   exit 1
 fi
 
-"$py_bin" - "$data_file" "$board" <<'PY'
-import json
-import random
-import sys
+get_hwids_for_board() {
+  awk -v board="$board" '
+    $0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in_block=1; next }
+    in_block && /"hwid"[[:space:]]*:/ {
+      hwid=$0
+      sub(/.*"hwid"[[:space:]]*:[[:space:]]*"/, "", hwid)
+      sub(/".*/, "", hwid)
+      if (hwid != "") print hwid
+    }
+    in_block && /]/ { exit }
+  ' "${data_file}"
+}
 
-if len(sys.argv) < 3:
-    print("Usage: generate-hwid.sh --board BOARD", file=sys.stderr)
-    sys.exit(1)
+get_all_hwids() {
+  awk '
+    /"hwid"[[:space:]]*:/ {
+      hwid=$0
+      sub(/.*"hwid"[[:space:]]*:[[:space:]]*"/, "", hwid)
+      sub(/".*/, "", hwid)
+      if (hwid != "") print hwid
+    }
+  ' "${data_file}"
+}
 
-db_file = sys.argv[1]
-board = sys.argv[2]
+rand_digit() {
+  printf '%d' $((RANDOM % 10))
+}
 
-with open(db_file, "r", encoding="utf-8") as fh:
-    data = json.load(fh)
+rand_letter() {
+  local letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  printf '%s' "${letters:RANDOM%26:1}"
+}
 
-devices = data.get("devices", {})
+rand_hex_letter() {
+  local letters="ABCDEF"
+  printf '%s' "${letters:RANDOM%6:1}"
+}
 
-def parse_groups(hwid):
-    if not hwid:
-        return []
-    parts = str(hwid).split(" ")
-    if len(parts) < 2:
-        return []
-    return [g for g in "-".join(parts[1:]).split("-") if g]
+rand_hex() {
+  local chars="0123456789ABCDEF"
+  printf '%s' "${chars:RANDOM%16:1}"
+}
 
-def flatten_entries(device_map):
-    all_entries = []
-    for entries in device_map.values():
-        if not isinstance(entries, list):
-            continue
-        for entry in entries:
-            if isinstance(entry, dict) and entry.get("hwid"):
-                all_entries.append(entry)
-    return all_entries
+rand_alnum() {
+  local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  printf '%s' "${chars:RANDOM%36:1}"
+}
 
-def char_pattern(group):
-    hex_only = True
-    pattern = []
-    for ch in group:
-        if "0" <= ch <= "9":
-            pattern.append("D")
-        elif "A" <= ch <= "Z":
-            pattern.append("A")
-        else:
-            pattern.append("X")
-        if not (("0" <= ch <= "9") or ("A" <= ch <= "F")):
-            hex_only = False
-    return "".join(pattern), hex_only
+gen_group() {
+  local tmpl="$1"
+  local out=""
+  local i=""
+  local ch=""
+  local hex_only=0
 
-def gen_char(char_type, hex_only):
-    if char_type == "D":
-        return str(random.randrange(10))
-    if char_type == "A":
-        letters = "ABCDEF" if hex_only else "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        return random.choice(letters)
-    pool = "0123456789ABCDEF" if hex_only else "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    return random.choice(pool)
+  if [[ "${tmpl}" =~ ^[0-9A-F]+$ ]]; then
+    hex_only=1
+  fi
 
-def gen_group_from_template(group):
-    pattern, hex_only = char_pattern(group)
-    if not pattern:
-        return ""
-    return "".join(gen_char(t, hex_only) for t in pattern)
+  for ((i=0; i<${#tmpl}; i++)); do
+    ch="${tmpl:i:1}"
+    if [[ "${ch}" =~ [0-9] ]]; then
+      out+=$(rand_digit)
+    elif [[ "${ch}" =~ [A-Z] ]]; then
+      if (( hex_only )); then
+        out+=$(rand_hex_letter)
+      else
+        out+=$(rand_letter)
+      fi
+    else
+      if (( hex_only )); then
+        out+=$(rand_hex)
+      else
+        out+=$(rand_alnum)
+      fi
+    fi
+  done
 
-entries = devices.get(board)
-pool = entries if isinstance(entries, list) else None
-if not pool:
-    print("Board unsupported, trying random", file=sys.stderr)
-    pool = flatten_entries(devices)
+  if [[ -z "${out}" ]]; then
+    if (( hex_only )); then
+      out="$(rand_hex)$(rand_hex)$(rand_hex)"
+    else
+      out="$(rand_alnum)$(rand_alnum)$(rand_alnum)"
+    fi
+  fi
 
-groups = []
-if pool:
-    template = random.choice(pool)
-    groups = parse_groups(template.get("hwid"))
+  printf '%s' "${out}"
+}
 
-group_count = len(groups) or 4
-prefix_len = min(2, group_count)
-out_groups = []
+hwids=()
+while IFS= read -r line; do
+  [[ -n "${line}" ]] && hwids+=("${line}")
+done < <(get_hwids_for_board)
 
-for i in range(group_count):
-    if i < prefix_len and i < len(groups) and groups[i]:
-        out_groups.append(groups[i])
-        continue
-    template_group = groups[i] if i < len(groups) and groups[i] else "A0Z"
-    out_groups.append(gen_group_from_template(template_group))
+if [[ ${#hwids[@]} -eq 0 ]]; then
+  echo "Board unsupported, trying random" >&2
+  while IFS= read -r line; do
+    [[ -n "${line}" ]] && hwids+=("${line}")
+  done < <(get_all_hwids)
+fi
 
-print(f"{board} {'-'.join(out_groups)}")
-PY
+if [[ ${#hwids[@]} -eq 0 ]]; then
+  echo "Error: no HWIDs available in database." >&2
+  exit 1
+fi
+
+template="${hwids[RANDOM % ${#hwids[@]}]}"
+groups_str=""
+if [[ "${template}" == *" "* ]]; then
+  groups_str="${template#* }"
+fi
+
+groups=()
+if [[ -n "${groups_str}" ]]; then
+  IFS='-' read -r -a groups <<< "${groups_str}"
+fi
+
+if [[ ${#groups[@]} -eq 0 ]]; then
+  groups=("A0Z" "A0Z" "A0Z" "A0Z")
+  prefix_len=0
+else
+  prefix_len=2
+  if (( prefix_len > ${#groups[@]} )); then
+    prefix_len=${#groups[@]}
+  fi
+fi
+
+out_groups=()
+for ((i=0; i<${#groups[@]}; i++)); do
+  if (( i < prefix_len )); then
+    out_groups+=("${groups[i]}")
+  else
+    out_groups+=("$(gen_group "${groups[i]}")")
+  fi
+done
+
+echo "${board} $(IFS=-; echo "${out_groups[*]}")"

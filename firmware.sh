@@ -1428,18 +1428,6 @@ function fixcraft_hwid_db_path() {
 	echo "${script_dir}/database/cros-hwid.json"
 }
 
-function fixcraft_find_python() {
-	if command -v python3 >/dev/null 2>&1; then
-		echo "python3"
-		return 0
-	fi
-	if command -v python >/dev/null 2>&1; then
-		echo "python"
-		return 0
-	fi
-	return 1
-}
-
 function fixcraft_hwid_download_db() {
 	local url="https://www.fixcraft.jp/database/cros-hwid.json"
 	local out="/tmp/fixcraft-cros-hwid.json"
@@ -1471,45 +1459,57 @@ function fixcraft_hwid_download_db() {
 function fixcraft_hwid_select_predefined() {
 	local db_file="$1"
 	local board="$2"
-	local py_bin=""
 	local lines=""
 	local status=0
 
-	py_bin=$(fixcraft_find_python) || { echo_yellow "Python not found; skipping pre-defined IDs." >&2; return 3; }
-
-	lines=$("$py_bin" -c 'import json,sys
-if len(sys.argv) < 3:
-    sys.exit(3)
-db_file = sys.argv[1]
-board = sys.argv[2]
-try:
-    with open(db_file, "r", encoding="utf-8") as fh:
-        data = json.load(fh)
-except Exception:
-    sys.exit(3)
-entries = data.get("devices", {}).get(board, [])
-items = []
-def to_float(val, default):
-    try:
-        return float(val)
-    except Exception:
-        return default
-for entry in entries:
-    if not isinstance(entry, dict):
-        continue
-    hwid = entry.get("hwid")
-    if not hwid:
-        continue
-    valid = to_float(entry.get("confidence_valid", 1.0), 1.0)
-    allegation = to_float(entry.get("confidence_allegation", 1.0), 1.0)
-    items.append((hwid, valid, allegation))
-if not items:
-    sys.exit(1)
-best_idx = min(range(len(items)), key=lambda i: (items[i][2], -items[i][1], i))
-for i, (hwid, valid, allegation) in enumerate(items, 1):
-    rec = 1 if (i - 1) == best_idx else 0
-    print("{}|{}|{}|{}|{}".format(i, hwid, valid, allegation, rec))' "$db_file" "$board")
-	status=$?
+	lines=$(awk -v board="$board" '
+		BEGIN {
+			in_block=0
+			count=0
+		}
+		$0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in_block=1; next }
+		in_block {
+			if ($0 ~ /"hwid"[[:space:]]*:/) {
+				hwid=$0
+				sub(/.*"hwid"[[:space:]]*:[[:space:]]*"/, "", hwid)
+				sub(/".*/, "", hwid)
+				valid=1
+				allegation=1
+			} else if ($0 ~ /"confidence_valid"[[:space:]]*:/) {
+				val=$0
+				sub(/.*"confidence_valid"[[:space:]]*:[[:space:]]*/, "", val)
+				sub(/[^0-9.].*/, "", val)
+				if (val != "") valid=val+0
+			} else if ($0 ~ /"confidence_allegation"[[:space:]]*:/) {
+				val=$0
+				sub(/.*"confidence_allegation"[[:space:]]*:[[:space:]]*/, "", val)
+				sub(/[^0-9.].*/, "", val)
+				if (val != "") allegation=val+0
+			}
+			if ($0 ~ /}/ && hwid != "") {
+				count++
+				hwid_arr[count]=hwid
+				valid_arr[count]=valid+0
+				allegation_arr[count]=allegation+0
+				hwid=""
+			}
+			if ($0 ~ /]/) { exit }
+		}
+		END {
+			if (count == 0) exit 1
+			best=1
+			for (i=2; i<=count; i++) {
+				if (allegation_arr[i] < allegation_arr[best] || (allegation_arr[i] == allegation_arr[best] && valid_arr[i] > valid_arr[best])) {
+					best=i
+				}
+			}
+			for (i=1; i<=count; i++) {
+				rec = (i == best) ? 1 : 0
+				printf "%d|%s|%s|%s|%d\n", i, hwid_arr[i], valid_arr[i], allegation_arr[i], rec
+			}
+		}
+	' "$db_file") || status=$?
+	status=${status:-0}
 	if [[ $status -eq 1 ]]; then
 		return 1
 	fi
@@ -1517,7 +1517,6 @@ for i, (hwid, valid, allegation) in enumerate(items, 1):
 		echo_yellow "Unable to read FixCraft database; skipping pre-defined IDs." >&2
 		return 3
 	fi
-
 	echo "Pick an HWID:" >&2
 	while IFS='|' read -r idx hwid valid allegation rec; do
 		[[ -z "${idx}" || -z "${hwid}" ]] && continue
@@ -1577,6 +1576,16 @@ function fixcraft_hwid_rand_letter() {
 	printf '%s' "${letters:RANDOM%26:1}"
 }
 
+function fixcraft_hwid_rand_hex_letter() {
+	local letters="ABCDEF"
+	printf '%s' "${letters:RANDOM%6:1}"
+}
+
+function fixcraft_hwid_rand_hex() {
+	local chars="0123456789ABCDEF"
+	printf '%s' "${chars:RANDOM%16:1}"
+}
+
 function fixcraft_hwid_rand_alnum() {
 	local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	printf '%s' "${chars:RANDOM%36:1}"
@@ -1587,20 +1596,37 @@ function fixcraft_hwid_gen_group() {
 	local out=""
 	local i=""
 	local ch=""
+	local hex_only=0
+
+	if [[ "${tmpl}" =~ ^[0-9A-F]+$ ]]; then
+		hex_only=1
+	fi
 
 	for ((i=0; i<${#tmpl}; i++)); do
 		ch="${tmpl:i:1}"
 		if [[ "${ch}" =~ [0-9] ]]; then
 			out+=$(fixcraft_hwid_rand_digit)
 		elif [[ "${ch}" =~ [A-Z] ]]; then
-			out+=$(fixcraft_hwid_rand_letter)
+			if (( hex_only )); then
+				out+=$(fixcraft_hwid_rand_hex_letter)
+			else
+				out+=$(fixcraft_hwid_rand_letter)
+			fi
 		else
-			out+=$(fixcraft_hwid_rand_alnum)
+			if (( hex_only )); then
+				out+=$(fixcraft_hwid_rand_hex)
+			else
+				out+=$(fixcraft_hwid_rand_alnum)
+			fi
 		fi
 	done
 
 	if [[ -z "${out}" ]]; then
-		out="$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)"
+		if (( hex_only )); then
+			out="$(fixcraft_hwid_rand_hex)$(fixcraft_hwid_rand_hex)$(fixcraft_hwid_rand_hex)"
+		else
+			out="$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)"
+		fi
 	fi
 
 	printf '%s' "${out}"
@@ -1782,7 +1808,9 @@ function set_hwid()
 Changing this is not normally needed, and if you mess it up,
 MrChromebox is not going to help you fix it. This won't let
 you run a different/newer version of ChromeOS.
-Proceed at your own risk."
+Proceed at your own risk.
+P.S. using a pre-defined HWID may allow updates
+to work correctly."
 
 	read -rep "Really change your HWID? [y/N] " confirm
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
