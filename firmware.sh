@@ -1716,6 +1716,11 @@ function fixcraft_hwid_manual() {
 	echo "${hwid}"
 }
 
+function fixcraft_hwid_disclaimer() {
+	echo_yellow "FixCraft, Inc. provides hardware IDs AS IS with no warranty." >&2
+	echo_yellow "Use at your own risk; no guarantees of fitness or support." >&2
+}
+
 function select_new_hwid() {
 	local current_hwid="$1"
 	local board=""
@@ -1751,6 +1756,7 @@ function select_new_hwid() {
 		if [[ -s "${db_file}" ]]; then
 			hwid=$(fixcraft_hwid_select_predefined "${db_file}" "${board}") || status=$?
 			if [[ -n "${hwid}" ]]; then
+				fixcraft_hwid_disclaimer
 				echo "${hwid}"
 				return 0
 			fi
@@ -1760,6 +1766,7 @@ function select_new_hwid() {
 			echo_yellow "looks like your device isnt in the FixCraft Database!" >&2
 			hwid=$(fixcraft_hwid_generate "${board}") || true
 			if [[ -n "${hwid}" ]]; then
+				fixcraft_hwid_disclaimer
 				echo "${hwid}"
 				return 0
 			fi
@@ -1771,6 +1778,7 @@ function select_new_hwid() {
 		if [[ "${confirm}" = "A" || "${confirm}" = "a" ]]; then
 			hwid=$(fixcraft_hwid_generate "${board}") || true
 			if [[ -n "${hwid}" ]]; then
+				fixcraft_hwid_disclaimer
 				echo "${hwid}"
 				return 0
 			fi
