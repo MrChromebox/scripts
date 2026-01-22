@@ -1814,8 +1814,8 @@ function set_hwid()
 
 	echo_yellow "Are you sure you know what you're doing here?
 Changing this is not normally needed, and if you mess it up,
-MrChromebox is not going to help you fix it. This won't let
-you run a different/newer version of ChromeOS.
+MrChromebox is not going to help you fix it. 
+* This won't let you run a different/newer version of ChromeOS.
 Proceed at your own risk.
 P.S. using a pre-defined HWID may allow updates
 to work correctly."
