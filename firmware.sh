@@ -1568,17 +1568,109 @@ function fixcraft_hwid_lookup_predefined() {
 	' "${db_file}"
 }
 
+function fixcraft_hwid_rand_digit() {
+	printf '%d' $((RANDOM % 10))
+}
+
+function fixcraft_hwid_rand_letter() {
+	local letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	printf '%s' "${letters:RANDOM%26:1}"
+}
+
+function fixcraft_hwid_rand_alnum() {
+	local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	printf '%s' "${chars:RANDOM%36:1}"
+}
+
+function fixcraft_hwid_gen_group() {
+	local tmpl="$1"
+	local out=""
+	local i=""
+	local ch=""
+
+	for ((i=0; i<${#tmpl}; i++)); do
+		ch="${tmpl:i:1}"
+		if [[ "${ch}" =~ [0-9] ]]; then
+			out+=$(fixcraft_hwid_rand_digit)
+		elif [[ "${ch}" =~ [A-Z] ]]; then
+			out+=$(fixcraft_hwid_rand_letter)
+		else
+			out+=$(fixcraft_hwid_rand_alnum)
+		fi
+	done
+
+	if [[ -z "${out}" ]]; then
+		out="$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)"
+	fi
+
+	printf '%s' "${out}"
+}
+
+function fixcraft_hwid_generate_fallback() {
+	local board="$1"
+	local template="$2"
+	local groups_str=""
+	local groups=()
+	local prefix_len=2
+	local out_groups=()
+	local i=""
+
+	board=$(printf '%s' "${board}" | tr '[:lower:]' '[:upper:]')
+
+	if [[ -n "${template}" ]]; then
+		if [[ "${template}" == *" "* ]]; then
+			groups_str="${template#* }"
+		fi
+	fi
+
+	if [[ -n "${groups_str}" ]]; then
+		IFS='-' read -r -a groups <<< "${groups_str}"
+	fi
+
+	if [[ ${#groups[@]} -eq 0 ]]; then
+		groups=("A0Z" "A0Z" "A0Z" "A0Z")
+		prefix_len=0
+	elif (( prefix_len > ${#groups[@]} )); then
+		prefix_len=${#groups[@]}
+	fi
+
+	for ((i=0; i<${#groups[@]}; i++)); do
+		if (( i < prefix_len )); then
+			out_groups+=("${groups[i]}")
+		else
+			out_groups+=("$(fixcraft_hwid_gen_group "${groups[i]}")")
+		fi
+	done
+
+	echo "${board} $(IFS=-; echo "${out_groups[*]}")"
+}
+
 function fixcraft_hwid_generate() {
 	local board="$1"
 	local script_dir
 	script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 	local gen_script="${script_dir}/generate-hwid.sh"
+	local hwid=""
+	local db_file=""
+	local template=""
 
-	if [[ ! -x "${gen_script}" ]]; then
-		return 1
+	if [[ -x "${gen_script}" ]]; then
+		hwid=$("${gen_script}" --board "${board}") || true
+		if [[ -n "${hwid}" ]]; then
+			echo "${hwid}"
+			return 0
+		fi
 	fi
 
-	"${gen_script}" --board "${board}"
+	db_file=$(fixcraft_hwid_db_path)
+	if [[ ! -s "${db_file}" ]]; then
+		db_file=$(fixcraft_hwid_download_db) || true
+	fi
+	if [[ -n "${db_file}" && -s "${db_file}" ]]; then
+		template=$(fixcraft_hwid_lookup_predefined "${db_file}" "${board}")
+	fi
+
+	fixcraft_hwid_generate_fallback "${board}" "${template}"
 }
 
 function fixcraft_hwid_manual() {
