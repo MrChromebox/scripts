@@ -1611,7 +1611,7 @@ function reset_cr50_nvram() {
 	fi
 	
 	# Write TPM reset command
-	if ! ${tpmccmd} write 0x1007 02 00 01 00 01 00 00 00 00 4f; then
+	if ! ${tpmccmd} write 0x1007 02 02 01 00 01 00 00 00 00 69; then
 		echo_red "Error: Failed to reset CR50 TPM data."
 		return 1
 	fi
