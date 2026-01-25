@@ -24,6 +24,8 @@ function download_files() {
 			return 1
 		fi
 	done
+	#line break
+	echo -e ""
 }
 
 ###################
