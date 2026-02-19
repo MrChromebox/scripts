@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2026-01-25]"
+export script_date="[2026-02-19]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -249,14 +249,14 @@ export coreboot_uefi_liara="coreboot_edk2-liara-mrchromebox_20260125.rom"
 export coreboot_uefi_treeya="coreboot_edk2-treeya-mrchromebox_20260125.rom"
 
 #Picasso
-export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20260125.rom"
-export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20260125.rom"
-export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20260125.rom"
-export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20260125.rom"
-export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20260125.rom"
-export coreboot_uefi_shuboz="coreboot_edk2-shuboz-mrchromebox_20260125.rom"
-export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20260125.rom"
-export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20260125.rom"
+export coreboot_uefi_berknip="coreboot_edk2-berknip-mrchromebox_20260219.rom"
+export coreboot_uefi_dirinboz="coreboot_edk2-dirinboz-mrchromebox_20260219.rom"
+export coreboot_uefi_ezkinil="coreboot_edk2-ezkinil-mrchromebox_20260219.rom"
+export coreboot_uefi_gumboz="coreboot_edk2-gumboz-mrchromebox_20260219.rom"
+export coreboot_uefi_morphius="coreboot_edk2-morphius-mrchromebox_20260219.rom"
+export coreboot_uefi_shuboz="coreboot_edk2-shuboz-mrchromebox_20260219.rom"
+export coreboot_uefi_vilboz="coreboot_edk2-vilboz-mrchromebox_20260219.rom"
+export coreboot_uefi_woomax="coreboot_edk2-woomax-mrchromebox_20260219.rom"
 
 #Cezanne
 export coreboot_uefi_dewatt="coreboot_edk2-dewatt-mrchromebox_20260125.rom"
