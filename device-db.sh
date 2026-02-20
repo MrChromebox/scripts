@@ -395,9 +395,9 @@ DEVICE_DB=(
 	["CONSTITUTION*"]="Google Meet Series Two|ADL||adl_fixed_rwl|"
 	["INTREPID*"]="CTL Meet Compute System GQE20C|ADL|constitution|isCbox,hasLAN,adl_fixed_rwl|"
 	# Brox baseboard
-	["JUBILANT*"]="Acer Chromebook Plus 514|ADL||noUEFI|"
-	["JUBILEUM*"]="Acer Chromebook Plus 516|ADL|jubilant|noUEFI|"
-	["LOTSO*"]="Lenovo Chromebook Plus 2-in-1|ADL||noUEFI|"
+	["JUBILANT*"]="Acer Chromebook Plus 514|ADL|||"
+	["JUBILEUM*"]="Acer Chromebook Plus 516|ADL|jubilant||"
+	["LOTSO*"]="Lenovo Chromebook Plus 2-in-1|ADL|||"
 
 	# ADN devices - Intel AlderLake-N
 	["ANRAGGAR360*"]="ASUS Chromebook CR12 flip CR1204F|ADN|anraggar||"
