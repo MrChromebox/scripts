@@ -1424,6 +1424,382 @@ You can always override the default using [CTRL+D] or
 ###################
 # Set Hardware ID #
 ###################
+function fixcraft_hwid_db_path() {
+	local script_dir
+	script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+	echo "${script_dir}/database/cros-hwid.json"
+}
+
+function fixcraft_hwid_download_db() {
+	local url="https://www.fixcraft.jp/database/cros-hwid.json"
+	local out="/tmp/fixcraft-cros-hwid.json"
+
+	if [[ -n "${CURL:-}" ]]; then
+		if ${CURL} -fsSL "${url}" -o "${out}" >/dev/null 2>&1; then
+			echo "${out}"
+			return 0
+		fi
+	fi
+
+	if command -v curl >/dev/null 2>&1; then
+		if curl -fsSL "${url}" -o "${out}" >/dev/null 2>&1; then
+			echo "${out}"
+			return 0
+		fi
+	fi
+
+	if command -v wget >/dev/null 2>&1; then
+		if wget -qO "${out}" "${url}" >/dev/null 2>&1; then
+			echo "${out}"
+			return 0
+		fi
+	fi
+
+	return 1
+}
+
+function fixcraft_hwid_select_predefined() {
+	local db_file="$1"
+	local board="$2"
+	local lines=""
+	local status=0
+
+	lines=$(awk -v board="$board" '
+		BEGIN {
+			in_block=0
+			count=0
+		}
+		$0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in_block=1; next }
+		in_block {
+			if ($0 ~ /"hwid"[[:space:]]*:/) {
+				hwid=$0
+				sub(/.*"hwid"[[:space:]]*:[[:space:]]*"/, "", hwid)
+				sub(/".*/, "", hwid)
+				valid=1
+				allegation=1
+			} else if ($0 ~ /"confidence_valid"[[:space:]]*:/) {
+				val=$0
+				sub(/.*"confidence_valid"[[:space:]]*:[[:space:]]*/, "", val)
+				sub(/[^0-9.].*/, "", val)
+				if (val != "") valid=val+0
+			} else if ($0 ~ /"confidence_allegation"[[:space:]]*:/) {
+				val=$0
+				sub(/.*"confidence_allegation"[[:space:]]*:[[:space:]]*/, "", val)
+				sub(/[^0-9.].*/, "", val)
+				if (val != "") allegation=val+0
+			}
+			if ($0 ~ /}/ && hwid != "") {
+				count++
+				hwid_arr[count]=hwid
+				valid_arr[count]=valid+0
+				allegation_arr[count]=allegation+0
+				hwid=""
+			}
+			if ($0 ~ /]/) { exit }
+		}
+		END {
+			if (count == 0) exit 1
+			best=1
+			for (i=2; i<=count; i++) {
+				if (allegation_arr[i] < allegation_arr[best] || (allegation_arr[i] == allegation_arr[best] && valid_arr[i] > valid_arr[best])) {
+					best=i
+				}
+			}
+			for (i=1; i<=count; i++) {
+				rec = (i == best) ? 1 : 0
+				printf "%d|%s|%s|%s|%d\n", i, hwid_arr[i], valid_arr[i], allegation_arr[i], rec
+			}
+		}
+	' "$db_file") || status=$?
+	status=${status:-0}
+	if [[ $status -eq 1 ]]; then
+		return 1
+	fi
+	if [[ $status -ne 0 || -z "${lines}" ]]; then
+		echo_yellow "Unable to read FixCraft database; skipping pre-defined IDs." >&2
+		return 3
+	fi
+	echo "Pick an HWID:" >&2
+	while IFS='|' read -r idx hwid valid allegation rec; do
+		[[ -z "${idx}" || -z "${hwid}" ]] && continue
+		local label=""
+		if [[ "${rec}" = "1" ]]; then
+			label=" [RECOMMENDED]"
+		fi
+		printf "%s. %s (valid %s, allegation %s)%s\n" "${idx}" "${hwid}" "${valid}" "${allegation}" "${label}" >&2
+	done <<< "${lines}"
+
+	local choice=""
+	local selected=""
+	while true; do
+		read -rep "Select a number (or press Enter to cancel): " choice
+		if [[ -z "${choice}" ]]; then
+			return 2
+		fi
+		if ! [[ "${choice}" =~ ^[0-9]+$ ]]; then
+			echo_yellow "Invalid selection." >&2
+			continue
+		fi
+		selected=$(awk -F'|' -v pick="${choice}" '$1==pick {print $2; exit}' <<< "${lines}")
+		if [[ -n "${selected}" ]]; then
+			echo "${selected}"
+			return 0
+		fi
+		echo_yellow "Invalid selection." >&2
+	done
+}
+
+function fixcraft_hwid_lookup_predefined() {
+	local db_file="$1"
+	local board="$2"
+
+	awk -v board="$board" '
+		$0 ~ "\"" board "\"[[:space:]]*:[[:space:]]*\\[" { in_block=1; next }
+		in_block && /"hwid"[[:space:]]*:/ {
+			match($0, /"hwid"[[:space:]]*:[[:space:]]*"[^"]+"/)
+			if (RSTART) {
+				hwid=substr($0, RSTART, RLENGTH)
+				sub(/.*"hwid"[[:space:]]*:[[:space:]]*"/, "", hwid)
+				sub(/"$/, "", hwid)
+				print hwid
+				exit
+			}
+		}
+		in_block && /]/ { exit }
+	' "${db_file}"
+}
+
+function fixcraft_hwid_rand_digit() {
+	printf '%d' $((RANDOM % 10))
+}
+
+function fixcraft_hwid_rand_letter() {
+	local letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	printf '%s' "${letters:RANDOM%26:1}"
+}
+
+function fixcraft_hwid_rand_hex_letter() {
+	local letters="ABCDEF"
+	printf '%s' "${letters:RANDOM%6:1}"
+}
+
+function fixcraft_hwid_rand_hex() {
+	local chars="0123456789ABCDEF"
+	printf '%s' "${chars:RANDOM%16:1}"
+}
+
+function fixcraft_hwid_rand_alnum() {
+	local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	printf '%s' "${chars:RANDOM%36:1}"
+}
+
+function fixcraft_hwid_gen_group() {
+	local tmpl="$1"
+	local out=""
+	local i=""
+	local ch=""
+	local hex_only=0
+
+	if [[ "${tmpl}" =~ ^[0-9A-F]+$ ]]; then
+		hex_only=1
+	fi
+
+	for ((i=0; i<${#tmpl}; i++)); do
+		ch="${tmpl:i:1}"
+		if [[ "${ch}" =~ [0-9] ]]; then
+			out+=$(fixcraft_hwid_rand_digit)
+		elif [[ "${ch}" =~ [A-Z] ]]; then
+			if (( hex_only )); then
+				out+=$(fixcraft_hwid_rand_hex_letter)
+			else
+				out+=$(fixcraft_hwid_rand_letter)
+			fi
+		else
+			if (( hex_only )); then
+				out+=$(fixcraft_hwid_rand_hex)
+			else
+				out+=$(fixcraft_hwid_rand_alnum)
+			fi
+		fi
+	done
+
+	if [[ -z "${out}" ]]; then
+		if (( hex_only )); then
+			out="$(fixcraft_hwid_rand_hex)$(fixcraft_hwid_rand_hex)$(fixcraft_hwid_rand_hex)"
+		else
+			out="$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)$(fixcraft_hwid_rand_alnum)"
+		fi
+	fi
+
+	printf '%s' "${out}"
+}
+
+function fixcraft_hwid_generate_fallback() {
+	local board="$1"
+	local template="$2"
+	local groups_str=""
+	local groups=()
+	local prefix_len=2
+	local out_groups=()
+	local i=""
+
+	board=$(printf '%s' "${board}" | tr '[:lower:]' '[:upper:]')
+
+	if [[ -n "${template}" ]]; then
+		if [[ "${template}" == *" "* ]]; then
+			groups_str="${template#* }"
+		fi
+	fi
+
+	if [[ -n "${groups_str}" ]]; then
+		IFS='-' read -r -a groups <<< "${groups_str}"
+	fi
+
+	if [[ ${#groups[@]} -eq 0 ]]; then
+		groups=("A0Z" "A0Z" "A0Z" "A0Z")
+		prefix_len=0
+	elif (( prefix_len > ${#groups[@]} )); then
+		prefix_len=${#groups[@]}
+	fi
+
+	for ((i=0; i<${#groups[@]}; i++)); do
+		if (( i < prefix_len )); then
+			out_groups+=("${groups[i]}")
+		else
+			out_groups+=("$(fixcraft_hwid_gen_group "${groups[i]}")")
+		fi
+	done
+
+	echo "${board} $(IFS=-; echo "${out_groups[*]}")"
+}
+
+function fixcraft_hwid_generate() {
+	local board="$1"
+	local script_dir
+	script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+	local gen_script="${script_dir}/generate-hwid.sh"
+	local hwid=""
+	local db_file=""
+	local template=""
+
+	if [[ -x "${gen_script}" ]]; then
+		hwid=$("${gen_script}" --board "${board}") || true
+		if [[ -n "${hwid}" ]]; then
+			echo "${hwid}"
+			return 0
+		fi
+	fi
+
+	db_file=$(fixcraft_hwid_db_path)
+	if [[ ! -s "${db_file}" ]]; then
+		db_file=$(fixcraft_hwid_download_db) || true
+	fi
+	if [[ -n "${db_file}" && -s "${db_file}" ]]; then
+		template=$(fixcraft_hwid_lookup_predefined "${db_file}" "${board}")
+	fi
+
+	fixcraft_hwid_generate_fallback "${board}" "${template}"
+}
+
+function fixcraft_hwid_manual() {
+	local confirm=""
+	local hwid=""
+
+	read -rep "Type 'I KNOW WHAT IM DOING' to continue: " confirm
+	if [[ "${confirm}" != "I KNOW WHAT IM DOING" ]]; then
+		echo_red "Confirmation phrase not entered; operation cancelled." >&2
+		return 1
+	fi
+	read -rep "Enter a new HWID (use all caps): " hwid
+	if [[ -z "${hwid}" ]]; then
+		echo_red "No HWID entered; operation cancelled." >&2
+		return 1
+	fi
+	echo "${hwid}"
+}
+
+function fixcraft_hwid_disclaimer() {
+	echo_yellow "FixCraft, Inc. provides hardware IDs AS IS with no warranty." >&2
+	echo_yellow "Use at your own risk; no guarantees of fitness or support." >&2
+}
+
+function select_new_hwid() {
+	local current_hwid="$1"
+	local board=""
+	local hwid=""
+	local confirm=""
+
+	if [[ -n "${current_hwid}" ]]; then
+		board=$(echo "${current_hwid^^}" | cut -f1 -d ' ')
+	elif [[ -n "${boardName:-}" ]]; then
+		board="${boardName^^}"
+	elif [[ -n "${device:-}" ]]; then
+		board="${device^^}"
+	fi
+
+	if [[ -z "${board}" ]]; then
+		read -rep "Enter your board name: " board
+		board=$(printf '%s' "${board}" | tr '[:lower:]' '[:upper:]')
+	fi
+	if [[ -z "${board}" ]]; then
+		echo_red "No board name provided; operation cancelled."
+		return 1
+	fi
+
+	read -rep "Do you want to try using a working, pre-defined ID? [y/N] " confirm
+	if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
+		local db_file=""
+		local status=0
+		db_file=$(fixcraft_hwid_download_db) || true
+		if [[ -z "${db_file}" ]]; then
+			db_file=$(fixcraft_hwid_db_path)
+		fi
+
+		if [[ -s "${db_file}" ]]; then
+			hwid=$(fixcraft_hwid_select_predefined "${db_file}" "${board}") || status=$?
+			if [[ -n "${hwid}" ]]; then
+				fixcraft_hwid_disclaimer
+				echo "${hwid}"
+				return 0
+			fi
+		fi
+
+		if [[ ${status} -eq 1 ]]; then
+			echo_yellow "looks like your device isnt in the FixCraft Database!" >&2
+			hwid=$(fixcraft_hwid_generate "${board}") || true
+			if [[ -n "${hwid}" ]]; then
+				fixcraft_hwid_disclaimer
+				echo "${hwid}"
+				return 0
+			fi
+		fi
+	fi
+
+	while true; do
+		read -rep "Auto-generate for your board or enter manually? [A/M] " confirm
+		if [[ "${confirm}" = "A" || "${confirm}" = "a" ]]; then
+			hwid=$(fixcraft_hwid_generate "${board}") || true
+			if [[ -n "${hwid}" ]]; then
+				fixcraft_hwid_disclaimer
+				echo "${hwid}"
+				return 0
+			fi
+			echo_yellow "Unable to auto-generate HWID." >&2
+			read -rep "Enter manually instead? [y/N] " confirm
+			if [[ "${confirm}" = "Y" || "${confirm}" = "y" ]]; then
+				hwid=$(fixcraft_hwid_manual) || return 1
+				echo "${hwid}"
+				return 0
+			fi
+			return 1
+		elif [[ "${confirm}" = "M" || "${confirm}" = "m" ]]; then
+			hwid=$(fixcraft_hwid_manual) || return 1
+			echo "${hwid}"
+			return 0
+		fi
+	done
+}
+
 function set_hwid()
 {
 	# set HWID using gbb_utility
@@ -1440,9 +1816,11 @@ function set_hwid()
 
 	echo_yellow "Are you sure you know what you're doing here?
 Changing this is not normally needed, and if you mess it up,
-MrChromebox is not going to help you fix it. This won't let
-you run a different/newer version of ChromeOS.
-Proceed at your own risk."
+MrChromebox is not going to help you fix it. 
+* This won't let you run a different/newer version of ChromeOS.
+Proceed at your own risk.
+P.S. using a pre-defined HWID may allow updates
+to work correctly."
 
 	read -rep "Really change your HWID? [y/N] " confirm
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
@@ -1450,7 +1828,14 @@ Proceed at your own risk."
 	read -rep "This is serious. Are you really sure? [y/N] " confirm
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
 
-	read -rep "Enter a new HWID (use all caps): " hwid
+	local hwid=""
+	if ! hwid=$(select_new_hwid "${_hwid}"); then
+		return
+	fi
+	if [[ -z "${hwid}" ]]; then
+		exit_red "No HWID selected; operation cancelled."; return 1
+	fi
+
 	echo -e ""
 	read -rep "Confirm changing HWID to $hwid [y/N] " confirm
 	if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
@@ -1510,9 +1895,11 @@ Proceed at your own risk."
 	[[ "$confirm" = "Y" || "$confirm" = "y" ]] || return
 
 	local hwid=""
-	read -rep "Enter a new HWID: " hwid
-	if [[ -z "$hwid" ]]; then
-		exit_red "No HWID entered; operation cancelled."; return 1
+	if ! hwid=$(select_new_hwid "${_current_hwid}"); then
+		return
+	fi
+	if [[ -z "${hwid}" ]]; then
+		exit_red "No HWID selected; operation cancelled."; return 1
 	fi
 
 	echo -e ""
