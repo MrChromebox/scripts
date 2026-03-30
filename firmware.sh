@@ -438,15 +438,17 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 	ssfc_val=$($ectoolcmd cbi get 8 | grep -m1 'uint' | cut -f3 -d ' ')
 	echo_yellow "Current SSFC value is $ssfc_val"
 	
-	# TOUCHPAD_OPTION is bits 44-45 in SSFC, so bits 12-13 here
-	if [[ $((ssfc_val & 0x3000)) == 0 ]]; then
+	# TOUCHPAD_OPTION is bits 62-63 in 64-bit SSFC.
+	# This function reads/writes only the upper 32 bits (CBI tag 8, 4 bytes),
+	# so those map to bits 30-31 within this 32-bit value.
+	if [[ $((ssfc_val & 0xC0000000)) == 0 ]]; then
 		#touchpad unset, so detect and set it
 		if dmesg | grep "input:" | grep -q "ELAN0000"; then
-			#ELAN0000 touchpad, set bit 12
-			ssfc_val=$((ssfc_val | 0x1000))
+			#ELAN0000 touchpad, set bit 30
+			ssfc_val=$((ssfc_val | 0x40000000))
 		else
-			#ELAN2712 touchpad, set bit 13
-			ssfc_val=$((ssfc_val | 0x2000))
+			#ELAN2712 touchpad, set bit 31
+			ssfc_val=$((ssfc_val | 0x80000000))
 		fi
 
 		echo_yellow "Setting new SSFC value $ssfc_val"
