@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2026-04-09]"
+export script_date="[2026-04-30]"
 
 #where the stuff is
 export util_source="https://www.mrchromebox.tech/files/util/"
@@ -103,17 +103,17 @@ export coreboot_uefi_sand="coreboot_edk2-sand-mrchromebox_20260409.rom"
 export coreboot_uefi_snappy="coreboot_edk2-snappy-mrchromebox_20260409.rom"
 
 #GeminiLake
-export coreboot_uefi_ampton="coreboot_edk2-ampton-mrchromebox_20260409.rom"
-export coreboot_uefi_bloog="coreboot_edk2-bloog-mrchromebox_20260409.rom"
-export coreboot_uefi_bobba="coreboot_edk2-bobba-mrchromebox_20260409.rom"
-export coreboot_uefi_casta="coreboot_edk2-casta-mrchromebox_20260409.rom"
-export coreboot_uefi_dood="coreboot_edk2-dood-mrchromebox_20260409.rom"
-export coreboot_uefi_fleex="coreboot_edk2-fleex-mrchromebox_20260409.rom"
-export coreboot_uefi_foob="coreboot_edk2-foob-mrchromebox_20260409.rom"
-export coreboot_uefi_garg="coreboot_edk2-garg-mrchromebox_20260409.rom"
-export coreboot_uefi_lick="coreboot_edk2-lick-mrchromebox_20260409.rom"
-export coreboot_uefi_meep="coreboot_edk2-meep-mrchromebox_20260409.rom"
-export coreboot_uefi_phaser="coreboot_edk2-phaser-mrchromebox_20260409.rom"
+export coreboot_uefi_ampton="coreboot_edk2-ampton-mrchromebox_20260430.rom"
+export coreboot_uefi_bloog="coreboot_edk2-bloog-mrchromebox_20260430.rom"
+export coreboot_uefi_bobba="coreboot_edk2-bobba-mrchromebox_20260430.rom"
+export coreboot_uefi_casta="coreboot_edk2-casta-mrchromebox_20260430.rom"
+export coreboot_uefi_dood="coreboot_edk2-dood-mrchromebox_20260430.rom"
+export coreboot_uefi_fleex="coreboot_edk2-fleex-mrchromebox_20260430.rom"
+export coreboot_uefi_foob="coreboot_edk2-foob-mrchromebox_20260430.rom"
+export coreboot_uefi_garg="coreboot_edk2-garg-mrchromebox_20260430.rom"
+export coreboot_uefi_lick="coreboot_edk2-lick-mrchromebox_20260430.rom"
+export coreboot_uefi_meep="coreboot_edk2-meep-mrchromebox_20260430.rom"
+export coreboot_uefi_phaser="coreboot_edk2-phaser-mrchromebox_20260430.rom"
 
 #CometLake
 export coreboot_uefi_akemi="coreboot_edk2-akemi-mrchromebox_20260409.rom"
