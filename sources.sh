@@ -96,7 +96,7 @@ export coreboot_uefi_rammus="coreboot_edk2-rammus-mrchromebox_20260409.rom"
 export coreboot_uefi_soraka="coreboot_edk2-soraka-mrchromebox_20260409.rom"
 
 #ApolloLake
-export coreboot_uefi_coral="coreboot_edk2-coral-mrchromebox_20260409.rom"
+export coreboot_uefi_coral="coreboot_edk2-coral-mrchromebox_20260430.rom"
 export coreboot_uefi_pyro="coreboot_edk2-pyro-mrchromebox_20260409.rom"
 export coreboot_uefi_reef="coreboot_edk2-reef-mrchromebox_20260409.rom"
 export coreboot_uefi_sand="coreboot_edk2-sand-mrchromebox_20260409.rom"
