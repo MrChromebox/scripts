@@ -1,0 +1,233 @@
+{
+  "_meta": {
+    "schema": "codename_to_hwid_min.v1",
+    "updated": "2026-01-20",
+    "fields": {
+      "hwid": "string",
+      "owner_history": "enum: clean|unknown|suspected_bad|proven_bad",
+      "confidence_valid": "0.0-1.0",
+      "confidence_allegation": "0.0-1.0",
+      "notes": "short string (optional)"
+    }
+  },
+  "devices": {
+    "HANA": [
+      {
+        "hwid": "HANA L4A-D75-C2H-E2Q-P2U-B4Q",
+        "owner_history": "proven_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 1,
+        "notes": "Proven enrolled/linked to an organization"
+      },
+      {
+        "hwid": "HANA 14A-D7K-A2A-G2Q-B2W-A83",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.1,
+        "notes": "Suspected org enrollment"
+      },
+      {
+        "hwid": "HANA 14A-D7Z-A6E-A2I-D2E-B9K",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.1,
+        "notes": "Suspected org enrollment"
+      }
+    ],
+    "SHYVANA": [
+      {
+        "hwid": "SHYVANA C5B-A4G-C4Q-S24-A9U",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "JINLON-YTGY": [
+      {
+        "hwid": "JINLON-YTGY C5B-O5B-E4E-S3Q-E9L",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5,
+        "notes": "Unsure"
+      }
+    ],
+    "KIP": [
+      {
+        "hwid": "KIP C5A-G2O-H6A-A5V",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "EVE": [
+      {
+        "hwid": "EVE D6B-A6A-C4C-F8N-P8A-A37",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "GRABBITER": [
+      {
+        "hwid": "GRABBITER G7B-B4E-O57-L8M-E6T-Q8Q-A2K",
+        "owner_history": "unknown",
+        "confidence_valid": 0.5,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      },
+      {
+        "hwid": "GRABBITER D6B-B3C-C5P-M8I-C6Y-A72",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      },
+      {
+        "hwid": "GRABBITER G7C-B4C-O52-M4Y-C8T-Q8Q-A2M",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment"
+      }
+    ],
+    "NASHER": [
+      {
+        "hwid": "NASHER D5F-B4K-C47-W5K-S4C-I6A-A9A",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5,
+        "notes": "Unsure"
+      }
+    ],
+    "BARLA": [
+      {
+        "hwid": "BARLA C4B-A4L-F3V-M8G-I2Q-C2E-A8B",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "FLEEX": [
+      {
+        "hwid": "FLEEX D7B-B4D-G57-N8N-J4M-G2Q-A6D",
+        "owner_history": "proven_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 1,
+        "notes": "Proven enrolled/linked to an organization"
+      },
+      {
+        "hwid": "FLEEX D7B-B4B-H5V-N2B-A4M-H2M",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      },
+      {
+        "hwid": "FLEEX D6B-B3D-G5V-P3J-B4E-B7K",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      }
+    ],
+    "FALCO": [
+      {
+        "hwid": "FALCO C3J-C3I-P8N",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      },
+      {
+        "hwid": "FALCO C2A-U6Y-D95",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "BLOOGET": [
+      {
+        "hwid": "BLOOGET C2Q-A4D-D2K-T7X-U8A-A9N",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      }
+    ],
+    "GNAWTY": [
+      {
+        "hwid": "GNAWTY C2Q-E55-A5B",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "MINNIE": [
+      {
+        "hwid": "MINNIE F25-S2E-Q4G-A3C",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "NAUTILUS": [
+      {
+        "hwid": "NAUTILUS D5B-A2E-B5M-D97-Q34",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      }
+    ],
+    "AKALI360": [
+      {
+        "hwid": "AKALI360 C4B-A2C-F3K-65U-I8T",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      }
+    ],
+    "PEPPY": [
+      {
+        "hwid": "PEPPY C3A-B3E-A3D",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "BANJO": [
+      {
+        "hwid": "BANJO C7A-C2I-A65",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "LASER14": [
+      {
+        "hwid": "LASER14 C3J-A2E-A3K-I4Q-I4I",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      }
+    ],
+    "GANDOF": [
+      {
+        "hwid": "GANDOF D25-A4W-B3Q-A6E",
+        "owner_history": "unknown",
+        "confidence_valid": 1,
+        "confidence_allegation": 0.5
+      }
+    ],
+    "CAREENA": [
+      {
+        "hwid": "CAREENA C5B-A41-D4Q-A3Y-O6R-A2B-E9E",
+        "owner_history": "suspected_bad",
+        "confidence_valid": 0.8,
+        "confidence_allegation": 0.3,
+        "notes": "Suspected org enrollment; reason: owner's tpm BAD"
+      }
+    ]
+  }
+}
