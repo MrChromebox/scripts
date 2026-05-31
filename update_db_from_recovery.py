@@ -49,7 +49,7 @@ class ChromeOSRecoveryUpdater:
         'kefka': 'BSW', 'kip': 'BYT', 'lars': 'SKL', 'leon': 'HSW',
         'link': 'IVB', 'lulu': 'BDW', 'lumpy': 'SNB', 'mccloud': 'HSW',
         'monroe': 'HSW', 'nami': 'KBL', 'nautilus': 'KBL', 'ninja': 'BYT',
-        'nissa': 'ADN', 'nocturne': 'KBL', 'octopus': 'GLK', 'orco': 'BYT',
+        'nirva': 'ADN', 'nissa': 'ADN', 'nocturne': 'KBL', 'octopus': 'GLK', 'orco': 'BYT',
         'panther': 'HSW', 'peppy': 'HSW', 'puff': 'CML', 'pyro': 'APL',
         'quawks': 'BYT', 'rammus': 'KBL', 'reef': 'APL', 'reks': 'BSW',
         'relm': 'BSW', 'rex': 'MTL', 'rikku': 'BDW', 'samus': 'BDW',
