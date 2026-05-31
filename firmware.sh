@@ -9,7 +9,9 @@ usb_device=""
 #######################
 # Download Files List #
 #######################
-function download_files() {
+function download_files()
+{
+	log_fn
 	local array_name=$1
 	local base_url="$2"
 	
@@ -34,6 +36,7 @@ function download_files() {
 ###################
 function flash_rwlegacy()
 {
+	log_fn
 	#set working dir
 	cd /tmp || { exit_red "Error changing to tmp dir; cannot proceed"; return 1; }
 
@@ -199,6 +202,7 @@ MrChromebox does not provide any support for running Windows."
 #############################
 function flash_full_rom()
 {
+	log_fn
 	# ensure hardware write protect disabled
 	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
@@ -412,6 +416,7 @@ booting from the internal storage device fails."
 #############################
 function set_touchpad_in_ssfc()
 {
+	log_fn
 	echo_green "\nSet Touchpad type in SSFC"
 	echo_yellow "NOTE: This operation only needs to be done once for GALTIC-based devices
 on which you want to run Windows; Linux is not affected either way.
@@ -473,6 +478,7 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 ##############################
 function set_storage_in_fw_config()
 {
+	log_fn
 	echo_green "\nSet Storage type in FW_CONFIG"
 	echo_yellow "NOTE: This operation sets the storage type (NVMe or eMMC) in FW_CONFIG (CBI tag 6) for taeko/taniks boards.
 Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
@@ -576,6 +582,7 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 #########################
 function downgrade_touchpad_fw()
 {
+	log_fn
 	# offer to downgrade touchpad firmware on EVE
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo_green "\nDowngrade Touchpad Firmware"
@@ -639,6 +646,7 @@ recommended to try under ChromiumOS."
 #######################
 function upgrade_touchpad_fw()
 {
+	log_fn
 	# offer to upgrade touchpad firmware on EVE
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo_green "\nUpgrade Touchpad Firmware"
@@ -704,6 +712,7 @@ recommended to try under ChromeOS."
 ########################
 function flash_custom_firmware()
 {
+	log_fn
 	# ensure hardware write protect disabled
 	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash custom firmware."; return 1; }
 
@@ -745,6 +754,7 @@ You have been warned."
 
 function flash_firmware_from_local()
 {
+	log_fn
 	echo_yellow "\nFlashing firmware from local filesystem"
 	read -rep "Enter the full path to the custom firmware file: " firmware_path
 	
@@ -775,6 +785,7 @@ function flash_firmware_from_local()
 
 function flash_firmware_from_usb()
 {
+	log_fn
 	read -rep "Connect the USB/SD device which contains the custom firmware and press [Enter] to continue. "
 	list_usb_devices || { exit_red "No USB devices available to read firmware from."; return 1; }
 	usb_dev_index=""
@@ -833,6 +844,7 @@ function flash_firmware_from_usb()
 
 function process_and_flash_custom_firmware()
 {
+	log_fn
 	local custom_firmware_file="$1"
 	
 	# Check if we can read the custom firmware
@@ -953,6 +965,7 @@ Be patient and eventually your device will boot :)"
 ##########################
 function restore_stock_firmware()
 {
+	log_fn
 		echo_green "\nRestore Stock Firmware"
 		echo_yellow "Standard disclaimer: flashing the firmware has the potential to
 brick your device, requiring relatively inexpensive hardware and some
@@ -1055,6 +1068,7 @@ other than the latest UEFI Full ROM firmware release."
 
 function restore_fw_from_usb()
 {
+	log_fn
 	read -rep "
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
 	list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
@@ -1101,6 +1115,7 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 
 function restore_fw_from_recovery()
 {
+	log_fn
 	if ! command -v 7z >/dev/null 2>&1; then
 		exit_red "Error: 7z (7zip) is required but not found. Please install it via the 7zip package.";
 		return 1
@@ -1133,6 +1148,7 @@ function restore_fw_from_recovery()
 ######################################
 function extract_firmware_from_recovery_usb()
 {
+	log_fn
 	if [[ "$1" = "" || "$2" = "" ]]; then
 		echo_red "Invalid or missing function parameters: [$*]"
 		return 1
@@ -1207,6 +1223,7 @@ function extract_firmware_from_recovery_usb()
 ########################
 function extract_vpd()
 {
+	log_fn
 	#check params
 	[[ -z "$1" ]] && { exit_red "Error: extract_vpd(): missing function parameter"; return 1; }
 
@@ -1228,6 +1245,7 @@ function extract_vpd()
 #########################
 function backup_current_firmware()
 {
+	log_fn
 	echo_green "\nBackup Current Firmware"
 	echo_yellow "This function allows you to backup the current firmware to either
 a local file or a USB device. This is useful for creating backups
@@ -1263,6 +1281,7 @@ before flashing custom firmware."
 
 function backup_firmware_to_local()
 {
+	log_fn
 	echo_yellow "\nBacking up firmware to local filesystem"
 	echo -e "Enter the directory path for the backup (e.g., /home/user/backups/)"
 	echo -e "Or just press [Enter] to use the current directory."
@@ -1300,6 +1319,7 @@ function backup_firmware_to_local()
 
 function backup_firmware_to_usb()
 {
+	log_fn
 	echo -e ""
 	read -rep "Connect the USB/SD device to store the firmware backup and press [Enter]
 to continue.  This is non-destructive, but it is best to ensure no other
@@ -1341,6 +1361,7 @@ USB/SD devices are connected. "
 #########################
 function backup_firmware()
 {
+	log_fn
 	echo -e ""
 	read -rep "Connect the USB/SD device to store the firmware backup and press [Enter]
 to continue.  This is non-destructive, but it is best to ensure no other
@@ -1389,6 +1410,7 @@ function backup_fail()
 ####################
 function set_boot_options()
 {
+	log_fn
 	# set boot options via firmware boot flags
 
 	# ensure hardware write protect disabled
@@ -1447,6 +1469,7 @@ You can always override the default using [CTRL+D] or
 ###################
 function set_hwid()
 {
+	log_fn
 	# set HWID using gbb_utility
 	# ensure hardware write protect disabled
 	[[ "$wpEnabled" = true ]] && { exit_red  "\nHardware write-protect enabled, cannot set HWID."; return 1; }
@@ -1501,6 +1524,7 @@ Proceed at your own risk."
 ##########################
 function set_hwid_uefi()
 {
+	log_fn
 	# set HWID using cbfstool for UEFI firmware
 	# ensure hardware write protect disabled
 	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot set HWID."; return 1; }
@@ -1590,7 +1614,9 @@ Proceed at your own risk."
 ###############
 # Clear NVRAM #
 ###############
-function clear_nvram() {
+function clear_nvram()
+{
+	log_fn
 	echo_green "\nClear UEFI NVRAM"
 	echo_yellow "Clearing the NVRAM will remove all EFI variables\nand reset the boot order to the default."
 
@@ -1611,7 +1637,9 @@ function clear_nvram() {
 #############################
 # Reset CR50 TPM NVRAM Data #
 #############################
-function reset_cr50_nvram() {
+function reset_cr50_nvram()
+{
+	log_fn
 	local firmware_file="$1"
 	
 	if [[ "$hasCR50" != true ]]; then
