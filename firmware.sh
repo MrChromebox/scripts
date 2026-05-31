@@ -1133,26 +1133,39 @@ function restore_fw_from_recovery()
 ######################################
 function extract_firmware_from_recovery_usb()
 {
-	_board=$1
-	_debugfs=${2}3
-	_firmware=chromeos-firmwareupdate-$_board
-	_unpacked=$(mktemp -d)
 	if [[ "$1" = "" || "$2" = "" ]]; then
 		echo_red "Invalid or missing function parameters: [$*]"
 		return 1
 	fi
+	local _workdir _home
+	_board=$1
+	_debugfs=${2}3
+	_firmware=chromeos-firmwareupdate-$_board
+	_home="${HOME:-/root}"
+	_workdir=$(mktemp -d "${_home}/mrcbx-firmware.XXXXXX") || {
+		echo_red "Failed to create temp directory under ${_home}"
+		return 1
+	}
+	_unpacked="${_workdir}/unpacked"
+	mkdir -p "$_unpacked"
+	cd "$_workdir" || { rm -rf "$_workdir"; return 1; }
+
 	echo_yellow "Extracting firmware from recovery USB"
 	run_quiet sh -c "printf 'cd /usr/sbin\ndump chromeos-firmwareupdate ${_firmware}\nquit' | debugfs ${_debugfs}"
-	if [ ! -f $_firmware ]; then
+	if [ ! -f "$_firmware" ]; then
 		echo_red "Failed to copy file 'chromeos-firmwareupdate' from Recovery USB"
+		rm -rf "$_workdir"
 		return 1
 	fi
-	if ! run_quiet sh $_firmware --unpack $_unpacked; then
-		if ! run_quiet sh $_firmware --sb_extract $_unpacked; then
-			echo_red "Failed to extract shellball from  'chromeos-firmwareupdate'"
+	TMPDIR="$_workdir" run_quiet sh "$_firmware" --unpack "$_unpacked" || {
+		rm -rf "$_unpacked"
+		mkdir -p "$_unpacked"
+		TMPDIR="$_workdir" run_quiet sh "$_firmware" --sb_extract "$_unpacked" || {
+			echo_red "Failed to extract shellball from 'chromeos-firmwareupdate'"
+			rm -rf "$_workdir"
 			return 1
-		fi
-	fi
+		}
+	}
 	if [ -d $_unpacked/models/ ]; then
 		_version=$(cat $_unpacked/VERSION | grep -m 1 -e Model.*$_board -A5 | grep "BIOS (RW) version:" | cut -f2 -d: | tr -d \ )
 		if [ "$_version" = "" ]; then
@@ -1175,14 +1188,17 @@ function extract_firmware_from_recovery_usb()
 		else
 			echo_red "Recovery image missing VERSION file. Shellball directory Contents:"
 			ls -lart $_unpacked
+			rm -rf "$_workdir"
 			return 1
 		fi
 	fi
-	if ! cp $_unpacked/$_bios_image coreboot-$_version.bin; then
+	if ! cp "$_unpacked/$_bios_image" "coreboot-${_version}.bin"; then
+		rm -rf "$_workdir"
 		return 1
 	fi
-	rm -rf "$_unpacked"
-	rm $_firmware
+	mv "coreboot-${_version}.bin" /tmp/
+	cd /tmp || true
+	rm -rf "$_workdir"
 }
 
 
