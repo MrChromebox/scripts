@@ -22,6 +22,23 @@ script_url="https://raw.githubusercontent.com/MrChromebox/scripts/main/"
 #ensure output of system tools in en-us for parsing
 export LC_ALL=C
 
+# session logging (override path with MRCBX_LOG env var)
+MRCBX_VERBOSE=0
+for _arg in "$@"; do
+	case "$_arg" in
+		-v|--verbose) MRCBX_VERBOSE=1 ;;
+	esac
+done
+export MRCBX_VERBOSE
+export MRCBX_LOG="${MRCBX_LOG:-/tmp/mrchromebox-$(date +%Y%m%d-%H%M%S).log}"
+{
+	echo "=== MrChromebox Firmware Utility session log ==="
+	date
+	echo "verbose: ${MRCBX_VERBOSE}"
+	echo
+} > "$MRCBX_LOG"
+ln -sf "$MRCBX_LOG" /tmp/mrchromebox_latest.log 2>/dev/null || true
+
 #set working dir
 if grep -q "Chrom" /etc/lsb-release; then
 	# needed for ChromeOS/ChromiumOS v82+
@@ -78,6 +95,8 @@ source "$script_dir/sources.sh"
 source "$script_dir/firmware.sh"
 source "$script_dir/functions.sh"
 
+session_log_init
+
 #set working dir
 cd /tmp
 
@@ -88,7 +107,8 @@ prelim_setup_result="$?"
 #saving setup state for troubleshooting
 diagnostic_report_save
 troubleshooting_msg=(
-	" * diagnosics report has been saved to /tmp/mrchromebox_diag.txt"
+	" * diagnostics report has been saved to /tmp/mrchromebox_diag.txt"
+	" * session log: ${MRCBX_LOG}"
 	" * go to https://forum.chrultrabook.com/ for help"
 )
 if [ "$prelim_setup_result" -ne 0 ]; then

@@ -76,6 +76,92 @@ function die() {
 }
 
 ########################################
+# Session Logging                      #
+########################################
+
+: "${MRCBX_LOG:=/tmp/mrchromebox.log}"
+
+# Initialize session log after supporting scripts are sourced
+function session_log_init() {
+	diagnostic_report_set log.path "$MRCBX_LOG"
+	{
+		echo "=== $(date '+%Y-%m-%d %H:%M:%S') session_log_init: supporting scripts loaded ==="
+		echo "script_date: ${script_date:-unknown}"
+		echo
+	} >> "$MRCBX_LOG" 2>/dev/null || true
+}
+
+# Write a section banner to the session log
+function log_section() {
+	[[ -n "$MRCBX_LOG" ]] || return 0
+	{
+		echo "=== $(date '+%Y-%m-%d %H:%M:%S') ${FUNCNAME[1]:-main}: $* ==="
+	} >> "$MRCBX_LOG" 2>/dev/null || true
+}
+
+# Append a captured command transcript to the session log
+function _log_command() {
+	local caller="$1" rc="$2" cmd="$3" output_file="$4"
+	[[ -n "$MRCBX_LOG" ]] || return 0
+	{
+		echo "=== $(date '+%Y-%m-%d %H:%M:%S') ${caller}: ${cmd} ==="
+		if [[ -n "$output_file" && -f "$output_file" ]]; then
+			cat "$output_file"
+		fi
+		echo "=== exit ${rc} ==="
+		echo
+	} >> "$MRCBX_LOG" 2>/dev/null || true
+}
+
+# Run a command quietly on the terminal, capturing output in the session log
+function run_quiet() {
+	local caller="${FUNCNAME[1]:-main}"
+	local rc=0
+	local cmd_output
+	cmd_output=$(mktemp /tmp/mrcbx-cmd.XXXXXX) || cmd_output=""
+
+	if [[ -n "$cmd_output" ]]; then
+		"$@" > "$cmd_output" 2>&1
+		rc=$?
+	else
+		"$@" >/dev/null 2>&1
+		rc=$?
+	fi
+
+	_log_command "$caller" "$rc" "$*" "$cmd_output"
+	rm -f "$cmd_output"
+	return "$rc"
+}
+
+# Run flashrom, capturing output in the session log and /tmp/flashrom.log
+function run_flashrom() {
+	local caller="${FUNCNAME[1]:-main}"
+	local rc=0
+	rm -f /tmp/flashrom.log
+	# Match legacy ${flashromcmd} ... > /tmp/flashrom.log word-splitting
+	# shellcheck disable=SC2086
+	$* > /tmp/flashrom.log 2>&1
+	rc=$?
+	_log_command "$caller" "$rc" "$*" /tmp/flashrom.log
+	return "$rc"
+}
+
+# Run a command, log output, and return output for capture
+function run_capture() {
+	local caller="${FUNCNAME[1]:-main}"
+	local output rc=0
+	output=$("$@" 2>&1) || rc=$?
+	{
+		echo "=== $(date '+%Y-%m-%d %H:%M:%S') ${caller}: $* ==="
+		echo "$output"
+		echo "=== exit ${rc} ==="
+		echo
+	} >> "$MRCBX_LOG" 2>/dev/null || true
+	echo "$output"
+	return "$rc"
+}
+
+########################################
 # Device Detection Functions           #
 ########################################
 
@@ -381,7 +467,7 @@ Run this from a Linux Live USB instead."
 
 	if [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; then
 		#disable power mgmt
-		initctl stop powerd > /dev/null 2>&1
+		run_quiet initctl stop powerd
 		# try to mount p12 as /tmp/boot
 		rootdev=$(rootdev -d -s)
 		# Determine partition prefix based on device type
@@ -394,8 +480,8 @@ Run this from a Linux Live USB instead."
 		export boot_mounted=$(mount | grep "${rootdev}""${part_num}")
 		if [ "${boot_mounted}" = "" ]; then
 			#mount boot
-			mkdir /tmp/boot >/dev/null 2>&1
-			mount "$(rootdev -d -s)""${part_num}" /tmp/boot >/dev/null 2>&1 && boot_mounted=true
+			run_quiet mkdir /tmp/boot
+			run_quiet mount "$(rootdev -d -s)""${part_num}" /tmp/boot && boot_mounted=true
 		else
 			boot_mounted=true
 		fi
@@ -433,30 +519,38 @@ Run this from a Linux Live USB instead."
 	fi
 
 	# unload Intel SPI driver if loaded, causes issues with flashrom
-	rmmod spi_intel_platform >/dev/null 2>&1
+	run_quiet rmmod spi_intel_platform
 
 	#get device firmware info
 	echo -e "\nGetting device/system info..."
+	flashrom_read_ok=false
 	if grep -q -i Intel /proc/cpuinfo; then
 		#try reading only BIOS region
 		if ${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
 			flashrom_params="--ifd -i bios"
+			flashrom_read_ok=true
 		else
 			#read entire firmware
-			${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+			if ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
+				flashrom_read_ok=true
+			fi
 		fi
 	else
 		#read entire firmware
-		${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+		if ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
+			flashrom_read_ok=true
+		fi
 	fi
+	_log_command "prelim_setup" "$?" "${flashromcmd} firmware read" /tmp/flashrom.log
 
-	if [ $? -ne 0 ]; then
+	if [ "$flashrom_read_ok" != true ]; then
 		echo_red "\nFlashrom is unable to read current firmware; cannot continue:"
-		if [[ "$isChromeOS" = "false" ]]; then
-			if [ -f /tmp/flashrom.log ]; then
-				cat /tmp/flashrom.log
-				echo ""
-			fi
+		if [ -f /tmp/flashrom.log ]; then
+			cat /tmp/flashrom.log
+			echo ""
+		fi
+		if [[ -n "$MRCBX_LOG" ]]; then
+			echo_red "Session log: ${MRCBX_LOG}"
 		fi
 		echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,
 or trying running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
@@ -508,13 +602,17 @@ the script/update your firmware."
 	#check WP status
 	echo -e "\nChecking WP state..."
 	#save SW WP state
-	${flashromcmd} --wp-status 2>&1 | grep -i -e "enabled" -e "protection mode: hardware" >/dev/null
-	[[ $? -eq 0 ]] && swWp="enabled" || swWp="disabled"
+	wp_status_out=$(run_capture ${flashromcmd} --wp-status)
+	if echo "$wp_status_out" | grep -qiE 'enabled|protection mode: hardware'; then
+		swWp="enabled"
+	else
+		swWp="disabled"
+	fi
 	#test disabling SW WP to see if HW WP enabled
-	${flashromcmd} --wp-disable > /dev/null 2>&1
+	run_quiet ${flashromcmd} --wp-disable
 	[[ $? -ne 0 && $swWp = "enabled" ]] && wpEnabled=true
 	#restore previous SW WP state
-	[[ ${swWp} = "enabled" ]] && ${flashromcmd} --wp-enable > /dev/null 2>&1
+	[[ ${swWp} = "enabled" ]] && run_quiet ${flashromcmd} --wp-enable
 	diagnostic_report_set wpEnabled "$wpEnabled"
 	diagnostic_report_set swWp "$swWp"
 
@@ -528,14 +626,14 @@ Would you like to disable sofware WP and reboot your device?"
 		# Validate user input
 		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 			echo -e "\nDisabling software WP..."
-			if ! ${flashromcmd} --wp-disable > /dev/null 2>&1; then
+			if ! run_quiet ${flashromcmd} --wp-disable; then
 				exit_red "\nError disabling software write-protect -- hardware WP is still enabled."
 				return 1
 			fi
 			echo -e "\nClearing the WP range(s)..."
-			if ! ${flashromcmd} --wp-range 0 0 > /dev/null 2>&1; then
+			if ! run_quiet ${flashromcmd} --wp-range 0 0; then
 				# use new command format as of commit 99b9550
-				if ! ${flashromcmd} --wp-range 0,0 > /dev/null 2>&1; then
+				if ! run_quiet ${flashromcmd} --wp-range 0,0; then
 					#re-run to output error
 					${flashromcmd} --wp-range 0,0
 					exit_red "\nError clearing software write-protect range."
@@ -605,5 +703,5 @@ Would you like to disable sofware WP and reboot your device?"
 function cleanup()
 {
 	# unmount p12 if mounted
-	umount /tmp/boot > /dev/null 2>&1
+	run_quiet umount /tmp/boot
 }
