@@ -1607,6 +1607,11 @@ function reset_cr50_nvram() {
 		return 1
 	fi
 
+	# Clear and re-enable
+	${tpmccmd} clear >/dev/null 2>&1
+	${tpmccmd} enable >/dev/null 2>&1
+	${tpmccmd} activate >/dev/null 2>&1
+
 	# Reset TPM data in CR50 NVRAM
 	# First verify we can read from 0x1007 before writing
 	if ! ${tpmccmd} read 0x1007 0xa >/dev/null 2>&1; then
@@ -1615,7 +1620,7 @@ function reset_cr50_nvram() {
 	fi
 	
 	# Write TPM reset command
-	if ! ${tpmccmd} write 0x1007 02 02 01 00 01 00 00 00 00 69 >/dev/null 2>&1; then
+	if ! ${tpmccmd} write 0x1007 02 00 01 00 01 00 00 00 00 4f >/dev/null 2>&1; then
 		echo_red "Error: Failed to reset CR50 TPM data."
 		return 1
 	fi
