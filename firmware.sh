@@ -209,8 +209,8 @@ function flash_full_rom()
 	echo_green "\nInstall/Update UEFI Full ROM Firmware"
 	echo_yellow "IMPORTANT: flashing the firmware has the potential to brick your device,
 requiring relatively inexpensive hardware and some technical knowledge to
-recover.Not all boards can be tested prior to release, and even then slight
-differences in hardware can lead to unforseen failures.
+recover. Not all boards can be tested prior to release, and even then slight
+differences in hardware can lead to unforeseen failures.
 If you don't have the ability to recover from a bad flash, you're taking a risk.
 
 You have been warned."
