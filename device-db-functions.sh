@@ -135,7 +135,7 @@ get_cpu_type_name() {
 		TGL) echo "Intel TigerLake" ;;
 		ADL) echo "Intel AlderLake/RaptorLake-U/P" ;;
 		ADN) echo "Intel AlderLake-N" ;;
-		TWN) echo "Intel Twinlake" ;;
+		TWL) echo "Intel Twinlake" ;;
 		MTL) echo "Intel Meteorlake" ;;
 		STR) echo "AMD StoneyRidge" ;;
 		PCO) echo "AMD Picasso" ;;
@@ -224,6 +224,7 @@ set_device_flags_from_database() {
 	export isAdl=false
 	export isAdl_fixed_rwl=false
 	export isAdlN=false
+	export isTwl=false
 	export isMtl=false
 	export isUnsupported=false
 	export hasUEFIoption=true
@@ -333,6 +334,11 @@ set_device_flags_from_database() {
 			;;
 		ADN)
 			isAdlN=true
+			hasUEFIoption=true
+			hasCR50=true
+			;;
+		TWL)
+			isTwl=true
 			hasUEFIoption=true
 			hasCR50=true
 			;;
