@@ -60,6 +60,12 @@ class ChromeOSRecoveryUpdater:
         'volteer': 'TGL', 'winky': 'BYT', 'wizpig': 'BSW', 'wolf': 'HSW',
         'zako': 'HSW', 'zork': 'PCO'
     }
+
+    # Chronological platform order (matches device-db.sh)
+    PLATFORM_ORDER = [
+        'SNB', 'IVB', 'HSW', 'BDW', 'BYT', 'BSW', 'SKL', 'APL', 'KBL', 'GLK',
+        'WHL', 'CML', 'JSL', 'TGL', 'ADL', 'ADN', 'MTL', 'STR', 'PCO', 'CZN', 'MDN',
+    ]
     
     def __init__(self, target_images: Optional[List[str]] = None):
         """Initialize the updater with optional target images filter"""
@@ -89,6 +95,13 @@ class ChromeOSRecoveryUpdater:
     def get_platform(self, image_name: str) -> str:
         """Get platform code for ChromeOS image"""
         return self.PLATFORM_MAP.get(image_name.lower(), 'UNK')
+
+    def platform_sort_key(self, platform: str) -> Tuple[int, str]:
+        """Sort key for chronological platform ordering (matches device-db.sh)"""
+        try:
+            return (self.PLATFORM_ORDER.index(platform), platform)
+        except ValueError:
+            return (len(self.PLATFORM_ORDER), platform)
     
     def clean_device_name(self, name: str) -> str:
         """Clean and normalize device name"""
@@ -282,8 +295,8 @@ class ChromeOSRecoveryUpdater:
                 for entry in self.device_entries:
                     platform_groups[entry.platform].append(entry)
                 
-                # Sort platforms alphabetically
-                for platform in sorted(platform_groups.keys()):
+                # Sort platforms chronologically (matches device-db.sh)
+                for platform in sorted(platform_groups.keys(), key=self.platform_sort_key):
                     entries = sorted(platform_groups[platform], key=lambda x: x.hwid)
                     
                     # Add platform comment header
