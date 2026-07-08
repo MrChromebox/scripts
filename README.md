@@ -31,7 +31,7 @@ do not have firmware available.
 
 - **`device-db-functions.sh`** - Helper functions for device database operations:
   - Device lookup and pattern matching
-  - Flag checking (isCbox, hasLAN, etc.)
+  - Flag checking (isCbox, kbl_rwl18, etc.)
   - Device description and override retrieval
 
 - **`firmware.sh`** - Main firmware utility script for ChromeOS devices. Provides functionality to:

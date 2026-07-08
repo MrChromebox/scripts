@@ -101,12 +101,6 @@ has_uefi_support() {
 	return 0
 }
 
-# Function to check if device has LAN (implied by hasLAN)
-has_lan() {
-	local hwid="$1"
-	has_flag "$hwid" "hasLAN"
-}
-
 # Function to get CPU type
 get_cpu_type() {
 	local hwid="$1"
@@ -228,7 +222,6 @@ set_device_flags_from_database() {
 	export isMtl=false
 	export isUnsupported=false
 	export hasUEFIoption=true
-	export hasLAN=false
 	export hasCR50=false
 	export kbl_rwl18=false
 	export isEOL=false
@@ -354,8 +347,6 @@ set_device_flags_from_database() {
 	esac
 
 	has_flag "$hwid" "noUEFI" && hasUEFIoption=false
-	
-	has_lan "$hwid" && hasLAN=true
 
 	return 0
 }

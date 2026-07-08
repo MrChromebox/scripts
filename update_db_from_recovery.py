@@ -200,7 +200,7 @@ class ChromeOSRecoveryUpdater:
         # Determine flags
         flags = ""
         if 'hromebox' in clean_name or 'hromebase' in clean_name:
-            flags = "isCbox,hasLAN"
+            flags = "isCbox"
         
         # Create device entry
         device_entry = DeviceEntry(
