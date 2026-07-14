@@ -9,8 +9,8 @@ export script_date="[2026-07-14]"
 export fullrom_layout="${fullrom_layout:-versioned}"
 
 # version = CDN subdir + UI label; date = YYYYMMDD in the .rom filename
-export release_current_version="2606.0"
-export release_current_date="20260709"
+export release_current_version="2606.1"
+export release_current_date="20260714"
 export release_previous_version="2603.2"
 export release_previous_date="20260517"
 
