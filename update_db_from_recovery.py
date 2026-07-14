@@ -13,7 +13,7 @@ import json
 import requests
 import argparse
 from pathlib import Path
-from typing import Dict, List, Set, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 from dataclasses import dataclass
 from urllib.parse import urlparse
@@ -71,7 +71,6 @@ class ChromeOSRecoveryUpdater:
         """Initialize the updater with optional target images filter"""
         self.target_images = set(target_images) if target_images else set(self.PLATFORM_MAP.keys())
         self.device_entries: List[DeviceEntry] = []
-        self.firmware_entries: Set[str] = set()
         
     def validate_config_url(self, url: str) -> None:
         """Validate the configuration URL format"""
@@ -213,12 +212,6 @@ class ChromeOSRecoveryUpdater:
         )
         
         self.device_entries.append(device_entry)
-        
-        # Add firmware entry
-        from datetime import date
-        today = date.today().strftime("%Y%m%d")
-        firmware_entry = f"export coreboot_uefi_{device}=\"coreboot_edk2-{device}-mrchromebox_{today}.rom\""
-        self.firmware_entries.add(firmware_entry)
     
     def optimize_hwids(self) -> None:
         """Optimize HWIDs by removing hyphenated suffixes for unique entries"""
@@ -311,11 +304,18 @@ class ChromeOSRecoveryUpdater:
             
             f.write(")\n")
         
-        # Generate firmware list
+        # Expected Full ROM filenames for new devices
         fw_file = output_dir / "fw_list.txt"
+        today = __import__('datetime').date.today().strftime("%Y%m%d")
         with open(fw_file, 'w') as f:
-            for firmware_entry in sorted(self.firmware_entries):
-                f.write(f"{firmware_entry}\n")
+            seen = set()
+            for entry in sorted(self.device_entries, key=lambda x: x.device):
+                if entry.device in seen:
+                    continue
+                seen.add(entry.device)
+                f.write(
+                    f"coreboot_edk2-{entry.device}-mrchromebox_{today}.rom\n"
+                )
         
         print(f"Generated {hwid_file}")
         print(f"Generated {fw_file}")
@@ -368,7 +368,6 @@ class ChromeOSRecoveryUpdater:
         self.generate_output_files(group_by_platform=group_by_platform)
         
         print(f"Processed {len(self.device_entries)} device entries")
-        print(f"Generated {len(self.firmware_entries)} firmware entries")
 
 
 def main():

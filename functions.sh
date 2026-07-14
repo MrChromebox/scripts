@@ -76,6 +76,199 @@ function die() {
 }
 
 ########################################
+# Full ROM firmware resolution         #
+########################################
+
+function fullrom_build_file() {
+	local dev="$1"
+	local date="$2"
+
+	[[ -n "$dev" && -n "$date" ]] || return 1
+	echo "coreboot_edk2-${dev}-mrchromebox_${date}.rom"
+}
+
+# Sets _fullrom_slot_{date,folder,label,is_hotfix}
+function fullrom_slot_info() {
+	local slot="$1"
+	local flat=false
+
+	_fullrom_slot_date=""
+	_fullrom_slot_folder=""
+	_fullrom_slot_label=""
+	_fullrom_slot_is_hotfix=false
+
+	[[ "${fullrom_layout:-versioned}" = "flat" ]] && flat=true
+
+	if [[ "$slot" = "latest" ]]; then
+		if fullrom_has_hotfix; then
+			_fullrom_slot_date="${FW_HOTFIX[$device]}"
+			_fullrom_slot_folder=""
+			_fullrom_slot_label=$(fullrom_format_display_date "${_fullrom_slot_date}")
+			_fullrom_slot_is_hotfix=true
+		else
+			_fullrom_slot_date="${release_current_date}"
+			[[ -n "$release_current_version" ]] || return 1
+			if [[ "$flat" = true ]]; then
+				_fullrom_slot_folder=""
+			else
+				_fullrom_slot_folder="MrChromebox-${release_current_version}"
+			fi
+			_fullrom_slot_label="MrChromebox-${release_current_version}"
+		fi
+	elif [[ "$slot" = "previous" ]]; then
+		_fullrom_slot_date="${release_previous_date}"
+		[[ -n "$release_previous_version" ]] || return 1
+		if [[ "$flat" = true ]]; then
+			_fullrom_slot_folder=""
+		else
+			_fullrom_slot_folder="MrChromebox-${release_previous_version}"
+		fi
+		_fullrom_slot_label="MrChromebox-${release_previous_version}"
+	else
+		return 1
+	fi
+
+	[[ -n "$_fullrom_slot_date" ]] || return 1
+	if [[ "$flat" != true && "$_fullrom_slot_is_hotfix" != true ]]; then
+		[[ -n "$_fullrom_slot_folder" ]] || return 1
+	fi
+	return 0
+}
+
+function fullrom_cdn_base_for_slot() {
+	local slot="$1"
+
+	fullrom_slot_info "$slot" || return 1
+	if [[ "${fullrom_layout:-versioned}" = "flat" ]]; then
+		echo "${fullrom_source}"
+	elif [[ -n "$_fullrom_slot_folder" ]]; then
+		echo "${fullrom_source}${_fullrom_slot_folder}/"
+	else
+		echo "${fullrom_source}"
+	fi
+}
+
+function fullrom_http_available() {
+	local url="$1"
+	local curl_cmd="${CURL:-curl}"
+
+	[[ -n "$url" ]] || return 1
+	${curl_cmd} -sfI -L "${url}" 2>/dev/null | grep -qiE '^HTTP/[0-9.]+ 200'
+}
+
+function fullrom_firmware_available() {
+	local slot="$1"
+	local file=""
+	local base=""
+	local url=""
+
+	file=$(fullrom_resolve_slot "$slot") || return 1
+	base=$(fullrom_cdn_base_for_slot "$slot") || return 1
+	url="${base}${file}"
+
+	fullrom_http_available "$url" && return 0
+
+	# Fall back to flat CDN root if versioned path is missing
+	if [[ "${fullrom_layout:-versioned}" = "versioned" && "$base" != "${fullrom_source}" ]]; then
+		fullrom_http_available "${fullrom_source}${file}"
+	else
+		return 1
+	fi
+}
+
+function download_fullrom_release() {
+	local slot="$1"
+	local file=""
+	local base=""
+
+	file=$(fullrom_resolve_slot "$slot") || return 1
+	base=$(fullrom_cdn_base_for_slot "$slot") || return 1
+
+	fullrom_files=(
+		"${file}"
+		"${file}.sha1"
+	)
+	if download_files fullrom_files "${base}"; then
+		return 0
+	fi
+
+	if [[ "${fullrom_layout:-versioned}" = "versioned" && "$base" != "${fullrom_source}" ]]; then
+		download_files fullrom_files "${fullrom_source}"
+	fi
+}
+
+function fullrom_file_date() {
+	local file="$1"
+	echo "$file" | grep -o 'mrchromebox_[0-9]\{8\}' | cut -d_ -f2
+}
+
+function fullrom_format_display_date() {
+	local ymd="$1"
+	echo "${ymd:4:2}/${ymd:6:2}/${ymd:0:4}"
+}
+
+function fullrom_installed_yyyymmdd() {
+	local mm dd yy
+	[[ -n "$fwDate" ]] || return 1
+	mm=$(echo "$fwDate" | cut -f1 -d'/')
+	dd=$(echo "$fwDate" | cut -f2 -d'/')
+	yy=$(echo "$fwDate" | cut -f3 -d'/')
+	printf "%04d%02d%02d" "$((10#$yy))" "$((10#$mm))" "$((10#$dd))"
+}
+
+function fullrom_has_hotfix() {
+	[[ -n "${FW_HOTFIX[$device]:-}" ]]
+}
+
+function fullrom_resolve_slot() {
+	local slot="$1"
+
+	fullrom_slot_info "$slot" || return 1
+	fullrom_build_file "$device" "${_fullrom_slot_date}"
+}
+
+function fullrom_slot_label() {
+	local slot="$1"
+
+	fullrom_slot_info "$slot" || return 1
+	echo "${_fullrom_slot_label}"
+}
+
+# e.g. MrChromebox-2603.2 (05/17/2026)
+function fullrom_slot_detail() {
+	local slot="$1"
+
+	fullrom_slot_info "$slot" || return 1
+	if [[ "$_fullrom_slot_is_hotfix" = true ]]; then
+		echo "${_fullrom_slot_label}"
+	else
+		echo "${_fullrom_slot_label} ($(fullrom_format_display_date "${_fullrom_slot_date}"))"
+	fi
+}
+
+function fullrom_date_newer_than_installed() {
+	local target_ymd="$1"
+	local installed_ymd
+
+	[[ -n "$target_ymd" ]] || return 1
+	[[ "$firmwareType" = *"pending"* ]] && return 1
+	installed_ymd=$(fullrom_installed_yyyymmdd) || return 1
+	[[ "$target_ymd" -gt "$installed_ymd" ]]
+}
+
+function fullrom_can_rollback() {
+	local installed
+
+	[[ -n "$release_previous_date" ]] || return 1
+	if [[ "${fullrom_layout:-versioned}" != "flat" ]]; then
+		[[ -n "$release_previous_version" ]] || return 1
+	fi
+	[[ -n "$device" ]] || return 1
+	installed=$(fullrom_installed_yyyymmdd) || return 0
+	[[ "$installed" != "$release_previous_date" ]]
+}
+
+########################################
 # Session Logging                      #
 ########################################
 

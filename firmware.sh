@@ -203,10 +203,43 @@ MrChromebox does not provide any support for running Windows."
 function flash_full_rom()
 {
 	log_fn
+	local slot="${1:-latest}"
+	local coreboot_file=""
+	local slot_label=""
+
 	# ensure hardware write protect disabled
 	[[ "$wpEnabled" = true ]] && { exit_red "\nHardware write-protect enabled, cannot flash Full ROM firmware."; return 1; }
 
-	echo_green "\nInstall/Update UEFI Full ROM Firmware"
+	if [[ "$slot" != "latest" && "$slot" != "previous" ]]; then
+		exit_red "Invalid firmware release slot: ${slot}"; return 1
+	fi
+
+	[[ -n "$device" ]] || { exit_red "Unable to determine device board name; cannot continue."; return 1; }
+
+	coreboot_file=$(fullrom_resolve_slot "$slot")
+	slot_label=$(fullrom_slot_label "$slot")
+	if [[ -z "$coreboot_file" ]]; then
+		if [[ "$slot" = "previous" ]]; then
+			exit_red "No previous UEFI release is configured; cannot continue."
+		else
+			exit_red "Unable to determine firmware file for ${device^^}; cannot continue."
+		fi
+		return 1
+	fi
+	if ! fullrom_firmware_available "$slot"; then
+		if [[ "$slot" = "previous" ]]; then
+			exit_red "No previous UEFI firmware file is available for ${device^^}\n(${coreboot_file})"
+		else
+			exit_red "No UEFI Full ROM firmware file is available for ${device^^}\n(${coreboot_file})"
+		fi
+		return 1
+	fi
+
+	if [[ "$slot" = "previous" ]]; then
+		echo_green "\nRollback to Previous UEFI Full ROM Release"
+	else
+		echo_green "\nInstall/Update UEFI Full ROM Firmware"
+	fi
 	echo_yellow "IMPORTANT: flashing the firmware has the potential to brick your device,
 requiring relatively inexpensive hardware and some technical knowledge to
 recover. Not all boards can be tested prior to release, and even then slight
@@ -248,13 +281,15 @@ OS; ${currOS} will no longer be bootable. See https://mrchromebox.tech/#faq"
 		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 	fi
 
-	#determine correct file / URL
-	firmware_source=${fullrom_source}
-	eval coreboot_file="$`echo "coreboot_uefi_${device}"`"
-
-	# ensure we have a file to flash
-	if [[ "$coreboot_file" = "" ]]; then
-		exit_red "The script does not currently have a firmware file for your device (${device^^}); cannot continue."; return 1
+	#rollback confirmation
+	if [[ "$slot" = "previous" ]]; then
+		echo_yellow "
+This will roll back to the previous UEFI release ($(fullrom_slot_detail previous))."
+		if fullrom_has_hotfix; then
+			echo_yellow "The current release ($(fullrom_slot_detail latest)) is not offered for this device."
+		fi
+		read -rep "Proceed with rollback? [y/N] "
+		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 	fi
 
 	#extract device serial if present in cbfs
@@ -288,13 +323,12 @@ and you need to recover using an external EEPROM programmer."
 	#download firmware file
 	cd /tmp || { exit_red "Error changing to tmp dir; cannot proceed"; return 1; }
 	echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
-	log_section "flash_full_rom: downloading ${coreboot_file}"
-	
-	fullrom_files=(
-		"${coreboot_file}"
-		"${coreboot_file}.sha1"
-	)
-	download_files fullrom_files "${firmware_source}" || return 1
+	log_section "flash_full_rom: slot=${slot} label=${slot_label} downloading ${coreboot_file}"
+
+	if ! download_fullrom_release "$slot"; then
+		exit_red "Unable to download ${coreboot_file}; firmware file may be unavailable."
+		return 1
+	fi
 
 	#verify checksum on downloaded file
 	if ! sha1sum -c "${coreboot_file}.sha1" > /dev/null 2>&1; then
@@ -373,7 +407,11 @@ and you need to recover using an external EEPROM programmer."
 		fi
 		exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
 	else
-		echo_green "Full ROM firmware successfully installed/updated."
+		if [[ "$slot" = "previous" ]]; then
+			echo_green "Full ROM firmware successfully rolled back."
+		else
+			echo_green "Full ROM firmware successfully installed/updated."
+		fi
 
 		#Prevent from trying to boot stock ChromeOS install
 		if [[ "$isStock" = true && "$isChromeOS" = true && "$boot_mounted" = true ]]; then
@@ -1745,19 +1783,17 @@ function show_header() {
 	echo -e "${MENU}**${NUMBER}    Fw Type: ${NORMAL}$firmwareType"
 	echo -e "${MENU}**${NUMBER}     Fw Ver: ${NORMAL}$fwVer ($fwDate)"
 	if [[ $isUEFI = true && $hasUEFIoption = true ]]; then
-		# check if update available
-		curr_yy=$(echo $fwDate | cut -f 3 -d '/')
-		curr_mm=$(echo $fwDate | cut -f 1 -d '/')
-		curr_dd=$(echo $fwDate | cut -f 2 -d '/')
-		eval coreboot_file=$`echo "coreboot_uefi_${device}"`
-		date=$(echo $coreboot_file | grep -o "mrchromebox.*" | cut -f 2 -d '_' | cut -f 1 -d '.')
-		uefi_yy=$(echo $date | cut -c1-4)
-		uefi_mm=$(echo $date | cut -c5-6)
-		uefi_dd=$(echo $date | cut -c7-8)
-		if [[ ("$firmwareType" != *"pending"*) && (($uefi_yy > $curr_yy) || \
-			("$uefi_yy" = "$curr_yy" && "$uefi_mm" > "$curr_mm") || \
-			("$uefi_yy" = "$curr_yy" && "$uefi_mm" = "$curr_mm" && "$uefi_dd" > "$curr_dd")) ]]; then
-			echo -e "${MENU}**${NORMAL}             ${GREEN_TEXT}Update Available ($uefi_mm/$uefi_dd/$uefi_yy)${NORMAL}"
+		local latest_file latest_ymd latest_label update_text
+		latest_file=$(fullrom_resolve_slot "latest")
+		latest_ymd=$(fullrom_file_date "$latest_file")
+		latest_label=$(fullrom_slot_label "latest")
+		if fullrom_date_newer_than_installed "$latest_ymd"; then
+			if fullrom_has_hotfix; then
+				update_text="Hotfix Available"
+			else
+				update_text="Update Available"
+			fi
+			echo -e "${MENU}**${NORMAL}             ${GREEN_TEXT}${update_text} (${latest_label})${NORMAL}"
 		fi
 	fi
 	if [ "$wpEnabled" = true ]; then
@@ -1829,7 +1865,7 @@ function stock_menu() {
 		;;
 
 	2)	if [[ "$unlockMenu" = true || "$hasUEFIoption" = true ]]; then
-			flash_full_rom
+			flash_full_rom latest
 		fi
 			menu_fwupdate
 		;;
@@ -1946,6 +1982,11 @@ function uefi_menu() {
 	if [[ "$isUEFI" = true ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 5)${MENU} Set Hardware ID (HWID) ${NORMAL}"
 	fi
+	if fullrom_can_rollback; then
+		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 6)${MENU} Rollback to Previous UEFI Release ($(fullrom_slot_label previous)) ${NORMAL}"
+	else
+		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 6)${GRAY_TEXT} Rollback to Previous UEFI Release ${NORMAL}"
+	fi
 	if [[ "${device^^}" = "EVE" ]]; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} U)${MENU} Upgrade Touchpad Firmware ${NORMAL}"
@@ -1967,7 +2008,7 @@ function uefi_menu() {
 	case $opt in
 
 	1)	if [[ "$hasUEFIoption" = true && "$isUnsupported" = false ]]; then
-			flash_full_rom
+			flash_full_rom latest
 		fi
 		uefi_menu
 		;;
@@ -1994,6 +2035,12 @@ function uefi_menu() {
 
 	5)	if [[ "$isUEFI" = true ]]; then
 			set_hwid_uefi
+		fi
+		uefi_menu
+		;;
+
+	6)	if fullrom_can_rollback; then
+			flash_full_rom previous
 		fi
 		uefi_menu
 		;;
