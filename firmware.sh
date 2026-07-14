@@ -386,65 +386,99 @@ and you need to recover using an external EEPROM programmer."
 	fi
 
 	#flash Full ROM firmware
+	rm -f /tmp/flashrom.log /tmp/flashrom-attempt.log
 
-	# clear log file
-	rm -f /tmp/flashrom.log
+	local flashrom_supports_o=false
+	if ${flashromcmd} -V -o /dev/null > /dev/null 2>&1; then
+		flashrom_supports_o=true
+	fi
+
+	# Write image; append flashrom output to /tmp/flashrom.log (never truncate it)
+	_flash_fullrom_once() {
+		local img="$1"
+		local label="$2"
+		local rc=0
+
+		{
+			echo "=== ${label}: writing ${img} ==="
+			date
+		} >> /tmp/flashrom.log
+
+		if [[ "$flashrom_supports_o" = true ]]; then
+			rm -f /tmp/flashrom-attempt.log
+			run_quiet ${flashromcmd} ${flashrom_params} ${noverify} -w "${img}" -o /tmp/flashrom-attempt.log
+			rc=$?
+			[[ -f /tmp/flashrom-attempt.log ]] && cat /tmp/flashrom-attempt.log >> /tmp/flashrom.log
+		else
+			# shellcheck disable=SC2086
+			${flashromcmd} ${flashrom_params} ${noverify} -w "${img}" >> /tmp/flashrom.log 2>&1
+			rc=$?
+		fi
+		return "$rc"
+	}
 
 	echo_yellow "Installing Full ROM firmware (may take up to 90s)"
-	#check if flashrom supports logging to file
-	if ${flashromcmd} -V -o /dev/null > /dev/null 2>&1; then
-		output_params="-o /tmp/flashrom.log"
-		run_quiet ${flashromcmd} ${flashrom_params} ${noverify} -w ${coreboot_file} -o /tmp/flashrom.log
-	else
-		output_params="/tmp/flashrom.log"
-		run_flashrom ${flashromcmd} ${flashrom_params} ${noverify} -w ${coreboot_file}
+	log_section "flash_full_rom: writing ${coreboot_file}"
+	if ! _flash_fullrom_once "${coreboot_file}" "attempt 1"; then
+		echo_red "Firmware flash failed; retrying once..."
+		log_section "flash_full_rom: retry writing ${coreboot_file}"
+		if ! _flash_fullrom_once "${coreboot_file}" "attempt 2"; then
+			echo_red "Firmware flash failed after retry."
+			echo_yellow "Attempting to restore previous firmware from /tmp/bios.bin..."
+			log_section "flash_full_rom: restoring /tmp/bios.bin"
+			if _flash_fullrom_once "/tmp/bios.bin" "restore"; then
+				echo_green "Previous firmware restored."
+			else
+				echo_red "CRITICAL: Failed to restore previous firmware."
+				echo_red "DO NOT REBOOT. Seek recovery help if the device will not boot."
+			fi
+			echo_red "Please report this issue and include /tmp/flashrom.log"
+			[[ -n "${MRCBX_LOG:-}" ]] && echo_red "(and session log ${MRCBX_LOG})"
+			if [[ -f /tmp/flashrom.log ]]; then
+				read -rp "Press enter to view the flashrom log file, then space for next page, q to quit"
+				more /tmp/flashrom.log
+			fi
+			exit_red "An error occurred flashing the Full ROM firmware."; return 1
+		fi
 	fi
-	if [ $? -ne 0 ]; then
-		echo_red "Error running cmd: ${flashromcmd} ${flashrom_params} ${noverify} -w ${coreboot_file} ${output_params}"
-		if [ -f /tmp/flashrom.log ]; then
-			read -rp "Press enter to view the flashrom log file, then space for next page, q to quit"
-			more /tmp/flashrom.log
-		fi
-		exit_red "An error occurred flashing the Full ROM firmware. DO NOT REBOOT!"; return 1
+
+	if [[ "$slot" = "previous" ]]; then
+		echo_green "Full ROM firmware successfully rolled back."
 	else
-		if [[ "$slot" = "previous" ]]; then
-			echo_green "Full ROM firmware successfully rolled back."
-		else
-			echo_green "Full ROM firmware successfully installed/updated."
-		fi
+		echo_green "Full ROM firmware successfully installed/updated."
+	fi
 
-		#Prevent from trying to boot stock ChromeOS install
-		if [[ "$isStock" = true && "$isChromeOS" = true && "$boot_mounted" = true ]]; then
-			rm -rf /tmp/boot/efi > /dev/null 2>&1
-			rm -rf /tmp/boot/syslinux > /dev/null 2>&1
-		fi
+	#Prevent from trying to boot stock ChromeOS install
+	if [[ "$isStock" = true && "$isChromeOS" = true && "$boot_mounted" = true ]]; then
+		rm -rf /tmp/boot/efi > /dev/null 2>&1
+		rm -rf /tmp/boot/syslinux > /dev/null 2>&1
+	fi
 
-		#Warn about long RAM training time
-		echo_yellow "IMPORTANT:\nThe first boot after flashing may take substantially
+	#Warn about long RAM training time
+	echo_yellow "IMPORTANT:\nThe first boot after flashing may take substantially
 longer than subsequent boots -- up to 30s or more.
 Be patient and eventually your device will boot :)"
 
-		# Add note on touchpad firmware for EVE
-		if [[ "${device^^}" = "EVE" && "$isStock" = true ]]; then
-			echo_yellow "IMPORTANT:\n
+	# Add note on touchpad firmware for EVE
+	if [[ "${device^^}" = "EVE" && "$isStock" = true ]]; then
+		echo_yellow "IMPORTANT:\n
 If you're going to run Windows on your Pixelbook, you must downgrade
 the touchpad firmware now (before rebooting) otherwise it will not work.
 Select the D option from the main main in order to do so."
-		fi
-		#set vars to indicate new firmware type
-		isStock=false
-		isFullRom=true
-		# Add NVRAM reset note for 4.12 release
-		if [[ "$isUEFI" = true && "$useUEFI" = true ]]; then
-			echo_yellow "IMPORTANT:\n
+	fi
+	#set vars to indicate new firmware type
+	isStock=false
+	isFullRom=true
+	# Add NVRAM reset note for 4.12 release
+	if [[ "$isUEFI" = true && "$useUEFI" = true ]]; then
+		echo_yellow "IMPORTANT:\n
 This update uses a new format to store UEFI NVRAM data, and
 will reset your BootOrder and boot entries. You may need to
 manually Boot From File and reinstall your bootloader if
 booting from the internal storage device fails."
-		fi
+	fi
 	firmwareType="Full ROM / UEFI (pending reboot)"
 	isUEFI=true
-	fi
 
 	read -rep "Press [Enter] to return to the main menu."
 }
