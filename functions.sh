@@ -725,11 +725,18 @@ Run this from a Linux Live USB instead."
 	flashrom_read_ok=false
 	flashrom_rc=1
 	if grep -q -i Intel /proc/cpuinfo; then
-		# Intel: BIOS region only (FD/ME are typically host-locked for internal flash)
+		# Prefer IFD BIOS-region access (FD/ME are typically host-locked)
 		flashrom_params="--ifd -i bios"
 		${flashromcmd} ${flashrom_params} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
 		flashrom_rc=$?
 		_log_command "$flashrom_rc" "${flashromcmd} ${flashrom_params} -r /tmp/bios.bin" /tmp/flashrom.log
+		if [[ "$flashrom_rc" -ne 0 ]]; then
+			# Older ChromeOS flashrom lacks --ifd; fall back to full-chip read
+			flashrom_params=""
+			${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+			flashrom_rc=$?
+			_log_command "$flashrom_rc" "${flashromcmd} -r /tmp/bios.bin" /tmp/flashrom.log
+		fi
 	else
 		# non-Intel: full chip
 		${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
@@ -754,6 +761,13 @@ the script/update your firmware."
 		return 1;
 	fi
 
+	# FMAP layout used for region checks / flashrom -i fallbacks
+	${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
+	# If IFD unavailable, restrict writes to SI_BIOS (maps to IFD BIOS region)
+	if [[ -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
+		flashrom_params="-i SI_BIOS"
+	fi
+	
 	# Sanity-check the read image has a usable CBFS/FMAP
 	# Default region is COREBOOT; older Chromebooks use BOOT_STUB instead
 	${cbfstoolcmd} /tmp/bios.bin print > /tmp/cbfs-print.log 2>&1
