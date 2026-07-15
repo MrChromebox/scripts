@@ -1171,14 +1171,23 @@ Connect the USB/SD device which contains the backed-up stock firmware and press 
 		return 1
 	fi
 	echo -e ""
-	read -rep "Enter the firmware filename:  " firmware_file
-	firmware_file=/tmp/usb/${firmware_file}
-	if [ ! -f ${firmware_file} ]; then
+	read -rep "Enter the firmware filename:  " _usb_firmware_name
+	_usb_firmware_path="/tmp/usb/${_usb_firmware_name}"
+	if [ ! -f "${_usb_firmware_path}" ]; then
 		echo_red "Invalid filename entered; unable to restore stock firmware."
 		read -rep "Press [Enter] to return to the main menu."
 		run_quiet umount /tmp/usb
 		return 1
 	fi
+	firmware_file="/tmp/stock-firmware.rom"
+	if ! cp "${_usb_firmware_path}" "${firmware_file}"; then
+		echo_red "Failed to copy firmware from USB; unable to restore stock firmware."
+		read -rep "Press [Enter] to return to the main menu."
+		run_quiet umount /tmp/usb
+		return 1
+	fi
+	run_quiet umount /tmp/usb
+	rmdir /tmp/usb
 	#text spacing
 	echo -e ""
 }
