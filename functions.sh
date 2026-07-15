@@ -723,24 +723,20 @@ Run this from a Linux Live USB instead."
 	#get device firmware info
 	echo -e "\nGetting device/system info..."
 	flashrom_read_ok=false
+	flashrom_rc=1
 	if grep -q -i Intel /proc/cpuinfo; then
-		#try reading only BIOS region
-		if ${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
-			flashrom_params="--ifd -i bios"
-			flashrom_read_ok=true
-		else
-			#read entire firmware
-			if ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
-				flashrom_read_ok=true
-			fi
-		fi
+		# Intel: BIOS region only (FD/ME are typically host-locked for internal flash)
+		flashrom_params="--ifd -i bios"
+		${flashromcmd} ${flashrom_params} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+		flashrom_rc=$?
+		_log_command "$flashrom_rc" "${flashromcmd} ${flashrom_params} -r /tmp/bios.bin" /tmp/flashrom.log
 	else
-		#read entire firmware
-		if ${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1; then
-			flashrom_read_ok=true
-		fi
+		# non-Intel: full chip
+		${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+		flashrom_rc=$?
+		_log_command "$flashrom_rc" "${flashromcmd} -r /tmp/bios.bin" /tmp/flashrom.log
 	fi
-	_log_command "$?" "${flashromcmd} firmware read" /tmp/flashrom.log
+	[[ "$flashrom_rc" -eq 0 ]] && flashrom_read_ok=true
 
 	if [ "$flashrom_read_ok" != true ]; then
 		echo_red "\nFlashrom is unable to read current firmware; cannot continue:"
@@ -756,6 +752,31 @@ or trying running from a Live USB with a more permissive kernel (eg, Ubuntu 23.0
 		echo_red "If you have UEFI SecureBoot enabled, you need to disable it to run 
 the script/update your firmware."
 		return 1;
+	fi
+
+	# Sanity-check the read image has a usable CBFS/FMAP
+	# Default region is COREBOOT; older Chromebooks use BOOT_STUB instead
+	${cbfstoolcmd} /tmp/bios.bin print > /tmp/cbfs-print.log 2>&1
+	cbfs_rc=$?
+	_log_command "$cbfs_rc" "${cbfstoolcmd} /tmp/bios.bin print" /tmp/cbfs-print.log
+	if [[ "$cbfs_rc" -ne 0 ]]; then
+		${cbfstoolcmd} /tmp/bios.bin print -r BOOT_STUB > /tmp/cbfs-print.log 2>&1
+		cbfs_rc=$?
+		_log_command "$cbfs_rc" "${cbfstoolcmd} /tmp/bios.bin print -r BOOT_STUB" /tmp/cbfs-print.log
+	fi
+	if [[ "$cbfs_rc" -ne 0 ]]; then
+		echo_red "\nFirmware read succeeded but the image is not a valid CBFS/FMAP; cannot continue:"
+		if [ -f /tmp/cbfs-print.log ]; then
+			cat /tmp/cbfs-print.log
+			echo ""
+		fi
+		if [[ -n "$MRCBX_LOG" ]]; then
+			echo_red "Session log: ${MRCBX_LOG}"
+		fi
+		echo_red "The SPI flash contents could not be read correctly.
+You may need to add 'iomem=relaxed' to your kernel parameters,
+or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
+		return 1
 	fi
 	
 	# firmware date/version
