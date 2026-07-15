@@ -266,7 +266,7 @@ USB-C debug cable, otherwise recovery will involve disassembling
 your device (which is very difficult in some cases)."
 
 		echo_yellow "If you wish to continue, type: 'I ACCEPT' and press enter."
-		read -re
+		read -rep "Type I ACCEPT: "
 		[[ "$REPLY" = "I ACCEPT" ]] || return
 	fi
 
