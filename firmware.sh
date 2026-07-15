@@ -115,11 +115,9 @@ function flash_rwlegacy()
 	elif [[ "$isMdn" = true ]]; then
 		rwlegacy_file=$rwl_altfw_mdn
 	else
-		echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
-		echo_red "If your device is listed as supported on https://mrchromebox.tech/#devices,\n
-then email MrChromebox@gmail.com  and include a screenshot of the main menu."
-		read -rep "Press [Enter] to return to the main menu"
-		return 1
+		fail_menu "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware.
+If your device is listed as supported on https://mrchromebox.tech/#devices,
+then email MrChromebox@gmail.com  and include a screenshot of the main menu." || return
 	fi
 	if [[ "$rwlegacy_file" = *"altfw"* ]]; then
 		echo_green "\nInstall/Update RW_LEGACY Firmware (AltFw / edk2)"
@@ -357,11 +355,9 @@ and you need to recover using an external EEPROM programmer."
 
 	#disable software write-protect
 	echo_yellow "Disabling software write-protect and clearing the WP range"
-	clear_software_wp flash
-	case $? in
-		1) fail_menu "Error disabling software write-protect; unable to flash firmware." || return ;;
-		2) fail_menu "Error clearing software write-protect range; unable to flash firmware." || return ;;
-	esac
+	require_software_wp_clear flash \
+		"Error disabling software write-protect; unable to flash firmware." \
+		"Error clearing software write-protect range; unable to flash firmware." || return
 
 	#flash Full ROM firmware
 	rm -f /tmp/flashrom.log /tmp/flashrom-attempt.log
@@ -478,17 +474,13 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 	echo_yellow "Checking if touchpad type set in SSFC"
 	echo_yellow "Downloading ectool"
 	if ! get_ectool; then
-		echo_red "Unable to download ectool; cannot continue"
-		read -rep "Press [Enter] to return to the main menu"
-		return 1
+		fail_menu "Unable to download ectool; cannot continue" || return
 	fi
 	if ! run_quiet ${ectoolcmd} cbi get 8; then
 		# SSFC not initialized
 		echo_yellow "Initializing SSFC"
 		if ! $ectoolcmd cbi set 8 0x0 4 1; then
-			echo_red "Unable to initialize SSFC; if HW WP is enabled, please disable and retry"
-			read -rep "Press [Enter] to return to the main menu"
-			return 1
+			fail_menu "Unable to initialize SSFC; if HW WP is enabled, please disable and retry" || return
 		fi
 	fi
 	ssfc_val=$($ectoolcmd cbi get 8 | grep -m1 'uint' | cut -f3 -d ' ')
@@ -509,9 +501,7 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 
 		echo_yellow "Setting new SSFC value $ssfc_val"
 		if ! $ectoolcmd cbi set 8 $ssfc_val 4; then
-			echo_red "Error setting new SSFC value; if HW WP is enabled, please disable and retry"
-			read -rep "Press [Enter] to return to the main menu"
-			return 1
+			fail_menu "Error setting new SSFC value; if HW WP is enabled, please disable and retry" || return
 		fi
 		echo_green "Touchpad type successfully set in SSFC"
 	else
@@ -533,9 +523,7 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 
 	# Check if this is a taeko or taniks board
 	if [[ "${device^^}" != "TAEKO" && "${device^^}" != "TANIKS" ]]; then
-		echo_red "This function is only for taeko/taniks boards"
-		read -rep "Press [Enter] to return to the main menu"
-		return 1
+		fail_menu "This function is only for taeko/taniks boards" || return
 	fi
 
 	read -rep "Do you wish to continue? [y/N] "
@@ -545,15 +533,11 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 	echo_yellow "Checking storage type in FW_CONFIG (CBI tag 6)"
 	echo_yellow "Downloading ectool"
 	if ! get_ectool; then
-		echo_red "Unable to download ectool; cannot continue"
-		read -rep "Press [Enter] to return to the main menu"
-		return 1
+		fail_menu "Unable to download ectool; cannot continue" || return
 	fi
 	fw_config_val=$($ectoolcmd cbi get 6 | grep -m1 'uint' | cut -f3 -d ' ')
 	if [ -z "$fw_config_val" ]; then
-		echo_red "Unable to read FW_CONFIG; cannot continue"
-		read -rep "Press [Enter] to return to the main menu"
-		return 1
+		fail_menu "Unable to read FW_CONFIG; cannot continue" || return
 	fi
 	echo_yellow "Current FW_CONFIG value is $fw_config_val"
 	
@@ -616,9 +600,7 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 	
 	echo_yellow "Setting storage type to $new_storage (new FW_CONFIG value: $fw_config_val)"
 	if ! $ectoolcmd cbi set 6 $fw_config_val 4; then
-		echo_red "Error setting new FW_CONFIG value; if HW WP is enabled, please disable and retry"
-		read -rep "Press [Enter] to return to the main menu"
-		return 1
+		fail_menu "Error setting new FW_CONFIG value; if HW WP is enabled, please disable and retry" || return
 	fi
 	echo_green "Storage type successfully set to $new_storage in FW_CONFIG"
 
@@ -659,18 +641,26 @@ the touchpad firmware, otherwise the touchpad will not work."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 					# try with older eve flashrom
+					local tpPath _tp_oldpwd
 					[[ "$isChromeOS" = true ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
-					(
-						cd $tpPath
-						flashrom_eve_files=(
-							"${flashrom_eve_tp}"
-							"${flashrom_eve_tp}.sha1"
-						)
-						download_files flashrom_eve_files "${util_source}" || return 1
-						sha1sum -c "${flashrom_eve_tp}.sha1" > /dev/null 2>&1 || \
-							{ echo_red "Flashrom Eve TP checksum fail; download corrupted, cannot flash."; return 1; }
-						chmod +x ${flashrom_eve_tp}
+					_tp_oldpwd=$PWD
+					if ! cd "$tpPath"; then
+						fail_menu "Error changing to ${tpPath}; cannot flash touchpad firmware." || return
+					fi
+					flashrom_eve_files=(
+						"${flashrom_eve_tp}"
+						"${flashrom_eve_tp}.sha1"
 					)
+					if ! download_files flashrom_eve_files "${util_source}"; then
+						cd "$_tp_oldpwd" || true
+						return 1
+					fi
+					if ! sha1sum -c "${flashrom_eve_tp}.sha1" > /dev/null 2>&1; then
+						cd "$_tp_oldpwd" || true
+						fail_menu "Flashrom Eve TP checksum fail; download corrupted, cannot flash." || return
+					fi
+					chmod +x ${flashrom_eve_tp}
+					cd "$_tp_oldpwd" || true
 					if run_quiet $tpPath/${flashrom_eve_tp} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log; then
 						echo_green "Touchpad firmware successfully downgraded."
 						echo_yellow "Please reboot your Pixelbook now."
@@ -682,7 +672,7 @@ recommended to try under ChromiumOS."
 					fi
 				fi
 			else
-				echo_red "Touchpad firmware download checksum fail; download corrupted, cannot flash."
+				fail_menu "Touchpad firmware download checksum fail; download corrupted, cannot flash." || return
 			fi
 		fi
 		read -rep "Press [Enter] to return to the main menu."
@@ -728,18 +718,26 @@ the touchpad firmware, otherwise the touchpad will not work."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 				# try with older eve flashrom
+				local tpPath _tp_oldpwd
 				[[ "$isChromeOS" = true ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
-				(
-					cd $tpPath
-					flashrom_eve_files=(
-						"${flashrom_eve_tp}"
-						"${flashrom_eve_tp}.sha1"
-					)
-					download_files flashrom_eve_files "${util_source}" || return 1
-					sha1sum -c "${flashrom_eve_tp}.sha1" > /dev/null 2>&1 || \
-						{ echo_red "Flashrom Eve TP checksum fail; download corrupted, cannot flash."; return 1; }
-					chmod +x ${flashrom_eve_tp}
+				_tp_oldpwd=$PWD
+				if ! cd "$tpPath"; then
+					fail_menu "Error changing to ${tpPath}; cannot flash touchpad firmware." || return
+				fi
+				flashrom_eve_files=(
+					"${flashrom_eve_tp}"
+					"${flashrom_eve_tp}.sha1"
 				)
+				if ! download_files flashrom_eve_files "${util_source}"; then
+					cd "$_tp_oldpwd" || true
+					return 1
+				fi
+				if ! sha1sum -c "${flashrom_eve_tp}.sha1" > /dev/null 2>&1; then
+					cd "$_tp_oldpwd" || true
+					fail_menu "Flashrom Eve TP checksum fail; download corrupted, cannot flash." || return
+				fi
+				chmod +x ${flashrom_eve_tp}
+				cd "$_tp_oldpwd" || true
 				if run_quiet $tpPath/${flashrom_eve_tp} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log; then
 					echo_green "Touchpad firmware successfully upgraded."
 					echo_yellow "Please reboot your Pixelbook now."
@@ -751,10 +749,10 @@ recommended to try under ChromiumOS."
 				fi
 			fi
 			else
-				echo_red "Touchpad firmware download checksum fail; download corrupted, cannot flash."
+				fail_menu "Touchpad firmware download checksum fail; download corrupted, cannot flash." || return
 			fi
 		fi
-	read -rep "Press [Enter] to return to the main menu."
+		read -rep "Press [Enter] to return to the main menu."
 	fi
 }
 
@@ -808,31 +806,19 @@ function flash_firmware_from_local()
 	log_fn
 	echo_yellow "\nFlashing firmware from local filesystem"
 	read -rep "Enter the full path to the custom firmware file: " firmware_path
-	
-	local hasError=false
+
 	if [ -z "$firmware_path" ]; then
-		echo_red "No firmware path provided"
-		hasError=true
-	fi
-	
-	if [ ! -f "$firmware_path" ]; then
-		echo_red "Firmware file not found: $firmware_path"
-		hasError=true
-	fi
-	
-	if [[ "$hasError" = true ]]; then
-		read -rep "Press [Enter] to return to the main menu."
-		return 1
+		fail_menu "No firmware path provided" || return
 	fi
 
-	# Copy firmware to /tmp for processing
-	if ! cp "$firmware_path" /tmp/custom-firmware.rom; then
-		echo_red "Failed to copy firmware file to /tmp"
-		read -rep "Press [Enter] to return to the main menu."
-		return 1
+	if [ ! -f "$firmware_path" ]; then
+		fail_menu "Firmware file not found: $firmware_path" || return
 	fi
-	
-	# Process the custom firmware
+
+	if ! cp "$firmware_path" /tmp/custom-firmware.rom; then
+		fail_menu "Failed to copy firmware file to /tmp" || return
+	fi
+
 	process_and_flash_custom_firmware "/tmp/custom-firmware.rom"
 }
 
@@ -948,11 +934,9 @@ function process_and_flash_custom_firmware()
 	
 	# Disable software write-protect
 	echo_yellow "Disabling software write-protect and clearing the WP range"
-	clear_software_wp flash
-	case $? in
-		1) fail_menu "Error disabling software write-protect; unable to flash firmware." || return ;;
-		2) fail_menu "Error clearing software write-protect range; unable to flash firmware." || return ;;
-	esac
+	require_software_wp_clear flash \
+		"Error disabling software write-protect; unable to flash firmware." \
+		"Error clearing software write-protect range; unable to flash firmware." || return
 	
 	# Flash the custom firmware
 	echo_yellow "Installing custom firmware (may take up to 90s)"
@@ -1452,11 +1436,9 @@ You can always override the default using [CTRL+D] or
 	echo_yellow "\nSetting boot options..."
 
 	#disable software write-protect
-	clear_software_wp strict
-	case $? in
-		1) fail_menu "Error disabling software write-protect; unable to set GBB flags." || return ;;
-		2) fail_menu "Error clearing software write-protect range; unable to set GBB flags." || return ;;
-	esac
+	require_software_wp_clear strict \
+		"Error disabling software write-protect; unable to set GBB flags." \
+		"Error clearing software write-protect range; unable to set GBB flags." || return
 	[[ "$isChromeOS" = false ]] && FMAP="--fmap"
 	if ! run_flashrom ${flashromcmd} -r $FMAP -i GBB:/tmp/gbb.temp; then
 		fail_menu "\nError reading firmware (non-stock?); unable to set boot options." || return
@@ -1508,11 +1490,9 @@ Proceed at your own risk."
 	if [[ "$confirm" = "Y" || "$confirm" = "y" ]]; then
 		echo_yellow "\nSetting hardware ID..."
 		#disable software write-protect
-		clear_software_wp strict
-		case $? in
-			1) fail_menu "Error disabling software write-protect; unable to set HWID." || return ;;
-			2) fail_menu "Error clearing software write-protect range; unable to set HWID." || return ;;
-		esac
+		require_software_wp_clear strict \
+			"Error disabling software write-protect; unable to set HWID." \
+			"Error clearing software write-protect range; unable to set HWID." || return
 		[[ "$isChromeOS" = false ]] && FMAP="--fmap"
 		if ! run_flashrom ${flashromcmd} -r $FMAP -i GBB:/tmp/gbb.temp; then
 			fail_menu "\nError reading firmware (non-stock?); unable to set HWID." || return
@@ -1593,11 +1573,9 @@ Proceed at your own risk."
 		fi
 
 		# Disable software write-protect
-		clear_software_wp flash
-		case $? in
-			1) fail_menu "Error disabling software write-protect; unable to set HWID." || return ;;
-			2) fail_menu "Error clearing software write-protect range; unable to set HWID." || return ;;
-		esac
+		require_software_wp_clear flash \
+			"Error disabling software write-protect; unable to set HWID." \
+			"Error clearing software write-protect range; unable to set HWID." || return
 
 		# Write firmware back
 		echo_yellow "Writing firmware with new HWID..."
@@ -1824,8 +1802,7 @@ function stock_menu() {
 				&& ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
 			flash_rwlegacy
 		elif [[ "$isEOL" = true ]]; then
-			echo_red "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life"
-			read -rep "Press [Enter] to return to the main menu"
+			fail_menu "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life" || true
 		fi
 		menu_fwupdate
 		;;

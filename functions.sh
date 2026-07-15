@@ -103,6 +103,20 @@ function clear_software_wp() {
 	fi
 }
 
+# Require clear_software_wp success; show fail_menu on disable/range errors.
+function require_software_wp_clear() {
+	local mode="$1"
+	local disable_msg="$2"
+	local range_msg="$3"
+	local _rc=0
+
+	clear_software_wp "$mode" || _rc=$?
+	case $_rc in
+		1) fail_menu "$disable_msg" || return 1 ;;
+		2) fail_menu "$range_msg" || return 1 ;;
+	esac
+}
+
 # Print error message and exit script
 function die() {
 	echo_red "$@"
@@ -947,11 +961,9 @@ Would you like to disable software WP and reboot your device?"
 		# Validate user input
 		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 			echo -e "\nDisabling software WP..."
-			clear_software_wp strict
-			case $? in
-				1) fail_menu "\nError disabling software write-protect -- hardware WP is still enabled." || return ;;
-				2) fail_menu "\nError clearing software write-protect range." || return ;;
-			esac
+			require_software_wp_clear strict \
+				"\nError disabling software write-protect -- hardware WP is still enabled." \
+				"\nError clearing software write-protect range." || return
 			echo_green "\nSoftware WP disabled, rebooting in 5s"
 			reboot
 			# ensure we don't show the main menu while the system processes the reboot signal
