@@ -516,7 +516,7 @@ function get_gbb_utility() {
 				echo_red "Error downloading gbb_utility; cannot proceed."
 				return 1
 			fi
-			if ! tar -zxf gbb_utility.tar.gz; then
+			if ! tar -zxf gbb_utility.tar.gz --no-same-owner; then
 				echo_red "Error extracting gbb_utility; cannot proceed."
 				return 1
 			fi
@@ -538,7 +538,7 @@ function get_ectool() {
 				echo_red "Error downloading ectool; cannot proceed."
 				return 1
 			fi
-			if ! tar -zxf ectool.tar.gz; then
+			if ! tar -zxf ectool.tar.gz --no-same-owner; then
 				echo_red "Error extracting ectool; cannot proceed."
 				return 1
 			fi
@@ -561,7 +561,7 @@ function get_tpmc() {
 				echo_red "Error downloading tpmc; cannot proceed."
 				return 1
 			fi
-			if ! tar -zxf tpmc.tar.gz; then
+			if ! tar -zxf tpmc.tar.gz --no-same-owner; then
 				echo_red "Error extracting tpmc; cannot proceed."
 				return 1
 			fi
