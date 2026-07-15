@@ -465,6 +465,51 @@ function list_usb_devices() {
 	echo -e ""
 }
 
+# Prompt for a USB block device. Sets usb_device; optionally mounts at /tmp/usb.
+# mount_mode: rw, ro (default), or none (select only).
+# Returns 0 on success, 1 if no devices, 2 if mount failed.
+function select_usb_device() {
+	local connect_prompt="$1"
+	local select_prompt="$2"
+	local mount_mode="${3:-ro}"
+
+	if [[ -n "$connect_prompt" ]]; then
+		echo -e ""
+		read -rep "$connect_prompt "
+	fi
+	if ! list_usb_devices; then
+		return 1
+	fi
+	usb_dev_index=""
+	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
+		read -rep "$select_prompt " usb_dev_index
+		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
+			echo -e "Error: Invalid option selected; enter a number from the list above."
+		fi
+	done
+	usb_device="${usb_devs[${usb_dev_index}-1]}"
+	if [[ "$mount_mode" = none ]]; then
+		return 0
+	fi
+	run_quiet mkdir /tmp/usb
+	if [[ "$mount_mode" = rw ]]; then
+		if ! run_quiet mount -o rw "${usb_device}" /tmp/usb; then
+			if ! run_quiet mount -o rw "${usb_device}1" /tmp/usb; then
+				run_quiet rmdir /tmp/usb
+				return 2
+			fi
+		fi
+	else
+		if ! run_quiet mount "${usb_device}" /tmp/usb; then
+			if ! run_quiet mount "${usb_device}1" /tmp/usb; then
+				run_quiet rmdir /tmp/usb
+				return 2
+			fi
+		fi
+	fi
+	return 0
+}
+
 ########################################
 # Tool Management Functions            #
 ########################################

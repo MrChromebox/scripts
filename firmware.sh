@@ -839,57 +839,43 @@ function flash_firmware_from_local()
 function flash_firmware_from_usb()
 {
 	log_fn
-	read -rep "Connect the USB/SD device which contains the custom firmware and press [Enter] to continue. "
-	list_usb_devices || fail_menu "No USB devices available to read firmware from." || return
-	usb_dev_index=""
-	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
-		read -rep "Enter the number for the device which contains the custom firmware: " usb_dev_index
-		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
-			echo -e "Error: Invalid option selected; enter a number from the list above."
-		fi
-	done
+	local _usb_rc=0
 
-	usb_device="${usb_devs[${usb_dev_index}-1]}"
-	run_quiet mkdir /tmp/usb
-	if ! run_quiet mount "${usb_device}" /tmp/usb; then
-		if ! mount "${usb_device}1" /tmp/usb; then
-			echo_red "USB device failed to mount; cannot proceed."
-			read -rep "Press [Enter] to return to the main menu."
-			run_quiet umount /tmp/usb
-			return 1
-		fi
+	select_usb_device \
+		"Connect the USB/SD device which contains the custom firmware and press [Enter] to continue." \
+		"Enter the number for the device which contains the custom firmware:" \
+		ro || _usb_rc=$?
+	if [[ $_usb_rc -ne 0 ]]; then
+		case $_usb_rc in
+			1) fail_menu "No USB devices available to read firmware from." || return ;;
+			2) fail_menu "USB device failed to mount; cannot proceed." || return ;;
+		esac
 	fi
-	
-	# Select file from USB device
+
 	echo_yellow "\nFirmware Files on USB:"
 	if ! ls /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
-		echo_red "No firmware files found on USB device."
-		read -rep "Press [Enter] to return to the main menu."
 		run_quiet umount /tmp/usb
-		return 1
+		rmdir /tmp/usb
+		fail_menu "No firmware files found on USB device." || return
 	fi
 	echo -e ""
 	read -rep "Enter the firmware filename: " firmware_file
 	firmware_file="/tmp/usb/${firmware_file}"
 	if [ ! -f "$firmware_file" ]; then
-		echo_red "Invalid filename entered; unable to flash custom firmware."
-		read -rep "Press [Enter] to return to the main menu."
 		run_quiet umount /tmp/usb
-		return 1
+		rmdir /tmp/usb
+		fail_menu "Invalid filename entered; unable to flash custom firmware." || return
 	fi
-	
-	# Copy firmware to /tmp for processing
-	cp "$firmware_file" /tmp/custom-firmware.rom || {
-		echo_red "Failed to copy firmware file to /tmp"
+
+	if ! cp "$firmware_file" /tmp/custom-firmware.rom; then
 		run_quiet umount /tmp/usb
-		return 1
-	}
-	
-	# Cleanup USB mount
+		rmdir /tmp/usb
+		fail_menu "Failed to copy firmware file to /tmp" || return
+	fi
+
 	run_quiet umount /tmp/usb
 	rmdir /tmp/usb
-	
-	# Process the custom firmware
+
 	process_and_flash_custom_firmware "/tmp/custom-firmware.rom"
 }
 
@@ -1115,54 +1101,40 @@ other than the latest UEFI Full ROM firmware release."
 function restore_fw_from_usb()
 {
 	log_fn
-	read -rep "
-Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
-	list_usb_devices || fail_menu "No USB devices available to read firmware backup." || return
-	usb_dev_index=""
-	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
-		read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
-		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
-			echo -e "Error: Invalid option selected; enter a number from the list above."
-		fi
-	done
+	local _usb_rc=0
 
-	usb_device="${usb_devs[${usb_dev_index}-1]}"
-	run_quiet mkdir /tmp/usb
-	if ! run_quiet mount "${usb_device}" /tmp/usb; then
-		if ! mount "${usb_device}1" /tmp/usb; then
-			echo_red "USB device failed to mount; cannot proceed."
-			read -rep "Press [Enter] to return to the main menu."
-			run_quiet umount /tmp/usb
-			return 1
-		fi
+	select_usb_device \
+		"Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue." \
+		"Enter the number for the device which contains the stock firmware backup:" \
+		ro || _usb_rc=$?
+	if [[ $_usb_rc -ne 0 ]]; then
+		case $_usb_rc in
+			1) fail_menu "No USB devices available to read firmware backup." || return ;;
+			2) fail_menu "USB device failed to mount; cannot proceed." || return ;;
+		esac
 	fi
-	#select file from USB device
 	echo_yellow "\n(Potential) Firmware Files on USB:"
-	if ! ls  /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
-		echo_red "No firmware files found on USB device."
-		read -rep "Press [Enter] to return to the main menu."
+	if ! ls /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
 		run_quiet umount /tmp/usb
-		return 1
+		rmdir /tmp/usb
+		fail_menu "No firmware files found on USB device." || return
 	fi
 	echo -e ""
 	read -rep "Enter the firmware filename:  " _usb_firmware_name
 	_usb_firmware_path="/tmp/usb/${_usb_firmware_name}"
 	if [ ! -f "${_usb_firmware_path}" ]; then
-		echo_red "Invalid filename entered; unable to restore stock firmware."
-		read -rep "Press [Enter] to return to the main menu."
 		run_quiet umount /tmp/usb
-		return 1
+		rmdir /tmp/usb
+		fail_menu "Invalid filename entered; unable to restore stock firmware." || return
 	fi
 	firmware_file="/tmp/stock-firmware.rom"
 	if ! cp "${_usb_firmware_path}" "${firmware_file}"; then
-		echo_red "Failed to copy firmware from USB; unable to restore stock firmware."
-		read -rep "Press [Enter] to return to the main menu."
 		run_quiet umount /tmp/usb
-		return 1
+		rmdir /tmp/usb
+		fail_menu "Failed to copy firmware from USB; unable to restore stock firmware." || return
 	fi
 	run_quiet umount /tmp/usb
 	rmdir /tmp/usb
-	#text spacing
 	echo -e ""
 }
 
@@ -1172,17 +1144,16 @@ function restore_fw_from_recovery()
 	if ! command -v 7z >/dev/null 2>&1; then
 		fail_menu "Error: 7z (7zip) is required but not found. Please install it via the 7zip package." || return
 	fi
-	echo -e "\nConnect a USB which contains a ChromeOS Recovery Image"
-	read -rep "and press [Enter] to continue. "
-	list_usb_devices || fail_menu "No USB devices available to read from." || return
-	usb_dev_index=""
-	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
-		read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
-		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
-			echo -e "Error: Invalid option selected; enter a number from the list above."
-		fi
-	done
-	usb_device="${usb_devs[${usb_dev_index}-1]}"
+	local _usb_rc=0
+
+	select_usb_device \
+		"Connect a USB which contains a ChromeOS Recovery Image
+and press [Enter] to continue." \
+		"Enter the number which corresponds your ChromeOS Recovery USB:" \
+		none || _usb_rc=$?
+	if [[ $_usb_rc -ne 0 ]]; then
+		fail_menu "No USB devices available to read from." || return
+	fi
 	echo -e ""
 	echo_yellow "Using USB device: $usb_device"
 	if ! extract_firmware_from_recovery_usb ${boardName,,} $usb_device ; then
@@ -1371,28 +1342,20 @@ function backup_firmware_to_local()
 function backup_firmware_to_usb()
 {
 	log_fn
-	echo -e ""
-	read -rep "Connect the USB/SD device to store the firmware backup and press [Enter]
+	local _usb_rc=0
+
+	select_usb_device \
+		"Connect the USB/SD device to store the firmware backup and press [Enter]
 to continue.  This is non-destructive, but it is best to ensure no other
-USB/SD devices are connected. "
-	if ! list_usb_devices; then
-		backup_fail "No USB devices available to store firmware backup."
+USB/SD devices are connected." \
+		"Enter the number for the device to be used for firmware backup:" \
+		rw || _usb_rc=$?
+	if [[ $_usb_rc -ne 0 ]]; then
+		case $_usb_rc in
+			1) backup_fail "No USB devices available to store firmware backup." ;;
+			2) backup_fail "USB backup device failed to mount; cannot proceed. Ensure your USB is FAT32-formatted and try again." ;;
+		esac
 		return 1
-	fi
-	usb_dev_index=""
-	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
-		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
-			echo -e "Error: Invalid option selected; enter a number from the list above."
-		fi
-	done
-	usb_device="${usb_devs[${usb_dev_index}-1]}"
-	run_quiet mkdir /tmp/usb
-	if ! run_quiet mount -o rw "${usb_device}" /tmp/usb; then
-		if ! run_quiet mount -o rw "${usb_device}1" /tmp/usb; then
-			backup_fail "USB backup device failed to mount; cannot proceed. Ensure your USB is FAT32-formatted and try again."
-			return 1
-		fi
 	fi
 	backupname="BACKUP-${boardName}-$fwVer-$(date +%Y.%m.%d).rom"
 	echo_yellow "\nSaving firmware backup: ${backupname}"
@@ -1413,28 +1376,20 @@ USB/SD devices are connected. "
 function backup_firmware()
 {
 	log_fn
-	echo -e ""
-	read -rep "Connect the USB/SD device to store the firmware backup and press [Enter]
+	local _usb_rc=0
+
+	select_usb_device \
+		"Connect the USB/SD device to store the firmware backup and press [Enter]
 to continue.  This is non-destructive, but it is best to ensure no other
-USB/SD devices are connected. "
-	if ! list_usb_devices; then
-		backup_fail "No USB devices available to store firmware backup."
+USB/SD devices are connected." \
+		"Enter the number for the device to be used for firmware backup:" \
+		rw || _usb_rc=$?
+	if [[ $_usb_rc -ne 0 ]]; then
+		case $_usb_rc in
+			1) backup_fail "No USB devices available to store firmware backup." ;;
+			2) backup_fail "USB backup device failed to mount; cannot proceed. Ensure your USB is FAT32-formatted and try again." ;;
+		esac
 		return 1
-	fi
-	usb_dev_index=""
-	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
-		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
-			echo -e "Error: Invalid option selected; enter a number from the list above."
-		fi
-	done
-	usb_device="${usb_devs[${usb_dev_index}-1]}"
-	run_quiet mkdir /tmp/usb
-	if ! run_quiet mount -o rw "${usb_device}" /tmp/usb; then
-		if ! run_quiet mount -o rw "${usb_device}1" /tmp/usb; then
-			backup_fail "USB backup device failed to mount; cannot proceed. Ensure your USB is FAT32-formatted and try again."
-			return 1
-		fi
 	fi
 	backupname="stock-firmware-${boardName}-$(date +%Y%m%d).rom"
 	echo_yellow "\nSaving firmware backup as ${backupname}"
