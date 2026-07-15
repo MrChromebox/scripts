@@ -722,30 +722,30 @@ Run this from a Linux Live USB instead."
 
 	#get device firmware info
 	echo -e "\nGetting device/system info..."
-	flashrom_read_ok=false
+	flashrom_params=""
 	flashrom_rc=1
-	if grep -q -i Intel /proc/cpuinfo; then
-		# Prefer IFD BIOS-region access (FD/ME are typically host-locked)
-		flashrom_params="--ifd -i bios"
-		${flashromcmd} ${flashrom_params} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+	flashrom_has_ifd=false
+	isIntel=false
+	grep -q -i Intel /proc/cpuinfo && isIntel=true
+	${flashromcmd} -h 2>&1 | grep -q -- '--ifd' && flashrom_has_ifd=true
+
+	# Intel: prefer IFD BIOS-region access (FD/ME are typically host-locked).
+	# Bundled Linux flashrom always supports --ifd; older ChromeOS flashrom may not.
+	if [[ "$isIntel" = true && "$flashrom_has_ifd" = true ]]; then
+		${flashromcmd} --ifd -i bios -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
 		flashrom_rc=$?
-		_log_command "$flashrom_rc" "${flashromcmd} ${flashrom_params} -r /tmp/bios.bin" /tmp/flashrom.log
-		if [[ "$flashrom_rc" -ne 0 ]]; then
-			# Older ChromeOS flashrom lacks --ifd; fall back to full-chip read
-			flashrom_params=""
-			${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
-			flashrom_rc=$?
-			_log_command "$flashrom_rc" "${flashromcmd} -r /tmp/bios.bin" /tmp/flashrom.log
-		fi
-	else
-		# non-Intel: full chip
+		_log_command "$flashrom_rc" "${flashromcmd} --ifd -i bios -r /tmp/bios.bin" /tmp/flashrom.log
+		[[ "$flashrom_rc" -eq 0 ]] && flashrom_params="--ifd -i bios"
+	fi
+	# Full-chip read: non-Intel, or ChromeOS when IFD is unavailable/failed.
+	# Non-ChromeOS Intel must succeed via IFD (no full-chip fallback).
+	if [[ "$flashrom_rc" -ne 0 ]] && { [[ "$isIntel" != true ]] || [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; }; then
 		${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
 		flashrom_rc=$?
 		_log_command "$flashrom_rc" "${flashromcmd} -r /tmp/bios.bin" /tmp/flashrom.log
 	fi
-	[[ "$flashrom_rc" -eq 0 ]] && flashrom_read_ok=true
-
-	if [ "$flashrom_read_ok" != true ]; then
+	
+	if [[ "$flashrom_rc" -ne 0 ]]; then
 		echo_red "\nFlashrom is unable to read current firmware; cannot continue:"
 		if [ -f /tmp/flashrom.log ]; then
 			cat /tmp/flashrom.log
@@ -761,13 +761,6 @@ the script/update your firmware."
 		return 1;
 	fi
 
-	# FMAP layout used for region checks / flashrom -i fallbacks
-	${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-	# If IFD unavailable, restrict writes to SI_BIOS (maps to IFD BIOS region)
-	if [[ -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
-		flashrom_params="-i SI_BIOS"
-	fi
-	
 	# Sanity-check the read image has a usable CBFS/FMAP
 	# Default region is COREBOOT; older Chromebooks use BOOT_STUB instead
 	${cbfstoolcmd} /tmp/bios.bin print > /tmp/cbfs-print.log 2>&1
@@ -792,6 +785,14 @@ You may need to add 'iomem=relaxed' to your kernel parameters,
 or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
 		return 1
 	fi
+
+	# FMAP layout used for region checks / flashrom -i fallbacks
+	${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
+	# If IFD unavailable, restrict writes to SI_BIOS (maps to IFD BIOS region)
+	if [[ -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
+		flashrom_params="-i SI_BIOS"
+	fi
+	diagnostic_report_set flashrom_params "${flashrom_params:-"(none)"}"
 	
 	# firmware date/version
 	fwVer=$(dmidecode -s bios-version)
@@ -810,7 +811,7 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 		isStock=true
 		firmwareType="Stock ChromeOS"
 		# check BOOT_STUB
-		if grep "BOOT_STUB" /tmp/layout >/dev/null 2>&1; then
+		if grep -q "'BOOT_STUB'" /tmp/layout 2>/dev/null; then
 			if ! ${cbfstoolcmd} /tmp/bios.bin print -r BOOT_STUB 2>/dev/null | grep -e "vboot" >/dev/null 2>&1 ; then
 				[[ "${device^^}" != "LINK" ]] && firmwareType="Stock w/modified BOOT_STUB"
 			fi
