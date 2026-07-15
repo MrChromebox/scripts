@@ -34,6 +34,25 @@ function download_files()
 ###################
 # flash RW_LEGACY #
 ###################
+function prompt_rwlegacy_firmware_type()
+{
+	local uefi_file="$1"
+	local legacy_file="$2"
+
+	echo -e ""
+	echo_yellow "Firmware Type Selection"
+	echo -e "Your device has the option of two RW_LEGACY firmware types."
+	REPLY=""
+	while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "U" && "$REPLY" != "u" ]]; do
+		read -rep "Enter 'L' for Legacy BIOS (SeaBIOS), 'U' for UEFI (edk2/Tianocore): "
+		if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
+			rwlegacy_file=$uefi_file
+		else
+			rwlegacy_file=$legacy_file
+		fi
+	done
+}
+
 function flash_rwlegacy()
 {
 	log_fn
@@ -41,95 +60,65 @@ function flash_rwlegacy()
 	cd /tmp || fail_menu "Error changing to tmp dir; cannot proceed" || return
 
 	# set dev mode legacy boot / AltFw flags
-	if [ "${isChromeOS}" = true ]; then
+	if [[ "$isChromeOS" = true ]]; then
 		run_quiet crossystem dev_boot_legacy=1
 		run_quiet crossystem dev_boot_altfw=1
 	fi
 
 	#determine proper file
-	if [ "$device" = "link" ]; then
+	if [[ "$device" = "link" ]]; then
 		rwlegacy_file=$seabios_link
 	elif [[ "$isHswBox" = true || "$isBdwBox" = true ]]; then
 		rwlegacy_file=$seabios_hswbdw_box
 	elif [[ "$isHswBook" = true || "$isBdwBook" = true ]]; then
 		rwlegacy_file=$seabios_hswbdw_book
-	elif [ "$isByt" = true ]; then
+	elif [[ "$isByt" = true ]]; then
 		rwlegacy_file=$seabios_baytrail
-	elif [ "$isBsw" = true ]; then
+	elif [[ "$isBsw" = true ]]; then
 		rwlegacy_file=$seabios_braswell
-	elif [ "$isSkl" = true ]; then
+	elif [[ "$isSkl" = true ]]; then
 		rwlegacy_file=$seabios_skylake
-	elif [ "$isApl" = true ]; then
-		# prompt for SeaBIOS/edk2 selection
-		echo -e ""
-		echo_yellow "Firmware Type Selection"
-		echo -e "Your device has the option of two RW_LEGACY firmware types."
-		REPLY=""
-		while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "U" && "$REPLY" != "u"  ]]
-		do
-			read -rep "Enter 'L' for Legacy BIOS (SeaBIOS), 'U' for UEFI (edk2/Tianocore): "
-			if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
-				rwlegacy_file=$rwl_altfw_apl
-			else
-				rwlegacy_file=$seabios_apl
-			fi
-		done
-	elif [ "$isKbl" = true ]; then
-		# prompt for SeaBIOS/edk2 selection
-		echo -e ""
-		echo_yellow "Firmware Type Selection"
-		echo -e "Your device has the option of two RW_LEGACY firmware types."
-		REPLY=""
-		while [[ "$REPLY" != "L" && "$REPLY" != "l" && "$REPLY" != "U" && "$REPLY" != "u"  ]]
-		do
-			read -rep "Enter 'L' for Legacy BIOS (SeaBIOS), 'U' for UEFI (edk2/Tianocore): "
-			if [[ "$REPLY" = "U" || "$REPLY" = "u" ]]; then
-				if [ "$kbl_rwl18" = true ]; then
-				rwlegacy_file=$rwl_altfw_kbl_18
-				else
-				rwlegacy_file=$rwl_altfw_kbl
-				fi
-			else
-				if [ "$kbl_rwl18" = true ]; then
-				rwlegacy_file=$seabios_kbl_18
-				else
-				rwlegacy_file=$seabios_kbl
-				fi
-			fi
-		done
-	elif [ "$isWhl" = true ]; then
+	elif [[ "$isApl" = true ]]; then
+		prompt_rwlegacy_firmware_type "$rwl_altfw_apl" "$seabios_apl"
+	elif [[ "$isKbl" = true ]]; then
+		if [[ "$kbl_rwl18" = true ]]; then
+			prompt_rwlegacy_firmware_type "$rwl_altfw_kbl_18" "$seabios_kbl_18"
+		else
+			prompt_rwlegacy_firmware_type "$rwl_altfw_kbl" "$seabios_kbl"
+		fi
+	elif [[ "$isWhl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_whl
-	elif [ "$device" = "drallion" ]; then
+	elif [[ "$device" = "drallion" ]]; then
 		rwlegacy_file=$rwl_altfw_drallion
-	elif [ "$isCmlBox" = true ]; then
+	elif [[ "$isCmlBox" = true ]]; then
 		rwlegacy_file=$rwl_altfw_cml
-	elif [ "$isJsl" = true ]; then
+	elif [[ "$isJsl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_jsl
-	elif [ "$isTgl" = true ]; then
+	elif [[ "$isTgl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_tgl
-	elif [ "$isGlk" = true ]; then
+	elif [[ "$isGlk" = true ]]; then
 		rwlegacy_file=$rwl_altfw_glk
-	elif [ "$isAdl_fixed_rwl" = true ]; then
+	elif [[ "$isAdl_fixed_rwl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_adl_fixed
-	elif [ "$isAdl" = true ]; then
+	elif [[ "$isAdl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_adl
 	elif [[ "$isAdlN" = true || "$isTwl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_adl_n
-	elif [ "$isMtl" = true ]; then
+	elif [[ "$isMtl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_mtl
-	elif [ "$isStr" = true ]; then
+	elif [[ "$isStr" = true ]]; then
 		rwlegacy_file=$rwl_altfw_stoney
-	elif [ "$isPco" = true ]; then
+	elif [[ "$isPco" = true ]]; then
 		rwlegacy_file=$rwl_altfw_pco
-	elif [ "$isCzn" = true ]; then
+	elif [[ "$isCzn" = true ]]; then
 		rwlegacy_file=$rwl_altfw_czn
-	elif [ "$isMdn" = true ]; then
+	elif [[ "$isMdn" = true ]]; then
 		rwlegacy_file=$rwl_altfw_mdn
 	else
 		echo_red "Unknown or unsupported device (${device}); cannot update RW_LEGACY firmware."
 		echo_red "If your device is listed as supported on https://mrchromebox.tech/#devices,\n
 then email MrChromebox@gmail.com  and include a screenshot of the main menu."
-		read -rep "Press enter to return to the main menu"
+		read -rep "Press [Enter] to return to the main menu"
 		return 1
 	fi
 	if [[ "$rwlegacy_file" = *"altfw"* ]]; then
@@ -170,7 +159,7 @@ MrChromebox does not provide any support for running Windows."
 	fi
 
 	#preferUSB?
-	if [ "$preferUSB" = true  ]; then
+	if [[ "$preferUSB" = true ]]; then
 		if ! $CURL -sLo bootorder "${cbfs_source}bootorder.usb"; then
 			echo_red "Unable to download bootorder file; boot order cannot be changed."
 		else
@@ -424,7 +413,7 @@ and you need to recover using an external EEPROM programmer."
 			echo_red "Please report this issue and include /tmp/flashrom.log"
 			[[ -n "${MRCBX_LOG:-}" ]] && echo_red "(and session log ${MRCBX_LOG})"
 			if [[ -f /tmp/flashrom.log ]]; then
-				read -rp "Press enter to view the flashrom log file, then space for next page, q to quit"
+				read -rp "Press [Enter] to view the flashrom log file, then space for next page, q to quit"
 				more /tmp/flashrom.log
 			fi
 			fail_menu "An error occurred flashing the Full ROM firmware." || return
@@ -490,7 +479,7 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 	echo_yellow "Downloading ectool"
 	if ! get_ectool; then
 		echo_red "Unable to download ectool; cannot continue"
-		read -rep "Press enter to return to the main menu"
+		read -rep "Press [Enter] to return to the main menu"
 		return 1
 	fi
 	if ! run_quiet ${ectoolcmd} cbi get 8; then
@@ -498,7 +487,7 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 		echo_yellow "Initializing SSFC"
 		if ! $ectoolcmd cbi set 8 0x0 4 1; then
 			echo_red "Unable to initialize SSFC; if HW WP is enabled, please disable and retry"
-			read -rep "Press enter to return to the main menu"
+			read -rep "Press [Enter] to return to the main menu"
 			return 1
 		fi
 	fi
@@ -521,7 +510,7 @@ Setting the touchpad type in SSFC requires hardware WP to be disabled."
 		echo_yellow "Setting new SSFC value $ssfc_val"
 		if ! $ectoolcmd cbi set 8 $ssfc_val 4; then
 			echo_red "Error setting new SSFC value; if HW WP is enabled, please disable and retry"
-			read -rep "Press enter to return to the main menu"
+			read -rep "Press [Enter] to return to the main menu"
 			return 1
 		fi
 		echo_green "Touchpad type successfully set in SSFC"
@@ -545,7 +534,7 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 	# Check if this is a taeko or taniks board
 	if [[ "${device^^}" != "TAEKO" && "${device^^}" != "TANIKS" ]]; then
 		echo_red "This function is only for taeko/taniks boards"
-		read -rep "Press enter to return to the main menu"
+		read -rep "Press [Enter] to return to the main menu"
 		return 1
 	fi
 
@@ -557,13 +546,13 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 	echo_yellow "Downloading ectool"
 	if ! get_ectool; then
 		echo_red "Unable to download ectool; cannot continue"
-		read -rep "Press enter to return to the main menu"
+		read -rep "Press [Enter] to return to the main menu"
 		return 1
 	fi
 	fw_config_val=$($ectoolcmd cbi get 6 | grep -m1 'uint' | cut -f3 -d ' ')
 	if [ -z "$fw_config_val" ]; then
 		echo_red "Unable to read FW_CONFIG; cannot continue"
-		read -rep "Press enter to return to the main menu"
+		read -rep "Press [Enter] to return to the main menu"
 		return 1
 	fi
 	echo_yellow "Current FW_CONFIG value is $fw_config_val"
@@ -628,7 +617,7 @@ Setting the storage type in FW_CONFIG requires hardware WP to be disabled."
 	echo_yellow "Setting storage type to $new_storage (new FW_CONFIG value: $fw_config_val)"
 	if ! $ectoolcmd cbi set 6 $fw_config_val 4; then
 		echo_red "Error setting new FW_CONFIG value; if HW WP is enabled, please disable and retry"
-		read -rep "Press enter to return to the main menu"
+		read -rep "Press [Enter] to return to the main menu"
 		return 1
 	fi
 	echo_green "Storage type successfully set to $new_storage in FW_CONFIG"
@@ -995,7 +984,7 @@ function process_and_flash_custom_firmware()
 	if [ $? -ne 0 ]; then
 		echo_red "Error running cmd: ${flashromcmd} ${flashrom_params} ${noverify} -w ${custom_firmware_file} ${output_params}"
 		if [ -f /tmp/flashrom.log ]; then
-			read -rp "Press enter to view the flashrom log file, then space for next page, q to quit"
+			read -rp "Press [Enter] to view the flashrom log file, then space for next page, q to quit"
 			more /tmp/flashrom.log
 		fi
 		fail_menu "An error occurred flashing the custom firmware. DO NOT REBOOT!" || return
@@ -1691,7 +1680,7 @@ function clear_nvram()
 	fi
 	#all done
 	echo_green "NVRAM has been cleared."
-	read -rep "Press Enter to continue"
+	read -rep "Press [Enter] to continue"
 }
 
 #############################
@@ -1881,7 +1870,7 @@ function stock_menu() {
 			flash_rwlegacy
 		elif [[ "$isEOL" = true ]]; then
 			echo_red "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life"
-			read -rep "Press enter to return to the main menu"
+			read -rep "Press [Enter] to return to the main menu"
 		fi
 		menu_fwupdate
 		;;
