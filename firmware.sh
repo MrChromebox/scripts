@@ -672,7 +672,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 			download_files touchpad_downgrade_files "${other_source}" || return 1
 
 			#verify checksum on downloaded file
-			if sha1sum -c ${touchpad_eve_fw}.sha1 > /dev/null 2>&1; then
+			if sha1sum -c "${touchpad_eve_fw}.sha1" > /dev/null 2>&1; then
 				# flash TP firmware
 				echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
 				if run_quiet ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw} -o /tmp/flashrom.log; then
@@ -680,7 +680,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 					# try with older eve flashrom
-					[[ "$isChromeOS" == "true" ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
+					[[ "$isChromeOS" = true ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
 					(
 						cd $tpPath
 						flashrom_eve_files=(
@@ -688,7 +688,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 							"${flashrom_eve_tp}.sha1"
 						)
 						download_files flashrom_eve_files "${util_source}" || return 1
-						sha1sum -c ${flashrom_eve_tp}.sha1 > /dev/null 2>&1 || \
+						sha1sum -c "${flashrom_eve_tp}.sha1" > /dev/null 2>&1 || \
 							{ echo_red "Flashrom Eve TP checksum fail; download corrupted, cannot flash."; return 1; }
 						chmod +x ${flashrom_eve_tp}
 					)
@@ -741,7 +741,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 				return 1
 			fi
 			#verify checksum on downloaded file
-			if sha1sum -c ${touchpad_eve_fw_stock}.sha1 > /dev/null 2>&1; then
+			if sha1sum -c "${touchpad_eve_fw_stock}.sha1" > /dev/null 2>&1; then
 				# flash TP firmware
 				echo_green "Flashing touchpad firmware -- do not touch the touchpad while updating!"
 				if run_quiet ${flashromcmd/${flashrom_programmer}} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log; then
@@ -749,23 +749,26 @@ the touchpad firmware, otherwise the touchpad will not work."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 				# try with older eve flashrom
-				[[ "$isChromeOS" == "true" ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
+				[[ "$isChromeOS" = true ]] && tpPath="/usr/local/bin" || tpPath="/tmp"
 				(
 					cd $tpPath
-					if ! $CURL -sLO "${util_source}flashrom_eve_tp"; then
-						echo_red "Error downloading flashrom_eve_tp; cannot continue"
-						exit 1
-					fi
-					chmod +x flashrom_eve_tp
+					flashrom_eve_files=(
+						"${flashrom_eve_tp}"
+						"${flashrom_eve_tp}.sha1"
+					)
+					download_files flashrom_eve_files "${util_source}" || return 1
+					sha1sum -c "${flashrom_eve_tp}.sha1" > /dev/null 2>&1 || \
+						{ echo_red "Flashrom Eve TP checksum fail; download corrupted, cannot flash."; return 1; }
+					chmod +x ${flashrom_eve_tp}
 				)
-				if run_quiet $tpPath/flashrom_eve_tp -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log; then
+				if run_quiet $tpPath/${flashrom_eve_tp} -p ec:type=tp -i EC_RW -w ${touchpad_eve_fw_stock} -o /tmp/flashrom.log; then
 					echo_green "Touchpad firmware successfully upgraded."
 					echo_yellow "Please reboot your Pixelbook now."
 				else
 					echo_red "Error flashing touchpad firmware:"
 					cat /tmp/flashrom.log
 					echo_yellow "\nThis function sometimes doesn't work under Linux, in which case it is
-recommended to try under ChromeOS."
+recommended to try under ChromiumOS."
 				fi
 			fi
 			else
