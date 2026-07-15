@@ -193,8 +193,9 @@ function download_fullrom_release() {
 	fi
 
 	if [[ "${fullrom_layout:-versioned}" = "versioned" && "$base" != "${fullrom_source}" ]]; then
-		download_files fullrom_files "${fullrom_source}"
+		download_files fullrom_files "${fullrom_source}" && return 0
 	fi
+	return 1
 }
 
 function fullrom_file_date() {
@@ -885,8 +886,6 @@ Would you like to disable sofware WP and reboot your device?"
 			die
 		fi
 	fi
-
-	diagnostic_report_set firmwareType "$firmwareType"
 	
 	# Get/set HWID, boardname, device
 	if echo "$firmwareType" | grep -q -e "Stock"; then

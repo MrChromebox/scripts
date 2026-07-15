@@ -838,12 +838,14 @@ function flash_firmware_from_local()
 		hasError=true
 	fi
 	
+	if [[ "$hasError" = true ]]; then
+		read -rep "Press [Enter] to return to the main menu."
+		return 1
+	fi
+
 	# Copy firmware to /tmp for processing
-	cp "$firmware_path" /tmp/custom-firmware.rom || {
+	if ! cp "$firmware_path" /tmp/custom-firmware.rom; then
 		echo_red "Failed to copy firmware file to /tmp"
-		hasError=true
-	}
-	if $hasError; then
 		read -rep "Press [Enter] to return to the main menu."
 		return 1
 	fi
@@ -929,7 +931,7 @@ function process_and_flash_custom_firmware()
 	run_quiet ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt
 	
 	# Extract VPD if possible
-	run_quiet extract_vpd /tmp/bios.bin
+	extract_vpd /tmp/bios.bin
 	
 	# Extract RW_MRC_CACHE if present
 	run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache
