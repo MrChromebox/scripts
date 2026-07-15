@@ -352,8 +352,7 @@ and you need to recover using an external EEPROM programmer."
 	fi
 
 	#Persist RW_MRC_CACHE UEFI Full ROM firmware
-	run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache
-	if [[ $isFullRom = "true" && $? -eq 0 ]]; then
+	if run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache; then
 		run_quiet ${cbfstoolcmd} "${coreboot_file}" write -r RW_MRC_CACHE -f /tmp/mrc.cache
 	fi
 
@@ -470,13 +469,11 @@ Select the D option from the main main in order to do so."
 	isStock=false
 	isFullRom=true
 	# Add NVRAM reset note for 4.12 release
-	if [[ "$isUEFI" = true && "$useUEFI" = true ]]; then
-		echo_yellow "IMPORTANT:\n
+	echo_yellow "IMPORTANT:\n
 This update uses a new format to store UEFI NVRAM data, and
 will reset your BootOrder and boot entries. You may need to
 manually Boot From File and reinstall your bootloader if
 booting from the internal storage device fails."
-	fi
 	firmwareType="Full ROM / UEFI (pending reboot)"
 	isUEFI=true
 
@@ -861,24 +858,22 @@ function flash_firmware_from_usb()
 	read -rep "Connect the USB/SD device which contains the custom firmware and press [Enter] to continue. "
 	list_usb_devices || { exit_red "No USB devices available to read firmware from."; return 1; }
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
 		read -rep "Enter the number for the device which contains the custom firmware: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
 
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
 	run_quiet mkdir /tmp/usb
-	run_quiet mount "${usb_device}" /tmp/usb
-	if [ $? -ne 0 ]; then
-		mount "${usb_device}1" /tmp/usb
-	fi
-	if [ $? -ne 0 ]; then
-		echo_red "USB device failed to mount; cannot proceed."
-		read -rep "Press [Enter] to return to the main menu."
-		run_quiet umount /tmp/usb
-		return 1
+	if ! run_quiet mount "${usb_device}" /tmp/usb; then
+		if ! mount "${usb_device}1" /tmp/usb; then
+			echo_red "USB device failed to mount; cannot proceed."
+			read -rep "Press [Enter] to return to the main menu."
+			run_quiet umount /tmp/usb
+			return 1
+		fi
 	fi
 	
 	# Select file from USB device
@@ -1145,24 +1140,22 @@ function restore_fw_from_usb()
 Connect the USB/SD device which contains the backed-up stock firmware and press [Enter] to continue. "
 	list_usb_devices || { exit_red "No USB devices available to read firmware backup."; return 1; }
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
 		read -rep "Enter the number for the device which contains the stock firmware backup: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
 
 	usb_device="${usb_devs[${usb_dev_index}-1]}"
 	run_quiet mkdir /tmp/usb
-	run_quiet mount "${usb_device}" /tmp/usb
-	if [ $? -ne 0 ]; then
-		mount "${usb_device}1" /tmp/usb
-	fi
-	if [ $? -ne 0 ]; then
-		echo_red "USB device failed to mount; cannot proceed."
-		read -rep "Press [Enter] to return to the main menu."
-		run_quiet umount /tmp/usb
-		return 1
+	if ! run_quiet mount "${usb_device}" /tmp/usb; then
+		if ! mount "${usb_device}1" /tmp/usb; then
+			echo_red "USB device failed to mount; cannot proceed."
+			read -rep "Press [Enter] to return to the main menu."
+			run_quiet umount /tmp/usb
+			return 1
+		fi
 	fi
 	#select file from USB device
 	echo_yellow "\n(Potential) Firmware Files on USB:"
@@ -1196,9 +1189,9 @@ function restore_fw_from_recovery()
 	read -rep "and press [Enter] to continue. "
 	list_usb_devices || { exit_red "No USB devices available to read from."; return 1; }
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && ! $usb_dev_index -gt $num_usb_devs) ]]; do
+	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
 		read -rep "Enter the number which corresponds your ChromeOS Recovery USB: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
@@ -1401,9 +1394,9 @@ USB/SD devices are connected. "
 		return 1
 	fi
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
 		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
@@ -1443,9 +1436,9 @@ USB/SD devices are connected. "
 		return 1
 	fi
 	usb_dev_index=""
-	while [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; do
+	while [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; do
 		read -rep "Enter the number for the device to be used for firmware backup: " usb_dev_index
-		if [[ "$usb_dev_index" = "" || ($usb_dev_index -le 0 && $usb_dev_index -gt $num_usb_devs) ]]; then
+		if [[ -z "$usb_dev_index" || $usb_dev_index -lt 1 || $usb_dev_index -gt $usb_device_count ]]; then
 			echo -e "Error: Invalid option selected; enter a number from the list above."
 		fi
 	done
@@ -1765,14 +1758,14 @@ function reset_cr50_nvram()
 				
 				if [[ -n "$fwid_major" ]] && [[ "$fwid_major" -lt 12953 ]] 2>/dev/null; then
 					# v0 secdata_kernel (< 12953)
-					echo_yellow "Using v0 secdata_kernel format (FWID $fwid_major.$fwid_minor)"
+					echo_yellow "Using v0 secdata_kernel format (FWID $fwid_major)"
 					if ! run_quiet ${tpmccmd} write 0x1008 02 4c 57 52 47 01 00 01 00 00 00 00 55; then
 						echo_red "Error: Failed to reset CR50 kernel version data."
 						return 1
 					fi
 				else
 					# v1 secdata kernel (>= 12953)
-					echo_yellow "Using v1 secdata_kernel format (FWID $fwid_major.$fwid_minor)"
+					echo_yellow "Using v1 secdata_kernel format (FWID $fwid_major)"
 					if ! run_quiet ${tpmccmd} write 0x1008 10 28 0c 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00; then
 						echo_red "Error: Failed to reset CR50 kernel version data."
 						return 1

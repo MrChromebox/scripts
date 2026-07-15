@@ -634,6 +634,10 @@ you must use a VT2 terminal as directed per https://mrchromebox.tech/#fwscript"
 		echo_red "Required package 'md5sum' not found; cannot continue.  Please install and try again."
 		return 1
 	fi
+	if ! which sha1sum > /dev/null 2>&1; then
+		echo_red "Required package 'sha1sum' not found; cannot continue.  Please install and try again."
+		return 1
+	fi
 	
 	#get device name
 	device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}')
@@ -676,13 +680,13 @@ Run this from a Linux Live USB instead."
 			part_pfx=""
 		fi
 		part_num="${part_pfx}12"
-		export boot_mounted=$(mount | grep "${rootdev}""${part_num}")
-		if [ "${boot_mounted}" = "" ]; then
+		export boot_mounted=false
+		if mount | grep -q "${rootdev}""${part_num}"; then
+			boot_mounted=true
+		else
 			#mount boot
 			run_quiet mkdir /tmp/boot
 			run_quiet mount "$(rootdev -d -s)""${part_num}" /tmp/boot && boot_mounted=true
-		else
-			boot_mounted=true
 		fi
 		#set cmds
 		#check if we need to use a newer flashrom which supports output to log file (-o)
