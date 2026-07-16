@@ -1245,7 +1245,10 @@ function extract_vpd()
 {
 	log_fn
 	#check params
-	[[ -z "$1" ]] && fail_menu "Error: extract_vpd(): missing function parameter" || return
+	if [[ -z "$1" ]]; then
+		fail_menu "Error: extract_vpd(): missing function parameter"
+		return
+	fi
 
 	local firmware_file="$1"
 
