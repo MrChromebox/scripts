@@ -337,8 +337,8 @@ and you need to recover using an external EEPROM programmer."
 		run_quiet ${cbfstoolcmd} "${coreboot_file}" add -n hwid -f /tmp/hwid.txt -t raw
 	fi
 
-	#Persist RW_MRC_CACHE UEFI Full ROM firmware
-	if run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache; then
+	#Persist RW_MRC_CACHE from existing UEFI Full ROM only
+	if [[ "$isFullRom" = true ]] && run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache; then
 		run_quiet ${cbfstoolcmd} "${coreboot_file}" write -r RW_MRC_CACHE -f /tmp/mrc.cache
 	fi
 
