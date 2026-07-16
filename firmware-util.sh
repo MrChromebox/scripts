@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script offers provides the ability to update the
+# This script offers the ability to update the
 # Legacy Boot payload, set boot options, and install
 # a custom coreboot firmware for supported
 # ChromeOS devices
@@ -97,7 +97,6 @@ source "$script_dir/functions.sh"
 
 session_log_init
 
-#set working dir
 cd /tmp
 
 #do setup stuff

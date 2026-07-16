@@ -69,6 +69,40 @@ function exit_red() {
 	read -rep "Press [Enter] to return to the main menu."
 }
 
+# Show a menu error and return failure to the caller
+function fail_menu() {
+	exit_red "$@"
+	return 1
+}
+
+# Disable software WP and clear the WP range before flashing.
+# Returns 0 on success, 1 if --wp-disable failed, 2 if --wp-range failed.
+# strict: require disable and range clear to succeed (GBB partial writes)
+# flash: only fail if swWp was enabled when disable/range clear fails
+function clear_software_wp() {
+	local mode="${1:-flash}"
+
+	if [[ "$mode" = strict ]]; then
+		run_quiet ${flashromcmd} --wp-disable || return 1
+	else
+		if ! run_quiet ${flashromcmd} --wp-disable && [[ "$swWp" = "enabled" ]]; then
+			return 1
+		fi
+	fi
+
+	if run_quiet ${flashromcmd} --wp-range 0 0; then
+		return 0
+	fi
+
+	if [[ "$mode" = strict ]]; then
+		run_quiet ${flashromcmd} --wp-range 0,0 || return 2
+	else
+		if ! run_quiet ${flashromcmd} --wp-range 0,0 && [[ "$swWp" = "enabled" ]]; then
+			return 2
+		fi
+	fi
+}
+
 # Print error message and exit script
 function die() {
 	echo_red "$@"
@@ -762,7 +796,7 @@ Run this from a Linux Live USB instead."
 			echo_red "Session log: ${MRCBX_LOG}"
 		fi
 		echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,
-or trying running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
+or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
 		echo_red "If you have UEFI SecureBoot enabled, you need to disable it to run 
 the script/update your firmware."
 		return 1;
@@ -863,25 +897,16 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 		# prompt user to disable swWP and reboot
 		echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
 If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
-Would you like to disable sofware WP and reboot your device?"
+Would you like to disable software WP and reboot your device?"
 		read -rep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
 		# Validate user input
 		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 			echo -e "\nDisabling software WP..."
-			if ! run_quiet ${flashromcmd} --wp-disable; then
-				exit_red "\nError disabling software write-protect -- hardware WP is still enabled."
-				return 1
-			fi
-			echo -e "\nClearing the WP range(s)..."
-			if ! run_quiet ${flashromcmd} --wp-range 0 0; then
-				# use new command format as of commit 99b9550
-				if ! run_quiet ${flashromcmd} --wp-range 0,0; then
-					#re-run to output error
-					${flashromcmd} --wp-range 0,0
-					exit_red "\nError clearing software write-protect range."
-					return 1
-				fi
-			fi
+			clear_software_wp strict
+			case $? in
+				1) fail_menu "\nError disabling software write-protect -- hardware WP is still enabled." || return ;;
+				2) fail_menu "\nError clearing software write-protect range." || return ;;
+			esac
 			echo_green "\nSoftware WP disabled, rebooting in 5s"
 			reboot
 			# ensure we don't show the main menu while the system processes the reboot signal
