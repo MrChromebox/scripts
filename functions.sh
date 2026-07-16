@@ -888,8 +888,8 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 
 	# FMAP layout used for region checks / flashrom -i fallbacks
 	${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-	# If IFD unavailable, restrict writes to SI_BIOS (maps to IFD BIOS region)
-	if [[ -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
+	# If IFD unavailable, restrict writes to SI_BIOS for Intel devices (maps to IFD BIOS region)
+	if [[ "$isIntel" = true && -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
 		flashrom_params="-i SI_BIOS"
 	fi
 	diagnostic_report_set flashrom_params "${flashrom_params:-"(none)"}"
