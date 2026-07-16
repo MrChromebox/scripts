@@ -1962,7 +1962,9 @@ function stock_menu() {
 
 	[rR])	echo -e "\nRebooting...\n";
 		cleanup
-		reboot
+		if ! reboot 2>/dev/null; then
+			systemctl reboot -i
+		fi
 		exit
 		;;
 
