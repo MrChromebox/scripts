@@ -194,7 +194,10 @@ function flash_full_rom()
 	local slot_label=""
 
 	# ensure hardware write protect disabled
-	[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot flash Full ROM firmware." || return
+	if [[ "$wpEnabled" = true ]]; then
+		fail_menu "\nHardware write-protect enabled, cannot flash Full ROM firmware."
+		return
+	fi
 
 	if [[ "$slot" != "latest" && "$slot" != "previous" ]]; then
 		fail_menu "Invalid firmware release slot: ${slot}" || return
@@ -622,7 +625,10 @@ the touchpad firmware, otherwise the touchpad will not work."
 		read -rep "Do you wish to downgrade the touchpad firmware now? [y/N] "
 		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
 			# ensure firmware write protect disabled
-			[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot downgrade touchpad firmware." || return
+			if [[ "$wpEnabled" = true ]]; then
+				fail_menu "\nHardware write-protect enabled, cannot downgrade touchpad firmware."
+				return
+			fi
 			# download TP firmware
 			echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw})"
 			
@@ -695,7 +701,10 @@ the touchpad firmware, otherwise the touchpad will not work."
 		read -rep "Do you wish to upgrade the touchpad firmware now? [y/N] "
 		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
 			# ensure firmware write protect disabled
-			[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot upgrade touchpad firmware." || return
+			if [[ "$wpEnabled" = true ]]; then
+				fail_menu "\nHardware write-protect enabled, cannot upgrade touchpad firmware."
+				return
+			fi
 			# download TP firmware
 			echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw_stock})"
 			
@@ -763,7 +772,10 @@ function flash_custom_firmware()
 {
 	log_fn
 	# ensure hardware write protect disabled
-	[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot flash custom firmware." || return
+	if [[ "$wpEnabled" = true ]]; then
+		fail_menu "\nHardware write-protect enabled, cannot flash custom firmware."
+		return
+	fi
 
 	echo_green "\nFlash Custom Firmware Image"
 	echo_yellow "IMPORTANT: flashing custom firmware has the potential to brick your device,
@@ -1002,8 +1014,10 @@ other than the latest UEFI Full ROM firmware release."
 		#spacing
 		echo -e ""
 		# ensure hardware write protect disabled
-		[[ "$wpEnabled" = true ]] && 
-			fail_menu "\nHardware write-protect enabled, cannot restore stock firmware." || return
+		if [[ "$wpEnabled" = true ]]; then
+			fail_menu "\nHardware write-protect enabled, cannot restore stock firmware."
+			return
+		fi
 		# default file to download to
 		firmware_file="/tmp/stock-firmware.rom"
 		echo -e ""
@@ -1404,7 +1418,10 @@ function set_boot_options()
 	# set boot options via firmware boot flags
 
 	# ensure hardware write protect disabled
-	[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags." || return
+	if [[ "$wpEnabled" = true ]]; then
+		fail_menu "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."
+		return
+	fi
 
 	echo_green "\nSet Firmware Boot Options (GBB Flags)"
 	echo_yellow "Select your preferred boot delay and default boot option.
@@ -1462,7 +1479,10 @@ function set_hwid()
 	log_fn
 	# set HWID using gbb_utility
 	# ensure hardware write protect disabled
-	[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot set HWID." || return
+	if [[ "$wpEnabled" = true ]]; then
+		fail_menu "\nHardware write-protect enabled, cannot set HWID."
+		return
+	fi
 
 	echo_green "Set Hardware ID (HWID) using gbb_utility"
 
@@ -1517,7 +1537,10 @@ function set_hwid_uefi()
 	log_fn
 	# set HWID using cbfstool for UEFI firmware
 	# ensure hardware write protect disabled
-	[[ "$wpEnabled" = true ]] && fail_menu "\nHardware write-protect enabled, cannot set HWID." || return
+	if [[ "$wpEnabled" = true ]]; then
+		fail_menu "\nHardware write-protect enabled, cannot set HWID."
+		return
+	fi
 
 	echo_green "\nSet Hardware ID (HWID) for UEFI Firmware"
 
