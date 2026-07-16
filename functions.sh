@@ -641,9 +641,11 @@ you must use a VT2 terminal as directed per https://mrchromebox.tech/#fwscript"
 	fi
 	
 	#get device name
-	device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}')
+	if ! device=$(dmidecode -s system-product-name | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g' | awk 'NR==1{print $1}'); then
+		device=""
+	fi
 	diagnostic_report_set dmidecode.device "$device"
-	if [[ $? -ne 0 || "${device}" = "" ]]; then
+	if [[ -z "$device" ]]; then
 		echo_red "Unable to determine Chromebox/book model; cannot continue."
 		echo_red "It's likely you are using an unsupported ARM-based ChromeOS device,
 only x86_64-based devices are supported at this time."
