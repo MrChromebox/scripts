@@ -1516,6 +1516,11 @@ You can always override the default using [CTRL+D] or
 	if ! run_quiet ${flashromcmd} --wp-disable; then
 		exit_red "Error disabling software write-protect; unable to set GBB flags."; return 1
 	fi
+	if ! run_quiet ${flashromcmd} --wp-range 0 0; then
+		if ! run_quiet ${flashromcmd} --wp-range 0,0; then
+			exit_red "Error clearing software write-protect range; unable to set GBB flags."; return 1
+		fi
+	fi
 	[[ "$isChromeOS" = false ]] && FMAP="--fmap"
 	if ! run_flashrom ${flashromcmd} -r $FMAP -i GBB:/tmp/gbb.temp; then
 		exit_red "\nError reading firmware (non-stock?); unable to set boot options."; return 1
@@ -1569,6 +1574,11 @@ Proceed at your own risk."
 		#disable software write-protect
 		if ! run_quiet ${flashromcmd} --wp-disable; then
 			exit_red "Error disabling software write-protect; unable to set HWID."; return 1
+		fi
+		if ! run_quiet ${flashromcmd} --wp-range 0 0; then
+			if ! run_quiet ${flashromcmd} --wp-range 0,0; then
+				exit_red "Error clearing software write-protect range; unable to set HWID."; return 1
+			fi
 		fi
 		[[ "$isChromeOS" = false ]] && FMAP="--fmap"
 		if ! run_flashrom ${flashromcmd} -r $FMAP -i GBB:/tmp/gbb.temp; then
