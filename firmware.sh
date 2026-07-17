@@ -279,8 +279,11 @@ This will roll back to the previous UEFI release ($(fullrom_slot_detail previous
 		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 	fi
 
-	#extract device serial if present in cbfs
-	run_quiet ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt
+	#extract device serial if present in CBFS (UEFI / non-stock only)
+	rm -f /tmp/serial.txt
+	if [[ "$isStock" = false ]]; then
+		run_quiet ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt
+	fi
 
 	#extract device HWID
 	if [[ "$isStock" = true ]]; then
@@ -342,8 +345,8 @@ and you need to recover using an external EEPROM programmer."
 		run_quiet ${cbfstoolcmd} "${coreboot_file}" write -r RW_MRC_CACHE -f /tmp/mrc.cache
 	fi
 
-	#Persist SMMSTORE if exists
-	if run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore; then
+	#Persist SMMSTORE from existing UEFI / non-stock only
+	if [[ "$isStock" = false ]] && run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore; then
 		run_quiet ${cbfstoolcmd} "${coreboot_file}" write -r SMMSTORE -f /tmp/smmstore
 	fi
 
@@ -890,8 +893,11 @@ function process_and_flash_custom_firmware()
 	# Extract current firmware data to preserve
 	echo_yellow "Extracting device-specific data from current firmware"
 	
-	# Extract serial number if present
-	run_quiet ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt
+	# Extract serial number if present (UEFI / non-stock CBFS only)
+	rm -f /tmp/serial.txt /tmp/smmstore
+	if [[ "$isStock" = false ]]; then
+		run_quiet ${cbfstoolcmd} /tmp/bios.bin extract -n serial_number -f /tmp/serial.txt
+	fi
 	
 	# Extract HWID if present
 	run_quiet ${cbfstoolcmd} /tmp/bios.bin extract -n hwid -f /tmp/hwid.txt
@@ -902,8 +908,10 @@ function process_and_flash_custom_firmware()
 	# Extract RW_MRC_CACHE if present
 	run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r RW_MRC_CACHE -f /tmp/mrc.cache
 	
-	# Extract SMMSTORE if present
-	run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore
+	# Extract SMMSTORE if present (UEFI / non-stock only)
+	if [[ "$isStock" = false ]]; then
+		run_quiet ${cbfstoolcmd} /tmp/bios.bin read -r SMMSTORE -f /tmp/smmstore
+	fi
 	
 	# Persist serial number if extracted
 	if [ -f /tmp/serial.txt ]; then

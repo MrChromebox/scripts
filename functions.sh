@@ -837,12 +837,20 @@ Run this from a Linux Live USB instead."
 		_log_command "$flashrom_rc" "${flashromcmd} --ifd -i bios -r /tmp/bios.bin" /tmp/flashrom.log
 		[[ "$flashrom_rc" -eq 0 ]] && flashrom_params="--ifd -i bios"
 	fi
-	# Full-chip read: non-Intel, or ChromeOS when IFD is unavailable/failed.
-	# Non-ChromeOS Intel must succeed via IFD (no full-chip fallback).
+	# Non-IFD read: non-Intel, or ChromeOS when IFD is unavailable/failed.
+	# Non-ChromeOS Intel must succeed via IFD (no fallback).
+	# Intel stock ChromeOS uses FMAP region SI_BIOS; fall back to full-chip.
 	if [[ "$flashrom_rc" -ne 0 ]] && { [[ "$isIntel" != true ]] || [[ "$isChromeOS" = true || "$isChromiumOS" = true ]]; }; then
-		${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
-		flashrom_rc=$?
-		_log_command "$flashrom_rc" "${flashromcmd} -r /tmp/bios.bin" /tmp/flashrom.log
+		if [[ "$isIntel" = true ]]; then
+			${flashromcmd} -i SI_BIOS -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+			flashrom_rc=$?
+			_log_command "$flashrom_rc" "${flashromcmd} -i SI_BIOS -r /tmp/bios.bin" /tmp/flashrom.log
+		fi
+		if [[ "$flashrom_rc" -ne 0 ]]; then
+			${flashromcmd} -r /tmp/bios.bin > /tmp/flashrom.log 2>&1
+			flashrom_rc=$?
+			_log_command "$flashrom_rc" "${flashromcmd} -r /tmp/bios.bin" /tmp/flashrom.log
+		fi
 	fi
 	
 	if [[ "$flashrom_rc" -ne 0 ]]; then
@@ -888,12 +896,12 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 
 	# FMAP layout used for region checks / flashrom -i fallbacks
 	${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-	# If IFD unavailable, restrict writes to SI_BIOS for Intel devices (maps to IFD BIOS region)
+	# Without IFD (old ChromeOS flashrom): stock images expose SI_BIOS, but
+	# UEFI/MrChromebox images use BIOS — set write params from the target name.
 	if [[ "$isIntel" = true && -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
-		flashrom_params="-i SI_BIOS"
+		flashrom_params="-i BIOS"
 	fi
 	diagnostic_report_set flashrom_params "${flashrom_params:-"(none)"}"
-	
 	# firmware date/version
 	fwVer=$(dmidecode -s bios-version)
 	fwVer="${fwVer#"${fwVer%%[![:space:]]*}"}"  # Remove leading whitespace
