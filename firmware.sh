@@ -214,13 +214,6 @@ function flash_full_rom()
 			fail_menu "Unable to determine firmware file for ${device^^}; cannot continue." || return
 		fi
 	fi
-	if ! fullrom_firmware_available "$slot"; then
-		if [[ "$slot" = "previous" ]]; then
-			fail_menu "No previous UEFI firmware file is available for ${device^^}\n(${coreboot_file})" || return
-		else
-			fail_menu "No UEFI Full ROM firmware file is available for ${device^^}\n(${coreboot_file})" || return
-		fi
-	fi
 
 	if [[ "$slot" = "previous" ]]; then
 		echo_green "\nRollback to Previous UEFI Full ROM Release"
@@ -279,6 +272,15 @@ This will roll back to the previous UEFI release ($(fullrom_slot_detail previous
 		[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
 	fi
 
+	echo_yellow "Validating firmware image availability..."
+	if ! fullrom_firmware_available "$slot"; then
+		if [[ "$slot" = "previous" ]]; then
+			fail_menu "No previous UEFI firmware file is available for ${device^^}\n(${coreboot_file})" || return
+		else
+			fail_menu "No UEFI Full ROM firmware file is available for ${device^^}\n(${coreboot_file})" || return
+		fi
+	fi
+
 	#extract device serial if present in CBFS (UEFI / non-stock only)
 	rm -f /tmp/serial.txt
 	if [[ "$isStock" = false ]]; then
@@ -312,7 +314,7 @@ and you need to recover using an external EEPROM programmer."
 
 	#download firmware file
 	cd /tmp || fail_menu "Error changing to tmp dir; cannot proceed" || return
-	echo_yellow "\nDownloading Full ROM firmware\n(${coreboot_file})"
+	echo_yellow "Downloading Full ROM firmware\n(${coreboot_file})"
 	log_section "flash_full_rom: slot=${slot} label=${slot_label} downloading ${coreboot_file}"
 
 	if ! download_fullrom_release "$slot"; then
