@@ -370,45 +370,16 @@ and you need to recover using an external EEPROM programmer."
 	#flash Full ROM firmware
 	rm -f /tmp/flashrom.log /tmp/flashrom-attempt.log
 
-	local flashrom_supports_o=false
-	if ${flashromcmd} -V -o /dev/null > /dev/null 2>&1; then
-		flashrom_supports_o=true
-	fi
-
-	# Write image; append flashrom output to /tmp/flashrom.log (never truncate it)
-	_flash_fullrom_once() {
-		local img="$1"
-		local label="$2"
-		local rc=0
-
-		{
-			echo "=== ${label}: writing ${img} ==="
-			date
-		} >> /tmp/flashrom.log
-
-		if [[ "$flashrom_supports_o" = true ]]; then
-			rm -f /tmp/flashrom-attempt.log
-			run_quiet ${flashromcmd} ${flashrom_params} ${noverify} -w "${img}" -o /tmp/flashrom-attempt.log
-			rc=$?
-			[[ -f /tmp/flashrom-attempt.log ]] && cat /tmp/flashrom-attempt.log >> /tmp/flashrom.log
-		else
-			# shellcheck disable=SC2086
-			${flashromcmd} ${flashrom_params} ${noverify} -w "${img}" >> /tmp/flashrom.log 2>&1
-			rc=$?
-		fi
-		return "$rc"
-	}
-
 	echo_yellow "Installing Full ROM firmware (may take up to 90s)"
 	log_section "flash_full_rom: writing ${coreboot_file}"
-	if ! _flash_fullrom_once "${coreboot_file}" "attempt 1"; then
+	if ! flashrom_write_image "${coreboot_file}" "attempt 1"; then
 		echo_red "Firmware flash failed; retrying once..."
 		log_section "flash_full_rom: retry writing ${coreboot_file}"
-		if ! _flash_fullrom_once "${coreboot_file}" "attempt 2"; then
+		if ! flashrom_write_image "${coreboot_file}" "attempt 2"; then
 			echo_red "Firmware flash failed after retry."
 			echo_yellow "Attempting to restore previous firmware from /tmp/bios.bin..."
 			log_section "flash_full_rom: restoring /tmp/bios.bin"
-			if _flash_fullrom_once "/tmp/bios.bin" "restore"; then
+			if flashrom_write_image "/tmp/bios.bin" "restore"; then
 				echo_green "Previous firmware restored."
 			else
 				echo_red "CRITICAL: Failed to restore previous firmware."
@@ -962,19 +933,10 @@ function process_and_flash_custom_firmware()
 	
 	# Flash the custom firmware
 	echo_yellow "Installing custom firmware (may take up to 90s)"
-	rm -f /tmp/flashrom.log
-	
-	# Check if flashrom supports logging to file
-	if ${flashromcmd} -V -o /dev/null > /dev/null 2>&1; then
-		output_params="-o /tmp/flashrom.log"
-		run_quiet ${flashromcmd} ${flashrom_params} ${noverify} -w "${custom_firmware_file}" -o /tmp/flashrom.log
-	else
-		output_params="/tmp/flashrom.log"
-		run_flashrom ${flashromcmd} ${flashrom_params} ${noverify} -w "${custom_firmware_file}"
-	fi
-	
-	if [ $? -ne 0 ]; then
-		echo_red "Error running cmd: ${flashromcmd} ${flashrom_params} ${noverify} -w ${custom_firmware_file} ${output_params}"
+	rm -f /tmp/flashrom.log /tmp/flashrom-attempt.log
+
+	if ! flashrom_write_image "${custom_firmware_file}" "custom"; then
+		echo_red "Error flashing custom firmware; see /tmp/flashrom.log"
 		if [ -f /tmp/flashrom.log ]; then
 			read -rp "Press [Enter] to view the flashrom log file, then space for next page, q to quit"
 			more /tmp/flashrom.log
@@ -1076,9 +1038,9 @@ other than the latest UEFI Full ROM firmware release."
 		run_quiet ${gbbutilitycmd} ${firmware_file} --set --flags=0x0
 		#flash stock firmware
 		echo_yellow "Restoring stock firmware"
-		# only verify part of flash we write
-		if ! run_quiet ${flashromcmd} ${flashrom_params} ${noverify} -w "${firmware_file}" -o /tmp/flashrom.log; then
-			cat /tmp/flashrom.log
+		rm -f /tmp/flashrom.log /tmp/flashrom-attempt.log
+		if ! flashrom_write_image "${firmware_file}" "restore stock"; then
+			[[ -f /tmp/flashrom.log ]] && cat /tmp/flashrom.log
 			fail_menu "An error occurred restoring the stock firmware. DO NOT REBOOT!" || return
 		fi
 		#re-enable software WP to prevent recovery issues

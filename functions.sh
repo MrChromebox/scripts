@@ -394,6 +394,54 @@ function run_flashrom() {
 	return "$rc"
 }
 
+# Write a firmware image with flashrom.
+# Uses flashrom_params when set (e.g. --ifd -i bios). On ChromeOS/ChromiumOS
+# Intel without IFD, tries -i BIOS then -i SI_BIOS — older flashrom resolves -i
+# against either the chip or write-file FMAP, and those names differ.
+# Appends each attempt to /tmp/flashrom.log. Args: <image> [log_label]
+function flashrom_write_image() {
+	local img="$1"
+	local label="${2:-write}"
+	local supports_o=false
+	local rc=1
+	local params
+	local -a params_list
+
+	if ${flashromcmd} -V -o /dev/null > /dev/null 2>&1; then
+		supports_o=true
+	fi
+
+	if [[ -n "$flashrom_params" ]]; then
+		params_list=("$flashrom_params")
+	elif [[ "$isIntel" = true ]] && { [[ "$isChromeOS" = true ]] || [[ "$isChromiumOS" = true ]]; }; then
+		params_list=("-i BIOS" "-i SI_BIOS")
+	else
+		params_list=("")
+	fi
+
+	for params in "${params_list[@]}"; do
+		{
+			echo "=== ${label}: writing ${img} (${params:-full chip}) ==="
+			date
+		} >> /tmp/flashrom.log
+
+		if [[ "$supports_o" = true ]]; then
+			rm -f /tmp/flashrom-attempt.log
+			# shellcheck disable=SC2086
+			run_quiet ${flashromcmd} ${params} ${noverify} -w "${img}" -o /tmp/flashrom-attempt.log
+			rc=$?
+			[[ -f /tmp/flashrom-attempt.log ]] && cat /tmp/flashrom-attempt.log >> /tmp/flashrom.log
+		else
+			# shellcheck disable=SC2086
+			${flashromcmd} ${params} ${noverify} -w "${img}" >> /tmp/flashrom.log 2>&1
+			rc=$?
+			_log_command "$rc" "${flashromcmd} ${params} ${noverify} -w ${img}" /tmp/flashrom.log
+		fi
+		[[ "$rc" -eq 0 ]] && return 0
+	done
+	return "$rc"
+}
+
 # Run a command, log output, and return output for capture
 function run_capture() {
 	local output rc=0
@@ -896,12 +944,12 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 
 	# FMAP layout used for region checks / flashrom -i fallbacks
 	${cbfstoolcmd} /tmp/bios.bin layout -w > /tmp/layout 2>/dev/null
-	# Without IFD (old ChromeOS flashrom): stock images expose SI_BIOS, but
-	# UEFI/MrChromebox images use BIOS — set write params from the target name.
-	if [[ "$isIntel" = true && -z "$flashrom_params" ]] && grep -q "'SI_BIOS'" /tmp/layout 2>/dev/null; then
-		flashrom_params="-i BIOS"
+	# Without IFD, ChromeOS writes try -i BIOS then -i SI_BIOS (flashrom_write_image).
+	if [[ "$isIntel" = true && -z "$flashrom_params" ]] && { [[ "$isChromeOS" = true ]] || [[ "$isChromiumOS" = true ]]; }; then
+		diagnostic_report_set flashrom_params "(try -i BIOS, -i SI_BIOS)"
+	else
+		diagnostic_report_set flashrom_params "${flashrom_params:-"(none)"}"
 	fi
-	diagnostic_report_set flashrom_params "${flashrom_params:-"(none)"}"
 	# firmware date/version
 	fwVer=$(dmidecode -s bios-version)
 	fwVer="${fwVer#"${fwVer%%[![:space:]]*}"}"  # Remove leading whitespace
