@@ -1021,7 +1021,9 @@ Would you like to disable software WP and reboot your device?"
 				"\nError disabling software write-protect -- hardware WP is still enabled." \
 				"\nError clearing software write-protect range." || return
 			echo_green "\nSoftware WP disabled, rebooting in 5s"
-			reboot
+			if ! reboot 2>/dev/null; then
+				systemctl reboot -i
+			fi
 			# ensure we don't show the main menu while the system processes the reboot signal
 			die
 		fi

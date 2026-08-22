@@ -1872,7 +1872,9 @@ function stock_menu() {
 
 	[pP])	echo -e "\nPowering off...\n";
 		cleanup
-		poweroff
+		if ! poweroff 2>/dev/null; then
+			systemctl poweroff -i
+		fi
 		exit
 		;;
 
@@ -2022,7 +2024,9 @@ function uefi_menu() {
 
 	[pP])	echo -e "\nPowering off...\n";
 		cleanup
-		poweroff
+		if ! poweroff 2>/dev/null; then
+			systemctl poweroff -i
+		fi
 		exit
 		;;
 
