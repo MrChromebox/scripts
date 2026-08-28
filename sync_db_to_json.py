@@ -72,6 +72,7 @@ def get_cpu_platform_mapping():
         'TGL': 'Intel TigerLake',
         'ADL': 'Intel Alderlake',
         'ADN': 'Intel Alderlake-N',
+        'TWL': 'Intel Alderlake-N',
         'MTL': 'Intel Meteorlake',
         'STR': 'AMD Stoneyridge',
         'PCO': 'AMD Picasso',
@@ -134,6 +135,36 @@ def find_similar_description(description, existing_descriptions):
         if is_similar_description(description, existing_desc):
             return existing_desc
     return None
+
+def is_generic_catchall(description, boardname, cpu):
+    """True when description is an internal codename placeholder, not a retail name."""
+    desc = description.strip()
+    if not desc:
+        return True
+    if 'Development Product' in desc:
+        return True
+    if desc.startswith(('Fizz-based', 'Incorrectly identified')):
+        return True
+
+    root = re.sub(r'360$', '', boardname.split('-')[0].split(' ')[0], flags=re.IGNORECASE)
+    form = r'Chrome(?:book|box)'
+
+    if re.match(rf'^{root}(\s*CS)?\s+ADL-N\s+{form}$', desc, re.IGNORECASE):
+        return True
+    if re.match(rf'^{root}(?:\s+360)?(?:\s*CS)?\s+{re.escape(cpu)}\s+{form}$', desc, re.IGNORECASE):
+        return True
+
+    return False
+
+def filter_descriptions(descriptions, boardname, cpu):
+    """Drop generic catchall descriptions; log what was skipped."""
+    kept = []
+    for desc in descriptions:
+        if is_generic_catchall(desc, boardname, cpu):
+            print(f"  Skipping generic catchall: '{desc}'")
+        else:
+            kept.append(desc)
+    return kept
 
 def find_existing_boardname(devices_json, boardname):
     """Check if a boardname already exists in any platform section with improved matching."""
@@ -290,8 +321,12 @@ def analyze_and_update(devices_json_path="devices.json"):
             print(f"Skipping boardname: {base_hwid}")
             continue
             
-        # Combine descriptions, removing duplicates
+        # Combine descriptions, removing duplicates and generic catchalls
         unique_descriptions = list(dict.fromkeys(group_info['descriptions']))  # Preserve order, remove duplicates
+        unique_descriptions = filter_descriptions(unique_descriptions, base_hwid, group_info['cpu'])
+        if not unique_descriptions:
+            print(f"Skipping {base_hwid}: no retail descriptions after filtering catchalls")
+            continue
         
         # Check if base HWID exists in devices.json
         existing_platform, existing_device = find_existing_boardname(devices_json, base_hwid)
