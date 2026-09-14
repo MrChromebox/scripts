@@ -960,6 +960,42 @@ Be patient and eventually your device will boot :)"
 	read -rep "Press [Enter] to return to the main menu."
 }
 
+# Returns 0 if the image looks like stock ChromeOS firmware.
+# Stock images have a GBB, either FW_MAIN_A (vboot A/B) or BOOT_STUB (legacy),
+# and an official RO_FRID (Google_<board>.<N>.<N>.<N>). Some stock AMD/Intel
+# images include SMMSTORE, and some older custom ROMs keep a leftover ChromeOS
+# FMAP with a Google_ FRID that uses a git-style version — reject those.
+function is_stock_firmware_image()
+{
+	local img="$1"
+	local layout_file="/tmp/stock-check-layout"
+	local frid_file="/tmp/stock-check-frid"
+	local frid=""
+
+	[[ -n "$img" && -f "$img" ]] || return 1
+
+	rm -f "$layout_file" "$frid_file"
+	if ! ${cbfstoolcmd} "$img" layout -w > "$layout_file" 2>/dev/null; then
+		return 1
+	fi
+
+	# Stock ChromeOS firmware has a GBB and either RW A/B slots or legacy BOOT_STUB
+	grep -q "'GBB'" "$layout_file" || return 1
+	if ! grep -q "'FW_MAIN_A'" "$layout_file" && ! grep -q "'BOOT_STUB'" "$layout_file"; then
+		return 1
+	fi
+
+	# Official RO_FRID is Google_<board>.<major>.<minor>.<tiny>[, optional _d... suffix]
+	grep -q "'RO_FRID'" "$layout_file" || return 1
+	if ! run_quiet ${cbfstoolcmd} "$img" read -r RO_FRID -f "$frid_file"; then
+		return 1
+	fi
+	frid=$(tr -d '\0' < "$frid_file")
+	echo "$frid" | grep -qxE 'Google_[A-Za-z0-9_]+(\.[0-9]+){3}(_.*)?' || return 1
+
+	return 0
+}
+
 ########################
 # Restore Stock Firmware #
 ##########################
@@ -994,7 +1030,7 @@ other than the latest UEFI Full ROM firmware release."
 		firmware_file="/tmp/stock-firmware.rom"
 		echo -e ""
 		echo_yellow "Please select an option below for restoring the stock firmware:"
-		echo -e "1) Restore using a firmware backup on USB"
+		echo -e "1) Restore using a stock firmware backup on USB"
 		echo -e "2) Restore using a ChromeOS Recovery USB"
 		echo -e "Q) Quit and return to main menu"
 		echo -e ""
@@ -1015,6 +1051,12 @@ other than the latest UEFI Full ROM firmware release."
 			esac
 		done
 		[[ "$restore_option" = "Q" ]] && return
+		echo_yellow "Verifying that the image is stock ChromeOS firmware"
+		if ! is_stock_firmware_image "${firmware_file}"; then
+			fail_menu "The selected file does not appear to be stock ChromeOS firmware.
+To flash a custom ROM, use the Flash Custom Firmware option instead." || return
+		fi
+		echo_yellow "Verified stock firmware: $(tr -d '\0' < /tmp/stock-check-frid)"
 		if [[ $restore_option -eq 2 ]]; then
 			#extract VPD from current firmware if present
 			if extract_vpd /tmp/bios.bin ; then
