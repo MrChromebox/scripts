@@ -194,10 +194,7 @@ function flash_full_rom()
 	local slot_label=""
 
 	# ensure hardware write protect disabled
-	if [[ "$wpEnabled" = true ]]; then
-		fail_menu "\nHardware write-protect enabled, cannot flash Full ROM firmware."
-		return
-	fi
+	require_host_flash_access "flash Full ROM firmware" || return
 
 	if [[ "$slot" != "latest" && "$slot" != "previous" ]]; then
 		fail_menu "Invalid firmware release slot: ${slot}" || return
@@ -601,10 +598,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 		read -rep "Do you wish to downgrade the touchpad firmware now? [y/N] "
 		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
 			# ensure firmware write protect disabled
-			if [[ "$wpEnabled" = true ]]; then
-				fail_menu "\nHardware write-protect enabled, cannot downgrade touchpad firmware."
-				return
-			fi
+			require_host_flash_access "downgrade touchpad firmware" || return
 			# download TP firmware
 			echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw})"
 			
@@ -677,10 +671,7 @@ the touchpad firmware, otherwise the touchpad will not work."
 		read -rep "Do you wish to upgrade the touchpad firmware now? [y/N] "
 		if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]] ; then
 			# ensure firmware write protect disabled
-			if [[ "$wpEnabled" = true ]]; then
-				fail_menu "\nHardware write-protect enabled, cannot upgrade touchpad firmware."
-				return
-			fi
+			require_host_flash_access "upgrade touchpad firmware" || return
 			# download TP firmware
 			echo_yellow "\nDownloading touchpad firmware\n(${touchpad_eve_fw_stock})"
 			
@@ -748,10 +739,7 @@ function flash_custom_firmware()
 {
 	log_fn
 	# ensure hardware write protect disabled
-	if [[ "$wpEnabled" = true ]]; then
-		fail_menu "\nHardware write-protect enabled, cannot flash custom firmware."
-		return
-	fi
+	require_host_flash_access "flash custom firmware" || return
 
 	echo_green "\nFlash Custom Firmware Image"
 	echo_yellow "IMPORTANT: flashing custom firmware has the potential to brick your device,
@@ -1022,10 +1010,7 @@ other than the latest UEFI Full ROM firmware release."
 		#spacing
 		echo -e ""
 		# ensure hardware write protect disabled
-		if [[ "$wpEnabled" = true ]]; then
-			fail_menu "\nHardware write-protect enabled, cannot restore stock firmware."
-			return
-		fi
+		require_host_flash_access "restore stock firmware" || return
 		# default file to download to
 		firmware_file="/tmp/stock-firmware.rom"
 		echo -e ""
@@ -1435,10 +1420,7 @@ function set_boot_options()
 	# set boot options via firmware boot flags
 
 	# ensure hardware write protect disabled
-	if [[ "$wpEnabled" = true ]]; then
-		fail_menu "\nHardware write-protect enabled, cannot set Boot Options / GBB Flags."
-		return
-	fi
+	require_host_flash_access "set Boot Options / GBB Flags" || return
 
 	echo_green "\nSet Firmware Boot Options (GBB Flags)"
 	echo_yellow "Select your preferred boot delay and default boot option.
@@ -1496,10 +1478,7 @@ function set_hwid()
 	log_fn
 	# set HWID using gbb_utility
 	# ensure hardware write protect disabled
-	if [[ "$wpEnabled" = true ]]; then
-		fail_menu "\nHardware write-protect enabled, cannot set HWID."
-		return
-	fi
+	require_host_flash_access "set HWID" || return
 
 	echo_green "Set Hardware ID (HWID) using gbb_utility"
 
@@ -1552,12 +1531,8 @@ Proceed at your own risk."
 function set_hwid_uefi()
 {
 	log_fn
-	# set HWID using cbfstool for UEFI firmware
 	# ensure hardware write protect disabled
-	if [[ "$wpEnabled" = true ]]; then
-		fail_menu "\nHardware write-protect enabled, cannot set HWID."
-		return
-	fi
+	require_host_flash_access "set HWID" || return
 
 	echo_green "\nSet Hardware ID (HWID) for UEFI Firmware"
 
@@ -1645,6 +1620,7 @@ function clear_nvram()
 
 	read -rep "Would you like to continue? [y/N] "
 	[[ "$REPLY" = "y" || "$REPLY" = "Y" ]] || return
+	require_smm_writes_allowed "clear UEFI NVRAM" || return
 
 	echo_yellow "\nClearing NVRAM..."
 	if ! run_flashrom ${flashromcmd} -E -i SMMSTORE --fmap; then
@@ -1786,6 +1762,10 @@ function show_header() {
 	else
 		echo -e "${MENU}**${NUMBER}      Fw WP: ${NORMAL}Disabled"
 		WP_TEXT=${GREEN_TEXT}
+	fi
+	if [ "$smmBiosProtect" = true ]; then
+		echo -e "${MENU}**${NUMBER}  BIOS Lock: ${RED_TEXT}Enabled${NORMAL}"
+		WP_TEXT=${RED_TEXT}
 	fi
 	echo -e "${MENU}*********************************************************${NORMAL}"
 }

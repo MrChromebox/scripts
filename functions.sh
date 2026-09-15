@@ -31,6 +31,7 @@ export isStock=true
 export isFullRom=false
 export isUEFI=false
 export wpEnabled=false
+export smmBiosProtect=false
 
 # Terminal color codes for UI
 NORMAL=$(echo "\033[m")
@@ -100,6 +101,26 @@ function clear_software_wp() {
 		if ! run_quiet ${flashromcmd} --wp-range 0,0 && [[ "$swWp" = "enabled" ]]; then
 			return 2
 		fi
+	fi
+}
+
+# Fail if SMM BIOS write protection is blocking host flash writes.
+# Args: <action description>
+function require_smm_writes_allowed() {
+	local action="$1"
+	if [[ "$smmBiosProtect" = true ]]; then
+		fail_menu "\nBIOS Lock is enabled, cannot ${action}.
+Reboot, disable BIOS Lock in firmware setup, then try again." || return 1
+	fi
+}
+
+# Fail if SMM BIOS write protection or hardware WP is blocking host flash writes.
+# Args: <action description>
+function require_host_flash_access() {
+	local action="$1"
+	require_smm_writes_allowed "$action" || return 1
+	if [[ "$wpEnabled" = true ]]; then
+		fail_menu "\nHardware write-protect enabled, cannot ${action}." || return 1
 	fi
 }
 
@@ -1006,6 +1027,29 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 	[[ ${swWp} = "enabled" ]] && run_quiet ${flashromcmd} --wp-enable
 	diagnostic_report_set wpEnabled "$wpEnabled"
 	diagnostic_report_set swWp "$swWp"
+
+	# SMM BIOS write protection: flashrom can read, but host OS writes are blocked
+	smmBiosProtect=false
+	if grep -q "BIOS region SMM protection is enabled" /tmp/flashrom.log 2>/dev/null \
+		|| echo "$wp_status_out" | grep -q "BIOS region SMM protection is enabled"; then
+		smmBiosProtect=true
+	fi
+	diagnostic_report_set smmBiosProtect "$smmBiosProtect"
+
+	if [[ "$smmBiosProtect" = true ]]; then
+		echo_yellow "\nWARNING: BIOS Lock is enabled.\n
+Firmware writes from the OS (including this script) are blocked.
+To update your firmware, reboot, enter the firmware setup menu,
+disable BIOS Lock, then run this script again."
+		read -rep "Press Y (then enter) to reboot now, or just press enter to skip and continue. "
+		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+			echo_green "\nRebooting in 5s"
+			if ! reboot 2>/dev/null; then
+				systemctl reboot -i
+			fi
+			die
+		fi
+	fi
 
 	# disable SW WP and reboot if needed
 	if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled" ]]; then
