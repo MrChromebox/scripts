@@ -32,6 +32,7 @@ export isFullRom=false
 export isUEFI=false
 export wpEnabled=false
 export smmBiosProtect=false
+export secureBoot=false
 
 # Terminal color codes for UI
 NORMAL=$(echo "\033[m")
@@ -104,13 +105,33 @@ function clear_software_wp() {
 	fi
 }
 
-# Fail if SMM BIOS write protection is blocking host flash writes.
+# True if the UEFI SecureBoot EFI variable is enabled (payload byte == 1).
+function efi_secure_boot_enabled() {
+	local sb_file="" sb_val=""
+	[[ -d /sys/firmware/efi/efivars ]] || return 1
+	for sb_file in /sys/firmware/efi/efivars/SecureBoot-*; do
+		[[ -e "$sb_file" ]] || return 1
+		# 4-byte attributes + UINT8 (1 = enabled)
+		sb_val=$(od -An -t u1 -j4 -N1 "$sb_file" 2>/dev/null | tr -d '[:space:]')
+		[[ "$sb_val" = "1" ]]
+		return
+	done
+	return 1
+}
+
+# Fail if BIOS Lock or Secure Boot is blocking host flash writes.
 # Args: <action description>
 function require_smm_writes_allowed() {
 	local action="$1"
-	if [[ "$smmBiosProtect" = true ]]; then
-		fail_menu "\nBIOS Lock is enabled, cannot ${action}.
-Reboot, disable BIOS Lock in firmware setup, then try again." || return 1
+	local blockers=""
+	[[ "$smmBiosProtect" = true ]] && blockers="BIOS Lock"
+	if [[ "$secureBoot" = true ]]; then
+		[[ -n "$blockers" ]] && blockers="${blockers} and "
+		blockers="${blockers}Secure Boot"
+	fi
+	if [[ -n "$blockers" ]]; then
+		fail_menu "\nCannot ${action}: ${blockers} enabled.
+Reboot, disable ${blockers} in firmware setup, then try again." || return 1
 	fi
 }
 
@@ -889,6 +910,27 @@ Run this from a Linux Live USB instead."
 	# unload Intel SPI driver if loaded, causes issues with flashrom
 	run_quiet rmmod spi_intel_platform
 
+	# Secure Boot blocks flashrom reads on Intel; check before probing the chip
+	secureBoot=false
+	if efi_secure_boot_enabled; then
+		secureBoot=true
+	fi
+	diagnostic_report_set secureBoot "$secureBoot"
+	if [[ "$secureBoot" = true ]]; then
+		echo_yellow "\nWARNING: Secure Boot is enabled.\n
+Secure Boot prevents the OS (including this script) from accessing the firmware.
+Reboot, enter the firmware setup menu, disable Secure Boot, then run this script again."
+		read -rep "Press Y (then enter) to reboot now, or just press enter to exit. "
+		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+			echo_green "\nRebooting in 5s"
+			if ! reboot 2>/dev/null; then
+				systemctl reboot -i
+			fi
+			die
+		fi
+		exit 0
+	fi
+
 	#get device firmware info
 	echo -e "\nGetting device/system info..."
 	flashrom_params=""
@@ -933,8 +975,6 @@ Run this from a Linux Live USB instead."
 		fi
 		echo_red "You may need to add 'iomem=relaxed' to your kernel parameters,
 or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)."
-		echo_red "If you have UEFI SecureBoot enabled, you need to disable it to run 
-the script/update your firmware."
 		return 1;
 	fi
 

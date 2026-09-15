@@ -1767,6 +1767,10 @@ function show_header() {
 		echo -e "${MENU}**${NUMBER}  BIOS Lock: ${RED_TEXT}Enabled${NORMAL}"
 		WP_TEXT=${RED_TEXT}
 	fi
+	if [ "$secureBoot" = true ]; then
+		echo -e "${MENU}**${NUMBER}Secure Boot: ${RED_TEXT}Enabled${NORMAL}"
+		WP_TEXT=${RED_TEXT}
+	fi
 	echo -e "${MENU}*********************************************************${NORMAL}"
 }
 
