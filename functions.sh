@@ -931,6 +931,62 @@ Reboot, enter the firmware setup menu, disable Secure Boot, then run this script
 		exit 0
 	fi
 
+	# Probe only: further flashrom ops can hang if BIOS Lock / SMM protection is on
+	smmBiosProtect=false
+	smm_probe_out=$(run_capture ${flashromcmd})
+	if echo "$smm_probe_out" | grep -q "BIOS region SMM protection is enabled"; then
+		smmBiosProtect=true
+	fi
+	diagnostic_report_set smmBiosProtect "$smmBiosProtect"
+	if [[ "$smmBiosProtect" = true ]]; then
+		echo_yellow "\nWARNING: BIOS Lock is enabled.\n
+Firmware access from the OS (including this script) is blocked and may hang.
+Reboot, enter the firmware setup menu, disable BIOS Lock, then run this script again."
+		read -rep "Press Y (then enter) to reboot now, or just press enter to exit. "
+		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+			echo_green "\nRebooting in 5s"
+			if ! reboot 2>/dev/null; then
+				systemctl reboot -i
+			fi
+			die
+		fi
+		echo
+		exit 0
+	fi
+
+	#check WP state
+	echo -e "\nChecking WP state..."
+	wp_status_out=$(run_capture ${flashromcmd} --wp-status)
+	if echo "$wp_status_out" | grep -qiE 'enabled|protection mode: hardware'; then
+		swWp="enabled"
+	else
+		swWp="disabled"
+	fi
+	run_quiet ${flashromcmd} --wp-disable
+	[[ $? -ne 0 && $swWp = "enabled" ]] && wpEnabled=true
+	[[ ${swWp} = "enabled" ]] && run_quiet ${flashromcmd} --wp-enable
+	diagnostic_report_set wpEnabled "$wpEnabled"
+	diagnostic_report_set swWp "$swWp"
+
+	# disable SW WP and reboot if needed
+	if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled" ]]; then
+		echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
+If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
+Would you like to disable software WP and reboot your device?"
+		read -rep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
+		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+			echo -e "\nDisabling software WP..."
+			require_software_wp_clear strict \
+				"\nError disabling software write-protect -- hardware WP is still enabled." \
+				"\nError clearing software write-protect range." || return
+			echo_green "\nSoftware WP disabled, rebooting in 5s"
+			if ! reboot 2>/dev/null; then
+				systemctl reboot -i
+			fi
+			die
+		fi
+	fi
+
 	#get device firmware info
 	echo -e "\nGetting device/system info..."
 	flashrom_params=""
@@ -1051,68 +1107,6 @@ or try running from a Live USB with a more permissive kernel (eg, Ubuntu 23.04+)
 
 	diagnostic_report_set firmwareType "$firmwareType"
 
-	#check WP status
-	echo -e "\nChecking WP state..."
-	#save SW WP state
-	wp_status_out=$(run_capture ${flashromcmd} --wp-status)
-	if echo "$wp_status_out" | grep -qiE 'enabled|protection mode: hardware'; then
-		swWp="enabled"
-	else
-		swWp="disabled"
-	fi
-	#test disabling SW WP to see if HW WP enabled
-	run_quiet ${flashromcmd} --wp-disable
-	[[ $? -ne 0 && $swWp = "enabled" ]] && wpEnabled=true
-	#restore previous SW WP state
-	[[ ${swWp} = "enabled" ]] && run_quiet ${flashromcmd} --wp-enable
-	diagnostic_report_set wpEnabled "$wpEnabled"
-	diagnostic_report_set swWp "$swWp"
-
-	# SMM BIOS write protection: flashrom can read, but host OS writes are blocked
-	smmBiosProtect=false
-	if grep -q "BIOS region SMM protection is enabled" /tmp/flashrom.log 2>/dev/null \
-		|| echo "$wp_status_out" | grep -q "BIOS region SMM protection is enabled"; then
-		smmBiosProtect=true
-	fi
-	diagnostic_report_set smmBiosProtect "$smmBiosProtect"
-
-	if [[ "$smmBiosProtect" = true ]]; then
-		echo_yellow "\nWARNING: BIOS Lock is enabled.\n
-Firmware writes from the OS (including this script) are blocked.
-To update your firmware, reboot, enter the firmware setup menu,
-disable BIOS Lock, then run this script again."
-		read -rep "Press Y (then enter) to reboot now, or just press enter to skip and continue. "
-		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-			echo_green "\nRebooting in 5s"
-			if ! reboot 2>/dev/null; then
-				systemctl reboot -i
-			fi
-			die
-		fi
-	fi
-
-	# disable SW WP and reboot if needed
-	if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled" ]]; then
-		# prompt user to disable swWP and reboot
-		echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
-If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
-Would you like to disable software WP and reboot your device?"
-		read -rep "Press Y (then enter) to disable software WP and reboot, or just press enter to skip and continue. "
-		# Validate user input
-		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-			echo -e "\nDisabling software WP..."
-			require_software_wp_clear strict \
-				"\nError disabling software write-protect -- hardware WP is still enabled." \
-				"\nError clearing software write-protect range." || return
-			echo_green "\nSoftware WP disabled, rebooting in 5s"
-			if ! reboot 2>/dev/null; then
-				systemctl reboot -i
-			fi
-			# ensure we don't show the main menu while the system processes the reboot signal
-			die
-		fi
-	fi
-	
 	# Get/set HWID, boardname, device
 	if echo "$firmwareType" | grep -q -e "Stock"; then
 		if [[ "$isChromeOS" = true && ! -d /sys/firmware/efi ]]; then
