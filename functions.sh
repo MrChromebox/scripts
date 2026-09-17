@@ -107,9 +107,33 @@ function clear_software_wp() {
 	fi
 }
 
-# True if flashrom reports Intel PR0 or GPR0 protected ranges as read-only.
+# True if a PR0/GPR0 read-only range overlaps the BIOS FREG.
+# ME-only GPR0 is ignored; FREG0/FREG2 being read-only is normal.
 function intel_pr_gpr_locked() {
-	echo "$1" | grep -qE '^(PR0|GPR0): Warning: .* is read-only'
+	local output="$1"
+	local line bios_start="" bios_end="" r_start r_end
+
+	line=$(echo "$output" | grep 'FREG1: BIOS region' | head -1)
+	if [[ -n "$line" ]]; then
+		bios_start=$(echo "$line" | sed -E 's/.*\(0x([0-9a-fA-F]+)-0x([0-9a-fA-F]+)\).*/\1/')
+		bios_end=$(echo "$line" | sed -E 's/.*\(0x([0-9a-fA-F]+)-0x([0-9a-fA-F]+)\).*/\2/')
+	fi
+
+	while IFS= read -r line; do
+		[[ -n "$line" ]] || continue
+		r_start=$(echo "$line" | sed -E 's/.*Warning: 0x([0-9a-fA-F]+)-0x([0-9a-fA-F]+) is read-only.*/\1/')
+		r_end=$(echo "$line" | sed -E 's/.*Warning: 0x([0-9a-fA-F]+)-0x([0-9a-fA-F]+) is read-only.*/\2/')
+		[[ "$r_start" =~ ^[0-9a-fA-F]+$ && "$r_end" =~ ^[0-9a-fA-F]+$ ]] || continue
+		# No BIOS FREG: cannot prove the range is disjoint from BIOS.
+		if [[ ! "$bios_start" =~ ^[0-9a-fA-F]+$ || ! "$bios_end" =~ ^[0-9a-fA-F]+$ ]]; then
+			return 0
+		fi
+		if (( 16#$r_start <= 16#$bios_end && 16#$bios_start <= 16#$r_end )); then
+			return 0
+		fi
+	done < <(echo "$output" | grep -E '(PR0|GPR0): Warning: 0x[0-9a-fA-F]+-0x[0-9a-fA-F]+ is read-only')
+
+	return 1
 }
 
 # True if the UEFI SecureBoot EFI variable is enabled (payload byte == 1).
@@ -151,7 +175,7 @@ function require_host_flash_access() {
 		fail_menu "\nHardware write-protect enabled, cannot ${action}." || return 1
 	fi
 	if [[ "$spiPrProtect" = true ]]; then
-		fail_menu "\nIntel SPI protected ranges (PR0/GPR0) are enabled, cannot ${action}.
+		fail_menu "\nIntel SPI protected ranges (PR0/GPR0) overlap the BIOS region, cannot ${action}.
 Disable hardware write-protect if it is still on, then reboot and try again." || return 1
 	fi
 	require_ti50_unverified_ro "$action" || return 1
@@ -1000,8 +1024,8 @@ Reboot, enter the firmware setup menu, disable BIOS Lock, then run this script a
 	fi
 	diagnostic_report_set spiPrProtect "$spiPrProtect"
 	if [[ "$spiPrProtect" = true ]]; then
-		echo_yellow "\nWARNING: Intel SPI protected ranges (PR0/GPR0) are enabled.\n
-Firmware writes will fail even if flash write-protect appears disabled.
+		echo_yellow "\nWARNING: Intel SPI protected ranges (PR0/GPR0) overlap the BIOS region.\n
+Firmware writes to the BIOS area will fail even if flash write-protect appears disabled.
 Disable hardware write-protect if it is still on, reboot, then run this script again."
 		read -rep "Press Y (then enter) to reboot now, or just press enter to skip and continue. "
 		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
