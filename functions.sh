@@ -34,6 +34,7 @@ export wpEnabled=false
 export smmBiosProtect=false
 export secureBoot=false
 export spiPrProtect=false
+export ti50RoVerify=false
 
 # Terminal color codes for UI
 NORMAL=$(echo "\033[m")
@@ -153,6 +154,34 @@ function require_host_flash_access() {
 		fail_menu "\nIntel SPI protected ranges (PR0/GPR0) are enabled, cannot ${action}.
 Disable hardware write-protect if it is still on, then reboot and try again." || return 1
 	fi
+	require_ti50_unverified_ro "$action" || return 1
+}
+
+# True if gsctool reports a Ti50 and AllowUnverifiedRo is not Always.
+# gsctool exists only on ChromeOS; after UEFI the GSC flag is already latched.
+function ti50_ro_verification_enabled() {
+	local gsc_info="" ro_line=""
+	command -v gsctool >/dev/null 2>&1 || return 1
+	gsc_info=$(gsctool -a -I 2>/dev/null) || return 1
+	ro_line=$(echo "$gsc_info" | grep -i AllowUnverifiedRo | head -1)
+	[[ -n "$ro_line" ]] || return 1
+	echo "$ro_line" | grep -qiE '\bAlways\b' && return 1
+	return 0
+}
+
+# Block SW WP / RO changes on Ti50 until AllowUnverifiedRo=always.
+# Args: <action description>
+function require_ti50_unverified_ro() {
+	local action="$1"
+	[[ "$ti50RoVerify" = true ]] || return 0
+	fail_menu "\nCannot ${action}: Ti50 RO verification is still on.
+
+Unlock the GSC, then set AllowUnverifiedRo=always:
+  sudo gsctool -a -o
+  sudo gsctool -a -I AllowUnverifiedRo:always
+Then press Power when asked.
+
+See https://docs.mrchromebox.tech/docs/firmware/wp/disabling.html#using-gsctool-no-suzyqable" || return 1
 }
 
 # Require clear_software_wp success; show fail_menu on disable/range errors.
@@ -162,6 +191,7 @@ function require_software_wp_clear() {
 	local range_msg="$3"
 	local _rc=0
 
+	require_ti50_unverified_ro "change software write-protect" || return 1
 	clear_software_wp "$mode" || _rc=$?
 	case $_rc in
 		1) fail_menu "$disable_msg" || return 1 ;;
@@ -997,8 +1027,28 @@ Disable hardware write-protect if it is still on, reboot, then run this script a
 	diagnostic_report_set wpEnabled "$wpEnabled"
 	diagnostic_report_set swWp "$swWp"
 
+	# Ti50 AP RO verification: gsctool is ChromeOS-only
+	ti50RoVerify=false
+	if [[ "$isChromeOS" = true ]]; then
+		if ! command -v gsctool >/dev/null 2>&1; then
+			echo_yellow "gsctool not found; skipping Ti50 AP RO verification check"
+		elif ti50_ro_verification_enabled; then
+			ti50RoVerify=true
+		fi
+	fi
+	diagnostic_report_set ti50RoVerify "$ti50RoVerify"
+	if [[ "$ti50RoVerify" = true ]]; then
+		echo_yellow "\nWARNING: Ti50 RO verification is still on (AllowUnverifiedRo is not Always).
+Do not disable software write-protect or flash Full ROM until you unlock the GSC and set AllowUnverifiedRo=always:
+  sudo gsctool -a -o
+  sudo gsctool -a -I AllowUnverifiedRo:always
+Then press Power when asked.
+See https://docs.mrchromebox.tech/docs/firmware/wp/disabling.html#using-gsctool-no-suzyqable"
+		read -rep "Press enter to continue. "
+	fi
+
 	# disable SW WP and reboot if needed
-	if [[ "$isChromeOS" = true &&  "${wpEnabled}" != "true" &&  "${swWp}" = "enabled" ]]; then
+	if [[ "$isChromeOS" = true && "${wpEnabled}" != "true" && "${swWp}" = "enabled" && "$ti50RoVerify" != true ]]; then
 		echo_yellow "\nWARNING: your device currently has software write-protect enabled.\n
 If you plan to flash the UEFI firmware, you must first disable it and reboot before flashing.
 Would you like to disable software WP and reboot your device?"

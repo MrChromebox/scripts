@@ -1775,6 +1775,10 @@ function show_header() {
 		echo -e "${MENU}**${NUMBER}Secure Boot: ${RED_TEXT}Enabled${NORMAL}"
 		WP_TEXT=${RED_TEXT}
 	fi
+	if [ "$ti50RoVerify" = true ]; then
+		echo -e "${MENU}**${NUMBER}  AP RO Ver: ${RED_TEXT}Enabled${NORMAL}"
+		WP_TEXT=${RED_TEXT}
+	fi
 	echo -e "${MENU}*********************************************************${NORMAL}"
 }
 
