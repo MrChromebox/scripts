@@ -33,6 +33,7 @@ export isUEFI=false
 export wpEnabled=false
 export smmBiosProtect=false
 export secureBoot=false
+export spiPrProtect=false
 
 # Terminal color codes for UI
 NORMAL=$(echo "\033[m")
@@ -105,6 +106,11 @@ function clear_software_wp() {
 	fi
 }
 
+# True if flashrom reports Intel PR0 or GPR0 protected ranges as read-only.
+function intel_pr_gpr_locked() {
+	echo "$1" | grep -qE '^(PR0|GPR0): Warning: .* is read-only'
+}
+
 # True if the UEFI SecureBoot EFI variable is enabled (payload byte == 1).
 function efi_secure_boot_enabled() {
 	local sb_file="" sb_val=""
@@ -142,6 +148,10 @@ function require_host_flash_access() {
 	require_smm_writes_allowed "$action" || return 1
 	if [[ "$wpEnabled" = true ]]; then
 		fail_menu "\nHardware write-protect enabled, cannot ${action}." || return 1
+	fi
+	if [[ "$spiPrProtect" = true ]]; then
+		fail_menu "\nIntel SPI protected ranges (PR0/GPR0) are enabled, cannot ${action}.
+Disable hardware write-protect if it is still on, then reboot and try again." || return 1
 	fi
 }
 
@@ -952,6 +962,25 @@ Reboot, enter the firmware setup menu, disable BIOS Lock, then run this script a
 		fi
 		echo
 		exit 0
+	fi
+
+	spiPrProtect=false
+	if intel_pr_gpr_locked "$smm_probe_out"; then
+		spiPrProtect=true
+	fi
+	diagnostic_report_set spiPrProtect "$spiPrProtect"
+	if [[ "$spiPrProtect" = true ]]; then
+		echo_yellow "\nWARNING: Intel SPI protected ranges (PR0/GPR0) are enabled.\n
+Firmware writes will fail even if flash write-protect appears disabled.
+Disable hardware write-protect if it is still on, reboot, then run this script again."
+		read -rep "Press Y (then enter) to reboot now, or just press enter to skip and continue. "
+		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+			echo_green "\nRebooting in 5s"
+			if ! reboot 2>/dev/null; then
+				systemctl reboot -i
+			fi
+			die
+		fi
 	fi
 
 	#check WP state
