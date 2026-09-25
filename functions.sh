@@ -710,6 +710,8 @@ function get_cbfstool() {
 
 # Download and setup flashrom utility if not present
 function get_flashrom() {
+	local flashrom_help=""
+
 	if [ ! -f "${flashromcmd}" ]; then
 		(
 			cd "$(dirname "${flashromcmd}")"
@@ -736,8 +738,19 @@ function get_flashrom() {
 			chmod +x flashrom
 		) || return 1
 	fi
+
+	# Verify flashrom runs; catch glibc/loader mismatches before setup continues
+	if ! flashrom_help=$(${flashromcmd} -h 2>&1); then
+		echo_red "\nDownloaded flashrom cannot run on this system:"
+		echo_red "$flashrom_help"
+		if echo "$flashrom_help" | grep -qiE 'GLIBC_|version .+ not found|error while loading shared libraries|cannot execute binary|No such file or directory'; then
+			echo_red "\nYour OS libraries are too old for the bundled flashrom.
+Live-boot a current Linux distro (eg Ubuntu 24.04+) and run this script again."
+		fi
+		return 1
+	fi
 	#check if flashrom supports --noverify-all
-	if ${flashromcmd} -h | grep -q "noverify-all" ; then
+	if echo "$flashrom_help" | grep -q "noverify-all" ; then
 		export noverify="-N"
 	else
 		export noverify="-n"
@@ -967,7 +980,7 @@ Run this from a Linux Live USB instead."
 		return 1
 	fi
 	if ! get_flashrom; then
-		echo_red "Unable to download flashrom utility; cannot continue"
+		echo_red "Unable to set up flashrom; cannot continue"
 		return 1
 	fi
 
