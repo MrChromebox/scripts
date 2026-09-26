@@ -419,12 +419,6 @@ Select the D option from the main menu in order to do so."
 	#set vars to indicate new firmware type
 	isStock=false
 	isFullRom=true
-	# Add NVRAM reset note for 4.12 release
-	echo_yellow "IMPORTANT:\n
-This update uses a new format to store UEFI NVRAM data, and
-will reset your BootOrder and boot entries. You may need to
-manually Boot From File and reinstall your bootloader if
-booting from the internal storage device fails."
 	firmwareType="Full ROM / UEFI (pending reboot)"
 	isUEFI=true
 
