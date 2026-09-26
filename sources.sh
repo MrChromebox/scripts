@@ -3,16 +3,16 @@
 
 
 #define these here for easy updating
-export script_date="[2026-07-14]"
+export script_date="[2026-09-26]"
 
 # versioned: full_rom/MrChromebox-${version}/…  |  flat: full_rom/… (override for private deploys)
 export fullrom_layout="${fullrom_layout:-versioned}"
 
 # version = CDN subdir + UI label; date = YYYYMMDD in the .rom filename
-export release_current_version="2606.1"
-export release_current_date="20260714"
-export release_previous_version="2603.2"
-export release_previous_date="20260517"
+export release_current_version="2609.0"
+export release_current_date="20260926"
+export release_previous_version="2606.1"
+export release_previous_date="20260714"
 
 # per-board hotfix build dates (skips release_current for that board)
 declare -A FW_HOTFIX=(
