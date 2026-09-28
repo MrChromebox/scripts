@@ -136,18 +136,20 @@ function intel_pr_gpr_locked() {
 	return 1
 }
 
-# True if the UEFI SecureBoot EFI variable is enabled (payload byte == 1).
+# Print the UINT8 payload of an EFI global variable (after 4-byte attributes).
+function efi_global_var_u8() {
+	local var="/sys/firmware/efi/efivars/$1-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+	[[ -e "$var" ]] || return 1
+	od -An -t u1 -j4 -N1 "$var" 2>/dev/null | tr -d '[:space:]'
+}
+
+# True if UEFI Secure Boot is enforced: SecureBoot == 1 and not in Setup Mode.
+# Some firmware reports SecureBoot=1 with no PK enrolled; the kernel and
+# mokutil treat that as disabled.
 function efi_secure_boot_enabled() {
-	local sb_file="" sb_val=""
-	[[ -d /sys/firmware/efi/efivars ]] || return 1
-	for sb_file in /sys/firmware/efi/efivars/SecureBoot-*; do
-		[[ -e "$sb_file" ]] || return 1
-		# 4-byte attributes + UINT8 (1 = enabled)
-		sb_val=$(od -An -t u1 -j4 -N1 "$sb_file" 2>/dev/null | tr -d '[:space:]')
-		[[ "$sb_val" = "1" ]]
-		return
-	done
-	return 1
+	[[ "$(efi_global_var_u8 SecureBoot)" = "1" ]] || return 1
+	[[ "$(efi_global_var_u8 SetupMode)" = "1" ]] && return 1
+	return 0
 }
 
 # Fail if BIOS Lock or Secure Boot is blocking host flash writes.
