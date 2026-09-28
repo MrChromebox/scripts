@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2026-09-26]"
+export script_date="[2026-09-27]"
 
 # versioned: full_rom/MrChromebox-${version}/…  |  flat: full_rom/… (override for private deploys)
 export fullrom_layout="${fullrom_layout:-versioned}"
@@ -38,25 +38,25 @@ export seabios_skylake="seabios-skl-mrchromebox_20180912.bin"
 export seabios_apl="seabios-apl-mrchromebox_20180912.bin"
 export seabios_kbl="seabios-kbl-mrchromebox_20250227.bin"
 export seabios_kbl_18="seabios-kbl_18-mrchromebox_20250227.bin"
-export rwl_altfw_apl="rwl_altfw-kbl_apl-mrchromebox_20260319.bin"
-export rwl_altfw_kbl="rwl_altfw-kbl_apl-mrchromebox_20260319.bin"
-export rwl_altfw_kbl_18="rwl_altfw-kbl_18-mrchromebox_20260319.bin"
-export rwl_altfw_whl="rwl_altfw-whl-mrchromebox_20251119.bin"
-export rwl_altfw_cml="rwl_altfw-cml-mrchromebox_20251031.bin"
-export rwl_altfw_drallion="rwl_altfw-drallion-mrchromebox_20251031.bin"
-export rwl_altfw_glk="rwl_altfw-glk-mrchromebox_20251031.bin"
-export rwl_altfw_jsl="rwl_altfw-jsl-mrchromebox_20251031.bin"
-export rwl_altfw_tgl="rwl_altfw-tgl-mrchromebox_20251031.bin"
-export rwl_altfw_adl="rwl_altfw-adl-mrchromebox_20251031.bin"
-export rwl_altfw_adl_fixed="rwl_altfw-adl_2-mrchromebox_20251031.bin"
-export rwl_altfw_adl_n="rwl_altfw-adl_n-mrchromebox_20251031.bin"
-export rwl_altfw_mtl="rwl_altfw-mtl-mrchromebox_20251031.bin"
+export rwl_altfw_apl="rwl_altfw-kbl_apl-mrchromebox_20260927.bin"
+export rwl_altfw_kbl="rwl_altfw-kbl_apl-mrchromebox_20260927.bin"
+export rwl_altfw_kbl_18="rwl_altfw-kbl_18-mrchromebox_20260927.bin"
+export rwl_altfw_whl="rwl_altfw-whl-mrchromebox_20260927.bin"
+export rwl_altfw_cml="rwl_altfw-cml-mrchromebox_20260927.bin"
+export rwl_altfw_drallion="rwl_altfw-drallion-mrchromebox_20260927.bin"
+export rwl_altfw_glk="rwl_altfw-glk-mrchromebox_20260927.bin"
+export rwl_altfw_jsl="rwl_altfw-jsl-mrchromebox_20260927.bin"
+export rwl_altfw_tgl="rwl_altfw-tgl-mrchromebox_20260927.bin"
+export rwl_altfw_adl="rwl_altfw-adl-mrchromebox_20260927.bin"
+export rwl_altfw_adl_fixed="rwl_altfw-adl_2-mrchromebox_20260927.bin"
+export rwl_altfw_adl_n="rwl_altfw-adl_n-mrchromebox_20260927.bin"
+export rwl_altfw_mtl="rwl_altfw-mtl-mrchromebox_20260927.bin"
 
 #RWL - AMD
-export rwl_altfw_stoney="rwl_altfw-str-mrchromebox_20251031.bin"
-export rwl_altfw_pco="rwl_altfw-pco-mrchromebox_20251031.bin"
-export rwl_altfw_mdn="rwl_altfw-mdn-mrchromebox_20251031.bin"
-export rwl_altfw_czn="rwl_altfw-czn-mrchromebox_20251031.bin"
+export rwl_altfw_stoney="rwl_altfw-str-mrchromebox_20260927.bin"
+export rwl_altfw_pco="rwl_altfw-pco-mrchromebox_20260927.bin"
+export rwl_altfw_mdn="rwl_altfw-mdn-mrchromebox_20260927.bin"
+export rwl_altfw_czn="rwl_altfw-czn-mrchromebox_20260927.bin"
 
 #hsw/bdw headless VBIOS
 export hswbdw_headless_vbios="hswbdw_vgabios_1040_cbox_headless.dat"
