@@ -1074,12 +1074,18 @@ To flash a custom ROM, use the Flash Custom Firmware option instead." || return
 		#all good
 		echo_green "Stock firmware successfully restored."
 		
-		# Optionally reset CR50 NVRAM data if device has CR50
+		# Reset CR50 NVRAM data only if it is invalid
+		cr50StatePreserved=false
 		if [[ "$hasCR50" = true ]]; then
 			reset_cr50_nvram "$firmware_file"
 		fi
 		
-		echo_green "After rebooting, you need to restore ChromeOS using ChromeOS Recovery media."
+		if [[ "$cr50StatePreserved" = true ]]; then
+			echo_green "If ChromeOS is still installed, it should boot with its previous state."
+			echo_green "Otherwise, restore ChromeOS using ChromeOS Recovery media."
+		else
+			echo_green "After rebooting, you need to restore ChromeOS using ChromeOS Recovery media."
+		fi
 		echo_green "See: https://google.com/chromeos/recovery for more info."
 		read -rep "Press [Enter] to return to the main menu."
 		#set vars to indicate new firmware type
@@ -1626,6 +1632,76 @@ function clear_nvram()
 	read -rep "Press [Enter] to continue"
 }
 
+# vboot CRC-8 (poly 0x07) over hex byte args; prints 2-digit hex
+function vb2_crc8() {
+	local crc=0 b i
+	for b in "$@"; do
+		crc=$(( crc ^ (16#$b << 8) ))
+		for i in 1 2 3 4 5 6 7 8; do
+			(( crc & 0x8000 )) && crc=$(( crc ^ (0x1070 << 3) ))
+			crc=$(( (crc << 1) & 0xffff ))
+		done
+	done
+	printf '%02x' $(( crc >> 8 ))
+}
+
+# Read <count> (decimal) bytes of a TPM NV index; prints 2-digit hex bytes
+function tpmc_read_bytes() {
+	local out tok bytes=()
+	out=$(run_capture ${tpmccmd} read "$1" "$(printf '0x%x' "$2")") || return 1
+	for tok in $out; do
+		[[ "$tok" =~ ^(0x)?[0-9a-fA-F]{1,2}$ ]] || continue
+		bytes+=("$(printf '%02x' $(( 16#${tok#0x} )))")
+	done
+	(( ${#bytes[@]} == $2 )) || return 1
+	echo "${bytes[*]}"
+}
+
+# FWID major version (eg 12953 from Google_Foo.12953.0.0) of a stock image
+function stock_fwid_major() {
+	local fwid_line
+	run_quiet ${cbfstoolcmd} "$1" extract -n config -f /tmp/config.txt || return 1
+	fwid_line=$(grep -i "FWID" /tmp/config.txt 2>/dev/null | head -1)
+	[[ -n "$fwid_line" ]] || return 1
+	echo "$fwid_line" | cut -d'.' -f2 | tr -cd '0-9'
+}
+
+# True if CR50 secdata_firmware (0x1007) and secdata_kernel (0x1008) have
+# valid CRCs and a kernel format the target stock firmware can parse.
+function cr50_secdata_valid() {
+	local firmware_file="$1"
+	local fw kern size fwid_major
+	local -a b
+
+	fw=$(tpmc_read_bytes 0x1007 10) || return 1
+	read -ra b <<< "$fw"
+	[[ "${b[0]}" = "02" ]] || return 1
+	[[ "$(vb2_crc8 "${b[@]:0:9}")" = "${b[9]}" ]] || return 1
+
+	kern=$(tpmc_read_bytes 0x1008 13) || return 1
+	read -ra b <<< "$kern"
+	case "${b[0]}" in
+		02)
+			[[ "${b[*]:1:4}" = "4c 57 52 47" ]] || return 1
+			[[ "$(vb2_crc8 "${b[@]:0:12}")" = "${b[12]}" ]] || return 1
+			;;
+		10)
+			size=$(( 16#${b[1]} ))
+			(( size > 3 )) || return 1
+			kern=$(tpmc_read_bytes 0x1008 "$size") || return 1
+			read -ra b <<< "$kern"
+			[[ "$(vb2_crc8 "${b[@]:3}")" = "${b[2]}" ]] || return 1
+			# v1 secdata_kernel is only understood by FWID >= 12953
+			fwid_major=$(stock_fwid_major "$firmware_file") || return 1
+			[[ -n "$fwid_major" ]] && (( fwid_major >= 12953 )) || return 1
+			;;
+		*)
+			return 1
+			;;
+	esac
+	return 0
+}
+
 #############################
 # Reset CR50 TPM NVRAM Data #
 #############################
@@ -1638,13 +1714,21 @@ function reset_cr50_nvram()
 		return 0
 	fi
 
-	echo_yellow "\nResetting CR50 TPM and kernel version data..."
-
 	# Download tpmc tool if needed
 	if ! get_tpmc; then
 		echo_red "Unable to download tpmc utility; cannot reset CR50 NVRAM."
 		return 1
 	fi
+
+	# Intact secdata still holds dev mode and ChromeOS state; clearing
+	# the TPM would force a powerwash, so only reset when invalid.
+	if cr50_secdata_valid "$firmware_file"; then
+		echo_green "\nCR50 TPM secure data is intact; preserving existing ChromeOS state."
+		cr50StatePreserved=true
+		return 0
+	fi
+
+	echo_yellow "\nResetting CR50 TPM and kernel version data..."
 
 	# Clear and re-enable
 	run_quiet ${tpmccmd} clear
@@ -1672,43 +1756,29 @@ function reset_cr50_nvram()
 	fi
 	
 	# Determine which command string to use based on FWID from config file
-	if [[ -n "$firmware_file" && -f "$firmware_file" ]]; then
-		# Extract config file from COREBOOT region
-		if run_quiet ${cbfstoolcmd} "${firmware_file}" extract -n config -f /tmp/config.txt; then
-			# Try to find FWID in the config
-			fwid_line=$(grep -i "FWID" /tmp/config.txt 2>/dev/null | head -1)
-			if [[ -n "$fwid_line" ]]; then
-				# Extract major version (field 2 using . as delimiter)
-				fwid_major=$(echo "$fwid_line" | cut -d'.' -f2)
-				# Clean up any non-numeric characters
-				fwid_major=$(echo "$fwid_major" | tr -cd '0-9')
-				
-				if [[ -n "$fwid_major" ]] && [[ "$fwid_major" -lt 12953 ]] 2>/dev/null; then
-					# v0 secdata_kernel (< 12953)
-					echo_yellow "Using v0 secdata_kernel format (FWID $fwid_major)"
-					if ! run_quiet ${tpmccmd} write 0x1008 02 4c 57 52 47 01 00 01 00 00 00 00 55; then
-						echo_red "Error: Failed to reset CR50 kernel version data."
-						return 1
-					fi
-				else
-					# v1 secdata kernel (>= 12953)
-					echo_yellow "Using v1 secdata_kernel format (FWID $fwid_major)"
-					if ! run_quiet ${tpmccmd} write 0x1008 10 28 0c 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00; then
-						echo_red "Error: Failed to reset CR50 kernel version data."
-						return 1
-					fi
-				fi
-			else
-				echo_red "Error: Could not find FWID in config file."
-				return 1
-			fi
-		else
-			echo_red "Error: Failed to extract config file from COREBOOT region."
+	if [[ -z "$firmware_file" || ! -f "$firmware_file" ]]; then
+		echo_red "Error: Firmware file not available for FWID check."
+		return 1
+	fi
+	fwid_major=$(stock_fwid_major "$firmware_file")
+	if [[ -z "$fwid_major" ]]; then
+		echo_red "Error: Could not find FWID in firmware config."
+		return 1
+	fi
+	if (( fwid_major < 12953 )); then
+		# v0 secdata_kernel (< 12953)
+		echo_yellow "Using v0 secdata_kernel format (FWID $fwid_major)"
+		if ! run_quiet ${tpmccmd} write 0x1008 02 4c 57 52 47 01 00 01 00 00 00 00 55; then
+			echo_red "Error: Failed to reset CR50 kernel version data."
 			return 1
 		fi
 	else
-		echo_red "Error: Firmware file not available for FWID check."
-		return 1
+		# v1 secdata kernel (>= 12953)
+		echo_yellow "Using v1 secdata_kernel format (FWID $fwid_major)"
+		if ! run_quiet ${tpmccmd} write 0x1008 10 28 0c 00 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00; then
+			echo_red "Error: Failed to reset CR50 kernel version data."
+			return 1
+		fi
 	fi
 
 	echo_green "\nCR50 NVRAM reset completed."
