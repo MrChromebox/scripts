@@ -3,14 +3,14 @@
 
 
 #define these here for easy updating
-export script_date="[2026-09-27]"
+export script_date="[2026-10-01]"
 
 # versioned: full_rom/MrChromebox-${version}/…  |  flat: full_rom/… (override for private deploys)
 export fullrom_layout="${fullrom_layout:-versioned}"
 
 # version = CDN subdir + UI label; date = YYYYMMDD in the .rom filename
-export release_current_version="2609.0"
-export release_current_date="20260926"
+export release_current_version="2609.1"
+export release_current_date="20261001"
 export release_previous_version="2606.1"
 export release_previous_date="20260714"
 
