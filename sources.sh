@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2026-10-01]"
+export script_date="[2026-10-04]"
 
 # versioned: full_rom/MrChromebox-${version}/…  |  flat: full_rom/… (override for private deploys)
 export fullrom_layout="${fullrom_layout:-versioned}"
@@ -18,6 +18,7 @@ export release_previous_date="20260714"
 declare -A FW_HOTFIX=(
 	# [eve]=20260715
 	# [karma]=20260722
+	[fizz]=20261004
 )
 
 #where the stuff is
