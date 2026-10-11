@@ -680,6 +680,33 @@ function select_usb_device() {
 	return 0
 }
 
+# List .rom/.bin files on the mounted USB (/tmp/usb) and prompt by number.
+# Sets usb_firmware_file to the full path. Returns 1 if no files found.
+function select_usb_firmware_file() {
+	local header="$1"
+	local -a fw_files
+	local i fw_index=""
+
+	mapfile -t fw_files < <(find /tmp/usb -maxdepth 1 -type f \
+		\( -iname '*.rom' -o -iname '*.bin' \) 2>/dev/null | sort)
+	[[ ${#fw_files[@]} -gt 0 ]] || return 1
+
+	echo_yellow "\n${header}\n"
+	for i in "${!fw_files[@]}"; do
+		echo "$((i + 1))) $(basename "${fw_files[$i]}")"
+	done
+	echo -e ""
+	while true; do
+		read -rep "Enter the number for the firmware file to use: " fw_index
+		if [[ "$fw_index" =~ ^[0-9]+$ ]] && (( fw_index >= 1 && fw_index <= ${#fw_files[@]} )); then
+			break
+		fi
+		echo -e "Error: Invalid option selected; enter a number from the list above."
+	done
+	usb_firmware_file="${fw_files[$((fw_index - 1))]}"
+	return 0
+}
+
 ########################################
 # Tool Management Functions            #
 ########################################

@@ -808,20 +808,12 @@ function flash_firmware_from_usb()
 		esac
 	fi
 
-	echo_yellow "\nFirmware Files on USB:"
-	if ! ls /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
+	if ! select_usb_firmware_file "Firmware Files on USB:"; then
 		run_quiet umount /tmp/usb
 		rmdir /tmp/usb
 		fail_menu "No firmware files found on USB device." || return
 	fi
-	echo -e ""
-	read -rep "Enter the firmware filename: " firmware_file
-	firmware_file="/tmp/usb/${firmware_file}"
-	if [ ! -f "$firmware_file" ]; then
-		run_quiet umount /tmp/usb
-		rmdir /tmp/usb
-		fail_menu "Invalid filename entered; unable to flash custom firmware." || return
-	fi
+	firmware_file="$usb_firmware_file"
 
 	if ! cp "$firmware_file" /tmp/custom-firmware.rom; then
 		run_quiet umount /tmp/usb
@@ -1110,22 +1102,13 @@ function restore_fw_from_usb()
 			2) fail_menu "USB device failed to mount; cannot proceed." || return ;;
 		esac
 	fi
-	echo_yellow "\n(Potential) Firmware Files on USB:"
-	if ! ls /tmp/usb/*.{rom,ROM,bin,BIN} 2>/dev/null | xargs -n 1 basename 2>/dev/null; then
+	if ! select_usb_firmware_file "(Potential) Firmware Files on USB:"; then
 		run_quiet umount /tmp/usb
 		rmdir /tmp/usb
 		fail_menu "No firmware files found on USB device." || return
 	fi
-	echo -e ""
-	read -rep "Enter the firmware filename:  " _usb_firmware_name
-	_usb_firmware_path="/tmp/usb/${_usb_firmware_name}"
-	if [ ! -f "${_usb_firmware_path}" ]; then
-		run_quiet umount /tmp/usb
-		rmdir /tmp/usb
-		fail_menu "Invalid filename entered; unable to restore stock firmware." || return
-	fi
 	firmware_file="/tmp/stock-firmware.rom"
-	if ! cp "${_usb_firmware_path}" "${firmware_file}"; then
+	if ! cp "${usb_firmware_file}" "${firmware_file}"; then
 		run_quiet umount /tmp/usb
 		rmdir /tmp/usb
 		fail_menu "Failed to copy firmware from USB; unable to restore stock firmware." || return
