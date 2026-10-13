@@ -20,6 +20,22 @@ declare -A FW_HOTFIX=(
 	# [karma]=20260722
 	[fizz]=20261004
 	[coral]=20261013
+	[banjo]=20261013
+	[candy]=20261013
+	[clapper]=20261013
+	[enguarde]=20261013
+	[expresso]=20261013
+	[glimmer]=20261013
+	[gnawty]=20261013
+	[heli]=20261013
+	[kip]=20261013
+	[ninja]=20261013
+	[orco]=20261013
+	[quawks]=20261013
+	[squawks]=20261013
+	[sumo]=20261013
+	[swanky]=20261013
+	[winky]=20261013
 )
 
 #where the stuff is
