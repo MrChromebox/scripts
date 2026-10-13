@@ -13,6 +13,9 @@
 
 # shellcheck disable=SC2164
 
+#wrap all commands in "if" statement to guard against partially downloaded script
+if :; then
+
 #path to directory where script is saved
 script_dir="$(dirname "$(readlink -f "$0")")"
 
@@ -129,3 +132,6 @@ function check_unsupported() {
 }
 
 menu_fwupdate
+
+#end "if" guard statement
+fi
