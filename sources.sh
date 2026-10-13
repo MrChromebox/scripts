@@ -19,6 +19,7 @@ declare -A FW_HOTFIX=(
 	# [eve]=20260715
 	# [karma]=20260722
 	[fizz]=20261004
+	[coral]=20261013
 )
 
 #where the stuff is
