@@ -386,6 +386,7 @@ DEVICE_DB=(
 	["GLADIOS*"]="HP Chromebox Enterprise G4|ADL||isCbox,adl_fixed_rwl|"
 	["KINOX*"]="Lenovo ThinkCentre M60q Chromebox|ADL||isCbox,adl_fixed_rwl|"
 	["KULDAX*"]="ASUS Chromebox 5/5a [CN67]|ADL||isCbox,adl_fixed_rwl|"
+	["KULNEX*"]="ASUS Chromebox 6a|ADL||isCbox,adl_fixed_rwl|"
 	["LISBON-GURF*"]="CTL Chromebox CBx3|ADL||isCbox,adl_fixed_rwl|"
 	["LISBON-IGDX*"]="Promethean Chromebox 3|ADL||isCbox,adl_fixed_rwl|"
 	["LISBON-TVCI*"]="Lisbon Development Product|ADL||isCbox,adl_fixed_rwl|"
@@ -394,6 +395,9 @@ DEVICE_DB=(
 	["LISBON*"]="Lisbon ADL Chromebox|ADL||isCbox,adl_fixed_rwl|"
 	["MOLI*"]="Acer Chromebox CXI5|ADL||isCbox,adl_fixed_rwl|"
 	["MOXIE*"]="Acer Chromebox CXI6|ADL||isCbox,adl_fixed_rwl|"
+	["MOXOE-ETID*"]="Acer Chromebox CX7|ADL||isCbox,adl_fixed_rwl|"
+	["MOXOE-HTMZ*"]="AOPEN Chromebox Commercial 5|ADL||isCbox,adl_fixed_rwl|"
+	["MOXOE*"]="Moxoe ADL Chromebox|ADL||isCbox,adl_fixed_rwl|"
 	# Brask baseboard / constitution recovery image
 	["CONSTITUTION*"]="Google Meet Series Two|ADL||adl_fixed_rwl|"
 	["INTREPID*"]="CTL Meet Compute System GQE20C|ADL|constitution|isCbox,adl_fixed_rwl|"
