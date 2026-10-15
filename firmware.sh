@@ -1785,7 +1785,10 @@ function show_header() {
 	echo -e "${NORMAL} (c) Mr Chromebox <mrchromebox@gmail.com> ${NORMAL}"
 	echo -e "${MENU}*********************************************************${NORMAL}"
 	echo -e "${MENU}**${NUMBER}     Device: ${NORMAL}${deviceDesc}"
-	echo -e "${MENU}**${NUMBER} Board Name: ${NORMAL}${boardName^^}"
+	echo -e "${MENU}**${NUMBER}       HWID: ${NORMAL}${boardName^^}"
+	if [[ "${device,,}" != "${boardName,,}" ]]; then
+		echo -e "${MENU}**${NUMBER}   Fw Board: ${NORMAL}${device^^}"
+	fi
 	echo -e "${MENU}**${NUMBER}   Platform: ${NORMAL}$deviceCpuTypeName"
 	echo -e "${MENU}**${NUMBER}    Fw Type: ${NORMAL}$firmwareType"
 	echo -e "${MENU}**${NUMBER}     Fw Ver: ${NORMAL}$fwVer ($fwDate)"
