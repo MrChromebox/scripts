@@ -3,14 +3,14 @@
 
 
 #define these here for easy updating
-export script_date="[2026-10-04]"
+export script_date="[2026-10-15]"
 
 # versioned: full_rom/MrChromebox-${version}/…  |  flat: full_rom/… (override for private deploys)
 export fullrom_layout="${fullrom_layout:-versioned}"
 
 # version = CDN subdir + UI label; date = YYYYMMDD in the .rom filename
-export release_current_version="2609.1"
-export release_current_date="20261001"
+export release_current_version="2609.2"
+export release_current_date="20261015"
 export release_previous_version="2606.1"
 export release_previous_date="20260714"
 
@@ -18,24 +18,6 @@ export release_previous_date="20260714"
 declare -A FW_HOTFIX=(
 	# [eve]=20260715
 	# [karma]=20260722
-	[fizz]=20261004
-	[coral]=20261013
-	[banjo]=20261013
-	[candy]=20261013
-	[clapper]=20261013
-	[enguarde]=20261013
-	[expresso]=20261013
-	[glimmer]=20261013
-	[gnawty]=20261013
-	[heli]=20261013
-	[kip]=20261013
-	[ninja]=20261013
-	[orco]=20261013
-	[quawks]=20261013
-	[squawks]=20261013
-	[sumo]=20261013
-	[swanky]=20261013
-	[winky]=20261013
 )
 
 #where the stuff is
