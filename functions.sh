@@ -1066,17 +1066,10 @@ Reboot, enter the firmware setup menu, disable BIOS Lock, then run this script a
 	fi
 	diagnostic_report_set spiPrProtect "$spiPrProtect"
 	if [[ "$spiPrProtect" = true ]]; then
-		echo_yellow "\nWARNING: Intel SPI protected ranges (PR0/GPR0) overlap the BIOS region.\n
-Firmware writes to the BIOS area will fail even if flash write-protect appears disabled.
-Disable hardware write-protect if it is still on, reboot, then run this script again."
-		read -rep "Press Y (then enter) to reboot now, or just press enter to skip and continue. "
-		if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-			echo_green "\nRebooting in 5s"
-			if ! reboot 2>/dev/null; then
-				systemctl reboot -i
-			fi
-			die
-		fi
+		echo_yellow "\nWARNING: Intel SPI protected ranges (PR0/GPR0) cover the stock read-only firmware.\n
+UEFI Full ROM, restoring stock firmware, and changing GBB flags or the HWID will fail until hardware write-protect is disabled and you reboot.\n
+RW_LEGACY firmware does not modify that range and can be used with hardware write-protect enabled.\n"
+		read -rep "Press enter to continue. "
 	fi
 
 	#check WP state
