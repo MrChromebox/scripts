@@ -2011,7 +2011,7 @@ function uefi_menu() {
 	if [[ "$isUEFI" = true ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 5)${MENU} Set Hardware ID (HWID) ${NORMAL}"
 	fi
-	if fullrom_can_rollback; then
+	if [[ "$unlockMenu" = true || ( "$hasUEFIoption" = true && "$isUnsupported" = false ) ]] && fullrom_can_rollback; then
 		echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} 6)${MENU} Rollback to Previous UEFI Release ($(fullrom_slot_label previous)) ${NORMAL}"
 	else
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 6)${GRAY_TEXT} Rollback to Previous UEFI Release ${NORMAL}"
@@ -2068,7 +2068,7 @@ function uefi_menu() {
 		uefi_menu
 		;;
 
-	6)	if fullrom_can_rollback; then
+	6)	if [[ "$unlockMenu" = true || ( "$hasUEFIoption" = true && "$isUnsupported" = false ) ]] && fullrom_can_rollback; then
 			flash_full_rom previous
 		fi
 		uefi_menu
