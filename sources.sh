@@ -3,7 +3,7 @@
 
 
 #define these here for easy updating
-export script_date="[2026-10-27]"
+export script_date="[2026-10-28]"
 
 # versioned: full_rom/MrChromebox-${version}/…  |  flat: full_rom/… (override for private deploys)
 export fullrom_layout="${fullrom_layout:-versioned}"
@@ -42,7 +42,7 @@ export rwl_altfw_apl="rwl_altfw-kbl_apl-mrchromebox_20260927.bin"
 export rwl_altfw_kbl="rwl_altfw-kbl_apl-mrchromebox_20260927.bin"
 export rwl_altfw_kbl_18="rwl_altfw-kbl_18-mrchromebox_20260927.bin"
 export rwl_altfw_whl="rwl_altfw-whl-mrchromebox_20260927.bin"
-export rwl_altfw_cml="rwl_altfw-cml-mrchromebox_20260927.bin"
+export rwl_altfw_cml="rwl_altfw-cml-mrchromebox_20261028.bin"
 export rwl_altfw_drallion="rwl_altfw-drallion-mrchromebox_20260927.bin"
 export rwl_altfw_glk="rwl_altfw-glk-mrchromebox_20260927.bin"
 export rwl_altfw_jsl="rwl_altfw-jsl-mrchromebox_20260927.bin"

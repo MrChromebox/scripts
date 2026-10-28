@@ -90,7 +90,7 @@ function flash_rwlegacy()
 		rwlegacy_file=$rwl_altfw_whl
 	elif [[ "$device" = "drallion" ]]; then
 		rwlegacy_file=$rwl_altfw_drallion
-	elif [[ "$isCmlBox" = true ]]; then
+	elif [[ "$isCml" = true ]]; then
 		rwlegacy_file=$rwl_altfw_cml
 	elif [[ "$isJsl" = true ]]; then
 		rwlegacy_file=$rwl_altfw_jsl
@@ -1837,7 +1837,7 @@ function stock_menu() {
 	show_header
 
 	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isStock" = true && "$isUnsupported" = false \
-			&& ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
+			&& "$isEOL" = false ) ]]; then
 		echo -e "${MENU}**${WP_TEXT}     ${NUMBER} 1)${MENU} Install/Update RW_LEGACY Firmware ${NORMAL}"
 	else
 		echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 1)${GRAY_TEXT} Install/Update RW_LEGACY Firmware ${NORMAL}"
@@ -1881,7 +1881,7 @@ function stock_menu() {
 	case $opt in
 
 	1)	if [[ "$unlockMenu" = true || ( "$isFullRom" = false && "$isStock" = true && "$isUnsupported" = false \
-				&& ("$isCmlBook" = false || "$device" == "drallion") && "$isEOL" = false ) ]]; then
+				&& "$isEOL" = false ) ]]; then
 			flash_rwlegacy
 		elif [[ "$isEOL" = true ]]; then
 			fail_menu "The RW_LEGACY firmware update is not supported for devices which have reached end-of-life" || true
